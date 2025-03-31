@@ -1,0 +1,8 @@
+Importante: Penso que não seja preciso, porque o setor não quer tantos detalhes, mas será que é preciso meter um js para os Stocks
+
+As tantas era super util, como tenho conta de user e de restaurante, criar 
+uma js chamado conta, com os dados em comum da conta de um user e de um restaurante.
+
+Os campos são email, password e nivel
+
+https://mongoosejs.com/docs/guide.html --> site do mongoosejs
