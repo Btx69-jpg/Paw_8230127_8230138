@@ -4,6 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+
+//Conexão com o Atlas (Não sei se tenho de fazer /DB)
+mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', {useNewUrlParser: true})
+  .then(() =>  console.log('connection succesful'))
+  .catch((err) => console.error(err));
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
