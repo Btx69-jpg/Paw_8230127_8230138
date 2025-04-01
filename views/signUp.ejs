@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign up</title>
+  <link rel="stylesheet" href="/public/stylessheets/style.css" />
+</head>
+<body>
+  <main>
+    <div class="signup-container">
+      <h1>Sign up</h1>
+      <form action="/signup" method="POST">
+        <div class="form-group">
+          <label for="firstName">First name</label>
+          <!-- O value usa EJS para manter o valor caso dê erro e retorne à página -->
+          <input 
+            type="text" 
+            name="firstName" 
+            id="firstName" 
+            placeholder="Input first name" 
+            value="<%= typeof firstName !== 'undefined' ? firstName : '' %>" 
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last name</label>
+          <input 
+            type="text" 
+            name="lastName" 
+            id="lastName" 
+            placeholder="Input last name" 
+            value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            name="email" 
+            id="email" 
+            placeholder="example.email@gmail.com" 
+            value="<%= typeof email !== 'undefined' ? email : '' %>" 
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            placeholder="Enter at least 8+ characters" 
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Repeat password</label>
+          <input 
+            type="password" 
+            name="confirmPassword" 
+            id="confirmPassword" 
+            placeholder="Enter at least 8+ characters" 
+            required
+          />
+        </div>
+
+        <div class="terms-group">
+          <input 
+            type="checkbox" 
+            name="terms" 
+            id="terms" 
+            required
+          />
+          <label for="terms">
+            By signing up, I agree with the 
+            <a href="#">Terms of Use</a> & 
+            <a href="#">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit">Sign up</button>
+      </form>
+
+      <p>Already have an account? <a href="/login">Log in</a></p>
+
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <div class="social-login">
+        <!-- Links para autenticação social (Google, Facebook, GitHub, etc.) -->
+        <a href="/auth/google"><img src="/public/images/google.png" alt="Google" /></a>
+        <a href="/auth/facebook"><img src="/public/images/Facebook.png" alt="Facebook" /></a>
+        <a href="/auth/Apple"><img src="/public/images/Apple.png" alt="Apple" /></a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
