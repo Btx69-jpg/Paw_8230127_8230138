@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var Category = require('../Resusable/Category'); //Importa o modelo de categoria  (Mudar caminho)
 
-//Dish = Prato
+var CategorySchema = Category.schema; //Importa o esquema de categoria (Mudar caminho)
 var DishSchema = new mongoose.Schema({
     photo: {
         type: String,
@@ -18,8 +19,7 @@ var DishSchema = new mongoose.Schema({
         required: true,
     },
     type: {
-        type: String,
-        enum: ['Carne', 'Peixe', 'Vegetariano', 'Vegan', 'Dieta', 'Alternativo', 'Sobremesa', 'Bebida'],
+        type: CategorySchema, 
         required: true,
     },
     price: {

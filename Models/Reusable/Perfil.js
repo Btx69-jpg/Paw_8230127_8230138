@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
-var ShoppingCart = require("../Orders/ShoppingCart");
+var Order = require("../Orders/Order");
+
+var OrderSchema = Order.schema;
 
 var PerfilSchema = new mongoose.Schema({
     perfilPhoto: {
@@ -12,6 +14,8 @@ var PerfilSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
+        maxlength: [35, 'A password deve ter no máximo 35 caracteres'],
         required: true,
     },
     countOrders: {
@@ -21,9 +25,14 @@ var PerfilSchema = new mongoose.Schema({
         required: true,
     },
     historicOrders: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'ShoppingCart',
+        type: [OrderSchema],
         default: [], 
+        required: true,
+    },
+    priority: {
+        type: Nuumber,
+        enum: ['Cliente', 'Admin'],
+        default: 'Cliente',
     },
     updated_at: { type: Date, default: Date.now },
 });

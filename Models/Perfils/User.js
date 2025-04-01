@@ -25,8 +25,9 @@ var UserSchema = new mongoose.Schema({
     },
     countAddress: {
         type: Number,
+        default: 0,
         min: [0, 'O valor minimo do contador é 0'],
-        required: true,
+        max: [5, 'O número máximo de moradas é 5'],
     },
     addresses: {
         type: [AddressOrderSchema],

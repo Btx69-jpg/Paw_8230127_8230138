@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
-var ShoopingCart = require('../Orders/ShoppingCart'); //Carrinho de compras
+var Order = require('../Orders/Order'); //Carrinho de compras
 var Perfil = require('../Perfils/Reusable/Perfil'); //Perfil do utilizador
 
-var ShoppingCartSchema = ShoopingCart.schema; 
+var OrderSchema = Order.schema; 
 
 var CommentSchema = new mongoose.Schema({
     title: {
@@ -27,8 +27,8 @@ var CommentSchema = new mongoose.Schema({
         max: [5, 'O máximo de estrelas é 5'],
         required: true,
     },
-    shoppingCart: {
-        type: ShoppingCartSchema,
+    order: {
+        type: OrderSchema,
         required: true,
     },
     user: {

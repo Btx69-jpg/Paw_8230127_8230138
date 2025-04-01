@@ -31,9 +31,22 @@ var OrderSchema = new mongoose.Schema({
         type: [ItemSchema],
         required: true,
     },
+    date: {
+        type: Date,
+        default: Date.now,
+        min: [Date.now, 'A data não pode ser no passado'],
+        max: [Date.now, 'A data não pode ser no futuro'],
+    },
     totEncomenda: {
         type: Number,
+        default: 0,
         min: [0, 'O valor mínimo da encomenda deve ser 0'],
+        required: true,
+    },
+    statu: {
+        type: String,
+        enum: ['Expedida', 'Entregue'],
+        default: 'Expedida',
     },
     updated_at: { type: Date, default: Date.now },
 });
