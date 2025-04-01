@@ -9,38 +9,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous" id="bootstrap-css">
 
-        <style>
-            /* Barra superior */
-            .navbar {
-                background-color: #ffffff; /* Fundo claro*/
-                border-bottom: 1px solid #eaeaea; /* linha subtil */
-            }
-            /* Logo do site (se quiseres arredondar ou definir tamanho) */
-            .navbar-brand img {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-            }
-            /* Espaço entre o logo e o nome */
-            .brand-name {
-                margin-left: 10px;
-                font-weight: bold;
-                font-size: 1.2rem;
-            }
-            /* Ícones da parte direita */
-            .nav-icons img {
-                width: 24px;
-                height: 24px;
-                margin-left: 15px; /* espaçamento entre ícones */
-            }
-            /* Se tiveres foto de perfil, podes torná-la circular */
-            .profile-pic {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                margin-left: 15px;
-            }
-        </style>
+        <link rel="stylesheet" href="/stylesheets/RestaurantPage/navBar.css" />
     </head>
 
     <body>
@@ -49,8 +18,8 @@
               <!-- Lado esquerdo: Logo + Nome do Restaurante -->
               <div class="d-flex align-items-center">
                 <a class="navbar-brand d-flex align-items-center" href="#">
-                  <!-- Ajusta o src da imagem -->
-                  <img src="../../public/images/Plataform/LogoSite/logo.png" alt="Logo do Site">
+                  <!-- Depois meter logo do restaurant -->
+                  <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site">
                   <span class="brand-name">Nome Restaurante!!! e Logo!!!!</span>
                 </a>
               </div>
@@ -59,12 +28,12 @@
               <div class="nav-icons d-flex align-items-center">
                 <!-- Ícone do Perfil -->
                 <a href="../Perfil/PerfilUser.html">
-                    <img src="../../public/images/Plataform/RestaurantPage/PerfilIcon.png" alt="Perfil">
+                    <img src="/images/Plataform/RestaurantPage/PerfilIcon.png" alt="Perfil">
                 </a>
                 
                 <!-- Ícone do Carrinho -->
                 <a href="../Perfil/Carrinho.html">
-                  <img src="../../public/images/Plataform/RestaurantPage/Carrinho.png" alt="Carrinho">
+                  <img src="/images/Plataform/RestaurantPage/Carrinho.png" alt="Carrinho">
                 </a>
         
                 <!-- Foto do Utilizador (opcional) -->
