@@ -2,7 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="../public/images/logo.png" />
   <title>Login</title>
+  <!--Login Google-->
+
+  <meta name="google-signin-client_id" content="841975440606-nibdrr2plsq2qpu2llultvulq32vg3ot.apps.googleusercontent.com">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -92,7 +96,7 @@
       
       <!-- Login social -->
       <div class="d-flex justify-content-center gap-2 mb-4">
-        <a href="/auth/google" class="btn btn-outline-secondary">
+        <a class="g-signin2" data-onsuccess="onSignIn" class="btn btn-outline-secondary">
           <img src="../public/images/google.png" alt="Google" style="width: 20px; height: 20px;">
         </a>
         <a href="/auth/facebook" class="btn btn-outline-secondary">
@@ -108,6 +112,7 @@
     </div>
   </div>
 
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <!-- Bootstrap JS Bundle (opcional para funcionalidades JS do Bootstrap) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
