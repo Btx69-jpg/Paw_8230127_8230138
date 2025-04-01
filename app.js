@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/login', login); /**Indico a barra que vai aparecer no url */
-aap.use('/restaurant', restaurant); /**Indico a barra que vai aparecer no url */
+app.use('/restaurant', restaurant); /**Indico a barra que vai aparecer no url */
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

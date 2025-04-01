@@ -5,7 +5,7 @@
 var mongoose = require('mongoose');
 var Address = require("../Reusable/Address");
 var Perfil = require("../Reusable/Perfil");
-var Comments = require("../Reusable/Comments");
+var Comment = require("../Comments/Comment");
 
 var RestaurantSchema = new mongoose.Schema({
     name: {
@@ -46,7 +46,7 @@ var RestaurantSchema = new mongoose.Schema({
         required: true,
     },
     comments: {
-        type: [Comments.schema],
+        type: [Comment.schema],
         default: [], //Inicializa com o array vazio
     },
     updated_at: { type: Date, default: Date.now },
