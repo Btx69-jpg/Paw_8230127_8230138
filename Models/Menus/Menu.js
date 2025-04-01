@@ -1,9 +1,6 @@
 var mongoose = require('mongoose');
 var Dish = require('./Dish'); //Pratos do menu
 
-//Faz com que os schemas destes documentos fique embutido no documento.
-var DishSchema = Dish.schema; 
-
 var MenuSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -19,7 +16,7 @@ var MenuSchema = new mongoose.Schema({
         required: true,
     },
     dishes: { 
-        type: [DishSchema], 
+        type: [Dish.schema], 
         default: [], 
         required: true,
     },

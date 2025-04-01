@@ -12,8 +12,13 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', {
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
 
+/*
+São os js que criei na pasta Route
+*/
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var login = require('./routes/login'); 
+var restaurant = require('./routes/RestaurantRoute');
 
 var app = express();
 
@@ -27,8 +32,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Importante ter em consideração a autentificação e a autorização
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/login', login); /**Indico a barra que vai aparecer no url */
+aap.use('/restaurant', restaurant); /**Indico a barra que vai aparecer no url */
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

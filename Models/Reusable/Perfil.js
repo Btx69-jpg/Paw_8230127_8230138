@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
 var Order = require("../Orders/Order");
 
-var OrderSchema = Order.schema;
-
 var PerfilSchema = new mongoose.Schema({
     perfilPhoto: {
         type: String,
@@ -25,12 +23,12 @@ var PerfilSchema = new mongoose.Schema({
         required: true,
     },
     historicOrders: {
-        type: [OrderSchema],
+        type: [Order.schema],
         default: [], 
         required: true,
     },
     priority: {
-        type: Nuumber,
+        type: Number,
         enum: ['Cliente', 'Admin'],
         default: 'Cliente',
     },

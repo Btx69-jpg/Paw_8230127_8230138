@@ -1,9 +1,6 @@
 var mongoose = require('mongoose');
 var User = require('../Perfils/User'); //Pratos do menu
 
-//Faz com que os schemas destes documentos fique embutido no documento.
-var UserSchema = User.schema; 
-
 var UsersSchema = new mongoose.Schema({
     countUsers: {
         type: Number,
@@ -13,7 +10,7 @@ var UsersSchema = new mongoose.Schema({
         required: true,
     },
     users: { 
-        type: [UserSchema], 
+        type: [User.schema], 
         default: [], 
         required: true,
     },

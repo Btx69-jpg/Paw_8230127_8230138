@@ -5,47 +5,16 @@
   <title>Login</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f0f2f5;
-    }
-    .login-container {
-      max-width: 400px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .divider {
-      position: relative;
-      text-align: center;
-      margin: 1.5rem 0;
-    }
-    .divider::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background: #ddd;
-      top: 50%;
-      left: 0;
-      z-index: 1;
-    }
-    .divider span {
-      position: relative;
-      background: #fff;
-      padding: 0 1rem;
-      z-index: 2;
-    }
-  </style>
+  <!-- -->
+  <link rel="stylesheet" href="/stylesheets/Login/login.css">
+  <link rel="stylesheet" href="/stylesheets/Login/buttons.css">
 </head>
 <body>
   <div class="container">
     <div class="login-container mt-5">
       <!-- Logo no topo (opcional) -->
       <div class="text-center mb-4">
-        <img src="/images/logo.png" alt="Logo" class="img-fluid" style="max-width: 80px;">
+        <img src="/images/Plataform/LogoSite/logo.png" alt="Logo" class="img-fluid" style="max-width: 80px;">
       </div>
       <h2 class="text-center mb-3">Bem-vindo</h2>
       <p class="text-center mb-4">Entre com seus dados para fazer login.</p>
@@ -93,15 +62,15 @@
       <!-- Login social -->
       <div class="d-flex justify-content-center gap-2 mb-4">
         <a href="/auth/apple" class="btn btn-outline-secondary">
-          <img src="/images/apple.png" alt="Apple" style="width: 20px; height: 20px;">
+          <img class="btImg" src="/images/Plataform/LogosLogin/apple.png" alt="Apple">
         </a>
         <a href="/auth/google" class="btn btn-outline-secondary">
-          <img src="/images/google.png" alt="Google" style="width: 20px; height: 20px;">
+          <img class="btImg" src="/images/Plataform/LogosLogin/google.png" alt="Google">
         </a>
       </div>
       
       <!-- Link para registro -->
-      <p class="text-center">Não tem conta? <a href="/register" class="text-decoration-none">Registre-se</a></p>
+      <p class="text-center">Não tem conta? <a href="/login/signup" class="text-decoration-none">Registre-se</a></p>
     </div>
   </div>
 

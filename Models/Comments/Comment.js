@@ -2,8 +2,6 @@ var mongoose = require('mongoose');
 var Order = require('../Orders/Order'); //Carrinho de compras
 var Perfil = require('../Perfils/Reusable/Perfil'); //Perfil do utilizador
 
-var OrderSchema = Order.schema; 
-
 var CommentSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -28,7 +26,7 @@ var CommentSchema = new mongoose.Schema({
         required: true,
     },
     order: {
-        type: OrderSchema,
+        type: Order.schema,
         required: true,
     },
     user: {
