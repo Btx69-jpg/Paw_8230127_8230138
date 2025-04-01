@@ -1,0 +1,13 @@
+Importante: Penso que não seja preciso, porque o setor não quer tantos detalhes, mas será que é preciso meter um js para os Stocks
+
+Nota: No match /^ começa o match e $/ termina o matcha 
+
+As tantas era super util, como tenho conta de user e de restaurante, criar 
+uma js chamado conta, com os dados em comum da conta de um user e de um restaurante.
+
+Os campos são email, password e nivel
+
+https://mongoosejs.com/docs/guide.html --> site do mongoosejs
+
+Penso que para reutilizar o melhor em todos, seria usar apenas o Schema e não o ref, mas avaliar melhor ao implementar, 
+Nos historicos é definitivamente o schema, penso que so o menu é que precisa do ref, para ser atualizado sempre que o prato/Dish é alterado
