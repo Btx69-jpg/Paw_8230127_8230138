@@ -11,6 +11,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', {useNewUrlParser: true})
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
