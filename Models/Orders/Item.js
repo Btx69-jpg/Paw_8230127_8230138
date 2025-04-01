@@ -1,26 +1,27 @@
 var mongoose = require('mongoose');
-//var Dish = require('../Menus/Dish'); //Pratos do menu
+var Dish = require('../Menus/Dish'); //Pratos
+
+var DishSchema = Dish.schema;
 
 var ItemSchema = new mongoose.Schema({
-    //Nome da Dish, talvez guardar também o id
-    name: {
-        type: String,
-        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        require
+    dish: {
+        type: DishSchema,
+        required: true,
     },
     quantity: {
         type: Number,
-        minValue: [1, 'Numero mínimo de pratos selecionados é 1'],
-        maxValue: [20, 'Numero máximo de pratos'],
-        require
+        default: 1,
+        min: [1, 'Numero mínimo de pratos selecionados é 1'],
+        max: [20, 'Numero máximo de pratos'],
+        required: true,
     },
     //Quantidade * Preço (Não é require, porque só após inserir é que posso calcular)
     price: {
         type: Number,
-        minValue: [0, 'O preço minimo é 0€']
+        default: 0,
+        min: [0, 'O preço minimo é 0€'],
+        required: true,
     },
-    //dishs (variavel para guardar os pratos, deve ser um array, obrigatorio)
     updated_at: { type: Date, default: Date.now },
 });
 

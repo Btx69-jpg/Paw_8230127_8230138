@@ -1,40 +1,45 @@
 var mongoose = require('mongoose');
-var Address = require("./Reusable/Address");
-//var Perfil = require("./Reusable/Perfil") (Conta)
-/*
-Nota: No codigo tenho de criar uma verificação que me garante que um email que estou a introduzir, já não esteja registado, se sim
-Tem de aparecer mensagem de erro a dizer que conta com aquele email já existe
-Nota: No match /^ começa o match e $/ termina o match
-Utilizamos o id default do Mongo, se depois der asneira 
-*/
+var AddressOrder = require("../Reusable/AddressOrder");
+var Perfil = require("../Reusable/Perfil")
+
+// Faz com que os schemas destes documentos fique embutido no documento. 
+var AddressOrderSchema = AddressOrder.schema;
+var PerfilSchema = Perfil.schema;
+
 var UserSchema = new mongoose.Schema({
-    //codigo: Number (Variavel autoIncrement)
     firstName: {
         type: String,
-        maxlength: [50, 'O primeiro nome deve ter no máximo 50 caracteres'],
+        max: [50, 'O primeiro nome deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        require
+        required: true,
     },
     lastName: {
         type: String,
-        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
+        max: [50, 'O ultimo nome deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        require
+        required: true,
     },
-    //AddressPredifinido (Morada predifinida)
+    perfil: {
+        type: PerfilSchema,
+        required: true,
+    },
     countAddress: {
         type: Number,
-        minvalue: [0, 'O valor minimo do contador é 0'],
-        require
+        min: [0, 'O valor minimo do contador é 0'],
+        required: true,
     },
-    //address, ver como faço para reutilizar o que foi criado (Meter como array)
+    addresses: {
+        type: [AddressOrderSchema],
+        default: [] //Inicializa com o array vazio
+    },      
     birthdate: {
         type: Date,
+        min: ['1900-01-01', 'A data mínima é 1900-01-01'],
+        max: [new Date(), 'A data máxima é a data atual'],
     },
-    //Perfil (conta inclui email, passwor, level e historico de encomendas)
     phoneNumber: {
         type: Number,
-        match: [/^[0-9]{9}$/]
+        match: [/^[0-9]{9}$/, 'O número de telefone deve conter exatamente 9 digitos'],
     },
     updated_at: { type: Date, default: Date.now },
 });

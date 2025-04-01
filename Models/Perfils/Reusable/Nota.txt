@@ -1,1 +1,0 @@
-Se calhar criar um reusable, com os dados basicos do cliente, para depois no Order, não carregar todos os dados
