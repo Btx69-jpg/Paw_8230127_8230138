@@ -13,8 +13,10 @@
     </head>
 
     <body>
+          <!--  Importante todos os /restaurant, depois trocar pela versão em <> com %%-->
+
           <!-- Desta forma tenho de depois mandar os dados do restaurante-->
-          <%- include('../navBarRest') %>
+          <%- include('navBarRest') %>
         
           <!-- Conteúdo da página -->
           <div class="container mt-4 text-center">
@@ -23,13 +25,13 @@
               Depois tenho de mandar os dados
               Para depois mandar todos os dados tenho de fazer isto :('InfoRestaurant', { restaurantInfo: restaurantInfo })
               -->
-            <%- include('InfoRestaurant') %>
+            <%- include('HomePage/InfoRestaurant') %>
 
             <!-- Reencaminha para o ejs que mostra as 3 melhores avaliações-->
-            <%- include('avaliation') %> 
+            <%- include('HomePage/avaliation') %> 
 
             <!-- Reencaminha para o ejs que mostra todos os menus-->
-            <%- include('menus') %> 
+            <%- include('HomePage/menus') %> 
             </div>
           </div>
     </body>

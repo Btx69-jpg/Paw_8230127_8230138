@@ -18,7 +18,9 @@ São os js que criei na pasta Route
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var login = require('./routes/login'); 
-var restaurant = require('./routes/RestaurantRoute');
+var signUp = require('./routes/signup'); 
+var restaurants = require('./routes/restaurants'); // Aqui carrego o controller que quero usar
+var restaurant = require('./routes/restaurant');
 
 var app = express();
 
@@ -33,10 +35,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Importante ter em consideração a autentificação e a autorização
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/login', login); /**Indico a barra que vai aparecer no url */
-app.use('/restaurant', restaurant); /**Indico a barra que vai aparecer no url */
+//Caminho até ao browser
+app.use('/', indexRouter); //Aqui é quando meto apenas o localhost:3000
+app.use('/users', usersRouter); //Aqui é quando é localhost:3000/users 
+app.use('/login', login); 
+app.use('/signUp', signUp); 
+app.use('/restaurants', restaurants); //Aparece a pagina noraml dos restaurantes
+app.use('/restaurants', restaurant); //Aqui tenho de meter o /restaurants, porque o proximo é um id que pode ter qualquer valor. (Ou seja não existe o /, no route)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
