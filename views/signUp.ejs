@@ -2,21 +2,149 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="../public/images/logo.png" />
   <title>Sign up</title>
-  <link rel="stylesheet" href="/public/stylessheets/style.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+    }
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .signup-container {
+      /* Utiliza dimensões relativas para maior adaptabilidade */
+      width: 90vw;
+      max-width: 50vw;
+      margin: 10vh auto;
+      background-color: #fff;
+      padding: 5vh 5vw;
+      border-radius: 2vh;
+      box-shadow: 0 1vh 2vh rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-bottom: 2vh;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group {
+      margin-bottom: 2vh;
+    }
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 0.5vh;
+    }
+    .form-group input {
+      padding: 1vh 1vw;
+      border: 1px solid #ccc;
+      border-radius: 1vh;
+      font-size: 1rem;
+    }
+    .terms-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2vh;
+    }
+    .terms-group input[type="checkbox"] {
+      margin-right: 1vw;
+    }
+    .terms-group a {
+      color: #3f51b5;
+      text-decoration: none;
+    }
+    .terms-group a:hover {
+      text-decoration: underline;
+    }
+    button[type="submit"] {
+      background-color: #5865F2;
+      color: #fff;
+      padding: 1vh 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 1vh;
+      cursor: pointer;
+      margin-bottom: 2vh;
+    }
+    button[type="submit"]:hover {
+      background-color: #4b57d7;
+    }
+    .divider {
+      text-align: center;
+      margin: 3vh 0;
+      position: relative;
+    }
+    .divider span {
+      background-color: #fff;
+      padding: 0 2vw;
+      position: relative;
+      z-index: 1;
+    }
+    .divider::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 0.5vh;
+      background: #ccc;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      z-index: 0;
+    }
+    .social-login {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 2vh;
+    }
+    .social-login a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 6vw;
+      height: 6vw;
+      border-radius: 50%;
+      background-color: #eee;
+      transition: background-color 0.3s;
+    }
+    .social-login a:hover {
+      background-color: #ddd;
+    }
+    .social-login img {
+      width: 3vw;
+      height: 3vw;
+    }
+    p {
+      text-align: center;
+    }
+    p a {
+      color: #3f51b5;
+      text-decoration: none;
+    }
+    p a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <main>
     <div class="signup-container">
       <h1>Sign up</h1>
+      <!-- Formulário de cadastro -->
       <form action="/signup" method="POST">
         <div class="form-group">
           <label for="firstName">First name</label>
-          <!-- O value usa EJS para manter o valor caso dê erro e retorne à página -->
           <input 
             type="text" 
             name="firstName" 
             id="firstName" 
+            class="form-control" 
             placeholder="Input first name" 
             value="<%= typeof firstName !== 'undefined' ? firstName : '' %>" 
             required
@@ -29,6 +157,7 @@
             type="text" 
             name="lastName" 
             id="lastName" 
+            class="form-control" 
             placeholder="Input last name" 
             value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
             required
@@ -41,6 +170,7 @@
             type="email" 
             name="email" 
             id="email" 
+            class="form-control" 
             placeholder="example.email@gmail.com" 
             value="<%= typeof email !== 'undefined' ? email : '' %>" 
             required
@@ -53,6 +183,7 @@
             type="password" 
             name="password" 
             id="password" 
+            class="form-control" 
             placeholder="Enter at least 8+ characters" 
             required
           />
@@ -64,6 +195,7 @@
             type="password" 
             name="confirmPassword" 
             id="confirmPassword" 
+            class="form-control" 
             placeholder="Enter at least 8+ characters" 
             required
           />
@@ -93,12 +225,13 @@
       </div>
 
       <div class="social-login">
-        <!-- Links para autenticação social (Google, Facebook, GitHub, etc.) -->
-        <a href="/auth/google"><img src="/public/images/google.png" alt="Google" /></a>
-        <a href="/auth/facebook"><img src="/public/images/Facebook.png" alt="Facebook" /></a>
-        <a href="/auth/Apple"><img src="/public/images/Apple.png" alt="Apple" /></a>
+        <a href="/auth/google"><img src="../public/images/google.png" alt="Google" /></a>
+        <a href="/auth/facebook"><img src="../public/images/facebook.png" alt="Facebook" /></a>
+        <a href="/auth/Apple"><img src="../public/images/apple.png" alt="Apple" /></a>
       </div>
     </div>
   </main>
+  <!-- Bootstrap JS Bundle (opcional para funcionalidades JS do Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
