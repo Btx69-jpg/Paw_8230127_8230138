@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Category = require('../Reusable/Category'); //Importa o modelo de categoria  (Mudar caminho)
+var Category = require('../Reusable/Category');
 
 var DishSchema = new mongoose.Schema({
     photo: {
