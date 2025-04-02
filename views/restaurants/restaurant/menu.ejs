@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Trocar para o nome correto do menu-->
+        <title>Menu x</title>
 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" id="bootstrap-css">
     </head>
 
     <body>
-        <h1>Menu do restaurante x</h1>
+        <div class="container">
+            <div class="row-md-6">
+                <!-- Meter nome do restaurante em vez de "restaurante x"-->
+                <h1>Menu do restaurante x</h1>
+            </div>
 
-        <a href="/restaurants/restaurant/menu/"></a>
+            <!--
+            Só permitir adicionar se for admin e não tenha acedido o limite de pratos por menu
+            -->
+            <a href="/restaurants/restaurant/menu/CreateDish">Adicionar prato</a>
+    
+            <!-- Info do menu-->
+            <div class="row-md-6">
+                <div class="row-md-6">
+                    <h2>Nome do menu: xxxxxxxxxxxx</h2>  
+                </div>
+                <div class="row-md-6">
+                    <p>Descrição do menu: xxxxxxxx</p>
+                </div>
+                <div class="row-md-6">   
+                    <p>Tipo de menu: xxxxxxxxx</p>
+                </div>
+
+                <!-- Dentro deste div, deve ter nome, descrição e foto do prato (se tiver)
+                Também deve ter o botão para ver a informação do prato
+                Deve ter dois botoes, um para remover, que remove o prato do menu 
+                e outro para editar, que redireciona para a mesma pagina de criar dish, mas desta
+                vez os campos já estão preenchidos e é só editar 
+                -->
+                <div class="row-md-6">
+                    <!-- Mostar apenas o nome do prato e imagem-->
+                    <p>Prato</p>
+                    <!--Trocar nesta url, posteriormente o restuarant, menu e o dish,
+                    para a versão com <> e %%, ou seja o nome correto das variaveis-->
+                    <p><a href="/restaurants/restaurant/menu/dish">Mais Info.</a></p>
+                </div>
+                <!-- Mudar o nome do link, do restaurant e menu, para o nome das variaveis-->
+                <button><a href="/restaurants/restaurant">Voltar</a></button>
+            </div>
+        </div>
+       
     </body>
 </html>

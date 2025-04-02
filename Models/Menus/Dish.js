@@ -5,7 +5,7 @@ var DishSchema = new mongoose.Schema({
     photo: {
         type: String,
     },
-    title: {
+    name: {
         type: String,
         maxlength: [50, 'O título deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
@@ -14,10 +14,9 @@ var DishSchema = new mongoose.Schema({
     description: {
         type: String,
         maxlength: [250, 'A descrição deve ter no máximo 200 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para a descrição'], //Garante que a descrição só tem letras e espaços
         required: true,
     },
-    type: {
+    category: {
         type: Category.schema, 
         required: true,
     },

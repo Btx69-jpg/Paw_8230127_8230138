@@ -7,7 +7,7 @@
   
 <div class="row justify-content-center">
     <!-- Trocar depois o restaurant-->
-    <form action="/restaurants/restaurant/menu" method="get">
+    <form action="/restaurants/restaurant" method="get">
         <div>
             <label for="mameMenu">Nome menu:</label>
             <input type="text" 
@@ -40,7 +40,8 @@
         </div>
 
         <div>
-            <button><a href="/restaurant">Clear</a></button> <!-- Limpa o filtro-->
+            <!-- Trocar o restaurant, pela variavel do restaurante-->
+            <button><a href="/restaurants/restaurant">Clear</a></button> <!-- Limpa o filtro-->
             <button type="submit">Submeter</button>
         </div>
     </form>
