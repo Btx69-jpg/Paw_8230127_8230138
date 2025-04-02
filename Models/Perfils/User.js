@@ -3,8 +3,6 @@ var AddressOrder = require("../Reusable/AddressOrder");
 var Perfil = require("../Reusable/Perfil")
 
 // Faz com que os schemas destes documentos fique embutido no documento. 
-var AddressOrderSchema = AddressOrder.schema;
-var PerfilSchema = Perfil.schema;
 
 var UserSchema = new mongoose.Schema({
     firstName: {
@@ -20,7 +18,7 @@ var UserSchema = new mongoose.Schema({
         required: true,
     },
     perfil: {
-        type: PerfilSchema,
+        type: Perfil.schema,
         required: true,
     },
     countAddress: {
@@ -30,7 +28,7 @@ var UserSchema = new mongoose.Schema({
         max: [5, 'O número máximo de moradas é 5'],
     },
     addresses: {
-        type: [AddressOrderSchema],
+        type: [AddressOrder.schema],
         default: [] //Inicializa com o array vazio
     },      
     birthdate: {

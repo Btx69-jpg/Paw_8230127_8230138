@@ -1,11 +1,9 @@
 var mongoose = require('mongoose');
 var Dish = require('../Menus/Dish'); //Pratos
 
-var DishSchema = Dish.schema;
-
 var ItemSchema = new mongoose.Schema({
     dish: {
-        type: DishSchema,
+        type: Dish.schema,
         required: true,
     },
     quantity: {

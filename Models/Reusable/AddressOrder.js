@@ -1,11 +1,9 @@
 var mongoose = require('mongoose');
 var Address = require("./Address");
 
-var AddressSchema = Address.schema;
-
 var AddressOrderSchema = new mongoose.Schema({
     address: {
-        type: AddressSchema,
+        type: Address.schema,
         required: true,
     },
     nif: {

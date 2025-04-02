@@ -5,10 +5,7 @@
 var mongoose = require('mongoose');
 var Address = require("../Reusable/Address");
 var Perfil = require("../Reusable/Perfil");
-
-//Permite incorporar estes dois tipos de documentos dentro do restaurante
-var AddressSchema = Address.schema;
-var PerfilSchema = Perfil.schema;
+var Comment = require("../Comments/Comment");
 
 var RestaurantSchema = new mongoose.Schema({
     name: {
@@ -17,7 +14,7 @@ var RestaurantSchema = new mongoose.Schema({
         required: true,
     },
     perfil: {
-        type: PerfilSchema,
+        type: Perfil.schema,
         required: true,
     },
     sigla: {
@@ -35,12 +32,22 @@ var RestaurantSchema = new mongoose.Schema({
         required: true,
     },
     address: {
-        type: AddressSchema,
+        type: Address.schema,
         required: true,
     },
     description: {
         type: String,
         maxlength: [500, 'A descrição deve ter no máximo 500 caracteres'],
+    },
+    countComments: {
+        type: Number,
+        default: 0,
+        min: [0, 'O número mínimo de comentários é 0'],
+        required: true,
+    },
+    comments: {
+        type: [Comment.schema],
+        default: [], //Inicializa com o array vazio
     },
     updated_at: { type: Date, default: Date.now },
 });

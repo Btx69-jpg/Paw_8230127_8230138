@@ -1,0 +1,30 @@
+/* Barra superior */
+.navbar {
+    background-color: #ffffff; /* Fundo claro*/
+    border-bottom: 1px solid #eaeaea; /* linha subtil */
+}
+/* Logo do site (se quiseres arredondar ou definir tamanho) */
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+/* Espaço entre o logo e o nome */
+.brand-name {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+/* Ícones da parte direita */
+.nav-icons img {
+    width: 24px;
+    height: 24px;
+    margin-left: 15px; /* espaçamento entre ícones */
+}
+/* Se tiveres foto de perfil, podes torná-la circular */
+.profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-left: 15px;
+}

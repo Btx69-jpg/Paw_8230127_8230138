@@ -3,8 +3,6 @@ var Item = require('./Item');
 var Cliente = require('../Reusable/Perfil');
 var AddressOrder = require("../Reusable/AddressOrder");
 
-var ItemSchema = Item.schema;
-
 var OrderSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -28,7 +26,7 @@ var OrderSchema = new mongoose.Schema({
         min: [1, 'A Encomenda, necessita no minimo de 0 order'] //Ver se era melhor meter um já que o outro campo é obrigatorio
     },
     itens: {
-        type: [ItemSchema],
+        type: [Item.schema],
         required: true,
     },
     date: {

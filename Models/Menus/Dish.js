@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
-var Category = require('../Resusable/Category'); //Importa o modelo de categoria  (Mudar caminho)
+var Category = require('../Reusable/Category'); //Importa o modelo de categoria  (Mudar caminho)
 
-var CategorySchema = Category.schema; //Importa o esquema de categoria (Mudar caminho)
 var DishSchema = new mongoose.Schema({
     photo: {
         type: String,
@@ -19,7 +18,7 @@ var DishSchema = new mongoose.Schema({
         required: true,
     },
     type: {
-        type: CategorySchema, 
+        type: Category.schema, 
         required: true,
     },
     price: {
