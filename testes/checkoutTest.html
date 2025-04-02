@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Carrinho de Compras</title>
+  <!-- Logo -->
+  <link rel="icon" type="image/png" href="../public/images/logo.png" />
+
+  <!-- Link da fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+
+  <style>
+    h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    }
+    #OrangeButton {
+    background-color: #ff6347; /* Tomate */
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 0.5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-gray-100 shadow-sm">
+        <div class="container">
+          <img src="../public/images/logo.png" alt="Logo" class="img-fluid" style="max-width: 50px;"/>
+          <a class="navbar-brand" href="/">Click&Eat</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="testes.html">Sign up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="loginteste.html">Login</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+  <div class="container py-4">
+    <h1 class="mb-4">Carrinho de Compras</h1>
+    
+    <!-- Verifica se o carrinho existe e tem itens -->
+    <% if (cart && cart.items && cart.items.length > 0) { %>
+      <!-- Exibir total de itens -->
+      <div class="mb-3">
+        <strong>TOTAL (x Items): <%= cart.items.length %></strong>
+      </div>
+
+      <div class="row">
+        <!-- Coluna esquerda: Lista de produtos -->
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Produtos no Carrinho</h5>
+            </div>
+            <div class="card-body">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Artigo</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Qtd</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% cart.items.forEach(function(item) { %>
+                    <tr>
+                      <td><%= item.name %></td>
+                      <td><%= item.description %></td>
+                      <td>€ <%= item.price.toFixed(2) %></td>
+                      <td>
+                        <!-- Exemplo de input para alterar quantidade -->
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          value="<%= item.quantity %>"
+                          min="1"
+                          style="width: 60px;"
+                        />
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+              <!-- Botão para continuar comprando -->
+              <a href="/produtos" class="btn btn-secondary">
+                Continuar a Comprar
+              </a>
+              <!-- Botão para limpar carrinho -->
+              <a href="/carrinho/limpar" class="btn btn-outline-danger">
+                Limpar Carrinho
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna direita: Resumo do pedido -->
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Resumo</h5>
+            </div>
+            <div class="card-body">
+              <!-- Exemplo de cálculo simples de subtotal e IVA -->
+              <p class="mb-2">
+                <strong>Produtos:</strong> 
+                <span class="float-end">€ <%= cart.subtotal.toFixed(2) %></span>
+              </p>
+              <p class="mb-2">
+                <strong>IVA (23%):</strong> 
+                <span class="float-end">
+                  € <%= (cart.subtotal * 0.23).toFixed(2) %>
+                </span>
+              </p>
+              <hr />
+              <p class="mb-2">
+                <strong>Total:</strong> 
+                <span class="float-end">
+                  € <%= (cart.subtotal * 1.23).toFixed(2) %>
+                </span>
+              </p>
+
+              <div class="mb-3">
+                <label for="cupom" class="form-label">Aplicar cupom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cupom"
+                  placeholder="Insira seu cupom"
+                />
+              </div>
+
+              <a href="/checkout" class="btn btn-primary w-100" id="OrangeButton">
+                Avançar para o Checkout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="alert alert-info">
+        Não há itens no carrinho no momento.
+      </div>
+      <a href="/produtos" class="btn btn-primary" id="OrangeButton">Voltar aos Produtos</a>
+    <% } %>
+  </div>
+
+  <!-- Bootstrap JS (opcional, para componentes dinâmicos) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
