@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -7,20 +8,30 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-//Conexão com o Atlas (Não sei se tenho de fazer /DB)
-mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', {useNewUrlParser: true})
-  .then(() =>  console.log('connection succesful'))
+// Conexão com o Atlas (Não sei se tenho de fazer /DB)
+mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', { useNewUrlParser: true })
+  .then(() => console.log('connection successful'))
   .catch((err) => console.error(err));
 
-/*
-São os js que criei na pasta Route
-*/
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var login = require('./routes/login'); 
-var restaurant = require('./routes/RestaurantRoute');
-
 var app = express();
+
+// Configuração da sessão (ajuste conforme necessário)
+app.use(session({
+  secret: 'seuSegredo',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // ajuste para true se estiver usando HTTPS
+}));
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  res.locals.currentPage = req.path === '/' ? 'homepage' : req.path;
+  res.locals.previousPage = req.headers.referer || '/';
+  console.log('User:', res.locals.user);
+  console.log('Current Page:', res.locals.currentPage);
+  console.log('Previous Page:', res.locals.previousPage);
+  next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,7 +43,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Importante ter em consideração a autentificação e a autorização
+/*
+São os js que criei na pasta Route
+*/
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var login = require('./routes/login');
+var restaurant = require('./routes/RestaurantRoute');
+
+// Importante ter em consideração a autentificação e a autorização
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/login', login); /**Indico a barra que vai aparecer no url */
