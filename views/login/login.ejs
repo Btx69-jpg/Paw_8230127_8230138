@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
@@ -46,6 +46,9 @@
 </head>
 <body>
   <div class="container">
+    <!-- nav bar-->
+    <%- include('../navBar.ejs') %>
+
     <div class="login-container mt-5">
       <!-- Logo no topo (opcional) -->
       <div class="text-center mb-4">
@@ -108,7 +111,7 @@
       </div>
       
       <!-- Link para registro -->
-      <p class="text-center">Não tem conta? <a href="/register" class="text-decoration-none">Registre-se</a></p>
+      <p class="text-center">Não tem conta? <a href="/login/signUp" class="text-decoration-none">Registre-se</a></p>
     </div>
   </div>
 

@@ -1,15 +1,14 @@
-var express = require('express');
-var router = express.Router();
-var user = require("../Controllers/LoginController.js"); // Aqui carrego o controller que quero usar
+const express = require("express");
+const router = express.Router();
+const userController = require("../Controllers/LoginController.js");
 
-// Entra na pagina de login
-router.get('/login', function(req, res) {
-  user.login(req, res);
-});
+// Página de login
+router.get("/login", userController.login);
 
-// Entra na pagina de registo
-router.get('/signUp', function(req, res) {
-  user.signup(req, res);
-});
+// Página de registo
+router.get("/signUp", userController.signup);
+
+// Registo de utilizador
+router.post("/signUp", userController.save);
 
 module.exports = router;

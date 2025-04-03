@@ -4,12 +4,13 @@ var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const flash = require('connect-flash');
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 // Conexão com o Atlas (Não sei se tenho de fazer /DB)
-mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/', { useNewUrlParser: true })
+mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', { useNewUrlParser: true })
   .then(() => console.log('connection successful'))
   .catch((err) => console.error(err));
 
@@ -22,6 +23,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // ajuste para true se estiver usando HTTPS
 }));
+app.use(flash());
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
@@ -30,6 +32,13 @@ app.use((req, res, next) => {
   console.log('User:', res.locals.user);
   console.log('Current Page:', res.locals.currentPage);
   console.log('Previous Page:', res.locals.previousPage);
+  next();
+});
+
+// Middleware para tornar mensagens disponíveis em `res.locals`
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
   next();
 });
 
@@ -46,10 +55,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 /*
 São os js que criei na pasta Route
 */
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var login = require('./routes/login');
-var restaurant = require('./routes/RestaurantRoute');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const login = require('./routes/login');
+const restaurant = require('./routes/RestaurantRoute');
 
 // Importante ter em consideração a autentificação e a autorização
 app.use('/', indexRouter);
