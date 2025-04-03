@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
@@ -46,6 +46,15 @@
 </head>
 <body>
   <div class="container">
+    <!-- nav bar-->
+    <%- include('../navBar.ejs') %>
+
+    <% if (error && error.length > 0) { %>
+      <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+  
+  
+
     <div class="login-container mt-5">
       <!-- Logo no topo (opcional) -->
       <div class="text-center mb-4">
@@ -55,7 +64,7 @@
       <p class="text-center mb-4">Entre com seus dados para fazer login.</p>
       
       <!-- Formulário de Login -->
-      <form action="/login" method="POST">
+      <form action="/login/login" method="POST">
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
           <input 
@@ -108,7 +117,7 @@
       </div>
       
       <!-- Link para registro -->
-      <p class="text-center">Não tem conta? <a href="/signUp" class="text-decoration-none">Registre-se</a></p>
+      <p class="text-center">Não tem conta? <a href="/login/signUp" class="text-decoration-none">Registre-se</a></p>
     </div>
   </div>
 

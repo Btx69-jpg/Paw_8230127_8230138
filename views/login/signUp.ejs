@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
   <title>Sign up</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <style>
     body {
       background-color: #f5f5f5;
@@ -135,9 +136,12 @@
 <body>
   <main>
     <div class="signup-container">
+      <!-- nav bar-->
+      <%- include('../navBar.ejs') %>
+
       <h1>Sign up</h1>
       <!-- Formulário de cadastro -->
-      <form action="/signup" method="POST">
+      <form action="/login/signUp" method="POST" id="signupForm" class="needs-validation" novalidate>
         <div class="form-group">
           <label for="firstName">First name</label>
           <input 
@@ -146,9 +150,15 @@
             id="firstName" 
             class="form-control" 
             placeholder="Input first name" 
-            value="<%= typeof firstName !== 'undefined' ? firstName : '' %>" 
+            value="<%= typeof firstName !== 'undefined' ? firstName : '' %>"
             required
+            pattern="^[A-Za-zÀ-ÿ\s]+$"
+            oninvalid="handleInvalidInput(this)"
+            oninput="this.setCustomValidity('')"
           />
+          <div class="invalid-feedback">
+            O nome deve conter apenas letras e espaços, e não pode estar vazio.
+          </div>
         </div>
 
         <div class="form-group">
@@ -161,7 +171,13 @@
             placeholder="Input last name" 
             value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
             required
+            pattern="^[A-Za-zÀ-ÿ\s]+$"
+            oninvalid="handleInvalidInput(this)"
+            oninput="this.setCustomValidity('')"
           />
+          <div class="invalid-feedback">
+            O nome deve conter apenas letras e espaços, e não pode estar vazio.
+          </div>
         </div>
 
         <div class="form-group">
@@ -171,10 +187,13 @@
             name="email" 
             id="email" 
             class="form-control" 
-            placeholder="example.email@gmail.com" 
+            placeholder="example@gmail.com" 
             value="<%= typeof email !== 'undefined' ? email : '' %>" 
             required
           />
+          <div class="invalid-feedback">
+            O email deve ser válido e não pode estar vazio. Exemplo: example@gmail.com
+          </div>
         </div>
 
         <div class="form-group">
@@ -184,9 +203,14 @@
             name="password" 
             id="password" 
             class="form-control" 
-            placeholder="Enter at least 8+ characters" 
+            placeholder="Enter at least 8+ characters"
+            value="<%= typeof password !== 'undefined' ? password : '' %>"
+            minlength="8" 
             required
           />
+          <div class="invalid-feedback">
+            A senha deve ter pelo menos 8 caracteres e não pode estar vazia.
+          </div>
         </div>
 
         <div class="form-group">
@@ -196,9 +220,15 @@
             name="confirmPassword" 
             id="confirmPassword" 
             class="form-control" 
-            placeholder="Enter at least 8+ characters" 
+            placeholder="Enter at least 8+ characters"
+            value="<%= typeof confirmPassword !== 'undefined' ? confirmPassword : '' %>"
+            minlength="8" 
             required
+            oninput="validatePassword()"
           />
+          <div class="invalid-feedback">
+            As senhas não são iguais.
+          </div>
         </div>
 
         <div class="terms-group">
@@ -213,7 +243,11 @@
             <a href="#">Terms of Use</a> & 
             <a href="#">Privacy Policy</a>
           </label>
+          <div class="invalid-feedback">
+            Deve aceitar os termos de Uso e privacidade para continuar.
+          </div>
         </div>
+
 
         <button type="submit">Sign up</button>
       </form>
@@ -233,5 +267,42 @@
   </main>
   <!-- Bootstrap JS Bundle (opcional para funcionalidades JS do Bootstrap) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Função para validar se as senhas são iguais
+    function validatePassword() {
+      var password = document.getElementById('password');
+      var confirmPassword = document.getElementById('confirmPassword');
+  
+      if (confirmPassword.value !== password.value) {
+        // Define mensagem customizada se não forem iguais
+        confirmPassword.setCustomValidity('As senhas não coincidem.');
+      } else {
+        // Remove a mensagem se forem iguais
+        confirmPassword.setCustomValidity('');
+      }
+    }
+
+    (function () {
+    'use strict';
+    var form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  })();
+
+    function handleInvalidInput(input) {
+    if (!input.value) {
+      input.setCustomValidity('Campo obrigatório!');
+    } else {
+      input.setCustomValidity('Por favor, insira apenas letras e espaços.');
+    }
+  }
+  </script>
 </body>
 </html>

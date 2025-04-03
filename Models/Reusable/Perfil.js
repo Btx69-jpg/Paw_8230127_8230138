@@ -13,7 +13,7 @@ var PerfilSchema = new mongoose.Schema({
     password: {
         type: String,
         minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
-        maxlength: [35, 'A password deve ter no máximo 35 caracteres'],
+        maxlength: [100, 'A password deve ter no máximo 35 caracteres'],
         required: true,
     },
     countOrders: {
@@ -25,11 +25,11 @@ var PerfilSchema = new mongoose.Schema({
     historicOrders: {
         type: [Order.schema],
         default: [], 
-        required: true,
+//        required: true,
     },
     priority: {
-        type: Number,
-        enum: ['Cliente', 'Admin'],
+        type: Number, // ✅ Alterado para String
+        enum: ['Cliente', 'Admin'],  // ✅ Agora a enumeração está correta
         default: 'Cliente',
     },
     updated_at: { type: Date, default: Date.now },

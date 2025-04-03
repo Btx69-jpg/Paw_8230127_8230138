@@ -2,8 +2,13 @@ var createError = require('http-errors');
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
+var app = express();
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const flash = require('connect-flash');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o passport como argumento
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -30,16 +35,30 @@ var app = express();
 
 // Configuração da sessão (ajuste conforme necessário)
 app.use(session({
-  secret: 'seuSegredo',
-  resave: false,
+  secret: 'TrabalhoPaw',
+  resave: true,
   saveUninitialized: true,
   cookie: { secure: false } // ajuste para true se estiver usando HTTPS
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(flash());
+
+// Middleware para tornar mensagens disponíveis em `res.locals`
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  next();
+});
+
+app.use((req, res, next) => {
   res.locals.currentPage = req.path === '/' ? 'homepage' : req.path;
   res.locals.previousPage = req.headers.referer || '/';
+  res.locals.user = req.user || null;
+
   console.log('User:', res.locals.user);
   console.log('Current Page:', res.locals.currentPage);
   console.log('Previous Page:', res.locals.previousPage);
