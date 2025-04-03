@@ -1,336 +1,336 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Meu Delivery - Home</title>
-  <link rel="icon" type="image/png" href="../public/images/logo.png" />
-  <!-- Link da fonte -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-body {
-    background-color: #f5f5f5;
-    font-family: sans-serif;
-}
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8">
+    <title>Meu Delivery - Home</title>
+    <link rel="icon" type="image/png" href="../public/images/logo.png" />
+    <!-- Link da fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+  body {
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+  }
 
-.navbar-brand {
-    font-weight: bold;
-}
+  .navbar-brand {
+      font-weight: bold;
+  }
 
-.hero {
-    background-image: url('../public/images/dinningTable.png');
-    background-size: cover;
-    background-position: center;
-    height: 70vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+  .hero {
+      background-image: url('../public/images/dinningTable.png');
+      background-size: cover;
+      background-position: center;
+      height: 70vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
 
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-}
+  .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+  }
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: #fff;
-    padding: 0 5vw;
-}
+  .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      padding: 0 5vw;
+  }
 
-.hero-content h1 {
-    font-size: 4vw;
-    margin-bottom: 2vh;
-}
+  .hero-content h1 {
+      font-size: 4vw;
+      margin-bottom: 2vh;
+  }
 
-.hero-content p {
-    font-size: 2vw;
-    margin-bottom: 3vh;
-}
+  .hero-content p {
+      font-size: 2vw;
+      margin-bottom: 3vh;
+  }
 
-.search-bar {
-    max-width: 500px;
-    margin: 0 auto;
-}
+  .search-bar {
+      max-width: 500px;
+      margin: 0 auto;
+  }
 
-.featured {
-    padding: 5vh 0;
-}
+  .featured {
+      padding: 5vh 0;
+  }
 
-.featured h2 {
-    text-align: center;
-    margin-bottom: 3vh;
-    font-size: 3vw;
-}
+  .featured h2 {
+      text-align: center;
+      margin-bottom: 3vh;
+      font-size: 3vw;
+  }
 
-.card-img-top {
-    height: 20vh;
-    object-fit: cover;
-}
+  .card-img-top {
+      height: 20vh;
+      object-fit: cover;
+  }
 
-.footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 2vh 0;
-    font-size: 1.5vw;
-}
+  .footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 2vh 0;
+      font-size: 1.5vw;
+  }
 
-h2 {
-    font-family: 'Roboto Slab', serif;
-    font-size: 2em;
-    color: #333;
-    text-align: center;
-    margin: 20px 0;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-}
+  h2 {
+      font-family: 'Roboto Slab', serif;
+      font-size: 2em;
+      color: #333;
+      text-align: center;
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+  }
 
-p {
-    font-family: 'Georgia', serif;
-    font-size: 1.2em;
-    color: #666;
-    line-height: 1.6;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #fafafa;
-    border-left: 5px solid #ccc;
-    border-radius: 5px;
-}
+  p {
+      font-family: 'Georgia', serif;
+      font-size: 1.2em;
+      color: #666;
+      line-height: 1.6;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #fafafa;
+      border-left: 5px solid #ccc;
+      border-radius: 5px;
+  }
 
-/* Estilo para o botão "Ver todos os restaurantes" */
-#moreRestaurants {
-    background-color: #ff6347; /* Tomate */
-    border: none;
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 50px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
+  /* Estilo para o botão "Ver todos os restaurantes" */
+  #moreRestaurants {
+      background-color: #ff6347; /* Tomate */
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 50px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+  }
 
-#moreRestaurants:hover {
-    background-color: #ff4500; /* Laranja avermelhado */
-    transform: scale(1.05);
-}
+  #moreRestaurants:hover {
+      background-color: #ff4500; /* Laranja avermelhado */
+      transform: scale(1.05);
+  }
 
-#OrangeButton {
-    background-color: #ff6347; /* Tomate */
-    border: none;
-    color: white;
-    padding: 15px 30px;
-    font-size: 0.5em;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 50px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
+  #OrangeButton {
+      background-color: #ff6347; /* Tomate */
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      font-size: 0.5em;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 50px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+  }
 
-/* Media queries para telas menores */
-@media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 6vw;
-    }
+  /* Media queries para telas menores */
+  @media (max-width: 768px) {
+      .hero-content h1 {
+          font-size: 6vw;
+      }
 
-    .hero-content p {
-        font-size: 4vw;
-    }
+      .hero-content p {
+          font-size: 4vw;
+      }
 
-    .featured h2 {
-        font-size: 5vw;
-    }
+      .featured h2 {
+          font-size: 5vw;
+      }
 
-    .card-img-top {
-        height: 15vh;
-    }
+      .card-img-top {
+          height: 15vh;
+      }
 
-    .footer {
-        font-size: 2vw;
-    }
+      .footer {
+          font-size: 2vw;
+      }
 
-    #moreRestaurants {
-        padding: 10px 20px;
-        font-size: 1em;
-    }
+      #moreRestaurants {
+          padding: 10px 20px;
+          font-size: 1em;
+      }
 
-    #OrangeButton {
-        padding: 10px 20px;
-        font-size: 0.8em;
-    }
-}
+      #OrangeButton {
+          padding: 10px 20px;
+          font-size: 0.8em;
+      }
+  }
 
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 8vw;
-    }
+  @media (max-width: 480px) {
+      .hero-content h1 {
+          font-size: 8vw;
+      }
 
-    .hero-content p {
-        font-size: 6vw;
-    }
+      .hero-content p {
+          font-size: 6vw;
+      }
 
-    .featured h2 {
-        font-size: 7vw;
-    }
+      .featured h2 {
+          font-size: 7vw;
+      }
 
-    .card-img-top {
-        height: 10vh;
-    }
+      .card-img-top {
+          height: 10vh;
+      }
 
-    .footer {
-        font-size: 3vw;
-    }
+      .footer {
+          font-size: 3vw;
+      }
 
-    #moreRestaurants {
-        padding: 8px 16px;
-        font-size: 0.8em;
-    }
+      #moreRestaurants {
+          padding: 8px 16px;
+          font-size: 0.8em;
+      }
 
-    #OrangeButton {
-        padding: 8px 16px;
-        font-size: 0.6em;
-    }
-}
-  </style>
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <img src="/images/logo.png" alt="Logo" class="img-fluid" style="max-width: 50px;">
-      <a class="navbar-brand" href="/">Click&Eat</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="signUp">Sign up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="login">Login</a>
-          </li>
-        </ul>
+      #OrangeButton {
+          padding: 8px 16px;
+          font-size: 0.6em;
+      }
+  }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <img src="/images/logo.png" alt="Logo" class="img-fluid" style="max-width: 50px;">
+        <a class="navbar-brand" href="/">Click&Eat</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="signUp">Sign up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="login">Login</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <section class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1>Descubra as melhores opções de entrega</h1>
-      <p>Explore restaurantes e estabelecimentos próximos a você</p>
+    <section class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Descubra as melhores opções de entrega</h1>
+        <p>Explore restaurantes e estabelecimentos próximos a você</p>
 
-      <form class="search-bar d-flex" action="/search" method="GET">
-        <input class="form-control me-2" type="search" placeholder="Buscar restaurantes ou pratos..." aria-label="Search" name="q" required>
-        <button class="btn btn-primary" type="submit" id="OrangeButton">Buscar</button>
-      </form>
-    </div>
-  </section>
+        <form class="search-bar d-flex" action="/search" method="GET">
+          <input class="form-control me-2" type="search" placeholder="Buscar restaurantes ou pratos..." aria-label="Search" name="q" required>
+          <button class="btn btn-primary" type="submit" id="OrangeButton">Buscar</button>
+        </form>
+      </div>
+    </section>
 
 
-  <section class="featured container">
-    <h2>Recomendados para você</h2>
-    <div class="row">
-      <!-- Card 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
-          <div class="card-body">
-            <h5 class="card-title">Restaurante 1</h5>
-            <p class="card-text">Comida deliciosa e entrega rápida.</p>
+    <section class="featured container">
+      <h2>Recomendados para você</h2>
+      <div class="row">
+        <!-- Card 1 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
+            <div class="card-body">
+              <h5 class="card-title">Restaurante 1</h5>
+              <p class="card-text">Comida deliciosa e entrega rápida.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/restaurant2.jpg" class="card-img-top" alt="Restaurante 2">
+            <div class="card-body">
+              <h5 class="card-title">Restaurante 2</h5>
+              <p class="card-text">Opções variadas com preços acessíveis.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/restaurant3.jpg" class="card-img-top" alt="Restaurante 3">
+            <div class="card-body">
+              <h5 class="card-title">Restaurante 3</h5>
+              <p class="card-text">Especialidades exclusivas e sabores únicos.</p>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Card 2 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/restaurant2.jpg" class="card-img-top" alt="Restaurante 2">
-          <div class="card-body">
-            <h5 class="card-title">Restaurante 2</h5>
-            <p class="card-text">Opções variadas com preços acessíveis.</p>
+    </section>
+
+    <section>
+      <!--Botão que direciona para ver todos os restaurantes-->
+      <div class="container text-center mb-5">
+        <a href="/restaurants" class="btn btn-primary" id="moreRestaurants">Ver todos os restaurantes</a>
+      </div>
+    </section>
+
+    <section>
+      <div class="container text-center mb-5">
+        <h2>O que é o Click&Eat?</h2>
+        <p>O Click&Eat é uma plataforma de entrega de refeições que conecta restaurantes e clientes, oferecendo uma experiência prática e deliciosa.</p>
+        <p>Com o Click&Eat, você pode explorar uma variedade de opções gastronômicas, fazer pedidos online e receber suas refeições no conforto da sua casa ou escritório.</p>
+      </div>
+    </section>
+
+    <section class="featured container">
+      <h2>Junte-se a nós!</h2>
+      <div class="row">
+        <!-- Card 1 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/companyFeeding.png" class="card-img-top" alt="Restaurante 1">
+            <div class="card-body">
+              <h5 class="card-title">Forneça refeições aos seus colaboradores</h5>
+              <p class="card-text"><a href="testes.html">Crie uma conta empresarial</a></p>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/restauranteEntregador.png" class="card-img-top" alt="Restaurante 2">
+            <div class="card-body">
+              <h5 class="card-title">As refeições do seu restaurante entregues ao domicílio</h5>
+              <p class="card-text"><a href="loginteste.html">Adicione o seu restaurante</a></p>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="/images/entregador.png" class="card-img-top" alt="Restaurante 3">
+            <div class="card-body">
+              <h5 class="card-title">Entregue com o Click&Eat</h5>
+              <p class="card-text"><a href="testes.html">Registre-se para fazer as entregas</a></p>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Card 3 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/restaurant3.jpg" class="card-img-top" alt="Restaurante 3">
-          <div class="card-body">
-            <h5 class="card-title">Restaurante 3</h5>
-            <p class="card-text">Especialidades exclusivas e sabores únicos.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section>
-    <!--Botão que direciona para ver todos os restaurantes-->
-    <div class="container text-center mb-5">
-      <a href="/restaurants" class="btn btn-primary" id="moreRestaurants">Ver todos os restaurantes</a>
-    </div>
-  </section>
+    <!-- rodape -->
+    <footer class="footer">
+      <p>&copy; 2025 Click&Eat. Todos os direitos reservados.</p>
+    </footer>
 
-  <section>
-    <div class="container text-center mb-5">
-      <h2>O que é o Click&Eat?</h2>
-      <p>O Click&Eat é uma plataforma de entrega de refeições que conecta restaurantes e clientes, oferecendo uma experiência prática e deliciosa.</p>
-      <p>Com o Click&Eat, você pode explorar uma variedade de opções gastronômicas, fazer pedidos online e receber suas refeições no conforto da sua casa ou escritório.</p>
-    </div>
-  </section>
-
-  <section class="featured container">
-    <h2>Junte-se a nós!</h2>
-    <div class="row">
-      <!-- Card 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/companyFeeding.png" class="card-img-top" alt="Restaurante 1">
-          <div class="card-body">
-            <h5 class="card-title">Forneça refeições aos seus colaboradores</h5>
-            <p class="card-text"><a href="testes.html">Crie uma conta empresarial</a></p>
-          </div>
-        </div>
-      </div>
-      <!-- Card 2 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/restauranteEntregador.png" class="card-img-top" alt="Restaurante 2">
-          <div class="card-body">
-            <h5 class="card-title">As refeições do seu restaurante entregues ao domicílio</h5>
-            <p class="card-text"><a href="loginteste.html">Adicione o seu restaurante</a></p>
-          </div>
-        </div>
-      </div>
-      <!-- Card 3 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="/images/entregador.png" class="card-img-top" alt="Restaurante 3">
-          <div class="card-body">
-            <h5 class="card-title">Entregue com o Click&Eat</h5>
-            <p class="card-text"><a href="testes.html">Registre-se para fazer as entregas</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- rodape -->
-  <footer class="footer">
-    <p>&copy; 2025 Click&Eat. Todos os direitos reservados.</p>
-  </footer>
-
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

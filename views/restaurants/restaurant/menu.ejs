@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-PT">
     <head>
         <!-- Trocar para o nome correto do menu-->
         <title>Menu x</title>
@@ -19,7 +19,7 @@
             <!--
             Só permitir adicionar se for admin e não tenha acedido o limite de pratos por menu
             -->
-            <a href="/restaurants/restaurant/menu/CreateDish">Adicionar prato</a>
+
     
             <!-- Info do menu-->
             <div class="row-md-6">
@@ -39,13 +39,24 @@
                 e outro para editar, que redireciona para a mesma pagina de criar dish, mas desta
                 vez os campos já estão preenchidos e é só editar 
                 -->
+
                 <div class="row-md-6">
-                    <!-- Mostar apenas o nome do prato e imagem-->
-                    <p>Prato</p>
-                    <!--Trocar nesta url, posteriormente o restuarant, menu e o dish,
-                    para a versão com <> e %%, ou seja o nome correto das variaveis-->
-                    <p><a href="/restaurants/restaurant/menu/dish">Mais Info.</a></p>
+                    <a href="/restaurants/restaurant/menu/createDish">Adicionar prato</a>
+                    <%if (dishs.length > 0) {%>
+                        <h1>Pratos do menu</h1>
+                        <% for (let i = 0; i < dishs.length; i++) {%>
+                            <div class="row-md-6">
+                                <%- include('Dishs/dish', { dish: dishs[i] }) %>
+                                <p><a href="/restaurants/restaurant/menu/showDish/<%= dishs[i]._id%>">Mais Info.</a></p>
+                            </div>
+                        <% } %>
+                    <%} else {%>
+                        <div class="row-md-6"> 
+                            <p>O menu ainda não possui pratos!!!</p>
+                        </div>
+                    <%}%>
                 </div>
+               
                 <!-- Mudar o nome do link, do restaurant e menu, para o nome das variaveis-->
                 <button><a href="/restaurants/restaurant">Voltar</a></button>
             </div>
