@@ -33,23 +33,23 @@
                 <% } else { %>
                     <% if (currentPage === 'homepage') { %>
                         <li class="nav-item">
-                            <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" alt="Profile" class="img-fluid" style="max-width: 50px;">
+                            <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.profilePicture || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                        </li>
+                        <li class="nav-item">  
+                            <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Log Out</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/checkOut">Carrinho</a>
                         </li>
                     <% } else { %>
                         <li class="nav-item">
-                            <img src="<%= user.profilePicture || 'public/images/Plataform/DefaultUser.png' %>" alt="Profile" class="img-fluid" style="max-width: 50px;">
+                            <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.profilePicture || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Log Out</a>
-                        </li>
-                        <li class="nav-item">
-                            <img src="/images/Plataform/checkOut,png" alt="Carrinho" class="img-fluid" style="max-width: 50px;">
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<%= previousPage %>">Voltar</a>
