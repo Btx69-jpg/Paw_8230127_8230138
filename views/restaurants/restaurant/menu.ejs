@@ -47,6 +47,12 @@
                         <% for (let i = 0; i < dishs.length; i++) {%>
                             <div class="row-md-6">
                                 <%- include('Dishs/dish', { dish: dishs[i] }) %>
+                                <form action="/restaurants/restaurant/menu/deleteDish/<%= dishs[i]._id%>" method="post">
+                                    <button type="submit">DELETE</button>
+                                </form>
+    
+                                <!-- Ver se depois o edit dá-->
+                                <button><a href="/restaurants/restaurant/menu/editDish/<%= dishs[i]._id%>">Edit.</a></button>
                                 <p><a href="/restaurants/restaurant/menu/showDish/<%= dishs[i]._id%>">Mais Info.</a></p>
                             </div>
                         <% } %>

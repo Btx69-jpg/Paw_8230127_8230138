@@ -4,14 +4,22 @@ E também para a pagina com os pratos do menu
 */
 var express = require('express');
 var router = express.Router();
+
 var restaurants = require("../Controllers/RestaurantsController.js"); // Aqui carrego o controller que quero usar
 
 /* Entra na Home Page do restaurante 
 (vai ter de carregar, o restaurante carregado na primeira página) */ 
 router.get('/', function(req, res) {
-    restaurants.restaurantPage(req, res);
+    restaurants.restaurantsPage(req, res);
 });
 
+router.get('/createRestaurant', function(req, res) {
+    restaurants.createRestaurant(req, res);
+});
+
+router.get('/saveRestaurant', function(req, res) {
+    restaurants.saveRestaurant(req, res);
+});
 /*Depois criar os get e post para criar os varios restaurantes */
 
 module.exports = router;

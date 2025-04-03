@@ -29,11 +29,6 @@ router.get('/restaurant/menu/createMenu', function(req, res) {
     restaurant.createMenu(req, res);
 });
 
-/*Depois trocar para /:restaurant/:menu/:prato */
-router.get('/restaurant/menu/showDish/:id', function(req, res) {
-    restaurant.showprato(req, res);
-});
-
 //Permite criar uma nova dish
 /*Depois trocar para /:restaurant/:menu/createDish */
 router.get('/restaurant/menu/createDish', function(req, res) {
@@ -42,6 +37,28 @@ router.get('/restaurant/menu/createDish', function(req, res) {
 
 router.post('/restaurant/menu/saveDish', function(req, res) {
     restaurant.saveDish(req, res);
+});
+
+/*Depois trocar para /:restaurant/:menu/:prato */
+router.get('/restaurant/menu/showDish/:id', function(req, res) {
+    restaurant.showDish(req, res);
+});
+
+/*Depois trocar para /:restaurant/:menu/:prato 
+Falta fazer
+*/
+router.get('/restaurant/menu/editDish/:id', function(req, res) {
+    restaurant.editDish(req, res);
+});
+
+/*Falta fazer */
+router.post('/restaurant/menu/updateDish/:id', function(req, res) {
+    restaurant.updateDish(req, res);
+});
+
+/*Falta fazer */
+router.post('/restaurant/menu/deleteDish/:id', function(req, res) {
+    restaurant.deleteDish(req, res);
 });
 
 module.exports = router;
