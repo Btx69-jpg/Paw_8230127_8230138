@@ -11,4 +11,10 @@ router.get("/signUp", userController.signup);
 // Registo de utilizador
 router.post("/signUp", userController.save);
 
+// Autenticação de utilizador
+router.post("/login", userController.authenticate, (req, res) => {
+    req.flash("success_msg", "Login realizado com sucesso!");
+    res.redirect("/");
+});
+
 module.exports = router;

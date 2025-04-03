@@ -28,7 +28,7 @@ var PerfilSchema = new mongoose.Schema({
 //        required: true,
     },
     priority: {
-         // ✅ Alterado para String
+        type: Number, // ✅ Alterado para String
         enum: ['Cliente', 'Admin'],  // ✅ Agora a enumeração está correta
         default: 'Cliente',
     },

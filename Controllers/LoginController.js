@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const User = require("../Models/Perfils/User");
 const bcrypt = require("bcryptjs");
-var AddressOrder = require("../Models/Reusable/AddressOrder");
-var Perfil = require("../Models/Reusable/Perfil")
+const AddressOrder = require("../Models/Reusable/AddressOrder");
+const Perfil = require("../Models/Reusable/Perfil")
+const passport = require('passport');
 
 const userController = {};
 
@@ -18,7 +19,7 @@ userController.signup = (req, res) => {
 
 // Verifica se o utilizador já existe
 userController.findOne = async (email) => {
-    return await User.findOne({ email: email });
+    return await User.findOne({ 'perfil.email': email });
 };
 
 // Salva um novo usuário
@@ -78,6 +79,15 @@ userController.save = async (req, res) => {
         req.flash("error_msg", "Erro ao criar o utilizador. Tente novamente.");
         res.redirect("/login/signUp");
     }
+};
+
+// Autentica o utilizador
+userController.authenticate = (req, res, next) => {
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: "/login/login",
+        failureFlash: true,
+    })(req, res, next);
 };
 
 module.exports = userController;
