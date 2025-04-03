@@ -1,0 +1,94 @@
+<!-- Igual ao create, mas desta vez, vai ter nos input o value com os valores da dish-->
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <title>Atualizar Prato <%= dish.name %></title>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" id="bootstrap-css">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row-md-6">
+                <h1>Criar dish</h1>
+            </div>
+
+            <div class="row-md-6">
+                <!-- Depois trocar o restaurant e o menu, para as variaveis.-->
+                <form action="/restaurants/restaurant/menu/saveDish" method="post">
+                    <div class="row-md-6">
+                        <label for="name">Nome:</label>
+                        <input type="text" 
+                        name="name" 
+                        id="name"
+                        value="<%= dish.name %>" 
+                        placeholder="Nome do prato" 
+                        pattern="^[a-zA-Z\s]*$"
+                        maxlength="50"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="description">Descrição:</label>
+                        <input type="text" 
+                        name="description" 
+                        id="description" 
+                        value="<%= dish.description %>"
+                        placeholder="Descrição do prato" 
+                        maxlength="250"
+                        required>
+                    </div>
+
+                    <!-- Meter a categoria atual como default -->
+                    <% if(categories.length > 0) {%>
+                        <div class="row-md-6">
+                            <!-- Mudar para selecion box, carregada com todas as categorias-->
+                            <label for="category">Categoria</label>
+                            <select name="category" id="category" style="width: 250px;" required>
+                                <%for(let i = 0; i < categories.length; i++){%>
+                                    <option value="<%= categories[i].category %>"><%= categories[i].category %></option>
+                                <%}%>
+                            </select>
+                        </div>
+                    <% }%>
+                   
+
+                    <div class="row-md-6">
+                        <label for="price">Preço:</label>
+                        <input type="number" 
+                        name="price" 
+                        id="price" 
+                        value="<%= dish.price %>"
+                        placeholder="Preço do prato" 
+                        min="0"
+                        step="0.01" 
+                        required>
+                    </div>
+
+                    <!-- <div class="row-md-6">
+                        <div class="row-md-6">
+                            <label for="photo">Foto do prato</label>
+                        </div>
+
+                        <div class="row-md-6">
+                            <input type="file" 
+                            accept="image/*"
+                            name="photo" 
+                            id="photo"
+                            value="<%= dish.photo %>">
+                        </div>    
+                    </div>-->
+
+                    <div class="row-md-6">
+                        <!-- Mudar o nome do link, do restaurant e menu, para o nome das variaveis-->
+                        <button><a href="/restaurants/restaurant/menu">Voltar</a></button>
+                        <button><a href="/restaurants/restaurant/menu/createDish">Clear</a></button> <!-- Limpa o filtro-->
+                        <button type="submit">Save</button>  
+                    </div>
+                </form>
+            </div>         
+        </div>
+    </body>
+</html>

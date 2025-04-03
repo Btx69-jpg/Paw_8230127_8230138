@@ -1,0 +1,79 @@
+<!-- Avaliações -->
+<div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Menus</h1>
+    </div>
+</div>
+  
+<div class="row justify-content-center">
+    <!-- Trocar depois o restaurant-->
+    <form action="/restaurants/restaurant" method="get">
+        <div>
+            <label for="mameMenu">Nome menu:</label>
+            <input type="text" 
+                name="mameMenu" 
+                id="mameMenu" 
+                placeholder="Nome do menu"
+                maxlength="50"
+                pattern="[A-Za-z\s]*">
+        </div>
+
+        <div>
+            <label for="numDish">Numero de pratos</label>
+            <input type="number"
+                name="numDish" 
+                id="numDish" 
+                placeholder="Numero de pratos"
+                min="1"
+                max="10">
+        </div>
+
+        <div>
+            <!-- Depois trocar para um selecion, que carrega todos os tipos-->
+            <label for="category">Categoria do menu</label>
+            <input type="text"
+                name="category" 
+                id="category" 
+                placeholder="Categoria do menu"
+                maxlength="50"
+                pattern="[A-Za-z\s]*">
+        </div>
+
+        <div>
+            <!-- Trocar o restaurant, pela variavel do restaurante-->
+            <button><a href="/restaurants/restaurant">Clear</a></button> <!-- Limpa o filtro-->
+            <button type="submit">Submeter</button>
+        </div>
+    </form>
+</div>
+<!-- Cards de avaliação -->
+<div class="row">
+    <!-- Meter Só um destes divs, e depois um ciclo for para mostar todos os menus-->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <!-- Trocar para imagem de do menu-->
+            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
+            <div class="card-body">
+                <h5 class="card-title">Menu Fixe xxx</h5>
+                <p>Descrição xxxx</p>
+                <p>Tipo de Menu -> XXXXXX</p>
+                <!-- Depois alterar o link, o /restaurant-->
+                <p><a href="/restaurants/restaurant/menu/">Menu</a></p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <!-- Trocar para imagem de do menu-->
+            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
+            <div class="card-body">
+                <h5 class="card-title">Menu Fixe xxx</h5>
+                <p>Descrição xxxx</p>
+                <p>Tipo de Menu -> XXXXXX</p>
+                <!-- Depois alterar o link, para Mandar o menu atual-->
+                <p><a href="/restaurants/restaurant/menu/">Menu</a></p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Dish = require('./Dish'); //Pratos do menu
+var Category = require('../Reusable/Category');
 
 var MenuSchema = new mongoose.Schema({
     name: {
@@ -20,14 +21,9 @@ var MenuSchema = new mongoose.Schema({
         default: [], 
         required: true,
     },
-    /*
-    Pode ser opcional, se o utilizador escolher apenas o menu então obrigatorio, se escolher
-    os pratos, então não é obrigatorio, e pode ser apagado.
-    */
-    price: {
-        type: Number,
-        default: 0,
-        min: [0, 'O preço mínimo é 0'],
+    type: {
+        type: Category.schema, 
+        required: true,
     },
     updated_at: { type: Date, default: Date.now },
 });

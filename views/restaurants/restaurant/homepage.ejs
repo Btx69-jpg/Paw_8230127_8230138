@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <!-- Trocar para o nome do restaurante-->
+        <title>Restaurant Home Page</title>
+        <link rel="icon" type="image/png" href="/images/LogoSite/logo.png"/>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" id="bootstrap-css">
+
+        <link rel="stylesheet" href="/stylesheets/RestaurantPage/navBar.css" />
+    </head>
+
+    <body>
+          <!--  Importante todos os /restaurant, depois trocar pela versão em <> com %%-->
+
+          <!-- Desta forma tenho de depois mandar os dados do restaurante-->
+          <%- include('navBarRest') %>
+        
+          <!-- Conteúdo da página -->
+          <div class="container mt-4 text-center">
+            <!-- Mudar o nome do link, do restaurant e menu, para o nome das variaveis-->
+            <button><a href="/restaurants">Voltar</a></button>
+            <!-- 
+              Reencaminha para o ejs com Info do Restaurante
+              Depois tenho de mandar os dados
+              Para depois mandar todos os dados tenho de fazer isto :('InfoRestaurant', { restaurantInfo: restaurantInfo })
+              -->
+            <%- include('HomePage/InfoRestaurant') %>
+
+            <!-- Reencaminha para o ejs que mostra as 3 melhores avaliações-->
+            <%- include('HomePage/avaliation') %> 
+
+            <!-- Reencaminha para o ejs que mostra todos os menus-->
+            <%- include('HomePage/menus') %> 
+            </div>
+          </div>
+    </body>
+</html>

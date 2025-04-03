@@ -1,11 +1,7 @@
 var mongoose = require('mongoose');
-var Category = require('../Reusable/Category'); //Importa o modelo de categoria  (Mudar caminho)
-
+//Talvez mudar a categoria para ref
 var DishSchema = new mongoose.Schema({
-    photo: {
-        type: String,
-    },
-    title: {
+    name: {
         type: String,
         maxlength: [50, 'O título deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
@@ -14,11 +10,13 @@ var DishSchema = new mongoose.Schema({
     description: {
         type: String,
         maxlength: [250, 'A descrição deve ter no máximo 200 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para a descrição'], //Garante que a descrição só tem letras e espaços
         required: true,
     },
-    type: {
-        type: Category.schema, 
+    category: {
+        type: String,
+        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
+        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        default: {},
         required: true,
     },
     price: {
@@ -26,6 +24,10 @@ var DishSchema = new mongoose.Schema({
         default: 0,
         min: [0, 'O preço mínimo é 0'],
         required: true,
+    },
+    photo: {
+        type: String,
+        default: "",
     },
     updated_at: { type: Date, default: Date.now },
 });

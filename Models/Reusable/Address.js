@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var AddressSchema = new mongoose.Schema({
+    /*Tirar o name */
     name: {
         type: String,
         maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],

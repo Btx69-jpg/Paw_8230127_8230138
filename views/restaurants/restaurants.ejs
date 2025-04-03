@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <title>Restaurantes</title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" id="bootstrap-css">
+
+    </head>
+
+    <body>
+        <h1>Restaurantes</h1>
+
+        <a href="/">Voltar há home Page</a>
+        <h1>Restaurantes</h1>
+        <p><a href="/restaurants/createRestaurant">Adicionar</a></p>
+        <% if(restaurants.length > 0) {%>
+            <% for(let i = 0; i < restaurants.length; i++) {%>
+                <div class="row-md-6">
+                    <p>Nome: <%= restaurants[i].name%></p>
+                    <!-- Não posso deixar ter dois restaurantes com o mesmo nome, ou
+                     então meter aqui o id-->
+                    <p><a href="/restaurants/<%= restaurants[i].name %>">Mais Info.</a></p>
+                </div>
+            <%}%>
+        <%} else {%>
+            <p>Ainda sem restaurantes</p>
+        <%}%>
+        
+        <!-- Meter ejs, que gera a lista de restaurantes-->
+         <a href="/restaurants/restaurant">Restaurant especifico</a>
+    </body>
+</html>
