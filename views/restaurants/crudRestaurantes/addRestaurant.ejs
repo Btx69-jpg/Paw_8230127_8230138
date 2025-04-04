@@ -6,36 +6,9 @@
         <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            body {
-            background-color: #f5f5f5;
-            font-family: sans-serif;
-            }
-            .add-restaurant-container {
-            max-width: 700px;
-            margin: 3rem auto;
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            }
-            h1 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: #333;
-            }
-            .form-label {
-            font-weight: 600;
-            }
-            .btn-group {
-            display: flex;
-            gap: 1rem;
-            }
-            .btn-group a {
-            text-decoration: none;
-            color: #fff;
-            }
-        </style>
+        
+        <!-- CSS-->
+        <link rel="stylesheet" href="/stylesheet/Restaurants/restaurantAdd.css">
     </head>
     <body>
         <div class="container">
@@ -44,8 +17,8 @@
             
             <div class="add-restaurant-container">
                 <h1>Adicionar novo Restaurante</h1>
-                <form action="/restaurants/saveRestaurant" method="POST" enctype="multipart/form-data">
-                
+                <!-- enctype="multipart/form-data" -->
+                <form action="/restaurants/saveRestaurant" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
@@ -74,7 +47,7 @@
                         id="nif" 
                         class="form-control" 
                         placeholder="Introduza o NIF" 
-                        pattern="\d{9}"
+                        pattern="[0-9]{9}" 
                         title="O NIF deve ter 9 dígitos"
                         required>
                     </div>
@@ -103,14 +76,14 @@
                     </div>
 
                     <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" 
-                    name="password"
-                    id="password" 
-                    class="form-control" 
-                    placeholder="Introduza a password do restaurante" 
-                    minlength="8" 
-                    required>
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" 
+                        name="password"
+                        id="password" 
+                        class="form-control" 
+                        placeholder="Introduza a password do restaurante" 
+                        minlength="8" 
+                        required>
                     </div>
 
                     <div class="mb-3">
@@ -125,10 +98,10 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="address" class="form-label">Morada:</label>
+                        <label for="street" class="form-label">Morada:</label>
                         <input type="text" 
-                        name="address" 
-                        id="address" 
+                        name="street" 
+                        id="street" 
                         class="form-control" 
                         placeholder="Introduza a sua morada" 
                         maxlength="250" 
@@ -162,29 +135,31 @@
                     </div>
 
                     <div class="mb-3">
-                    <label for="description" class="form-label">Descrição:</label>
-                    <textarea name="description" 
-                    id="description" 
-                    class="form-control" 
-                    placeholder="Introduza uma descrição" 
-                    maxlength="500"></textarea>
+                        <label for="description" class="form-label">Descrição:</label>
+                        <textarea name="description" 
+                        id="description" 
+                        class="form-control" 
+                        placeholder="Introduza uma descrição" 
+                        maxlength="500"></textarea>
                     </div>
 
+<!-- 
                     <div class="mb-3">
-                    <label for="photoPerfil" class="form-label">Foto do restaurante:</label>
-                    <input type="file" 
-                    accept="image/*" 
-                    name="photoPerfil" 
-                    id="photoPerfil" 
-                    class="form-control">
-                    </div>
+                        <label for="photoPerfil" class="form-label">Foto do restaurante:</label>
+                        <input type="file" 
+                        accept="image/*" 
+                        name="photoPerfil" 
+                        id="photoPerfil" 
+                        class="form-control"
+                        >
+                    </div>-->
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-secondary">Limpar</button>
                         <p class="btn btn-secondary"><a href="/restaurants">Voltar</a></p>
                     </div>
-
+                    
                 </form>
             </div>
         </div>

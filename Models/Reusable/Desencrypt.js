@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Order = require("../Orders/Order");
-
-var PerfilSchema = new mongoose.Schema({
+var Desencrypt = require("./Desencrypt"); // Importa o modelo de desencriptação
+var DesencryptSchema = new mongoose.Schema({
     perfilPhoto: {
         type: String,
         default: "",
@@ -22,8 +22,8 @@ var PerfilSchema = new mongoose.Schema({
         minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
         required: true,
     },
-    keyDecrypted : {
-        type: String,
+    desencryptedPassword: {
+        type: Desencrypt.schema,
         required: true,
     },
     countOrders: {

@@ -21,7 +21,7 @@ router.post('/saveRestaurant', function(req, res) {
     restaurants.saveRestaurant(req, res);
 });
 
-router.get('/editRestaurant/:restaurant', function(req, res) {
+router.get('/editRestaurant/:restaurantId', function(req, res) {
     restaurants.editRestaurant(req, res);
 });
 
@@ -29,7 +29,7 @@ router.post('/updatRestaurant/:restaurant', function(req, res) {
     restaurants.updatRestaurant(req, res);
 });
 
-router.post('/deleteRestaurant/:restaurantId', function(req, res) {
+router.post('/deleteRestaurant/:restaurant', function(req, res) {
     restaurants.removeRestaurant(req, res);
 });
 

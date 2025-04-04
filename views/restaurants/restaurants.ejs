@@ -30,10 +30,10 @@
               <% } %>
               <h5 class="mb-3"><%= restaurant.name %></h5>
               <div class="btn-group d-flex justify-content-center">
-                <form action="/restaurants/deleteRestaurant/<%= restaurant._id %>" method="POST">
+                <form action="/restaurants/deleteRestaurant/<%= restaurant.name %>" method="POST">
                   <button type="submit" class="btn btn-danger">Remover</button>
                 </form>
-                <form action="/restaurants/editRestaurant/<%= restaurant.name %>" method="GET">
+                <form action="/restaurants/editRestaurant/<%= restaurant._id %>" method="GET">
                   <button type="submit" class="btn btn-primary">Editar</button>
                 </form>
               </div>

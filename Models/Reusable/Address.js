@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var AddressSchema = new mongoose.Schema({
-    address: {
+    street: {
         type: String,
         maxlength: [250, 'A morada deve ter no máximo 250 caracteres'],
         required: true,

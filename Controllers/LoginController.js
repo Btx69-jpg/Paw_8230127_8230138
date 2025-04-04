@@ -51,7 +51,7 @@ userController.save = async (req, res) => {
             return res.redirect("/login/signUp");
         }
 
-        // Criação do usuário
+        // Criação do utilizador
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
