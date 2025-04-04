@@ -14,7 +14,7 @@ var PerfilSchema = new mongoose.Schema({
     password: {
         type: String,
         minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
-        maxlength: [35, 'A password deve ter no máximo 35 caracteres'],
+        maxlength: [100, 'A password deve ter no máximo 35 caracteres'],
         required: true,
     },
     countOrders: {
