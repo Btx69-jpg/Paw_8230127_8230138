@@ -20,6 +20,7 @@
             </div>
 
             <div class="row-md-6">
+                <!-- Falta meter foto-->
                 <form action="/restaurants/saveRestaurant" method="POST" >
                     <div class="row-md-6">
                         <label for="name">Nome: </label>
@@ -47,8 +48,10 @@
                         name="nif" 
                         id="nif"
                         placeholder="Introduza o NIF"
-                        min="900000000"
+                        min="000000001"
                         max="999999999"
+                        minlength="9"
+                        maxlength="9"
                         required>
                     </div>
 
@@ -58,8 +61,29 @@
                         name="phoneNumber"
                         id="phoneNumber"
                         placeholder="Introduza o numero Telefonico"
+                        min="000000001"
+                        max="999999999"
                         maxlength="9"
                         minlength="9"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="email">Email: </label>
+                        <input type="email" 
+                        name="email" 
+                        id="email"
+                        placeholder="Introduza o email do restaurante"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="password">Password: </label>
+                        <input type="text"
+                        name="password"
+                        id="password"
+                        placeholder="Introduza a password do restaurante"
+                        minlength="8"
                         required>
                     </div>
 
@@ -69,7 +93,6 @@
                         name="address"
                         id="address"
                         placeholder="Introduza a sua morada"
-                        pattern="[a-zA-Z\s]*"
                         maxlength="250"
                         required>
                     </div>
@@ -105,6 +128,14 @@
                             id="description"
                             placeholder="Introduza uma descrição"
                             maxlength="500">
+                        </div>
+
+                        <div class="row-md-6">
+                            <label for="photoPerfil">Photo do restaurante</label>
+                            <input type="file" 
+                            accept="image/*"
+                            name="photo" 
+                            id="photo">
                         </div>
 
                         <div class="row-md-6">
