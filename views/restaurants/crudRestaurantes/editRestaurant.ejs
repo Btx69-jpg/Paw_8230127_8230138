@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <title>Adicionar Restaurante</title>
+
+        <!-- Logotipo-->
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" id="bootstrap-css">
+    </head>
+
+    <body>
+        <div class="containter">
+            <div class="row-md-6">
+                <h1>Adicionar novo Restaurante</h1>
+            </div>
+
+            <div class="row-md-6">
+                <p><a href="/restaurants">Voltar</a></p>
+            </div>
+
+            <div class="row-md-6">
+                <!-- Falta meter foto-->
+                <form action="/restaurants/saveRestaurant" method="POST" >
+                    <div class="row-md-6">
+                        <label for="name">Nome: </label>
+                        <input type="text" 
+                        name="name" 
+                        id="name"
+                        placeholder="Introduza o nome do restaurante"
+                        maxlength="100"
+                        value="<%= restaurant.name %>"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="sigla">Sigla</label>
+                        <input type="text" 
+                        name="sigla" 
+                        id="sigla"
+                        placeholder="Introduza a sigla do Restaurante"
+                        maxlength="10"
+                        value="<%= restaurant.sigla %>"
+                        >
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="nif">NIF:</label>
+                        <input type="number" 
+                        name="nif" 
+                        id="nif"
+                        placeholder="Introduza o NIF"
+                        min="000000001"
+                        max="999999999"
+                        minlength="9"
+                        maxlength="9"
+                        value="<%= restaurant.nif %>"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="phoneNumber">Telefone: </label>
+                        <input type="number" 
+                        name="phoneNumber"
+                        id="phoneNumber"
+                        placeholder="Introduza o numero Telefonico"
+                        min="000000001"
+                        max="999999999"
+                        maxlength="9"
+                        minlength="9"
+                        value="<%= restaurant.phoneNumber %>"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="email">Email: </label>
+                        <input type="email" 
+                        name="email" 
+                        id="email"
+                        placeholder="Introduza o email do restaurante"
+                        value="<%= restaurant.email %>"
+                        maxlength="50"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="password">Password: </label>
+                        <input type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Introduza a password do restaurante"
+                        minlength="8"
+                        value="<%= restaurant.password %>"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label for="address">Morada: </label>
+                        <input type="text" 
+                        name="address"
+                        id="address"
+                        placeholder="Introduza a sua morada"
+                        maxlength="250"
+                        value="<%= restaurant.address.address %>"
+                        required>
+                    </div>
+
+                    <div class="row-md-6">
+                        <div class="col-md-6">
+                            <label for="postal_code">Código postal:</label>
+                            <input type="text" 
+                            name="postal_code" 
+                            id="postal_code"
+                            placeholder="Introduza o código Postal"
+                            minlength="8"
+                            maxlength="8"
+                            pattern="[0-9]{4}-[0-9]{3}"
+                            value="<%= restaurant.address.postal_code %>"
+                            required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="city">Cidade:</label>
+                            <input type="text" 
+                            name="city" 
+                            id="city"
+                            placeholder="Introduza o nome da sua cidade"
+                            maxlength="100"
+                            pattern="[a-zA-Z\s]*"
+                            value="<%= restaurant.address.city %>"
+                            required>
+                        </div>
+
+                        <div class="row-md-6">
+                            <label for="description">Descrição:</label>
+                            <input type="text" 
+                            name="description" 
+                            id="description"
+                            placeholder="Introduza uma descrição"
+                            value="<%= restaurant.description %>"
+                            maxlength="500">
+                        </div>
+
+                        <div class="row-md-6">
+                            <label for="photoPerfil">Photo do restaurante</label>
+                            <input type="file" 
+                            accept="image/*"
+                            name="photo" 
+                            value="<%= restaurant.perfil.perfilPhoto %>"
+                            id="photo">
+                        </div>
+
+                        <div class="row-md-6">
+                            <button type="submit">Atualizar</button>
+                            <button><a href="/restaurants/editRestaurant">Clear</a></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

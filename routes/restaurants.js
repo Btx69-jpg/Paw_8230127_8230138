@@ -20,6 +20,19 @@ router.get('/createRestaurant', function(req, res) {
 router.post('/saveRestaurant', function(req, res) {
     restaurants.saveRestaurant(req, res);
 });
+
+router.get('/editRestaurant/:restaurant', function(req, res) {
+    restaurants.editRestaurant(req, res);
+});
+
+router.post('/updatRestaurant/:restaurant', function(req, res) {
+    restaurants.updatRestaurant(req, res);
+});
+
+router.post('/deleteRestaurant/:restaurantId', function(req, res) {
+    restaurants.removeRestaurant(req, res);
+});
+
 /*Depois criar os get e post para criar os varios restaurantes */
 
 module.exports = router;

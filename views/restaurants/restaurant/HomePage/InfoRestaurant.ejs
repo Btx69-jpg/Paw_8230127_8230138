@@ -1,42 +1,24 @@
-<!-- Infor Restaurante
-Meter depois os tags ejs para  receber titulo, desc, etc...> 
--->
-<div class="row">
-    <div class="container mt-4">
-
-        <h1 class="mb-3">Nome do Restaurante</h1>
-        
-        <div class="row">
-            <div class="col-12">
-                <p><strong>Descrição:</strong> (se tiver)</p>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-12">
-                <h2><strong>Outras Informações:</strong></h2>
-            </div>
-        </div>
-      
-        <div class="row">
-            <div class="col-12">
-                <p><strong>Número de telefone:</strong> xxxxxx</p>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-12">
-                <p><strong>Email:</strong> xxxxxx</p>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Morada:</strong> xxxxxxx</p>
-            </div>
-            <div class="col-md-6">
-                <p><strong>Codigo Postal:</strong> xxxxxxxx</p>
-            </div>
-        </div>
+<div class="row bg-white p-4 rounded shadow mb-4">
+    <div class="col-12 text-center">
+      <h1 class="section-title mb-3"><%= restaurant.name %></h1>
     </div>
-</div>
+    <div class="col-12">
+      <p><strong>Descrição:</strong> <%= restaurant.description %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Número de telefone:</strong> <%= restaurant.perfil.phoneNumber %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Email:</strong> <%= restaurant.perfil.email %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Morada:</strong> <%= restaurant.address.address %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Cidade:</strong> <%= restaurant.address.city %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Código Postal:</strong> <%= restaurant.address.postal_code %></p>
+    </div>
+  </div>
+  

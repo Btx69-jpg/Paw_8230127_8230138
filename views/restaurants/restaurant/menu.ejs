@@ -4,6 +4,9 @@
         <!-- Trocar para o nome correto do menu-->
         <title>Menu x</title>
 
+        <!-- Logotipo-->
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
+        
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous" id="bootstrap-css">
@@ -48,11 +51,14 @@
                             <div class="row-md-6">
                                 <%- include('Dishs/dish', { dish: dishs[i] }) %>
                                 <form action="/restaurants/restaurant/menu/deleteDish/<%= dishs[i]._id%>" method="post">
-                                    <button type="submit">DELETE</button>
+                                    <button type="submit">Delete</button>
                                 </form>
     
                                 <!-- Ver se depois o edit dá-->
-                                <button><a href="/restaurants/restaurant/menu/editDish/<%= dishs[i]._id%>">Edit.</a></button>
+                                <form action="/restaurants/restaurant/menu/editDish/<%= dishs[i]._id%>">
+                                    <button>Editar</button>
+                                </form>
+
                                 <p><a href="/restaurants/restaurant/menu/showDish/<%= dishs[i]._id%>">Mais Info.</a></p>
                             </div>
                         <% } %>

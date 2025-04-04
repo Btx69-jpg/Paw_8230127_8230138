@@ -6,15 +6,20 @@ var PerfilSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    phoneNumber: {
+        type: Number,
+        match: [/^[0-9]{9}$/],
+        required: true,
+    },
     email:{
         type: String,
         match: [/^([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})*$/, 'Formato inválido para o email'], //Garante o formato correto do email
+        maxlength: 50,
         required: true,
     },
     password: {
         type: String,
         minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
-        maxlength: [100, 'A password deve ter no máximo 35 caracteres'],
         required: true,
     },
     countOrders: {
@@ -27,9 +32,8 @@ var PerfilSchema = new mongoose.Schema({
         default: [], 
     },
     priority: {
-        type: Number,
+        type: String,
         enum: ['Cliente', 'Admin', 'Restaurant'],
-        default: 'Cliente',
         required: true,
     },
     updated_at: { type: Date, default: Date.now },

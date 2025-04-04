@@ -27,11 +27,6 @@ var RestaurantSchema = new mongoose.Schema({
         match: [/^[0-9]{9}$/],
         required: true,
     },
-    phoneNumber: {
-        type: Number,
-        match: [/^[0-9]{9}$/],
-        required: true,
-    },
     address: {
         type: Address.schema,
         required: true,

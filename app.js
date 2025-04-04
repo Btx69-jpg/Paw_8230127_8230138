@@ -84,7 +84,7 @@ app.use('/login', login);
 app.use('/signUp', signUp); 
 app.use('/restaurants', restaurants); //Aparece a pagina noraml dos restaurantes
 app.use('/restaurants', restaurant); //Aqui tenho de meter o /restaurants, porque o proximo é um id que pode ter qualquer valor. (Ou seja não existe o /, no route)
-app.use('/checkOut', checkOut); //Aqui carrego o controller que quero usar
+//app.use('/checkOut', checkOut); //Aqui carrego o controller que quero usar
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

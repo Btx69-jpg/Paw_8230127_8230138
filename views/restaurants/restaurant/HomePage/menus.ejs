@@ -1,79 +1,57 @@
-<!-- Avaliações -->
-<div class="row">
-    <div class="col-12">
-      <h1 class="mb-4">Menus</h1>
+<div class="row bg-white p-4 rounded shadow mb-4">
+    <div class="col-12 mb-3">
+        <h2 class="section-title text-center">Menus</h2>
     </div>
-</div>
-  
-<div class="row justify-content-center">
-    <!-- Trocar depois o restaurant-->
-    <form action="/restaurants/restaurant" method="get">
-        <div>
-            <label for="mameMenu">Nome menu:</label>
-            <input type="text" 
-                name="mameMenu" 
-                id="mameMenu" 
-                placeholder="Nome do menu"
-                maxlength="50"
-                pattern="[A-Za-z\s]*">
-        </div>
 
-        <div>
-            <label for="numDish">Numero de pratos</label>
-            <input type="number"
-                name="numDish" 
-                id="numDish" 
-                placeholder="Numero de pratos"
-                min="1"
-                max="10">
-        </div>
+    <div class="col-12 text-center mb-4">
+        <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
+    </div>
+    <% if (restaurant.menus.length > 0) { %>
+        <!-- Filtro para os menus -->
+        <div class="col-12 mb-4">
+            <form action="/restaurants/<%= restaurant.name %>" method="get" class="row g-3">
+            
+                <div class="col-md-4">
+                    <label for="mameMenu" class="form-label">Nome do Menu:</label>
+                    <input type="text" class="form-control" name="mameMenu" id="mameMenu" placeholder="Nome do menu" maxlength="50" pattern="[A-Za-z\s]*">
+                </div>
 
-        <div>
-            <!-- Depois trocar para um selecion, que carrega todos os tipos-->
-            <label for="category">Categoria do menu</label>
-            <input type="text"
-                name="category" 
-                id="category" 
-                placeholder="Categoria do menu"
-                maxlength="50"
-                pattern="[A-Za-z\s]*">
-        </div>
+                <div class="col-md-4">
+                    <label for="numDish" class="form-label">Número de Pratos:</label>
+                    <input type="number" class="form-control" name="numDish" id="numDish" placeholder="Número de pratos" min="1" max="10">
+                </div>
 
-        <div>
-            <!-- Trocar o restaurant, pela variavel do restaurante-->
-            <button><a href="/restaurants/restaurant">Clear</a></button> <!-- Limpa o filtro-->
-            <button type="submit">Submeter</button>
+                <div class="col-md-4">
+                    <label for="category" class="form-label">Categoria do Menu:</label>
+                    <input type="text" class="form-control" name="category" id="category" placeholder="Categoria do menu" maxlength="50" pattern="[A-Za-z\s]*">
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                    <a href="/restaurants/<%= restaurant.name %>" class="btn btn-secondary me-2">Clear</a>
+                    <button type="submit" class="btn btn-primary">Submeter</button>
+                </div>
+
+            </form>
         </div>
-    </form>
-</div>
-<!-- Cards de avaliação -->
-<div class="row">
-    <!-- Meter Só um destes divs, e depois um ciclo for para mostar todos os menus-->
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <!-- Trocar para imagem de do menu-->
-            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
-            <div class="card-body">
-                <h5 class="card-title">Menu Fixe xxx</h5>
-                <p>Descrição xxxx</p>
-                <p>Tipo de Menu -> XXXXXX</p>
-                <!-- Depois alterar o link, o /restaurant-->
-                <p><a href="/restaurants/restaurant/menu/">Menu</a></p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
+        <!-- Cards dos menus -->
+        <div class="row">
+            <% for (let i = 0; i < restaurant.menus.length; i++) { %>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                <img src="/images/restaurant1.jpg" class="card-img-top" alt="Imagem do Menu">
+                <div class="card-body">
+                    <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
+                    <p class="card-text"><%= restaurant.menus[i].description %></p>
+                    <p class="card-text">Tipo: <%= restaurant.menus[i].category %></p>
+                    <a href="/restaurants/<%= restaurant.name %>/menu/" class="btn btn-outline-primary">Ver Menu</a>
+                </div>
+                </div>
             </div>
+            <% } %>
         </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <!-- Trocar para imagem de do menu-->
-            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
-            <div class="card-body">
-                <h5 class="card-title">Menu Fixe xxx</h5>
-                <p>Descrição xxxx</p>
-                <p>Tipo de Menu -> XXXXXX</p>
-                <!-- Depois alterar o link, para Mandar o menu atual-->
-                <p><a href="/restaurants/restaurant/menu/">Menu</a></p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
-            </div>
+    <% } else { %>
+        <div class="col-12">
+            <p class="text-center">O restaurante ainda não tem menus</p>
         </div>
-    </div>
+    <% } %>
 </div>

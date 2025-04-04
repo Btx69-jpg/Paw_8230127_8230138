@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
-const User = require("../Models/Perfils/User");
 const bcrypt = require("bcryptjs");
-const AddressOrder = require("../Models/Reusable/AddressOrder");
-const Perfil = require("../Models/Reusable/Perfil")
 const passport = require('passport');
+
+const User = require("../Models/Perfils/User");
+const AddressOrder = require("../Models/Reusable/AddressOrder");
+const Perfil = require("../Models/Reusable/Perfil");
+
 
 const userController = {};
 
@@ -58,7 +60,6 @@ userController.save = async (req, res) => {
             email: email,
             password: hashedPassword,
             priority: rolemap["Cliente"]
-
         });
 
         const newUser = new User({
