@@ -25,8 +25,12 @@ router.get('/editRestaurant/:restaurantId', function(req, res) {
     restaurants.editRestaurant(req, res);
 });
 
-router.post('/updatRestaurant/:restaurant', function(req, res) {
+router.post('/updatRestaurant', function(req, res) {
     restaurants.updatRestaurant(req, res);
+});
+
+router.get('/editRestaurant/editPassword/:restaurantId', function(req, res) {
+    restaurants.editPassword(req, res);
 });
 
 router.post('/deleteRestaurant/:restaurant', function(req, res) {

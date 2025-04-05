@@ -45,26 +45,103 @@ function deletepackage(path) {
     }
 }
 
-function encrypt(text) {
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    // Retornando o IV junto com o texto criptografado, separados por um delimitador (por exemplo, ':')
-    return iv.toString('hex') + ':' + encrypted;
+function renamePackage(oldPath, newPath) {
+    try {
+        fs.renameSync(oldPath, newPath);
+        console.log('Pasta renomeada com sucesso!');
+    } catch (err) {
+        console.error('Erro ao renomear a pasta:', err);
+    }
 }
 
-function decrypt(encryptedText, keyDecrypted) {
-    // Separando o IV do texto criptografado
-    const textParts = encryptedText.split(':');
-    const ivFromText = Buffer.from(textParts.shift(), 'hex');
-    const encryptedData = textParts.join(':');
-    
-    const decipher = crypto.createDecipheriv('aes-256-cbc', keyDecrypted, ivFromText);
-    let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  }
+/*
+async function renderEditsPage(page, restaurantId, redirectPage) {
+    try {
+        const restaurant = await Restaurant.findOne({ _id: restaurantId }).exec();
+        res.render(page, { restaurant: restaurant });
+    } catch (error) {
+        console.log("Error", error);
+        res.redirect(redirectPage);
+    }
+}
+*/
 
+async function validationRestaurant(body) {
+    const restaurants = await Restaurant.find({}).exec();
+    // Verifica se o limite de restaurantes foi atingido
+    if (restaurants.length >= 15) {
+        return "Não é possivel criar mais restaurantes";
+    }
+
+    if (body.name === undefined || body.nif === undefined || body.phoneNumber === undefined ||
+        body.email === undefined || body.password === undefined || 
+        body.confirmPassword === undefined || body.street === undefined ||
+        body.postal_code === undefined || body.city === undefined) {
+        return "Alguns dos campos obrigatórios não está preenchido";
+    }
+
+    if (body.password !== body.confirmPassword) { 
+        return "As passwords não coincidem";
+    }
+
+    let find = false;
+    let i = 0;
+    let problem = "";
+
+    // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
+    while (i < restaurants.length && !find) {
+        if (restaurants[i].name === body.name) {
+            problem = "Já existe um restaurante com esse nome";
+            find = true;
+        } else if (restaurants[i].nif === body.nif) {
+            problem = "Já existe um restaurante com esse NIF";
+            find = true;
+        } else if (restaurants[i].perfil.email === body.email) {
+            problem = "Já existe um restaurante com esse email";
+            find = true;
+        } else if (restaurants[i].perfil.phoneNumber === body.phoneNumber) {
+            problem = "Já existe um restaurante com esse numero telefonico";
+            find = true;
+        }
+        i++;
+    }
+
+    return problem;
+}
+
+async function validationEditRestaurant(body) {
+    const restaurants = await Restaurant.find({}).exec();
+
+    if (body.name === undefined || body.nif === undefined || body.phoneNumber === undefined ||
+        body.email === undefined || body.street === undefined || body.postal_code === undefined || 
+        body.city === undefined) {
+        return "Alguns dos campos obrigatórios não está preenchido";
+    }
+
+    let find = false;
+    let i = 0;
+    let problem = "";
+
+    // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
+    while (i < restaurants.length && !find) {
+        if (restaurants[i].name === body.name) {
+            problem = "Já existe um restaurante com esse nome";
+            find = true;
+        } else if (restaurants[i].nif === body.nif) {
+            problem = "Já existe um restaurante com esse NIF";
+            find = true;
+        } else if (restaurants[i].perfil.email === body.email) {
+            problem = "Já existe um restaurante com esse email";
+            find = true;
+        } else if (restaurants[i].perfil.phoneNumber === body.phoneNumber) {
+            problem = "Já existe um restaurante com esse numero telefonico";
+            find = true;
+        }
+        i++;
+    }
+
+    return problem;
+}
 //Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
 //Preciso de no render mandar também os employees
 restaurantsController.restaurantsPage = function(req, res) {
@@ -87,46 +164,11 @@ Falta adicionar a foto do restaurante!!!!
 */
 //Meter verificação para não deixar adicionar mais que 15 restaurantes
 restaurantsController.saveRestaurant = async (req, res) => {
-    try {
-        // Obtém todos os restaurantes
-        console.log(req.body)
-        const restaurants = await Restaurant.find({}).exec();
-
-        // Verifica se o limite de restaurantes foi atingido
-        if (restaurants.length >= 15) {
-            return res.status(500).send("Não é possivel criar mais restaurantes");
+    try {       
+        let validation = validationRestaurant(req.body);
+        if (validation !== "") {
+            return res.status(500).send(validation);
         }
-
-        if (req.body.password !== req.body.confirmPassword) { 
-            return res.status(500).send("As passwords não coincidem");
-        }
-
-        let find = false;
-        let i = 0;
-        let problem = "";
-
-        // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
-        while (i < restaurants.length && !find) {
-            if (restaurants[i].name === req.body.name) {
-                problem = "Já existe um restaurante com esse nome";
-                find = true;
-            } else if (restaurants[i].nif === req.body.nif) {
-                problem = "Já existe um restaurante com esse NIF";
-                find = true;
-            } else if (restaurants[i].perfil.email === req.body.email) {
-                problem = "Já existe um restaurante com esse email";
-                find = true;
-            } else if (restaurants[i].perfil.phoneNumber === req.body.phoneNumber) {
-                problem = "Já existe um restaurante com esse numero telefonico";
-                find = true;
-            }
-            i++;
-        }
-
-        if (find) {
-            return res.status(500).send(problem);
-        }
-
         
         const path = "public/images/Restaurants/" + req.body.name + "/";
         createPackage(path);
@@ -135,17 +177,18 @@ restaurantsController.saveRestaurant = async (req, res) => {
         //Se req.file existe retorna o req.file.path, se não retorna ''
         let pathImage = req.file?.path || '';
 
+        //Cryptografia da password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        
         // Cria um novo restaurante com os dados fornecidos
         let restaurant = new Restaurant({
             name: req.body.name,
             perfil: new Perfil({
                 perfilPhoto: pathImage,
                 email: req.body.email,
-                password: encrypt(req.body.password),
-                keyDecrypted: key.toString('hex'), //Guarda a chave no formato hexadecimal, que é o correto para este caso
+                password: hashedPassword,
                 phoneNumber: req.body.phoneNumber,
-                countOrders: 0,
-                historicOrders: [],
                 priority: "Restaurant",
             }),
             sigla: req.body.sigla,
@@ -172,18 +215,117 @@ restaurantsController.saveRestaurant = async (req, res) => {
 restaurantsController.editRestaurant = async (req, res) => {
     try {
         const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
-        //Mando o restaurant e a password desencriptada
-        //O Buffer.from(restaurant.perfil.keyDecrypted, 'hex'), converte a chave de string para buffer
-        res.render('restaurants/crudRestaurantes/editRestaurant', {
-            restaurant: restaurant,
-            password: decrypt(restaurant.perfil.password, Buffer.from(restaurant.perfil.keyDecrypted, 'hex')),
-        });
+        res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
     } catch (error) {
         console.log("Error", error);
         res.redirect("/restaurants");
     }
 };
 
+/*
+Para alem de alterar o restaurant, também tenho de alterar o nome da pasta se necessário
+E alterar o caminho da imagem, da logo, se necessario
+*/
+restaurantsController.updatRestaurant = async (req, res) => {
+    try {
+        // Validations
+        console.log(req.body);
+        let validation = validationEditRestaurant(req.body);
+        if (validation !== "") {
+            return res.status(500).send(validation);
+        }
+
+        let restaurant = await Restaurant.findOne({ name: req.body.name }).exec();
+ 
+        //Altera a pasta e tem de alterar também o caminho para a logo
+        if(restaurant.name != req.body.name) {
+            const oldPath = "public/images/Restaurants/" + restaurant.name + "/";
+            const newPath = "public/images/Restaurants/" + req.body.name + "/";
+            renamePackage(oldPath, newPath);
+            //ApgarImagem antiga, guardar a nova 
+        } 
+
+        //Quando guardar imagens, dar update a este if 
+        //if(restaurant.name != req.body.name || restaurant.photoPerfil != req.body.photoPerfil) {
+        //Quando a imagem é atualizada ou o nome do restaurante para dar update ou do package
+        //Ou apenas da imagem ou do package + imagem
+            //let pathImage = req.file?.path || '';
+            //await updateImage(path);
+            /*
+                        await Restaurant.findByIdAndUpdate(req.params.id, { 
+                $set: {
+                    name: req.body.name,
+                    'perfil.photoPerfil': req.body.perfilPhoto,
+                    'perfil.email': req.body.email,
+                    'perfil.phoneNumber': req.body.phoneNumber,
+                    sigla: req.body.sigla,
+                    nif: req.body.nif, 
+                    'address.street': req.body.street,
+                    'address.postal_code': req.body.postal_code,
+                    'address.city': req.body.city,
+                    description: req.body.description 
+                },
+              }, 
+              { new: true });
+            */
+        //Como recebo também a foto, posso atualiza-la aqui também com a nova ou old
+        console.log(restaurant);
+        console.log("Cheguei aqui!!!!!!!!!")
+        let newRest = await Restaurant.findByIdAndUpdate(req.params.id, { 
+                $set: {
+                    name: req.body.name,
+                    'perfil.email': req.body.email,
+                    'perfil.phoneNumber': req.body.phoneNumber,
+                    'perfil.photoPerfil': '',
+                    sigla: req.body.sigla,
+                    nif: req.body.nif, 
+                    'address.street': req.body.street,
+                    'address.postal_code': req.body.postal_code,
+                    'address.city': req.body.city,
+                    description: req.body.description 
+                },
+              }, 
+              { new: true });
+
+              console.log(newRest)
+        console.log("Restaurante atualizado com sucesso");
+        res.redirect("/restaurants");
+    } catch (error) {
+        console.log("Error", error);
+        res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+    }
+};
+
+/*employeeController.update = function(req, res) {
+  Employee.findByIdAndUpdate(req.params.id, { 
+    $set: {
+      name: req.body.name,
+      address: req.body.address,
+      position: req.body.position,
+      salary: req.body.salary 
+    },
+  }, { new: true },
+  function(err, employee) {
+    if(err) {
+      console.log("Error: ", err);
+      //Se deu erro voltamos ao edit
+      res.render("employees/edit", {employee: req.body});
+    } else {
+      //Tenho de meter o /" + employee._id, para ir há pagian show do employee especifico
+      res.redirect("/employees/show/" + employee._id);
+    }
+  })
+}; */
+restaurantsController.editPassword = async (req, res) => {
+   const restaurantId = req.params.restaurantId
+    try {
+        const restaurant = await Restaurant.findOne({ _id: restaurantId }).exec();
+        res.render('restaurants/crudRestaurantes/editPassword', {restaurant: restaurant });
+    } catch (error) {
+        console.log("Error", error);
+        res.redirect("/restaurants");
+    }
+};
 
 restaurantsController.removeRestaurant = async (req, res) => {
     try {

@@ -3,12 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Adicionar Restaurante</title>
+
+        <!-- Logotipo -->
         <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         
         <!-- CSS-->
-        <link rel="stylesheet" href="/stylesheet/Restaurants/restaurantAdd.css">
+        <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantAdd.css">
     </head>
     <body>
         <div class="container">
@@ -17,8 +20,9 @@
             
             <div class="add-restaurant-container">
                 <h1>Editar <%= restaurant.name %></h1>
+                <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
                 <!-- enctype="multipart/form-data" -->
-                <form action="/restaurants/saveRestaurant" method="POST">
+                <form action="/restaurants/updatRestaurant" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
@@ -79,32 +83,6 @@
                         value="<%= restaurant.perfil.email %>"
                         required>
                     </div>
-
-                    <!-- Tenho de mandar a password desincriptada, ver como faço-->
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="text" 
-                        name="password"
-                        id="password" 
-                        class="form-control" 
-                        placeholder="Introduza a password do restaurante" 
-                        minlength="8" 
-                        value="<%= password %>"
-                        required>
-                    </div>
-
-                    <!-- Tenho de mandar a password desincriptada, ver como faço-->
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirmar Password:</label>
-                        <input type="password" 
-                        name="confirmPassword" 
-                        id="confirmPassword" 
-                        class="form-control" 
-                        placeholder="Introduza a password novamente" 
-                        minlength="8" 
-                        value="<%= password %>"
-                        required>
-                    </div>
                     
                     <script src="/javascript/desencriptarPass.js"></script>
 
@@ -155,11 +133,10 @@
                         id="description" 
                         class="form-control" 
                         placeholder="Introduza uma descrição" 
-                        maxlength="500"
-                        value="<%= restaurant.description %>"></textarea>
+                        maxlength="500"> <%= restaurant.description %></textarea>
                     </div>
 
-<!-- 
+                <!-- 
                     <div class="mb-3">
                         <label for="photoPerfil" class="form-label">Foto do restaurante:</label>
                         <input type="file" 
@@ -168,14 +145,14 @@
                         id="photoPerfil" 
                         class="form-control"
                         >
-                    </div>-->
+                    </div>
+                    -->
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-secondary">Limpar</button>
-                        <p class="btn btn-secondary"><a href="/restaurants">Voltar</a></p>
-                    </div>
-                    
+                        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+                    </div>                    
                 </form>
             </div>
         </div>

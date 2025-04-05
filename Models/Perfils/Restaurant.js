@@ -35,21 +35,9 @@ var RestaurantSchema = new mongoose.Schema({
         type: String,
         maxlength: [500, 'A descrição deve ter no máximo 500 caracteres'],
     },
-    countMenus: {
-        type: Number,
-        default: 0,
-        min: [0, 'O número mínimo de menus é 0'],
-        required: true,
-    },
     menus: {
         type: [Menu.schema],
         default: [], //Inicializa com o array vazio
-        required: true,
-    },
-    countComments: {
-        type: Number,
-        default: 0,
-        min: [0, 'O número mínimo de comentários é 0'],
         required: true,
     },
     comments: {
