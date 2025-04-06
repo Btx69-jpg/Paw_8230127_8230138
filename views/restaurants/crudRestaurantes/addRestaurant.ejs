@@ -18,7 +18,7 @@
             <div class="add-restaurant-container">
                 <h1>Adicionar novo Restaurante</h1>
                 <!-- enctype="multipart/form-data" -->
-                <form action="/restaurants/saveRestaurant" method="POST">
+                <form action="/restaurants/saveRestaurant" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
@@ -27,6 +27,8 @@
                         class="form-control"
                         placeholder="Introduza o nome do restaurante" 
                         maxlength="100" 
+                        pattern="^(?!.*[\\/]).+$"
+                        title="O nome não pode conter os caracteres '/' ou '\' "
                         required>
                     </div>
 
@@ -42,7 +44,7 @@
 
                     <div class="mb-3">
                         <label for="nif" class="form-label">NIF:</label>
-                        <input type="number" 
+                        <input type="tel" 
                         name="nif" 
                         id="nif" 
                         class="form-control" 
@@ -54,7 +56,7 @@
 
                     <div class="mb-3">
                         <label for="phoneNumber" class="form-label">Telefone:</label>
-                        <input type="number" 
+                        <input type="tel" 
                         name="phoneNumber" 
                         id="phoneNumber" 
                         class="form-control" 
@@ -71,6 +73,7 @@
                         id="email" 
                         class="form-control" 
                         placeholder="Introduza o email do restaurante" 
+                        pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
                         maxlength="50" 
                         required>
                     </div>
@@ -143,7 +146,6 @@
                         maxlength="500"></textarea>
                     </div>
 
-<!-- 
                     <div class="mb-3">
                         <label for="photoPerfil" class="form-label">Foto do restaurante:</label>
                         <input type="file" 
@@ -151,13 +153,13 @@
                         name="photoPerfil" 
                         id="photoPerfil" 
                         class="form-control"
-                        >
-                    </div>-->
+                        required>
+                    </div>
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-secondary">Limpar</button>
-                        <p class="btn btn-secondary"><a href="/restaurants">Voltar</a></p>
+                        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
                     </div>
                     
                 </form>

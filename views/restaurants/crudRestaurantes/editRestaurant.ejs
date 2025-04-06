@@ -22,7 +22,7 @@
                 <h1>Editar <%= restaurant.name %></h1>
                 <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
                 <!-- enctype="multipart/form-data" -->
-                <form action="/restaurants/updatRestaurant" method="POST">
+                <form action="/restaurants/updatRestaurant/<%= restaurant._id %>" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
@@ -31,6 +31,7 @@
                         class="form-control"
                         placeholder="Introduza o nome do restaurante" 
                         maxlength="100" 
+                        pattern="^(?!.*[\\/]).+$"
                         value="<%= restaurant.name %>"
                         required>
                     </div>
@@ -48,7 +49,7 @@
 
                     <div class="mb-3">
                         <label for="nif" class="form-label">NIF:</label>
-                        <input type="number" 
+                        <input type="tel" 
                         name="nif" 
                         id="nif" 
                         class="form-control" 
@@ -61,7 +62,7 @@
 
                     <div class="mb-3">
                         <label for="phoneNumber" class="form-label">Telefone:</label>
-                        <input type="number" 
+                        <input type="tel" 
                         name="phoneNumber" 
                         id="phoneNumber" 
                         class="form-control" 
@@ -79,6 +80,7 @@
                         id="email" 
                         class="form-control" 
                         placeholder="Introduza o email do restaurante" 
+                        pattern="([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})*"
                         maxlength="50" 
                         value="<%= restaurant.perfil.email %>"
                         required>
@@ -133,10 +135,14 @@
                         id="description" 
                         class="form-control" 
                         placeholder="Introduza uma descrição" 
-                        maxlength="500"> <%= restaurant.description %></textarea>
+                        maxlength="500"><%= restaurant.description %></textarea>
                     </div>
 
-                <!-- 
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Foto de perfil</label>
+                        <img src="<%=restaurant.perfil.perfilPhoto %>" alt="Foto de perfil">
+                    </div>
+
                     <div class="mb-3">
                         <label for="photoPerfil" class="form-label">Foto do restaurante:</label>
                         <input type="file" 
@@ -146,7 +152,6 @@
                         class="form-control"
                         >
                     </div>
-                    -->
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>

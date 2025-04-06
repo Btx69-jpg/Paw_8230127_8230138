@@ -25,7 +25,7 @@ router.get('/:restaurant/menu', function(req, res) {
 });
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
-router.get('/:restaurant/menu/createMenu', function(req, res) {
+router.get('/:restaurant/createMenu', function(req, res) {
     restaurant.createMenu(req, res);
 });
 

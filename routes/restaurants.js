@@ -4,6 +4,8 @@ E também para a pagina com os pratos do menu
 */
 var express = require('express');
 var router = express.Router();
+const multer = require('multer');
+const fs = require('fs');
 
 var restaurants = require("../Controllers/RestaurantsController.js"); // Aqui carrego o controller que quero usar
 
@@ -25,12 +27,16 @@ router.get('/editRestaurant/:restaurantId', function(req, res) {
     restaurants.editRestaurant(req, res);
 });
 
-router.post('/updatRestaurant', function(req, res) {
+router.post('/updatRestaurant/:restaurantId', function(req, res) {
     restaurants.updatRestaurant(req, res);
 });
 
 router.get('/editRestaurant/editPassword/:restaurantId', function(req, res) {
     restaurants.editPassword(req, res);
+});
+
+router.post('/editRestaurant/changePassword/:restaurantId', function(req, res) {
+    restaurants.updatePassword(req, res);
 });
 
 router.post('/deleteRestaurant/:restaurant', function(req, res) {

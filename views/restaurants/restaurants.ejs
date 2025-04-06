@@ -28,10 +28,9 @@ Pesquisar por cidade, nome
         <% restaurants.forEach(function(restaurant) { %>
           <div class="col-md-4">
             <div class="restaurant-card text-center">
-              <% if (restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto !== "") { %>
-                <img src="<%= restaurant.perfil.perfilPhoto %>" alt="Logo do restaurante">
-              <% } %>
+              <img src="<%=restaurant.perfil.perfilPhoto%>" alt="Logo do restaurante">
               <h5 class="mb-3"><%= restaurant.name %></h5>
+              
               <div class="btn-group d-flex justify-content-center">
                 <form action="/restaurants/deleteRestaurant/<%= restaurant.name %>" method="POST">
                   <button type="submit" class="btn btn-danger">Remover</button>

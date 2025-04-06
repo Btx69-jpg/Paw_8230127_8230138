@@ -78,8 +78,14 @@ restaurantController.showMenu = function(req, res) {
 };
 
 //Permite criar um novo menu no restaurante
-restaurantController.createMenu = function(req, res) {
-    res.render("restaurants/restaurant/createMenu");
+restaurantController.createMenu = async function (req, res) {
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant });
+    } catch (err) {
+        console.log("Erro: ", err);
+        res.status(500).send("Erro interno no servidor");
+    }
 };
 
 //Permite com detalhes o prato especifico de um menu
