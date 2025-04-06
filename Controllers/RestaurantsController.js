@@ -396,24 +396,24 @@ restaurantsController.editPassword = async (req, res) => {
     }
 };
 
-async function validateNewPassowrd(body, restPass) {
+async function validateNewPassowrd(body, restPassword, atualPassword) {
     if(body.newPassword !== body.confirmNewPassword) {
         return "As novas password não coincidem";
     }
     
     //Cryptografia da password
     const salt = await bcrypt.genSalt(10);
-    const hashedAtualPassword = await bcrypt.hash(restPass, salt);
-    const hashedPassword = await bcrypt.hash(body.oldPassword, salt);
-    const hashedNewPassword = await bcrypt.hash(body.newPassword, salt);
+    const hashedNewPassword = await bcrypt.hash(body.confirmNewPassword, salt);
 
     let problem = "";
 
-    if(hashedPassword !== hashedAtualPassword) {
+    console.log(atualPassword);
+    console.log(restPassword);
+    if(atualPassword !== restPassword) {
         return "A passowd atual inserida está incorreta";
     } 
 
-    if(hashedNewPassword === hashedAtualPassword) {
+    if(hashedNewPassword === atualPassword) {
         return "A nova passwor é igual há antiga";
     }
 
@@ -423,15 +423,15 @@ async function validateNewPassowrd(body, restPass) {
 restaurantsController.updatePassword = async (req, res) => {
     const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
     try {
-        
-        let validation = await validateNewPassowrd(req.body, restaurant.perfil.password);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(restaurant.perfil.password, salt);
+        const hashedNewPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+        let validation = await validateNewPassowrd(req.body, hashedPassword, hashedNewPassword);
 
         if (validation !== "") {
             return res.status(500).send(validation);
         }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedNewPassword = await bcrypt.hash(body.newPassword, salt);
 
         await Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
             $set: {

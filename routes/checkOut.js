@@ -5,3 +5,5 @@ const router = express.Router();
 router.get("/checkOut", function(req, res) {
     res.render("/checkOut");
 });
+
+module.exports = router;
