@@ -2,7 +2,7 @@
 <html lang="pt-PT">
   <head>
     <meta charset="UTF-8">
-    <title>Lista de Restaurantes</title>
+    <title>Lista de Categorias</title>
 
     <!-- Logo do site -->
     <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
@@ -18,7 +18,12 @@
     <%- include('../navBar') %>
 
     <div class="container">
-      <h1 class="text-center my-4">Lista de restaurantes</h1>
+      <h1 class="text-center my-4">Lista de Categorias</h1>
+
+      <!-- Botão centralizado logo abaixo do título -->
+      <div class="d-flex justify-content-center mb-4">
+        <a href="/admin/listCategories/createCategory" class="btn btn-success">Adicionar Categoria</a>
+      </div>
 
       <% if (categories.length > 0) { %>
         <div class="row justify-content-center">
