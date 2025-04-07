@@ -24,4 +24,7 @@ router.get("/listCategories", function(req, res) {
     adminController.listCategories(req, res);
 });
 
+router.post("/listCategories/deleteCateory/:CategoryId", function(req, res) {
+    
+})
 module.exports = router;
