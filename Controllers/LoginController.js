@@ -27,7 +27,7 @@ userController.findOne = async (email) => {
 // Salva um novo usuário
 userController.save = async (req, res) => {
     try {
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword ,cart} = req.body;
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword} = req.body;
         let errors = [];
 
         // Validações
