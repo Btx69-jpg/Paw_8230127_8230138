@@ -15,4 +15,8 @@ router.get("/listUsers", function(req, res) {
     adminController.listUsers(req, res);
 });
 
+router.get("/listCategories", function(req, res) {
+    adminController.listUsers(req, res);
+});
+
 module.exports = router;

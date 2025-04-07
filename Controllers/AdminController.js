@@ -31,4 +31,15 @@ adminController.listUsers = function(req, res) {
         });  
 };
 
+adminController.listUsers = function(req, res) {
+    Users.find({ 'perfil.priority': 'Cliente'}).exec()
+        .then(function(users) {
+            res.render("perfil/admin/PagesAdmin/listUsers", {users: users});
+        })
+        .catch(function(err) {
+            console.log("Error", err);
+            res.status(500).send("Problema a procurar pelos Restaurantes");
+        });  
+};
+
 module.exports = adminController;
