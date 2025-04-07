@@ -1,6 +1,3 @@
-<!--Meter filtos para pesquisar pelos restaurantes
-Pesquisar por cidade, nome
--->
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -12,9 +9,11 @@ Pesquisar por cidade, nome
   <!-- Bootstrap CSS (versão 5) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- css -->
-   <link rel="stylesheet" href="/stylesheets/Restaurants/navBar.css">
-   <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantsPage.css">
+  <!-- CSS customizado -->
+  <link rel="stylesheet" href="/stylesheets/Restaurants/navBar.css">
+  <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantsPage.css">
+
+
 </head>
 <body>
   <%- include('../navBar') %>
@@ -32,7 +31,6 @@ Pesquisar por cidade, nome
               <h5 class="mb-3"><%= restaurants[i].name %></h5>
               <img src="<%=restaurants[i].perfil.perfilPhoto%>" alt="Logo do restaurante">
 
-              
               <div class="btn-group d-flex justify-content-center">
                 <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST">
                   <button type="submit" class="btn btn-danger">Remover</button>

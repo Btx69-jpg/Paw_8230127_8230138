@@ -27,23 +27,26 @@
             <% for(let i = 0; i < users.length; i++) { %>
                 <div class="col-md-4 mb-4">
                 <div class="restaurant-card text-center border rounded p-3 shadow-sm">
-                    <h5 class="mb-3"><%= users[i].name %></h5>
-                    <h5 class="mb-3"><%= users[i].email %></h5>
-
+                    <h5 class="mb-3"><%= users[i].firstName %> <%= users[i].lastName%></h5>
+                    <p class="mb-3">Email: <%= users[i].perfil.email %></p>
+                    <p class="mb-3">Telefone: <%= users[i].perfil.phoneNumber %></p>
                     <div class="btn-group d-flex justify-content-center">
-                    <form action="/users/deleteRestaurant/<%= users[i].name %>" method="POST">
-                        <button type="submit" class="btn btn-danger">Remover</button>
-                    </form>
-                    <form action="/users/editRestaurant/<%= users[i]._id %>" method="GET">
-                        <button type="submit" class="btn btn-primary">Editar</button>
-                    </form>
-                    <form action="/users/editRestaurant/<%= users[i]._id %>" method="GET">
-                        <button type="submit" class="btn btn-primary">Banir</button>
-                    </form>
+                    
+                        <form action="/users/listUsers/deleteUser/<%= users[i]._id %>" method="POST">
+                            <button type="submit" class="btn btn-danger">Remover</button>
+                        </form>
+                        
+                        <form action="/users/listUsers/editUser/<%= users[i]._id %>" method="GET">
+                            <button type="submit" class="btn btn-primary">Editar</button>
+                        </form>
+
+                        <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                            <button type="submit" class="btn btn-primary">Banir</button>
+                        </form>
                     </div>
 
                     <p class="mt-3">
-                        <a href="/users/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
+                        <a href="/users/listUsers/showUser/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
                     </p>
                 </div>
                 </div>

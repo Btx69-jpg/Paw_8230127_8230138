@@ -27,3 +27,17 @@ h1 {
 .btn-group {
     gap: 10px;
 }
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.restaurant-card img {
+    max-width: 150px;   /* Define a largura máxima */
+    height: auto;       /* Mantém a proporção da altura */
+    display: block;     
+    margin: 0 auto 1rem auto; /* Margem inferior e centralização */
+  }
