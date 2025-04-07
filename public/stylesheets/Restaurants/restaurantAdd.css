@@ -1,0 +1,33 @@
+body {
+    background-color: #f5f5f5;
+    font-family: sans-serif;
+}
+
+.add-restaurant-container {
+    max-width: 700px;
+    margin: 3rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-group a {
+    text-decoration: none;
+    color: #fff;
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <meta charset="UTF-8">
+        <title>Adicionar Restaurante</title>
+
+        <!-- Logotipo -->
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- CSS-->
+        <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantAdd.css">
+    </head>
+    <body>
+        <div class="container">
+            <!-- Inclusão da NavBar -->
+            <%- include('../../navBar.ejs') %>
+            
+            <div class="add-restaurant-container">
+                <h1>Editar <%= restaurant.name %></h1>
+                <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
+                <!-- enctype="multipart/form-data" -->
+                <form action="/restaurants/updatRestaurant/<%= restaurant._id %>" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nome:</label>
+                        <input type="text" 
+                        name="name" 
+                        id="name" 
+                        class="form-control"
+                        placeholder="Introduza o nome do restaurante" 
+                        maxlength="100" 
+                        pattern="^(?!.*[\\/]).+$"
+                        value="<%= restaurant.name %>"
+                        required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sigla" class="form-label">Sigla:</label>
+                        <input type="text" 
+                        name="sigla" 
+                        id="sigla" 
+                        class="form-control" 
+                        placeholder="Introduza a sigla do restaurante" 
+                        value="<%= restaurant.sigla %>"
+                        maxlength="10">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nif" class="form-label">NIF:</label>
+                        <input type="tel" 
+                        name="nif" 
+                        id="nif" 
+                        class="form-control" 
+                        placeholder="Introduza o NIF" 
+                        pattern="[0-9]{9}" 
+                        title="O NIF deve ter 9 dígitos"
+                        value="<%= restaurant.nif %>"
+                        required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Telefone:</label>
+                        <input type="tel" 
+                        name="phoneNumber" 
+                        id="phoneNumber" 
+                        class="form-control" 
+                        placeholder="Introduza o número telefónico"  
+                        pattern="[0-9]{9}" 
+                        title="O telefone deve ter 9 dígitos"
+                        value="<%= restaurant.perfil.phoneNumber %>"
+                        required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" 
+                        name="email" 
+                        id="email" 
+                        class="form-control" 
+                        placeholder="Introduza o email do restaurante" 
+                        pattern="([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})*"
+                        maxlength="50" 
+                        value="<%= restaurant.perfil.email %>"
+                        required>
+                    </div>
+                    
+                    <script src="/javascript/desencriptarPass.js"></script>
+
+                    <div class="mb-3">
+                        <label for="street" class="form-label">Morada:</label>
+                        <input type="text" 
+                        name="street" 
+                        id="street" 
+                        class="form-control" 
+                        placeholder="Introduza a sua morada" 
+                        maxlength="250" 
+                        value="<%= restaurant.address.street %>"
+                        required>
+                    </div>
+                    
+
+                    <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="postal_code" class="form-label">Código postal:</label>
+                        <input type="text" 
+                        name="postal_code" 
+                        id="postal_code" 
+                        class="form-control" 
+                        placeholder="Ex: 1234-567" 
+                        pattern="[0-9]{4}-[0-9]{3}"
+                        value="<%= restaurant.address.postal_code %>"
+                        required >
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="city" class="form-label">Cidade:</label>
+                        <input type="text" 
+                        name="city" 
+                        id="city" 
+                        class="form-control" 
+                        placeholder="Introduza o nome da sua cidade"
+                        maxlength="100" 
+                        pattern="[a-zA-Z\s]+" 
+                        title="Apenas letras e espaços"
+                        value="<%= restaurant.address.city %>"
+                        required>
+                    </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrição:</label>
+                        <textarea name="description" 
+                        id="description" 
+                        class="form-control" 
+                        placeholder="Introduza uma descrição" 
+                        maxlength="500"><%= restaurant.description %></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Foto de perfil</label>
+                        <img src="<%=restaurant.perfil.perfilPhoto %>" alt="Foto de perfil">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="perfilPhoto" class="form-label">Foto do restaurante:</label>
+                        <input type="file" 
+                        accept="image/*" 
+                        name="perfilPhoto" 
+                        id="perfilPhoto" 
+                        class="form-control"
+                        >
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="reset" class="btn btn-secondary">Limpar</button>
+                        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+                    </div>                    
+                </form>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

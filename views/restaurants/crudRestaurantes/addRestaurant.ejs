@@ -1,150 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
     <head>
-
+        <meta charset="UTF-8">
         <title>Adicionar Restaurante</title>
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous" id="bootstrap-css">
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- CSS-->
+        <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantAdd.css">
     </head>
-
     <body>
-        <div class="containter">
-            <div class="row-md-6">
+        <div class="container">
+            <!-- Inclusão da NavBar -->
+            <%- include('../../navBar.ejs') %>
+            
+            <div class="add-restaurant-container">
                 <h1>Adicionar novo Restaurante</h1>
-            </div>
-
-            <div class="row-md-6">
-                <p><a href="/restaurants">Voltar</a></p>
-            </div>
-
-            <div class="row-md-6">
-                <!-- Falta meter foto-->
-                <form action="/restaurants/saveRestaurant" method="POST" >
-                    <div class="row-md-6">
-                        <label for="name">Nome: </label>
+                <!-- enctype="multipart/form-data" -->
+                <form action="/restaurants/saveRestaurant" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
                         name="name" 
-                        id="name"
-                        placeholder="Introduza o nome do restaurante"
-                        maxlength="100"
+                        id="name" 
+                        class="form-control"
+                        placeholder="Introduza o nome do restaurante" 
+                        maxlength="100" 
+                        pattern="^(?!.*[\\/]).+$"
+                        title="O nome não pode conter os caracteres '/' ou '\' "
                         required>
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="sigla">Sigla</label>
+                    <div class="mb-3">
+                        <label for="sigla" class="form-label">Sigla:</label>
                         <input type="text" 
                         name="sigla" 
-                        id="sigla"
-                        placeholder="Introduza a sigla do Restaurante"
-                        maxlength="10"
-                        >
+                        id="sigla" 
+                        class="form-control" 
+                        placeholder="Introduza a sigla do restaurante" 
+                        maxlength="10">
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="nif">NIF:</label>
-                        <input type="number" 
+                    <div class="mb-3">
+                        <label for="nif" class="form-label">NIF:</label>
+                        <input type="tel" 
                         name="nif" 
-                        id="nif"
-                        placeholder="Introduza o NIF"
-                        min="000000001"
-                        max="999999999"
-                        minlength="9"
-                        maxlength="9"
+                        id="nif" 
+                        class="form-control" 
+                        placeholder="Introduza o NIF" 
+                        pattern="[0-9]{9}" 
+                        title="O NIF deve ter 9 dígitos"
                         required>
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="phoneNumber">Telefone: </label>
-                        <input type="number" 
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        placeholder="Introduza o numero Telefonico"
-                        min="000000001"
-                        max="999999999"
-                        maxlength="9"
-                        minlength="9"
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Telefone:</label>
+                        <input type="tel" 
+                        name="phoneNumber" 
+                        id="phoneNumber" 
+                        class="form-control" 
+                        placeholder="Introduza o número telefónico"  
+                        pattern="[0-9]{9}" 
+                        title="O telefone deve ter 9 dígitos"
                         required>
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="email">Email: </label>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
                         <input type="email" 
                         name="email" 
-                        id="email"
-                        placeholder="Introduza o email do restaurante"
+                        id="email" 
+                        class="form-control" 
+                        placeholder="Introduza o email do restaurante" 
+                        pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                        maxlength="50" 
                         required>
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="password">Password: </label>
-                        <input type="text"
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" 
                         name="password"
-                        id="password"
-                        placeholder="Introduza a password do restaurante"
-                        minlength="8"
+                        id="password" 
+                        class="form-control" 
+                        placeholder="Introduza a password do restaurante" 
+                        minlength="8" 
                         required>
                     </div>
 
-                    <div class="row-md-6">
-                        <label for="address">Morada: </label>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmar Password:</label>
+                        <input type="password" 
+                        name="confirmPassword" 
+                        id="confirmPassword" 
+                        class="form-control" 
+                        placeholder="Introduza a password novamente" 
+                        minlength="8" 
+                        required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="street" class="form-label">Morada:</label>
                         <input type="text" 
-                        name="address"
-                        id="address"
-                        placeholder="Introduza a sua morada"
-                        maxlength="250"
+                        name="street" 
+                        id="street" 
+                        class="form-control" 
+                        placeholder="Introduza a sua morada" 
+                        maxlength="250" 
                         required>
                     </div>
 
-                    <div class="row-md-6">
+                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="postal_code">Código postal:</label>
+                            <label for="postal_code" class="form-label">Código postal:</label>
                             <input type="text" 
                             name="postal_code" 
-                            id="postal_code"
-                            placeholder="Introduza o código Postal"
-                            minlength="8"
-                            maxlength="8"
+                            id="postal_code" 
+                            class="form-control" 
+                            placeholder="Ex: 1234-567" 
                             pattern="[0-9]{4}-[0-9]{3}"
-                            required>
+                            required >
                         </div>
 
                         <div class="col-md-6">
-                            <label for="city">Cidade:</label>
+                            <label for="city" class="form-label">Cidade:</label>
                             <input type="text" 
                             name="city" 
-                            id="city"
+                            id="city" 
+                            class="form-control" 
                             placeholder="Introduza o nome da sua cidade"
-                            maxlength="100"
-                            pattern="[a-zA-Z\s]*"
+                            maxlength="100" 
+                            pattern="[a-zA-Z\s]+" 
+                            title="Apenas letras e espaços"
                             required>
                         </div>
-
-                        <div class="row-md-6">
-                            <label for="description">Descrição:</label>
-                            <input type="text" 
-                            name="description" 
-                            id="description"
-                            placeholder="Introduza uma descrição"
-                            maxlength="500">
-                        </div>
-
-                        <div class="row-md-6">
-                            <label for="photoPerfil">Photo do restaurante</label>
-                            <input type="file" 
-                            accept="image/*"
-                            name="photo" 
-                            id="photo">
-                        </div>
-
-                        <div class="row-md-6">
-                            <button type="submit">Guardar</button>
-                            <button><a href="/restaurants/addRestaurant">Clear</a></button>
-                        </div>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrição:</label>
+                        <textarea name="description" 
+                        id="description" 
+                        class="form-control" 
+                        placeholder="Introduza uma descrição" 
+                        maxlength="500"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="perfilPhoto" class="form-label">Foto do restaurante:</label>
+                        <input type="file" 
+                        accept="image/*" 
+                        name="perfilPhoto" 
+                        id="perfilPhoto" 
+                        class="form-control"
+                        required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="reset" class="btn btn-secondary">Limpar</button>
+                        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+                    </div>
+                    
                 </form>
             </div>
         </div>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

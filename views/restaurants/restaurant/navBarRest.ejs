@@ -4,8 +4,12 @@
       <div class="d-flex align-items-center">
         <a class="navbar-brand d-flex align-items-center" href="#">
           <!-- Depois meter logo do restaurant -->
-          <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site">
-          <span class="brand-name">Nome Restaurante!!! e Logo!!!!</span>
+          <% if(restaurant.perfil.perfilPhoto != "") {%>
+            <img src="<%=restaurant.perfil.perfilPhoto%>" alt="Logo do restaurant">  
+          <%} else {%> 
+            <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site">
+          <%}%>
+          <span class="brand-name"><%= restaurant.name %></span>
         </a>
       </div>
 

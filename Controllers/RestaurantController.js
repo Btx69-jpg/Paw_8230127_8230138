@@ -45,10 +45,16 @@ async function renderEditDish(res, dish) {
     }
 }
 
-restaurantController.homePage = function(req, res) {
+restaurantController.homePage = async function(req, res) {
     //Copiar o veiw da ficha6, para mostar apenas 1 restaurante e mandar no render
     //Depois meter res.redirect("/employees/show/" + employee._id);
-    res.render("restaurants/restaurant/homepage");
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        res.render("restaurants/restaurant/homepage", { restaurant: restaurant });
+    } catch (err) {
+        console.log("Erro: ", err);
+        res.status(500).send("Erro interno no servidor");
+    }
 };
 
 //Permite visualizar um menu especifico de um restaurante
@@ -72,8 +78,14 @@ restaurantController.showMenu = function(req, res) {
 };
 
 //Permite criar um novo menu no restaurante
-restaurantController.createMenu = function(req, res) {
-    res.render("restaurants/restaurant/createMenu");
+restaurantController.createMenu = async function (req, res) {
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant });
+    } catch (err) {
+        console.log("Erro: ", err);
+        res.status(500).send("Erro interno no servidor");
+    }
 };
 
 //Permite com detalhes o prato especifico de um menu

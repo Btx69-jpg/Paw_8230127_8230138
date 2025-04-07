@@ -9,55 +9,55 @@ var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carr
 /* Entra na Home Page do restaurante
 (vai ter de carregar, o restaurante carregado na primeira página) */ 
 /*Depois trocar para /:restaurant */
-router.get('/restaurant', function(req, res) {
+router.get('/:restaurant', function(req, res) {
     restaurant.homePage(req, res);
 });
 
 /*Depois trocar para /:restaurant/:comments */
-router.get('/restaurant/comments', function(req, res) {
+router.get('/:restaurant/comments', function(req, res) {
     restaurant.comments(req, res);
 });
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
-router.get('/restaurant/menu', function(req, res) {
+router.get('/:restaurant/menu', function(req, res) {
     restaurant.showMenu(req, res);
 });
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
-router.get('/restaurant/menu/createMenu', function(req, res) {
+router.get('/:restaurant/createMenu', function(req, res) {
     restaurant.createMenu(req, res);
 });
 
 //Permite criar uma nova dish
 /*Depois trocar para /:restaurant/:menu/createDish */
-router.get('/restaurant/menu/createDish', function(req, res) {
+router.get('/:restaurant/menu/createDish', function(req, res) {
     restaurant.createDish(req, res);
 });
 
-router.post('/restaurant/menu/saveDish', function(req, res) {
+router.post('/:restaurant/menu/saveDish', function(req, res) {
     restaurant.saveDish(req, res);
 });
 
 /*Depois trocar para /:restaurant/:menu/:prato */
-router.get('/restaurant/menu/showDish/:id', function(req, res) {
+router.get('/:restaurant/menu/showDish/:id', function(req, res) {
     restaurant.showDish(req, res);
 });
 
 /*Depois trocar para /:restaurant/:menu/:prato 
 Falta fazer
 */
-router.get('/restaurant/menu/editDish/:id', function(req, res) {
+router.get('/:restaurant/menu/editDish/:id', function(req, res) {
     restaurant.editDish(req, res);
 });
 
 /*Falta fazer */
-router.post('/restaurant/menu/updateDish/:id', function(req, res) {
+router.post('/:restaurant/menu/updateDish/:id', function(req, res) {
     restaurant.updateDish(req, res);
 });
 
 /*Falta fazer */
-router.post('/restaurant/menu/deleteDish/:id', function(req, res) {
+router.post('/:restaurant/menu/deleteDish/:id', function(req, res) {
     restaurant.deleteDish(req, res);
 });
 

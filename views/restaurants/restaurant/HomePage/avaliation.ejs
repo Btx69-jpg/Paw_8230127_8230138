@@ -1,39 +1,29 @@
-<!-- Avaliações -->
-<div class="row">
-    <div class="col-12">
-      <h1 class="mb-4">Avaliações</h1>
+<div class="row bg-white p-4 rounded shadow mb-4">
+    <div class="col-12 mb-3">
+        <h2 class="section-title text-center">Avaliações</h2>
     </div>
-</div>
-  
-<!-- Cards de avaliação -->
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <!-- Trocar para imagem de do menu-->
-            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
-            <div class="card-body">
+    <% if (restaurant.comments.length > 0) { %>
+        <div class="row">
+       
+        <%for (let i = 0; i < restaurant.comments.length; i++) {%>
+            <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="/images/restaurant1.jpg" class="card-img-top" alt="Avaliação">
+                <div class="card-body">
                 <h5 class="card-title">Avaliação Crítica</h5>
-                <p class="card-text">Comida deliciosa e entrega rápida.</p>
-                <p>Stars</p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
+                <p class="card-text"></p>
+                <p class="card-text">Stars:</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <!-- Trocar para imagem de do menu-->
-            <img src="/images/restaurant1.jpg" class="card-img-top" alt="Restaurante 1">
-            <div class="card-body">
-                <h5 class="card-title">Avaliação Baixa</h5>
-                <p class="card-text">Comida fraca.</p>
-                <p>Stars</p>  <!-- Depois pesquisar como faço para meter sistema de estrelas, mas neste caso estetico-->
             </div>
+        <% } %>
         </div>
-    </div>
-</div>
-
-    <!--Botão que direciona para ver todos os restaurantes-->
-<div class="container text-center mb-5">
-    <!-- Trocar depois o href mais especificamente o /restaurant/-->
-    <a href="/restaurants/restaurant/comments" class="btn btn-primary" id="moreRestaurants">Ver todas as avaliações</a>
+        <div class="text-center">
+            <a href="/restaurants/<%= restaurant.name %>/comments/" class="btn btn-primary">Ver todas as avaliações</a>
+        </div>
+    <% } else { %>
+        <div class="col-12">
+        <p class="text-center">O restaurante ainda não tem avaliações</p>
+        </div>
+    <% } %>
 </div>
