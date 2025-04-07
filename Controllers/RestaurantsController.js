@@ -318,9 +318,10 @@ restaurantsController.updatRestaurant = async (req, res) => {
         console.log(pathPerfilPhoto);
         console.log(perfilPhoto);
         console.log(caminhoCorrigido);
+
         /*
-        O 1º if acontece quando não se altera a imagem (nao funciona)
-        O 2º if, quando se altera a imagem (nao funciona)
+        O 1º if acontece quando não se altera a imagem 
+        O 2º if, quando se altera a imagem 
         */
         if (pathNewImg === '' && restaurant.name !== req.body.name) {
             console.log("Inicio update")
@@ -365,7 +366,6 @@ restaurantsController.updatRestaurant = async (req, res) => {
 };
 
 restaurantsController.editPassword = async (req, res) => {
-    //Em caso de erro voltar para a pagina de edit
    const restaurantId = req.params.restaurantId;
    const restaurant = await Restaurant.findOne({ _id: restaurantId }).exec();
     try {   
