@@ -1,18 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../Controllers/LoginController.js");
+const loginController = require("../Controllers/LoginController.js");
 
 // Página de login
-router.get("/login", userController.login);
-
-// Página de registo
-router.get("/signUp", userController.signup);
-
-// Registo de utilizador
-router.post("/signUp", userController.save);
+router.get("/", loginController.login);
 
 // Autenticação de utilizador
-router.post("/login", userController.authenticate, (req, res) => {
+router.post("/", loginController.authenticate, (req, res) => {
     req.flash("success_msg", "Login realizado com sucesso!");
     res.redirect("/");
 });

@@ -11,17 +11,17 @@
                 <% if (!user) { %>
                     <% if (currentPage === 'homepage') { %>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login/signUp">Sign up</a>
+                            <a class="nav-link" href="/signUp">Sign up</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login/login">Login</a>
+                            <a class="nav-link" href="/login">Login</a>
                         </li>
                     <% } else { %>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login/signUp">Sign up</a>
+                            <a class="nav-link" href="/signUp">Sign up</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login/login">Login</a>
+                            <a class="nav-link" href="/login">Login</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<%= previousPage %>">Voltar</a>

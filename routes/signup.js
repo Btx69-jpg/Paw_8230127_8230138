@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var sign = require("../Controllers/SignUpController.js"); // Aqui carrego o controller que quero usar
+const signUpController = require("../Controllers/SignUpController.js");
 
-// Entra na pagina de registo
-router.get('/', function(req, res) {
-  sign.signup(req, res);
-});
+// Página de registo
+router.get("/", signUpController.signup);
+
+// Registo de utilizador
+router.post("/", signUpController.save);
 
 module.exports = router;
