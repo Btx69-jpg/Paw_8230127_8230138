@@ -332,7 +332,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
             console.log(caminhoCorrigido);
             console.log("Fim do update")
         } else if (perfilPhoto !== newImage) {
-            if(restaurant.name !== req.body.name) {
+            if (restaurant.name !== req.body.name) {
                 newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
             } else {
                 newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
