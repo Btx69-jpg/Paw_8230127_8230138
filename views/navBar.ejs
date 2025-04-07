@@ -39,9 +39,23 @@
                             <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">Log Out</a>
+                            <a class="nav-link" href="/login/logOut">Log Out</a>
                         </li>
-                    <% } else { %>
+                        <% } else if (currentPage === '/checkOut') { %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.profilePicture || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login/logOut">Log Out</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<%= previousPage %>">Voltar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Main Page</a>
+                            </li>
+                    
+                        <% } else { %>
                         <li class="nav-item">
                             <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.profilePicture || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
                         </li>
@@ -49,7 +63,7 @@
                             <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">Log Out</a>
+                            <a class="nav-link" href="/login/logOut">Log Out</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<%= previousPage %>">Voltar</a>

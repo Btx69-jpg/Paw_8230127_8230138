@@ -17,4 +17,15 @@ router.post("/login", userController.authenticate, (req, res) => {
     res.redirect("/");
 });
 
+router.get("/logOut", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.status(500).send("Erro ao fazer logout.");
+        }
+        req.flash("success_msg", "Logout realizado com sucesso!");
+        res.redirect("/");
+    });
+});
+
 module.exports = router;

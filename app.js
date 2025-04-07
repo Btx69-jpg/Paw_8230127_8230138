@@ -32,8 +32,6 @@ var restaurants = require('./routes/restaurants'); // Aqui carrego o controller 
 var restaurant = require('./routes/restaurant');
 var checkOut = require('./routes/checkOut'); // Aqui carrego o controller que quero usar
 
-var app = express();
-
 // Configuração da sessão (ajuste conforme necessário)
 app.use(session({
   secret: 'TrabalhoPaw',
@@ -56,10 +54,13 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+  // Se a requisição for para arquivos estáticos (imagens, CSS, JS), não redefine currentPage
+  if (req.path.startsWith('/images') || req.path.startsWith('/css') || req.path.startsWith('/js')) {
+    return next();
+  }
   res.locals.currentPage = req.path === '/' ? 'homepage' : req.path;
   res.locals.previousPage = req.headers.referer || '/';
   res.locals.user = req.user || null;
-
   console.log('User:', res.locals.user);
   console.log('Current Page:', res.locals.currentPage);
   console.log('Previous Page:', res.locals.previousPage);

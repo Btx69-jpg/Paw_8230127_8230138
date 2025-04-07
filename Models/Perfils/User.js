@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var AddressOrder = require("../Reusable/AddressOrder");
-var Perfil = require("../Reusable/Perfil")
+var Perfil = require("../Reusable/Perfil");
+const Order = require('../Orders/Order');
 
 // Faz com que os schemas destes documentos fique embutido no documento. 
 
@@ -31,6 +32,10 @@ var UserSchema = new mongoose.Schema({
         type: [AddressOrder.schema],
         default: [] //Inicializa com o array vazio
     },      
+    cart: {
+        type: Order.schema,
+        default: [], // Inicializa com um array vazio
+    },
     birthdate: {
         type: Date,
         min: ['1900-01-01', 'A data mínima é 1900-01-01'],

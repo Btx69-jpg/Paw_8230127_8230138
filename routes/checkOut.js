@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-// Página de checkout
-router.get("/checkOut", function(req, res) {
-    res.render("/checkOut");
-});
+router.get('/', (req, res) => {
+    const cart = res.locals.user.cart || { items: [] }; // Garante que cart tem a estrutura esperada
+    res.render('checkout', { cart: cart });
+  });
+  
+module.exports = router;
