@@ -4,6 +4,7 @@ var Order = require("../Orders/Order");
 var PerfilSchema = new mongoose.Schema({
     perfilPhoto: {
         type: String,
+        default: "",
     },
     email:{
         type: String,
@@ -20,17 +21,16 @@ var PerfilSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         min: [0, 'O valor minimo do contador é 0'],
-        required: true,
     },
     historicOrders: {
         type: [Order.schema],
         default: [], 
-//        required: true,
     },
     priority: {
-        type: Number, // ✅ Alterado para String
-        enum: ['Cliente', 'Admin'],  // ✅ Agora a enumeração está correta
+        type: Number,
+        enum: ['Cliente', 'Admin', 'Restaurant'],
         default: 'Cliente',
+        required: true,
     },
     updated_at: { type: Date, default: Date.now },
 });

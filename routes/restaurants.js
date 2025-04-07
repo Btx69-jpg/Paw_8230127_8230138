@@ -17,7 +17,7 @@ router.get('/createRestaurant', function(req, res) {
     restaurants.createRestaurant(req, res);
 });
 
-router.get('/saveRestaurant', function(req, res) {
+router.post('/saveRestaurant', function(req, res) {
     restaurants.saveRestaurant(req, res);
 });
 /*Depois criar os get e post para criar os varios restaurantes */

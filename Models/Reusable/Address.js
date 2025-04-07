@@ -22,7 +22,6 @@ var AddressSchema = new mongoose.Schema({
     city: {
         type: String,
         maxlength: [100, 'O nome da cidade deve ter no máximo 100 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para a cidade'],
         required: true,
     },
     updated_at: { type: Date, default: Date.now },

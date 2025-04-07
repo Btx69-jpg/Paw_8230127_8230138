@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var Address = require("../Reusable/Address");
 var Perfil = require("../Reusable/Perfil");
 var Comment = require("../Comments/Comment");
+var Menu = require("../Menus/Menu");
 
 var RestaurantSchema = new mongoose.Schema({
     name: {
@@ -38,6 +39,17 @@ var RestaurantSchema = new mongoose.Schema({
     description: {
         type: String,
         maxlength: [500, 'A descrição deve ter no máximo 500 caracteres'],
+    },
+    countMenus: {
+        type: Number,
+        default: 0,
+        min: [0, 'O número mínimo de menus é 0'],
+        required: true,
+    },
+    menus: {
+        type: [Menu.schema],
+        default: [], //Inicializa com o array vazio
+        required: true,
     },
     countComments: {
         type: Number,
