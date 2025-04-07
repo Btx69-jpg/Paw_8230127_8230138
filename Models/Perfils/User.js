@@ -33,7 +33,7 @@ var UserSchema = new mongoose.Schema({
         default: [] //Inicializa com o array vazio
     },      
     cart: {
-        type: Order.schema,
+        type: [Order.schema],
         default: [], // Inicializa com um array vazio
     },
     birthdate: {

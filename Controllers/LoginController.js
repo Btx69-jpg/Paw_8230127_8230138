@@ -27,11 +27,11 @@ userController.findOne = async (email) => {
 // Salva um novo usuário
 userController.save = async (req, res) => {
     try {
-        const { firstName, lastName, email, telefone, password, confirmPassword } = req.body;
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword ,cart} = req.body;
         let errors = [];
 
         // Validações
-        if (!firstName || !lastName || !email || !password || !telefone) {
+        if (!firstName || !lastName || !email || !password || !phoneNumber) {
             errors.push({ texto: "Todos os campos são obrigatórios!" });
         }
         if (password.length < 8) {
@@ -57,17 +57,16 @@ userController.save = async (req, res) => {
 
         // Criação do perfil
         const perfil = new Perfil({
+            phoneNumber: phoneNumber,
             email: email,
             password: hashedPassword,
             priority: "Cliente",
-            telefone: telefone,
         });
 
         const newUser = new User({
             firstName,
             lastName,
             perfil: perfil,
-            email,
             password: hashedPassword
         });
         console.log(newUser);
