@@ -27,11 +27,11 @@ userController.findOne = async (email) => {
 // Salva um novo usuário
 userController.save = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, confirmPassword } = req.body;
+        const { firstName, lastName, email, telefone, password, confirmPassword } = req.body;
         let errors = [];
 
         // Validações
-        if (!firstName || !lastName || !email || !password) {
+        if (!firstName || !lastName || !email || !password || !telefone) {
             errors.push({ texto: "Todos os campos são obrigatórios!" });
         }
         if (password.length < 8) {
@@ -59,7 +59,8 @@ userController.save = async (req, res) => {
         const perfil = new Perfil({
             email: email,
             password: hashedPassword,
-            priority: rolemap["Cliente"]
+            priority: "Cliente",
+            telefone: telefone,
         });
 
         const newUser = new User({
@@ -69,6 +70,7 @@ userController.save = async (req, res) => {
             email,
             password: hashedPassword
         });
+        console.log(newUser);
 
         await newUser.save();
 
