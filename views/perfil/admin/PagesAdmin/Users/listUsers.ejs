@@ -40,9 +40,15 @@
                             <button type="submit" class="btn btn-primary">Editar</button>
                         </form>
 
-                        <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
-                            <button type="submit" class="btn btn-primary">Banir</button>
-                        </form>
+                        <% if(users[i].perfil.banned) { %>
+                            <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                                <button type="submit" class="btn btn-primary">Desbanir</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                                <button type="submit" class="btn btn-primary">Banir</button>
+                            </form>
+                        <% } %>
                     </div>
 
                     <p class="mt-3">
