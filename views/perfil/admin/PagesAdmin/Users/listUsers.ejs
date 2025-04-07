@@ -18,10 +18,10 @@
         <div class="container">
         <h1 class="text-center my-4">Lista de Utilizadores</h1>
 
-        <!-- Verificas se os links estão bem
-        Meter para caso esteja banido, aparecer o botão de desban, e caso não esteja banido
-        o botão de banido 
-        -->
+        <!-- Validar links-->
+        <div class="d-flex justify-content-center mb-4">
+            <a href="/admin/listCategories/createCategory" class="btn btn-success">Adicionar Utilizador</a>
+          </div>
         <% if (users.length > 0) { %>
             <div class="row justify-content-center">
             <% for(let i = 0; i < users.length; i++) { %>
