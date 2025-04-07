@@ -18,7 +18,7 @@
             <div class="add-restaurant-container">
                 <h1>Adicionar novo Restaurante</h1>
                 <!-- enctype="multipart/form-data" -->
-                <form action="/restaurants/saveRestaurant" method="POST" enctype="multipart/form-data">
+                <form action="<%= page.action%>" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 

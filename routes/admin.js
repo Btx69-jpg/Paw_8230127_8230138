@@ -30,6 +30,18 @@ router.get("/listCategories/createCategory", function(req, res) {
     categoriesController.createCategory(req, res);
 });
 
+router.post("/listCategories/saveCategory", function(req, res) {
+    categoriesController.saveCategory(req, res);
+});
+
+router.get("/listCategories/editCategory/:categoryId", function(req, res) {
+    categoriesController.editCategory(req, res);
+});
+
+router.post("/listCategories/updatCategory/:categoryId", function(req, res) {
+    categoriesController.updatCategory(req, res);
+});
+
 router.post("/listCategories/deletetCategory/:categoryId", function(req, res) {
     categoriesController.deleteCategory(req, res);
 });
