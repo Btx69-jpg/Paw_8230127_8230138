@@ -31,6 +31,11 @@ var PerfilSchema = new mongoose.Schema({
         enum: ['Cliente', 'Admin', 'Restaurant'],
         required: true,
     },
+    banned: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

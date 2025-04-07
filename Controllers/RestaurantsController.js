@@ -87,22 +87,12 @@ async function updateImage(req, res, restaurant) {
                 let path = "public/images/Restaurants/" + restaurant.name + "/";
                 let newPath = "";
                 
-                console.log();
-                console.log();
-                console.log();
-                console.log();
-                console.log("----------------------------------------------------------------");
-                console.log(restaurant.name);
-                console.log(req.body.name);
-                
                 if(restaurant.name !== req.body.name) {
                     newPath = "public/images/Restaurants/" + req.body.name;
                     updateFile(path, newPath);
                 } else {
                     newPath = path;
                 }
-                
-                console.log(newPath);
                 
                 cb(null, newPath);
             },
@@ -295,8 +285,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
 
         //Altera a pasta e tem de alterar também o caminho para a logo
         //Dasdos da nova imagem
-        let pathNewImg = req.file?.path || '';
-        console.log(pathNewImg);
+        let pathNewImg = req.file?.path || '';;
         let newImage = '';
 
         if(pathNewImg !== '') {
@@ -308,29 +297,16 @@ restaurantsController.updatRestaurant = async (req, res) => {
         let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
         let caminhoCorrigido = restaurant.perfil.perfilPhoto;
         const perfilPhoto = pathR.basename(caminhoCorrigido); //Saca a imagem do caminho
-        
-        //Validar variaveis
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log("----------------------------------------------------------------");
-        console.log(pathPerfilPhoto);
-        console.log(perfilPhoto);
-        console.log(caminhoCorrigido);
 
         /*
         O 1º if acontece quando não se altera a imagem 
         O 2º if, quando se altera a imagem 
         */
         if (pathNewImg === '' && restaurant.name !== req.body.name) {
-            console.log("Inicio update")
-            newFile = "public/images/Restaurants/" + req.body.name;
+            newFile = "public/images/Restaurants/" + req.body.named;
             await updateFile(pathPerfilPhoto, newFile);
             newFile = newFile + "/" + perfilPhoto;
             caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
-            console.log(caminhoCorrigido);
-            console.log("Fim do update")
         } else if (perfilPhoto !== newImage) {
             if (restaurant.name !== req.body.name) {
                 newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
@@ -426,7 +402,6 @@ As pastas estão a voltar a não ser removidas
 */
 restaurantsController.removeRestaurant = async (req, res) => {
     try {
-        console.log(req.params.restaurant)
         await Restaurant.deleteOne({ name: req.params.restaurant });
         deletepackage(`public/images/Restaurants/${req.params.restaurant}/`);
         console.log("Restaurante eliminado!");
