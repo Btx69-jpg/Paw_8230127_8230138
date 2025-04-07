@@ -285,37 +285,42 @@ restaurantsController.updatRestaurant = async (req, res) => {
 
         //Altera a pasta e tem de alterar também o caminho para a logo
         //Dasdos da nova imagem
-        let pathNewImg = req.file?.path || '';;
-        let newImage = '';
-
-        if(pathNewImg !== '') {
-            newImage =  pathR.basename(pathNewImg);
-        }
-
-        //Dados da imagem guardada no mongoDb
-        let newFile = "";
-        let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
         let caminhoCorrigido = restaurant.perfil.perfilPhoto;
-        const perfilPhoto = pathR.basename(caminhoCorrigido); //Saca a imagem do caminho
+        let pathNewImg = req.file?.path || '';
 
-        /*
-        O 1º if acontece quando não se altera a imagem 
-        O 2º if, quando se altera a imagem 
-        */
-        if (pathNewImg === '' && restaurant.name !== req.body.name) {
-            newFile = "public/images/Restaurants/" + req.body.named;
-            await updateFile(pathPerfilPhoto, newFile);
-            newFile = newFile + "/" + perfilPhoto;
-            caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
-        } else if (perfilPhoto !== newImage) {
-            if (restaurant.name !== req.body.name) {
-                newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
-            } else {
-                newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
+
+        if (restaurant.name !== req.body.name || pathNewImg !== '') {
+            let newImage = '';
+
+            if (pathNewImg !== '') {
+                newImage =  pathR.basename(pathNewImg);
             }
-
-            deleteImage(`public/images/Restaurants/${req.body.name}/${perfilPhoto}`);
-            caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+    
+            //Dados da imagem guardada no mongoDb
+            let newFile = "";
+  
+            const perfilPhoto = pathR.basename(caminhoCorrigido); //Saca a imagem do caminho
+    
+            /*
+            O 1º if acontece quando não se altera a imagem 
+            O 2º if, quando se altera a imagem 
+            */
+            if (pathNewImg === '' && restaurant.name !== req.body.name) {
+                newFile = "public/images/Restaurants/" + req.body.named;
+                let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
+                await updateFile(pathPerfilPhoto, newFile);
+                newFile = newFile + "/" + perfilPhoto;
+                caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+            } else if (perfilPhoto !== newImage) {
+                if (restaurant.name !== req.body.name) {
+                    newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
+                } else {
+                    newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
+                }
+    
+                deleteImage(`public/images/Restaurants/${req.body.name}/${perfilPhoto}`);
+                caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+            }
         }
 
         await Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
