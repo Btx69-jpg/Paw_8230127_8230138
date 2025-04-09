@@ -99,13 +99,14 @@ restaurantController.saveMenu = async function(req, res) {
         return res.status(404).send("Restaurante não encontrado");
       }
   
+      console.log(req.body)
       // Importante: Considere usar o nome correto do campo para o tipo do menu.
       // No formulário, o campo é "type", não "menuType"
       let menuType = req.body.type;
   
       // Recupera os pratos enviados no formulário
       let dishes = req.body.dishes;
-  
+      console.log(dishes);
       // Verifica se foram enviados pratos
       if (!dishes) {
         return res.status(400).send("Nenhum prato foi enviado");
