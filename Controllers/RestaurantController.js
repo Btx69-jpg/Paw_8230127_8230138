@@ -91,57 +91,68 @@ restaurantController.createMenu = async function (req, res) {
     }
 };
 
-restaurantController.saveMenu = function(req, res) {
-    
-    
-    /*
-        storage = multer.diskStorage({
-            destination: function (req, file, cb) {
-                cb(null, 'public/images/')
-            },
-            filename: function (req, file, cb) {
-                cb(null, `${Date.now()}-${file.originalname}`)
-            }
+restaurantController.saveMenu = async function(req, res) {
+    try {
+      // Busca o restaurante com base no parâmetro enviado na rota
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      if (!restaurant) {
+        return res.status(404).send("Restaurante não encontrado");
+      }
+  
+      // Importante: Considere usar o nome correto do campo para o tipo do menu.
+      // No formulário, o campo é "type", não "menuType"
+      let menuType = req.body.type;
+  
+      // Recupera os pratos enviados no formulário
+      let dishes = req.body.dishes;
+  
+      // Verifica se foram enviados pratos
+      if (!dishes) {
+        return res.status(400).send("Nenhum prato foi enviado");
+      }
+      
+      // Se houver apenas um prato, o body-parser pode não criar um array,
+      // então garantimos que 'dishes' seja sempre um array.
+      if (!Array.isArray(dishes)) {
+        dishes = [dishes];
+      }
+      
+      // Cria instâncias do modelo Dish para cada prato recebido
+      // (Caso deseje salvá-los individualmente no banco, poderá chamar dish.save())
+      let dishObjects = [];
+      for (let i = 0; i < dishes.length; i++) {
+        let dishData = dishes[i];
+        let dishObj = new Dish({
+          name: dishData.name,
+          description: dishData.description,
+          category: dishData.category,
+          price: dishData.price,
+          // photo: caminho (se houver o upload da foto configurado)
         });
-
-        let pathImage = req.file?.path || '';
-        const caminho = pathImage.replace(/^public[\\/]/, "");
-    */
-
-
-    let dishes[] = req.body.dishes; // Aqui é suposto vir um array de pratos
-
-    for (let index = 0; index < dishes.length; index++) {
-        let dish = new Dish({
-            name: dishes[index].name,
-            description: dishes[index].description,
-            category: dishes[index].category,
-            price: dishes[index].price,
-            photo: caminho
-        });
-        
-    }
-
-    let menu = new Menu({
+        dishObjects.push(dishObj);
+      }
+      
+      // Cria uma nova instância do menu
+      let menu = new Menu({
         name: req.body.name,
-        countDish: dishes.length,
-        type: req.body.menuType,
-        dishes: dishes
-    });
-
-    restaurant = req.params.restaurant;
-    restaurant.menus.push(menu); // Adiciona o menu ao restaurante
-    restaurant.save(function(err) {
-        if(err) {
-            console.log(err);
-            res.status(500).send("Erro ao guardar o menu no restaurante");
-        } else {
-            console.log("Menu guardado com sucesso no restaurante");
-            res.redirect("/restaurants/" + restaurant.name);
-        }
-    });
-
-}
+        countDish: dishObjects.length,
+        type: menuType, // Agora vem do req.body.type
+        dishes: dishObjects
+      });
+  
+      // Adiciona o menu ao restaurante encontrado
+      restaurant.menus.push(menu);
+      
+      // Salva o restaurante com o novo menu
+      await restaurant.save();
+  
+      console.log("Menu guardado com sucesso no restaurante");
+      res.redirect("/restaurants/" + restaurant.name);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Erro ao guardar o menu no restaurante");
+    }
+  };
 
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
