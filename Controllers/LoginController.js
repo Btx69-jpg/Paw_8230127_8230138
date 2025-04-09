@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const passport = require('passport');
 
-const User = require("../Models/Perfils/User");
-
-
-
 const loginController = {};
 
 // Renderiza página de login
