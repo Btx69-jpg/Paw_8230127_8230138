@@ -21,6 +21,11 @@ router.get("/listUsers", function(req, res) {
     userController.homePage(req, res);
 });
 
+/*Desbanir um user manualmente */
+router.post("/listUsers/desban/:userId", function(req, res) {
+    userController.desban(req, res);
+});
+
 /*Routers para as categorias */
 router.get("/listCategories", function(req, res) {
     categoriesController.homePage(req, res);

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>500 Error</title>
+  <style type="text/css">
+    html {
+        font-size: 62.5%;
+    }
+    body {
+        background-color: #fff;
+        color: #000;
+        font-family: helvetica, arial, sans-serif;
+        font-size: 1.4em;
+        line-height: 1.5;
+    }
+    .centered {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .gift {
+      font-size: 9em;
+      text-align: center;
+    }
+    .title {
+      font-size: 3em;
+      text-align: center;
+      line-height: 0em;
+      color: grey;
+    }
+    .text {
+      text-align: center;
+    }
+
+    .go-back a {
+      display: inline-block;
+      margin-top: 3em;
+      padding: 10px;
+      color: #1B1A1A;
+      font-weight: 700;
+      border: solid 2px #e7e7e7;
+      text-decoration: none;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .go-back a:hover {
+      border-color: #1B1A1A;
+    }
+  </style>
+</head>
+<body class="centered">
+  <div class="gift"><img src="/images/unicorn.gif" width=250></div>
+  <p class="title">Error 404!</p>
+  <p class="text">Esta Pagina não existe.</p>
+  <span class="go-back"><a href="<%= previousPage %>">Voltar</a></span>
+</body>
+</html>

@@ -32,27 +32,27 @@
                     <p class="mb-3">Telefone: <%= users[i].perfil.phoneNumber %></p>
                     <div class="btn-group d-flex justify-content-center">
                     
-                        <form action="/users/listUsers/deleteUser/<%= users[i]._id %>" method="POST">
+                        <form action="/admin/listUsers/deleteUser/<%= users[i]._id %>" method="POST">
                             <button type="submit" class="btn btn-danger">Remover</button>
                         </form>
                         
-                        <form action="/users/listUsers/editUser/<%= users[i]._id %>" method="GET">
+                        <form action="/admin/listUsers/editUser/<%= users[i]._id %>" method="GET">
                             <button type="submit" class="btn btn-primary">Editar</button>
                         </form>
 
-                        <% if(users[i].perfil.banned) { %>
-                            <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                        <% if (users[i].perfil.banned === true) { %>
+                            <form action="/admin/listUsers/desban/<%= users[i]._id %>" method="POST">
                                 <button type="submit" class="btn btn-primary">Desbanir</button>
                             </form>
                         <% } else { %>
-                            <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                            <form action="/admin/listUsers/banUser/<%= users[i]._id %>" method="GET">
                                 <button type="submit" class="btn btn-primary">Banir</button>
                             </form>
                         <% } %>
                     </div>
 
                     <p class="mt-3">
-                        <a href="/users/listUsers/showUser/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
+                        <a href="/admin/listUsers/showUser/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
                     </p>
                 </div>
                 </div>
