@@ -10,7 +10,7 @@ restaurantController.homePage = async function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.status(500).send("Problema a procurar pelos Restaurantes");
+            res.render('errors/error500', {error: "Problema a procurar pelos Restaurantes"});
         });   
 };
 

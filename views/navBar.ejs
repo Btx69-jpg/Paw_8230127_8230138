@@ -1,4 +1,6 @@
 <!-- navBar.ejs -->
+<!-- Troquei os Perfil/PerfilUser pelo /perfil que a ideia é que depois o router leia /perifl leve para a pagina
+selectPageUser, para que depois com base no tipo de user redirecionar para a sua pagina-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <img src="/images/Plataform/LogoSite/logo.png" alt="Logo" class="img-fluid" style="max-width: 50px;">
@@ -32,9 +34,13 @@
                     <% } %>
                 <% } else { %>
                     <% if (currentPage === 'homepage') { %>
+                        <!--
                         <li class="nav-item">
-                            <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
-                        </li>
+                             <a class="nav-link" href="/perfil"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                         </li>    
+                         -->
+                        
+                        <%- include('navBarPerfils') %>
                         <li class="nav-item">  
                             <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
@@ -42,32 +48,46 @@
                             <a class="nav-link" href="/login/logOut">Log Out</a>
                         </li>
                         <% } else if (currentPage === '/checkOut') { %>
+                            <!--
                             <li class="nav-item">
-                                <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                                <a class="nav-link" href="/perfil"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
                             </li>
+                            -->
+
+                            <%- include('navBarPerfils') %>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="/login/logOut">Log Out</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="<%= previousPage %>">Voltar</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="/">Main Page</a>
                             </li>
                     
                         <% } else { %>
+                        <!--
                         <li class="nav-item">
-                            <a class="nav-link" href="Perfil/PerfilUser.ejs"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="Perfil/PerfilUser.ejs" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+                             <a class="nav-link" href="/perfil"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>                            
                         </li>
+                        -->
+
+                        <%- include('navBarPerfils') %>
                         <li class="nav-item">
                             <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="/login/logOut">Log Out</a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="<%= previousPage %>">Voltar</a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="/">Main Page</a>
                         </li>

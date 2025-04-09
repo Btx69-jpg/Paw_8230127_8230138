@@ -1,0 +1,7 @@
+<% if ( user !== null)  { %>
+    <%if (user.perfil.priority === "Admin") { %>
+        <%- include('admin/adminPage') %>
+    <% } %>
+<% } else { %>
+    <%- include('../errors/error404') %>
+<% } %>

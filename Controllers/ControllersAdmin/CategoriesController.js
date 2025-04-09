@@ -69,7 +69,7 @@ categoriesController.saveCategory = async function(req, res) {
         await newCategory.save();
 
         console.log("Categoria guardada com sucesso");
-        res.redirect("/admin/listCategories")
+        res.redirect("/perfil/admin/listCategories")
     } catch(err) {
         console.log("Erro: ", err);
         res.render('perfil/admin/PagesAdmin/Categories/createCategories');
@@ -93,7 +93,7 @@ categoriesController.updatCategory = async function(req, res) {
         let category = await Category.findOne({_id: req.params.categoryId}).exec();
 
         if(!category) {
-            return res.status(500).send("A categoria não existe");
+            return res.render('errors/error500', {error: "A categoria não existe"});
         }
 
         const validation = await validationCategory(req.body.category);
@@ -107,7 +107,7 @@ categoriesController.updatCategory = async function(req, res) {
         await category.save();
 
         console.log("Categoria alterada com sucesso");
-        res.redirect("/admin/listCategories")
+        res.redirect("/perfil/admin/listCategories")
     } catch(err) {
         console.log("Erro: ", err);
         res.render('perfil/admin/PagesAdmin/Categories/editCategories', {category: req.body});
@@ -118,7 +118,7 @@ categoriesController.deleteCategory = async function(req, res) {
     try {
         await Category.deleteOne({ _id: req.params.categoryId });
         console.log("Categoria eliminada!");
-        res.redirect("/admin/listCategories");
+        res.redirect("/perfil/admin/listCategories");
     } catch (error) {
         console.log("Error", error);
         res.status(500).send("Problema a apagar o restaurante");

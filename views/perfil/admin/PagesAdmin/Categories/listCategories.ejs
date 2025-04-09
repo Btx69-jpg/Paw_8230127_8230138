@@ -1,6 +1,6 @@
 <!--Trocar o botão de adicionar pelo botão de aprovar restaurantes, ondes ao clicar leva para uma lista
 de restaurantes a aprovar para o admin aprovar ou rejeitar-->
-<% if(user !== null & user === "Admin") { %>
+<% if(user !== null & user.perfil.priority === "Admin") { %>
 <!DOCTYPE html>
 <html lang="pt-PT">
   <head>
@@ -24,7 +24,7 @@ de restaurantes a aprovar para o admin aprovar ou rejeitar-->
       <h1 class="text-center my-4">Lista de Categorias</h1>
 
       <div class="d-flex justify-content-center mb-4">
-        <a href="/admin/listCategories/createCategory" class="btn btn-success">Adicionar Categoria</a>
+        <a href="/perfil/admin/listCategories/createCategory" class="btn btn-success">Adicionar Categoria</a>
       </div>
 
       <% if (categories.length > 0) { %>
@@ -35,10 +35,10 @@ de restaurantes a aprovar para o admin aprovar ou rejeitar-->
                 <h5 class="mb-3"><%= categories[i].category %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/admin/listCategories/deletetCategory/<%= categories[i]._id %>" method="POST">
+                  <form action="/perfil/admin/listCategories/deletetCategory/<%= categories[i]._id %>" method="POST">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
-                  <form action="/admin/listCategories/editCategory/<%= categories[i]._id %>" method="GET">
+                  <form action="/perfil/admin/listCategories/editCategory/<%= categories[i]._id %>" method="GET">
                     <button type="submit" class="btn btn-primary">Editar</button>
                   </form>
                 </div>
