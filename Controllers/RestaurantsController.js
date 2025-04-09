@@ -217,7 +217,7 @@ restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
         let validation = await validationRestaurant(req.body);
         
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         //Ir buscar e guardar o caminho da imagem
@@ -233,7 +233,7 @@ restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
             perfil: new Perfil({
                 perfilPhoto: caminhoCorrigido,
                 email: req.body.email,
-                password: "",
+                password: hashedPassword,
                 phoneNumber: req.body.phoneNumber,
                 priority: "Restaurant",
             }),
@@ -287,7 +287,7 @@ restaurantsController.updatRestaurant = async (req, res, passPage, failPage) => 
         //Validações
         let validation = await validationEditRestaurant(req.body, restaurant);
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         } 
 
         //Altera a pasta e tem de alterar também o caminho para a logo
@@ -392,7 +392,7 @@ restaurantsController.updatePassword = async (req, res, passPage, failPage) => {
         let validation = await validateNewPassowrd(req.body, restaurant.perfil.password);
 
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         const salt = await bcrypt.genSalt(10);

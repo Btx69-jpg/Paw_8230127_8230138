@@ -80,9 +80,11 @@
     <h2>500</h2>
     <h1>Internal Server Error.</h1>
 
-    <p>Something went wrong. Our technical team have been notified of the issue and we are looking into it. Please try again shortly.</p>
+    <p>Algo deu errado. A nossa equipe técnica foi notificada sobre o problema e está a corrigi-lo. Tente novamente em breve...</p>
 
-    <p>Mandar erro</p>
+    <% if(error !== "") { %>
+      <p>Erro: <%= error %></p>
+    <% } %>
     <!-- Fazer como na navBar-->
     <span class="go-back"><a href="<%= previousPage %>">Voltar</a></span>
   </div>

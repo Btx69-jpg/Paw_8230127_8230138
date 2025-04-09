@@ -60,8 +60,7 @@ categoriesController.saveCategory = async function(req, res) {
     try {
         const validation = await validationCategory(req.body.category);
         if(validation !== "") {
-            console.log(validation)
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         //Posso decalara assim
@@ -100,8 +99,7 @@ categoriesController.updatCategory = async function(req, res) {
         const validation = await validationCategory(req.body.category);
         
         if(validation !== "") {
-            console.log(validation)
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         //Atualizo a categoria, sem a necessidade de dar outro update
