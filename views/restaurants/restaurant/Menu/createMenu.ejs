@@ -1,69 +1,259 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <!-- Logotipo-->
-        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
-        <!-- Link da fonte -->
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            /* Seus estilos aqui */
-            .hero {
-                background-size: cover;
-                background-position: center;
-                height: 60vh;
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .hero-overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0,0,0,0.4);
-            }
-            .hero-content {
-                position: relative;
-                z-index: 2;
-                text-align: center;
-                color: #fff;
-                padding: 0 5vw;
-            }
-            .hero-content h1 {
-                font-size: 4vw;
-                margin-bottom: 2vh;
-            }
-            .hero-content p {
-                font-size: 2vw;
-                margin-bottom: 3vh;
-            }
-        </style>
-    </head>
+  <head>
+    <!-- Logotipo-->
+    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
+    <!-- Link da fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      /* Seus estilos aqui */
+      .hero {
+        background-size: cover;
+        background-position: center;
+        height: 60vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: #fff;
+        padding: 0 5vw;
+      }
+      .hero-content h1 {
+        font-size: 4vw;
+        margin-bottom: 2vh;
+      }
+      .hero-content p {
+        font-size: 2vw;
+        margin-bottom: 3vh;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../../../navBar.ejs') %>
 
-    <body>
-        <%- include('../../../navBar.ejs') %>
+    <%
+      let backgroundImg;
+      if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
+        // Substitui barras invertidas por barras normais
+        backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
+      } else {
+        backgroundImg = "/images/Plataform/LogoSite/logo.png";
+      }
+    %>
 
-        <%
-            let backgroundImg;
-            if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
-                // Substitui barras invertidas por barras normais
-                backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
-            } else {
-                backgroundImg = "/images/Plataform/LogoSite/logo.png";
-            }
-        %>
+    <!-- Cabeçalho com imagem de fundo -->
+    <section class="hero" style="background-image: url('<%= backgroundImg %>');">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1><%= restaurant.name %></h1>
+        <p>Criar Menu</p>
+      </div>
+    </section>
 
-        <section class="hero" style="background-image: url('<%= backgroundImg %>');">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-              <h1><%= restaurant.name %></h1>
-              <p>Criar menu</p>
-            </div>
-        </section>
+    <!-- Formulário do Menu -->
+    <div class="container my-5">
+      <!-- Altere a action para a rota que processa o salvamento do Menu, incluindo os pratos -->
+      <form action="/restaurants/restaurant/menu/saveMenu" method="post">
+        <!-- Dados do Menu -->
+        <div class="mb-3">
+          <label for="menuName" class="form-label">Nome do Menu:</label>
+          <input type="text"
+            name="name"
+            id="menuName"
+            class="form-control"
+            placeholder="Nome do Menu"
+            required
+            maxlength="50"
+            pattern="^[a-zA-Z\\s]*$">
+        </div>
+        <div class="mb-3">
+          <label for="menuType" class="form-label">Tipo do Menu:</label>
+          <% if (categories && categories.length > 0) { %>
+          <select name="type" id="menuType" class="form-select" required>
+            <% categories.forEach(function(cat) { %>
+              <option value="<%= cat.category %>"><%= cat.category %></option>
+            <% }); %>
+          </select>
+          <% } else { %>
+          <input type="text" name="type" id="menuType" class="form-control" required>
+          <% } %>
+        </div>
         
-    </body>
+        <!-- Área de cadastro dos pratos -->
+        <h4>Pratos</h4>
+        <div id="dishesContainer">
+          <!-- Primeiro formulário de prato (index 0) utiliza select para categoria -->
+          <div class="dish-form border p-3 mb-3" data-index="0">
+            <h5>Prato 1</h5>
+            <div class="mb-3">
+              <label for="dishName0" class="form-label">Nome:</label>
+              <input type="text"
+                name="dishes[0][name]"
+                id="dishName0"
+                class="form-control"
+                placeholder="Nome do prato"
+                required
+                maxlength="50"
+                pattern="^[a-zA-Z\\s]*$">
+            </div>
+            <div class="mb-3">
+              <label for="dishDescription0" class="form-label">Descrição:</label>
+              <input type="text"
+                name="dishes[0][description]"
+                id="dishDescription0"
+                class="form-control"
+                placeholder="Descrição do prato"
+                required
+                maxlength="250">
+            </div>
+            <% if (categories && categories.length > 0) { %>
+              <div class="mb-3">
+                <label for="dishCategory0" class="form-label">Categoria:</label>
+                <select name="dishes[0][category]" id="dishCategory0" class="form-select" required>
+                  <% categories.forEach(function(cat) { %>
+                    <option value="<%= cat.category %>"><%= cat.category %></option>
+                  <% }); %>
+                </select>
+              </div>
+            <% } else { %>
+              <div class="mb-3">
+                <label for="dishCategory0" class="form-label">Categoria:</label>
+                <input type="text" name="dishes[0][category]" id="dishCategory0" class="form-control" required>
+              </div>
+            <% } %>
+            <div class="mb-3">
+              <label for="dishPrice0" class="form-label">Preço:</label>
+              <input type="number"
+                name="dishes[0][price]"
+                id="dishPrice0"
+                class="form-control"
+                placeholder="Preço do prato"
+                required
+                min="0"
+                step="0.01">
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão para adicionar mais formulários de prato -->
+        <div class="mb-3">
+          <button type="button" id="addDishBtn" class="btn btn-secondary">Adicionar Prato</button>
+        </div>
+
+        <!-- Botão para submeter o formulário do Menu -->
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">Salvar Menu</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Script para adição e remoção dinâmica dos formulários de prato -->
+    <script>
+      let dishIndex = 1; // O primeiro formulário já está indexado como 0
+
+      document.getElementById("addDishBtn").addEventListener("click", function () {
+        if (dishIndex >= 10) {
+          alert("O máximo de pratos é 10.");
+          return;
+        }
+        const container = document.getElementById("dishesContainer");
+        const newDish = document.createElement("div");
+        newDish.classList.add("dish-form", "border", "p-3", "mb-3");
+        newDish.setAttribute("data-index", dishIndex);
+        // Para pratos adicionais, a categoria é de livre escrita
+        newDish.innerHTML = `
+          <h5>Prato ${dishIndex + 1}</h5>
+          <div class="mb-3">
+            <label for="dishName${dishIndex}" class="form-label">Nome:</label>
+            <input type="text" name="dishes[${dishIndex}][name]" id="dishName${dishIndex}" class="form-control" placeholder="Nome do prato" required maxlength="50" pattern="^[a-zA-Z\\s]*$">
+          </div>
+          <div class="mb-3">
+            <label for="dishDescription${dishIndex}" class="form-label">Descrição:</label>
+            <input type="text" name="dishes[${dishIndex}][description]" id="dishDescription${dishIndex}" class="form-control" placeholder="Descrição do prato" required maxlength="250">
+          </div>
+            <% if (categories && categories.length > 0) { %>
+              <div class="mb-3">
+                <label for="dishCategory${dishIndex}" class="form-label">Categoria:</label>
+                <select name="dishes[${dishIndex}][category]" id="dishCategory${dishIndex}" class="form-select" required>
+                  <% categories.forEach(function(cat) { %>
+                    <option value="<%= cat.category %>"><%= cat.category %></option>
+                  <% }); %>
+                </select>
+              </div>
+            <% } else { %>
+              <div class="mb-3">
+                <label for="dishCategory${dishIndex}" class="form-label">Categoria:</label>
+                <input type="text" name="dishes[${dishIndex}][category]" id="dishCategory${dishIndex}" class="form-control" required>
+              </div>
+            <% } %>
+          <div class="mb-3">
+            <label for="dishPrice${dishIndex}" class="form-label">Preço:</label>
+            <input type="number" name="dishes[${dishIndex}][price]" id="dishPrice${dishIndex}" class="form-control" placeholder="Preço do prato" required min="0" step="0.01">
+          </div>
+          <div class="mb-3">
+            <button type="button" class="btn btn-danger removeDishBtn">Remover Prato</button>
+          </div>
+        `;
+        container.appendChild(newDish);
+        dishIndex++;
+      });
+
+      document.getElementById("dishesContainer").addEventListener("click", function(e){
+        if(e.target && e.target.classList.contains("removeDishBtn")){
+          // Garante que haja pelo menos um prato (o primeiro não pode ser removido)
+          if(document.querySelectorAll('.dish-form').length > 1){
+            e.target.closest('.dish-form').remove();
+            reindexDishes();
+          } else {
+            alert("Você precisa ter pelo menos um prato no menu.");
+          }
+        }
+      });
+
+      function reindexDishes(){
+        const dishForms = document.querySelectorAll('.dish-form');
+        dishForms.forEach((form, index) => {
+          form.setAttribute("data-index", index);
+          const header = form.querySelector("h5");
+          header.innerText = `Prato ${index + 1}`;
+
+          const elements = form.querySelectorAll("input, select, label");
+          elements.forEach((el) => {
+
+            if((el.tagName.toLowerCase() === "input" || el.tagName.toLowerCase() === "select") && el.hasAttribute("name")){
+              let nome = el.getAttribute("name");
+              nome = nome.replace(/dishes\[\d+\]/, `dishes[${index}]`);
+              el.setAttribute("name", nome);
+            }
+
+            if(el.hasAttribute("id")){
+              let novoId = el.getAttribute("id").replace(/\d+$/, index);
+              el.setAttribute("id", novoId);
+            }
+
+            if(el.tagName.toLowerCase() === "label" && el.hasAttribute("for")){
+              let novoFor = el.getAttribute("for").replace(/\d+$/, index);
+              el.setAttribute("for", novoFor);
+            }
+          });
+        });
+        dishIndex = dishForms.length;
+      }
+    </script>
+  </body>
 </html>

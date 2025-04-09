@@ -50,7 +50,8 @@ restaurantController.homePage = async function(req, res) {
     //Depois meter res.redirect("/employees/show/" + employee._id);
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        res.render("restaurants/restaurant/homepage", { restaurant: restaurant });
+        let categories = await carregarCategories();
+        res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
     } catch (err) {
         console.log("Erro: ", err);
         res.status(500).send("Erro interno no servidor");
@@ -81,12 +82,66 @@ restaurantController.showMenu = function(req, res) {
 restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant });
+        let categories = await carregarCategories();
+
+        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
     } catch (err) {
         console.log("Erro: ", err);
         res.status(500).send("Erro interno no servidor");
     }
 };
+
+restaurantController.saveMenu = function(req, res) {
+    
+    
+    /*
+        storage = multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, 'public/images/')
+            },
+            filename: function (req, file, cb) {
+                cb(null, `${Date.now()}-${file.originalname}`)
+            }
+        });
+
+        let pathImage = req.file?.path || '';
+        const caminho = pathImage.replace(/^public[\\/]/, "");
+    */
+
+
+    let dishes[] = req.body.dishes; // Aqui é suposto vir um array de pratos
+
+    for (let index = 0; index < dishes.length; index++) {
+        let dish = new Dish({
+            name: dishes[index].name,
+            description: dishes[index].description,
+            category: dishes[index].category,
+            price: dishes[index].price,
+            photo: caminho
+        });
+        
+    }
+
+    let menu = new Menu({
+        name: req.body.name,
+        countDish: dishes.length,
+        type: req.body.menuType,
+        dishes: dishes
+    });
+
+    restaurant = req.params.restaurant;
+    restaurant.menus.push(menu); // Adiciona o menu ao restaurante
+    restaurant.save(function(err) {
+        if(err) {
+            console.log(err);
+            res.status(500).send("Erro ao guardar o menu no restaurante");
+        } else {
+            console.log("Menu guardado com sucesso no restaurante");
+            res.redirect("/restaurants/" + restaurant.name);
+        }
+    });
+
+}
 
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
