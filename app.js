@@ -59,9 +59,11 @@ app.use((req, res, next) => {
   if (req.path.startsWith('/images') || req.path.startsWith('/css') || req.path.startsWith('/js')) {
     return next();
   }
+  
   res.locals.currentPage = req.path === '/' ? 'homepage' : req.path;
   res.locals.previousPage = req.headers.referer || '/';
   res.locals.user = req.user || null;
+
   console.log('User:', res.locals.user);
   console.log('Current Page:', res.locals.currentPage);
   console.log('Previous Page:', res.locals.previousPage);

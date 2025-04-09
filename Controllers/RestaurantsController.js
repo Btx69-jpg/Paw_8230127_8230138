@@ -233,7 +233,7 @@ restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
             perfil: new Perfil({
                 perfilPhoto: caminhoCorrigido,
                 email: req.body.email,
-                password: hashedPassword,
+                password: "",
                 phoneNumber: req.body.phoneNumber,
                 priority: "Restaurant",
             }),
