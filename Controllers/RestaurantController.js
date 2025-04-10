@@ -50,7 +50,8 @@ restaurantController.homePage = async function(req, res) {
     //Depois meter res.redirect("/employees/show/" + employee._id);
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        res.render("restaurants/restaurant/homepage", { restaurant: restaurant });
+        let categories = await carregarCategories();
+        res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
     } catch (err) {
         console.log("Erro: ", err);
         res.status(500).send("Erro interno no servidor");
@@ -81,12 +82,78 @@ restaurantController.showMenu = function(req, res) {
 restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant });
+        let categories = await carregarCategories();
+
+        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
     } catch (err) {
         console.log("Erro: ", err);
         res.status(500).send("Erro interno no servidor");
     }
 };
+
+restaurantController.saveMenu = async function(req, res) {
+    try {
+      // Busca o restaurante com base no parâmetro enviado na rota Da erro
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      if (!restaurant) {
+        return res.status(404).send("Restaurante não encontrado");
+      }
+  
+      console.log(req.body)
+      // Importante: Considere usar o nome correto do campo para o tipo do menu.
+      // No formulário, o campo é "type", não "menuType"
+      let menuType = req.body.type;
+  
+      // Recupera os pratos enviados no formulário
+      let dishes = req.body.dishes;
+      console.log(dishes);
+      // Verifica se foram enviados pratos
+      if (!dishes) {
+        return res.status(400).send("Nenhum prato foi enviado");
+      }
+      
+      // Se houver apenas um prato, o body-parser pode não criar um array,
+      // então garantimos que 'dishes' seja sempre um array.
+      if (!Array.isArray(dishes)) {
+        dishes = [dishes];
+      }
+      
+      // Cria instâncias do modelo Dish para cada prato recebido
+      // (Caso deseje salvá-los individualmente no banco, poderá chamar dish.save())
+      let dishObjects = [];
+      for (let i = 0; i < dishes.length; i++) {
+        let dishData = dishes[i];
+        let dishObj = new Dish({
+          name: dishData.name,
+          description: dishData.description,
+          category: dishData.category,
+          price: dishData.price,
+          // photo: caminho (se houver o upload da foto configurado)
+        });
+        dishObjects.push(dishObj);
+      }
+      
+      // Cria uma nova instância do menu
+      let menu = new Menu({
+        name: req.body.name,
+        countDish: dishObjects.length,
+        type: menuType, // Agora vem do req.body.type
+        dishes: dishObjects
+      });
+  
+      // Adiciona o menu ao restaurante encontrado
+      restaurant.menus.push(menu);
+      
+      // Salva o restaurante com o novo menu
+      await restaurant.save();
+  
+      console.log("Menu guardado com sucesso no restaurante");
+      res.redirect("/restaurants/" + restaurant.name);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Erro ao guardar o menu no restaurante");
+    }
+  };
 
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
