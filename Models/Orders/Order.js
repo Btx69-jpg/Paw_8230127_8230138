@@ -1,7 +1,5 @@
 var mongoose = require('mongoose');
 var Item = require('./Item'); 
-var Cliente = require('../Reusable/Perfil');
-var AddressOrder = require("../Reusable/AddressOrder");
 
 var OrderSchema = new mongoose.Schema({
     name: {

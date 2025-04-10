@@ -21,19 +21,27 @@
 
         <!-- Validar links-->
         <div class="d-flex justify-content-center mb-4">
-            <a href="/perfil/admin/listCategories/createCategory" class="btn btn-success">Adicionar Utilizador</a>
-          </div>
+            <a href="/perfil/admin/listUsers/createUser" class="btn btn-success">Adicionar Utilizador</a>
+        </div>
         <% if (users.length > 0) { %>
+            <!-- Ideias de filtros 
+            pesquisar por prioridade
+            Pesquisar por estar banido ou não
+            Pesquisar por nome
+            Pesquisar por email ou numero
+            -->
+
             <div class="row justify-content-center">
             <% for(let i = 0; i < users.length; i++) { %>
                 <div class="col-md-4 mb-4">
                 <div class="restaurant-card text-center border rounded p-3 shadow-sm">
                     <h5 class="mb-3"><%= users[i].firstName %> <%= users[i].lastName%></h5>
+                    <p class="mb-3">Prioridade: <%= users[i].perfil.priority %></p>
                     <p class="mb-3">Email: <%= users[i].perfil.email %></p>
                     <p class="mb-3">Telefone: <%= users[i].perfil.phoneNumber %></p>
                     <div class="btn-group d-flex justify-content-center">
                     
-                        <form action="/perfil/admin/listUsers/deleteUser/<%= users[i]._id %>" method="POST">
+                        <form action="/perfil/admin/listUsers/delete/<%= users[i]._id %>" method="POST">
                             <button type="submit" class="btn btn-danger">Remover</button>
                         </form>
                         
@@ -46,7 +54,7 @@
                                 <button type="submit" class="btn btn-primary">Desbanir</button>
                             </form>
                         <% } else { %>
-                            <form action="/perfil/admin/listUsers/banUser/<%= users[i]._id %>" method="GET">
+                            <form action="/perfil/admin/listUsers/ban/<%= users[i]._id %>" method="POST">
                                 <button type="submit" class="btn btn-primary">Banir</button>
                             </form>
                         <% } %>

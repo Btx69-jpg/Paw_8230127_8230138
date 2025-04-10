@@ -1,0 +1,140 @@
+<div class="form-group">
+    <label for="firstName">First name</label>
+    <input 
+      type="text" 
+      name="firstName" 
+      id="firstName" 
+      class="form-control" 
+      placeholder="Input first name" 
+      value="<%= typeof firstName !== 'undefined' ? firstName : '' %>"
+      required
+      pattern="^[A-Za-zÀ-ÿ\s]+$"
+      oninvalid="handleInvalidInput(this)"
+      oninput="this.setCustomValidity('')"
+    />
+    <div class="invalid-feedback">
+      O nome deve conter apenas letras e espaços, e não pode estar vazio.
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="lastName">Last name</label>
+    <input 
+      type="text" 
+      name="lastName" 
+      id="lastName" 
+      class="form-control" 
+      placeholder="Input last name" 
+      value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
+      pattern="^[A-Za-zÀ-ÿ\s]+$"
+      oninvalid="handleInvalidInput(this)"
+      oninput="this.setCustomValidity('')"
+      required
+    />
+    <div class="invalid-feedback">
+      O nome deve conter apenas letras e espaços, e não pode estar vazio.
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="email">Email</label>
+    <input 
+      type="email" 
+      name="email" 
+      id="email" 
+      class="form-control" 
+      placeholder="example@gmail.com" 
+      value="<%= typeof email !== 'undefined' ? email : '' %>" 
+      pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+      required
+    />
+    <div class="invalid-feedback">
+      O email deve ser válido e não pode estar vazio. Exemplo: example@gmail.com
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="phoneNumber">Telefone:</label>
+    <input type="tel" 
+    name="phoneNumber" 
+    id="phoneNumber" 
+    class="form-control" 
+    placeholder="Introduza o número telefónico"  
+    pattern="[0-9]{9}" 
+    title="O telefone deve ter 9 dígitos"
+    required>
+</div>
+
+<div class="form-group">
+    <label for="password">Password</label>
+    <input 
+      type="password" 
+      name="password" 
+      id="password" 
+      class="form-control" 
+      placeholder="Enter at least 8+ characters"
+      value="<%= typeof password !== 'undefined' ? password : '' %>"
+      minlength="8" 
+      required
+    />
+    <div class="invalid-feedback">
+      A password deve ter pelo menos 8 caracteres e não pode estar vazia.
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="confirmPassword">Repeat password</label>
+    <input 
+      type="password" 
+      name="confirmPassword" 
+      id="confirmPassword" 
+      class="form-control" 
+      placeholder="Enter at least 8+ characters"
+      value="<%= typeof confirmPassword !== 'undefined' ? confirmPassword : '' %>"
+      minlength="8" 
+      required
+      oninput="validatePassword()"
+    />
+    <div class="invalid-feedback">
+      As passwords não são iguais.
+    </div>
+</div>
+
+<script>
+    // Função para validar se as passwords são iguais
+    function validatePassword() {
+      var password = document.getElementById('password');
+      var confirmPassword = document.getElementById('confirmPassword');
+  
+      if (confirmPassword.value !== password.value) {
+        // Define mensagem customizada se não forem iguais
+        confirmPassword.setCustomValidity('As passwords não coincidem.');
+      } else {
+        // Remove a mensagem se forem iguais
+        confirmPassword.setCustomValidity('');
+      }
+    }
+
+    (function () {
+    'use strict';
+    var form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  })();
+
+    function handleInvalidInput(input) {
+    if (!input.value) {
+      input.setCustomValidity('Campo obrigatório!');
+    } else {
+      input.setCustomValidity('Por favor, insira apenas letras e espaços.');
+    }
+  }
+  </script>
+
+

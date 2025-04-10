@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../Models/Perfils/User");
 const Perfil = require("../Models/Reusable/Perfil");
+const Restaurant = require("../Models/Perfils/Restaurant");
 
 var signUpController = {};
 
@@ -11,35 +12,56 @@ signUpController.signup = (req, res) => {
     res.render("login/signUp");
 };
 
-// Verifica se o utilizador já existe
-signUpController.findOne = async (email) => {
+// Verifica se o utilizador já existe (Depois meter para procurar por email de restaurante e user)
+signUpController.findOneEmail = async (email) => {
     return await User.findOne({ 'perfil.email': email });
 };
+
+signUpController.findOneEmailRestaurante = async (email) => {
+    return await Restaurant.findOne({ 'perfil.email': email });
+};
+
+signUpController.validationSave = function (firstName, lastName, email, phoneNumber, password = "", confirmPassword = "") {
+    let errors = [];
+
+    if (!firstName || !lastName || !email || !phoneNumber || !password || !confirmPassword) {
+        errors.push({ texto: "Todos os campos são obrigatórios!" });
+    }
+
+    if (password.length < 8 || confirmPassword.length < 8) {
+        errors.push({ texto: "A senha deve ter pelo menos 8 caracteres!" });
+    }
+
+    if (password !== confirmPassword) {
+        errors.push({ texto: "As senhas não coincidem!" });
+    }
+    return errors;
+}
+
+signUpController.validationUpdate = function (firstName, lastName, email, phoneNumber) {
+    let errors = [];
+
+    if (!firstName || !lastName || !email || !phoneNumber) {
+        errors.push({ texto: "Todos os campos são obrigatórios!" });
+    }
+
+    return errors;
+}
 
 // Salva um novo utilizador
 signUpController.save = async (req, res) => {
     try {
         const { firstName, lastName, email, phoneNumber, password, confirmPassword} = req.body;
-        let errors = [];
-
-        // Validações
-        if (!firstName || !lastName || !email || !password || !phoneNumber) {
-            errors.push({ texto: "Todos os campos são obrigatórios!" });
-        }
-        if (password.length < 8) {
-            errors.push({ texto: "A senha deve ter pelo menos 8 caracteres!" });
-        }
-        if (password !== confirmPassword) {
-            errors.push({ texto: "As senhas não coincidem!" });
-        }
+        let errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
         if (errors.length > 0) {
             return res.render("login/signUp", { errors, firstName, lastName, email });
         }
 
         //Valida se o user já existe
-        const existingUser = await signUpController.findOne(email);
-        if (existingUser) {
+        const existingUser = await signUpController.findOneEmail(email);
+        const existingRestaurant = await signUpController.findOneEmailRestaurante(email);
+        if (existingUser || existingRestaurant) {
             req.flash("error_msg", "Já existe uma conta com este email!");
             return res.redirect("/signUp");
         }

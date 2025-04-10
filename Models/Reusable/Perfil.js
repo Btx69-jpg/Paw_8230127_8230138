@@ -28,7 +28,7 @@ var PerfilSchema = new mongoose.Schema({
     },
     priority: {
         type: String,
-        enum: ['Cliente', 'Admin', 'Restaurant'],
+        enum: ['Cliente', 'Admin', 'Restaurant', 'Dono'],
         required: true,
     },
     banned: {

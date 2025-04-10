@@ -1,10 +1,16 @@
 var mongoose = require("mongoose");
-
-var Users = require("../../Models/Perfils/User");
+const bcrypt = require("bcryptjs");
+//Models
+const User = require("../../Models/Perfils/User");
+const Perfil = require("../../Models/Reusable/Perfil");
+const Restaurantes = require("../../Models/Perfils/Restaurant");
+//Constrollers
+const signUpController = require("../SignUpController");
+const Restaurant = require("../../Models/Perfils/Restaurant");
 var userController = {};
 
 userController.homePage = async function(req, res) {
-    Users.find({ 'perfil.priority': "Cliente"}).exec()
+    User.find({ 'perfil.priority': { $ne: "Admin" }}).exec()
         .then(function(users) {
             res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users});
         })
@@ -14,27 +20,254 @@ userController.homePage = async function(req, res) {
         });
 };
 
-userController.desban = async function(req, res) {
+userController.createUser = async function(req, res) {
+    res.render("perfil/admin/PagesAdmin/Users/addUser");
+}
+
+userController.findOneRestaurante = async function(email, phoneNumber) {
     try {
-        Users.findOneAndUpdate( {_id: req.params.userId}, { 
-            $set: {
-                'perfil.banned': true, 
-            },
-        }, { new: true });
-        console.log("User desbanido!");
+        return await Restaurantes.findOne({ 'perfil.email': email, 'perfil.phoneNumber': phoneNumber });
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+
+async function validateNewUser(email, phoneNumber, priority) {
+    const existingUser = await signUpController.findOneEmail(email);
+    const existingEmailRestaurant = await signUpController.findOneEmailRestaurante(email);
+    
+    if (existingUser || existingEmailRestaurant && priority !== "Dono") {
+        return "Já existe uma conta com este email!"
+    }
+
+    if (priority === "Dono") {
+        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
+
+        if (!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse email e numero de telefone!"
+        }
+    } 
+    return "";
+}
+
+async function validateUpdateUser(user, email, phoneNumber, priority) {
+    if(priority === 'Dono') {
+        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
+
+        if(!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse email e numero de telefone!"
+        } else if(existingRestaurant._id !== user._id) {
+            return "O restuarante que introduziu já tem dono"
+        }
+    }
+
+    const existingUser = await User.findOne({
+        'perfil.email': email,
+        _id: { $ne: user._id }
+    }).exec();
+
+    const existingEmailRestaurant = await Restaurant.findOne({
+        'perfil.email': email,
+        _id: { $ne: user._id }
+    }).exec();
+
+    //Ver bem esta validação, ela é capza de dar dores de cabeça futuras
+    if (existingUser || existingEmailRestaurant && user.perfil.priority !== "Dono" || priority !== "Dono") {
+        return "Já existe uma conta com este email!"
+    }
+    return "";
+}
+/*
+Testes:
+Cria um user cliente corretamente (funciona)
+Cria um admin corretamente (funciona)
+Cria um dono corretamente (funciona)
+Quando crio um dono e não meto o meail ou phoneNumber correto volta para tras?
+Ver se caso haja erros, se é redirecionado de volta para o addPage (sim)
+
+Erros: Por algum motivo quando
+Entra aqui quando temos emails iguais mas por algum motivo não entra 
+*/
+userController.saveUser = async function(req, res) {
+    try {
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
+        let errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
+
+        if (errors.length > 0) {
+            return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
+        }
+
+        let errorValidate = validateNewUser(email, phoneNumber, priority);
         
-        Users.find({ 'perfil.priority': "Cliente"}).exec()
-            .then(function(users) {
-                res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users});
+        if(errorValidate !== "") {
+            req.flash("error_msg", errorValidate);
+            return res.redirect(res.locals.previousPage);
+        }
+
+        // Encriptação da password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        
+        const perfil = new Perfil({
+            phoneNumber: phoneNumber,
+            email: email,
+            password: hashedPassword,
+            priority: priority,
+        });
+
+        const newUser = new User({
+            firstName: firstName,
+            lastName: lastName,
+            perfil: perfil,
+            password: hashedPassword
+        });
+
+        await newUser.save();
+
+        req.flash("success_msg", "Registo realizado com sucesso!");
+        res.redirect("/perfil/admin/listUsers");
+    } catch (err) {
+        console.error(err);
+        req.flash("error_msg", "Erro ao criar o utilizador. Tente novamente.");
+        res.redirect(res.locals.previousPage);
+    }
+}
+
+userController.editPage = function(req, res) {    
+    User.findOne({ _id: req.params.userId }).exec()
+        .then(user => {
+            res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user});
+        })
+        .catch(error => {
+            console.log("Erro: ", error);
+            res.redirect("perfil/admin/listUsers");
+        });
+}
+
+//Ver se o render funciona
+//Já poso tirar o try catch
+userController.updateUser =  async function(req, res) {
+    try {
+        const { firstName, lastName, email, phoneNumber, priority} = req.body;  
+
+        //Validações aos campos
+        let errors = signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
+        if (errors.length > 0) {
+            return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
+        }
+    
+        //Encontrar o user a atualizar
+        User.findOne({ _id: req.params.userId }).exec()
+            .then(user => {
+                console.log("User atualizado com sucesso")
+                res.redirect("/perfil/admin/listUsers");
+                let errorValidate = validateUpdateUser(user, email, phoneNumber, priority);
+        
+            
+                if(errorValidate !== "") {
+                    req.flash("error_msg", errorValidate);
+                    console.log("Error: ", errorValidate);
+                    return res.redirect(res.locals.previousPage);
+                }
+
+                //update
+                user.firstName = firstName;
+                user.lastName = lastName;
+                user.perfil.email = email;
+                user.perfil.phoneNumber = phoneNumber;
+                user.perfil.priority = priority;
+                
+                //guardar as alterações
+                user.save()
+                    .then(() => {
+                        console.log("User atualizado com sucesso!");
+                        res.redirect("/perfil/admin/listUser");
+                        //userController.homePage(res, req); (caso não leve corretamente para a lista)
+                    })
+                    .catch(error => {
+                        console.log("Erro:", error);
+                        req
+                    })
             })
-            .catch(function(err) {
-                console.log("Error", err);
-                res.status(500).send("Problema a procurar pelos Restaurantes");
+            .catch(error => {
+                //Redireciona para a pagina de edit
+                console.log("Erro: ", error);
+                res.redirect("/perfil/admin/listUsers/editUser/" + req.params.userId);
             });
     } catch(err) {
-        console.log("Erro: ", err);
+        console.log(err);
+        res.redirect(res.locals.previousPage);
+    }    
+}
+
+function deleteImg(imagePath) {
+    imagePath = "public/" + imagePath;
+
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+            let erro = "Erro ao apagar a foto de perfil do user:" + err;
+            console.error(erro);
+            return res.render("/errors/error500", { error: erro });
+        }
+
+        console.log('Imagem apagada com sucesso');
+    });
+}
+//Falta caso o user tenha uma imagem dar delete dela
+userController.deleteUser = async function(req, res) {
+    try {
+        const user = await User.findOne({ _id: req.params.userId }).exec();
+
+        if(user) {
+            let imagePath = user.perfil.perfilPhoto;
+            await user.deleteOne();
+            console.log("User eliminado com sucesso!");
+
+            if(imagePath !== "") {
+                deleteImg(imagePath);
+            }
+            res.redirect("/perfil/admin/listUsers");
+        }
+
+      } catch (error) {
+        console.log("Erro ao eliminar o user: ", error);
         res.redirect("/perfil/admin/listUsers");
-    }
+      }
+}
+
+userController.desban = function(req, res) {
+    User.findOneAndUpdate( { _id: req.params.userId },
+        {
+            $set: {'perfil.banned': false },
+        },
+        { new: true })
+        .exec()
+        .then(updatedUser => {
+            console.log("User banido!");
+            res.redirect(res.locals.previousPage);
+        })
+        .catch(error => {
+            console.error("Erro ao banir o user:", error);
+            res.redirect(res.locals.previousPage);
+        });
+}
+
+userController.ban = function(req, res) {
+    User.findOneAndUpdate( { _id: req.params.userId },
+        {
+            $set: { 'perfil.banned': true },
+        },
+        { new: true })
+        .exec()
+        .then(updatedUser => {
+            console.log("User desbanido!");
+            res.redirect(res.locals.previousPage);
+        })
+        .catch(error => {
+            console.error("Erro ao desbanir o user:", error);
+            res.redirect(res.locals.previousPage);
+        });
 }
 
 module.exports = userController;

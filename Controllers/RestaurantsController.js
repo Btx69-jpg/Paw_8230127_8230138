@@ -192,7 +192,7 @@ async function validationEditRestaurant(body, restaurant) {
 //Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
 //Preciso de no render mandar também os employees
 restaurantsController.restaurantsPage = function(req, res, passPage) {
-    Restaurant.find({}).exec()
+    Restaurant.find({ aprove: true}).exec()
         .then(function(restaurants) {
             //res.render("restaurants/restaurants", {restaurants: restaurants});
             res.render(passPage, {restaurants: restaurants});
@@ -244,7 +244,8 @@ restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
                 postal_code: req.body.postal_code,
                 city: req.body.city
             }),
-            description: req.body.description
+            description: req.body.description,
+            aprove: false,
         });
 
         // Guarda o restaurante a bd
@@ -256,7 +257,7 @@ restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
     } catch (error) {
         console.log("Error", error);
         //res.render("restaurants/crudRestaurantes/addRestaurant");
-        res.render(failPage);
+        res.render(res.locals.previousPage);
     }
 };
 
@@ -268,7 +269,7 @@ restaurantsController.editRestaurant = async (req, res, passPage, failPage) => {
     } catch (error) {
         console.log("Error", error);
         //res.redirect("/restaurants");
-        res.redirect(failPage);
+        res.redirect(res.locals.previousPage);
     }
 };
 
@@ -364,7 +365,8 @@ restaurantsController.editPassword = async (req, res, passPage, failPage) => {
     } catch (error) {
         console.log("Error", error);
         //res.render("restaurants/crudRestaurantes/editRestaurant");
-        res.render(failPage);
+        //res.render(failPage);
+        res.redirect(res.locals.previousPage);
     }
 };
 
@@ -406,13 +408,14 @@ restaurantsController.updatePassword = async (req, res, passPage, failPage) => {
 
         console.log("Password atualizada");
         //res.render('restaurants/crudRestaurantes/editRestaurant', {restaurant: restaurant });
-        res.render(passPage, {restaurant: restaurant });
+        //res.render(passPage, {restaurant: restaurant });
+        res.redirect(res.locals.previousPage);
     } catch (error) {
         console.log("Error", error);
         //res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
-        res.render(failPage, { restaurant: restaurant });
+        //res.render(failPage, { restaurant: restaurant });
+        res.redirect(res.locals.previousPage);
     }
-
 }
 
 /*
@@ -423,8 +426,8 @@ restaurantsController.removeRestaurant = async (req, res, passPage) => {
         await Restaurant.deleteOne({ name: req.params.restaurant });
         deletepackage(`public/images/Restaurants/${req.params.restaurant}/`);
         console.log("Restaurante eliminado!");
-        //res.redirect("/restaurants");
-        res.redirect(passPage);
+        //res.redirect("/restaurantsList");
+        res.redirect(res.locals.previousPage);
     } catch (error) {
         console.log("Error", error);
         res.status(500).send("Problema a apagar o restaurante");

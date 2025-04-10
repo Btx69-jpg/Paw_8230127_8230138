@@ -1,0 +1,2 @@
+Depois trocar os post que diz respeitos a updates por put
+Torcar os posts que diz respeito a deletes por delete

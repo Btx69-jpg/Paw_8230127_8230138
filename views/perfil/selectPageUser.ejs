@@ -1,5 +1,5 @@
 <% if ( user !== null)  { %>
-    <%if (user.perfil.priority === "Admin") { %>
+    <% if (user.perfil.priority === "Admin") { %>
         <%- include('admin/adminPage') %>
     <% } %>
 <% } else { %>

@@ -25,10 +25,12 @@ router.post('/updatRestaurant/:restaurantId', function(req, res) {
     restaurants.updatRestaurant(req, res, "/restaurants", "restaurants/crudRestaurantes/editRestaurant");
 });
 
+/* Renderiza a pagina para editar a password */
 router.get('/editRestaurant/editPassword/:restaurantId', function(req, res) {
     restaurants.editPassword(req, res, "restaurants/crudRestaurantes/editPassword", "restaurants/crudRestaurantes/editRestaurant");
 });
 
+/* Atualiza a password do utilizador */
 router.post('/editRestaurant/changePassword/:restaurantId', function(req, res) {
     restaurants.updatePassword(req, res, "restaurants/crudRestaurantes/editRestaurant", "restaurants/crudRestaurantes/editRestaurant");
 });

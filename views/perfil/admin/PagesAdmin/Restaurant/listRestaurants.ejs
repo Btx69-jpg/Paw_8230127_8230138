@@ -16,16 +16,22 @@
   </head>
 
   <body>
-    <%- include('../navBar') %>
+    <%- include('../../navBar') %>
 
     <div class="container">
       <h1 class="text-center my-4">Lista de restaurantes</h1>
 
       <div class="d-flex justify-content-center mb-4">
-        <a href="/perfil/listCategories/createRestaurant" class="btn btn-success">Adicionar Restaurante</a>
+        <a href="/perfil/admin/listRestaurants/createRestaurant" class="btn btn-success">Adicionar Restaurante</a>
       </div>
       <% if (restaurants.length > 0) { %>
         <div class="row justify-content-center">
+
+          <div class="d-flex justify-content-center mb-4">
+            <form action="/perfil/admin/listRestaurants/aproves" method="GET">
+              <a href="/perfil/admin/listRestaurants/aproves" class="btn btn-success">Aprovar Restaurantes</a>
+            </form>
+          </div>
           <% for(let i = 0; i < restaurants.length; i++) { %>
             <div class="col-md-4 mb-4">
               <div class="restaurant-card text-center border rounded p-3 shadow-sm">
