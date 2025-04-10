@@ -1,13 +1,17 @@
 var mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+
 //Models
 const User = require("../../Models/Perfils/User");
 const Perfil = require("../../Models/Reusable/Perfil");
 const Restaurantes = require("../../Models/Perfils/Restaurant");
+
 //Constrollers
 const signUpController = require("../SignUpController");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 var userController = {};
+
+//Associar um dono ao seu restaurante, atraves do id do restaurante
 
 userController.homePage = async function(req, res) {
     User.find({ 'perfil.priority': { $ne: "Admin" }}).exec()
@@ -56,26 +60,27 @@ async function validateUpdateUser(user, email, phoneNumber, priority) {
         const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
 
         if(!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!"
-        } else if(existingRestaurant._id !== user._id) {
-            return "O restuarante que introduziu já tem dono"
-        }
+            return "Não existe nenhum restaurante com esse email e numero de telefone!";
+        } 
     }
 
+    //O problema não está no _id, é igual ao da DB
     const existingUser = await User.findOne({
+        _id: { $ne: user._id },
         'perfil.email': email,
-        _id: { $ne: user._id }
     }).exec();
 
     const existingEmailRestaurant = await Restaurant.findOne({
-        'perfil.email': email,
-        _id: { $ne: user._id }
+        _id: { $ne: user._id },
+        'perfil.email': email || user.perfil.email,
     }).exec();
 
     //Ver bem esta validação, ela é capza de dar dores de cabeça futuras
-    if (existingUser || existingEmailRestaurant && user.perfil.priority !== "Dono" || priority !== "Dono") {
+    //Reitrei isto: " && user.perfil.priority !== "Dono" || priority !== "Dono""
+    if (existingUser || existingEmailRestaurant) {
         return "Já existe uma conta com este email!"
     }
+
     return "";
 }
 /*
@@ -98,7 +103,7 @@ userController.saveUser = async function(req, res) {
             return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
         }
 
-        let errorValidate = validateNewUser(email, phoneNumber, priority);
+        let errorValidate = await validateNewUser(email, phoneNumber, priority);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -152,49 +157,41 @@ userController.updateUser =  async function(req, res) {
         const { firstName, lastName, email, phoneNumber, priority} = req.body;  
 
         //Validações aos campos
-        let errors = signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
+        let errors = await signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
     
         //Encontrar o user a atualizar
-        User.findOne({ _id: req.params.userId }).exec()
-            .then(user => {
-                console.log("User atualizado com sucesso")
-                res.redirect("/perfil/admin/listUsers");
-                let errorValidate = validateUpdateUser(user, email, phoneNumber, priority);
-        
-            
-                if(errorValidate !== "") {
-                    req.flash("error_msg", errorValidate);
-                    console.log("Error: ", errorValidate);
-                    return res.redirect(res.locals.previousPage);
-                }
+        let user = await User.findOne({ _id: req.params.userId }).exec();
+        console.log(user);
+        //Está aqui um problema
+        let errorValidate = await validateUpdateUser(user, email, phoneNumber, priority);
+    
+        if(errorValidate !== "") {
+            req.flash("error_msg", errorValidate);
+            console.log("Error: ", errorValidate);
+            return res.redirect(res.locals.previousPage);
+        }
 
-                //update
-                user.firstName = firstName;
-                user.lastName = lastName;
-                user.perfil.email = email;
-                user.perfil.phoneNumber = phoneNumber;
-                user.perfil.priority = priority;
-                
-                //guardar as alterações
-                user.save()
-                    .then(() => {
-                        console.log("User atualizado com sucesso!");
-                        res.redirect("/perfil/admin/listUser");
-                        //userController.homePage(res, req); (caso não leve corretamente para a lista)
-                    })
-                    .catch(error => {
-                        console.log("Erro:", error);
-                        req
-                    })
+        //update
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.perfil.email = email;
+        user.perfil.phoneNumber = phoneNumber;
+        user.perfil.priority = priority;
+        
+        //guardar as alterações
+        user.save()
+            .then(() => {
+                console.log("User atualizado com sucesso!");
+                res.redirect("/perfil/admin/listUsers");
+                //userController.homePage(res, req);
             })
             .catch(error => {
-                //Redireciona para a pagina de edit
-                console.log("Erro: ", error);
-                res.redirect("/perfil/admin/listUsers/editUser/" + req.params.userId);
-            });
+                console.log("Erro:", error);
+                req
+            })
     } catch(err) {
         console.log(err);
         res.redirect(res.locals.previousPage);

@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 
 
 // Página de login
-router.get("/", loginController.login);
+router.get("/", userController.login);
 
 // Autenticação de utilizador
-router.post("/login", (req, res) => {
+router.post("/", (req, res) => {
   const email= req.body.email;
   const rememberMe = req.body.rememberMe;
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -39,23 +39,7 @@ router.post("/login", (req, res) => {
     }, userController.authenticate);
   }
     
-    return res.redirect('/');
-
-    /* post login antigo
-    const rememberMe = req.body.rememberMe;
-    const email = req.body.email;
-    if (rememberMe) {
-        // Cria um cookie com o email do usuário
-        res.cookie('email', email, {
-          maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dias
-          httpOnly: true, // Impede o acesso do JavaScript
-          secure: process.env.NODE_ENV === 'production', // Use "secure" em produção
-        });
-      }
-
-    req.flash("success_msg", "Login realizado com sucesso!");
-    res.redirect("/");
-    */
+  return res.redirect('/');
 });
 
 router.get("/logOut", (req, res) => {
