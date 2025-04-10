@@ -191,30 +191,33 @@ async function validationEditRestaurant(body, restaurant) {
 
 //Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
 //Preciso de no render mandar também os employees
-restaurantsController.restaurantsPage = function(req, res) {
-    Restaurant.find({}).exec()
+restaurantsController.restaurantsPage = function(req, res, passPage) {
+    Restaurant.find({ aprove: true}).exec()
         .then(function(restaurants) {
-            res.render("restaurants/restaurants", {restaurants: restaurants});
+            //res.render("restaurants/restaurants", {restaurants: restaurants});
+            res.render(passPage, {restaurants: restaurants});
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.status(500).send("Problema a procurar pelos pratos do menu");
+            res.status(500).send("Problema a procurar pelos restaurantes");
         });
 };
 
-restaurantsController.createRestaurant = function(req, res) {
-    res.render('restaurants/crudRestaurantes/addRestaurant');
+restaurantsController.createRestaurant = function(req, res, page) {
+    //res.render('restaurants/crudRestaurantes/addRestaurant');
+    res.render(page);
 };
 
 //Armazena um novo restaurate
-restaurantsController.saveRestaurant = async (req, res) => {
+restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
     try { 
         await saveImage(req, res);
         
         //Realização das verificações
         let validation = await validationRestaurant(req.body);
+        
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         //Ir buscar e guardar o caminho da imagem
@@ -241,27 +244,32 @@ restaurantsController.saveRestaurant = async (req, res) => {
                 postal_code: req.body.postal_code,
                 city: req.body.city
             }),
-            description: req.body.description
+            description: req.body.description,
+            aprove: false,
         });
 
         // Guarda o restaurante a bd
         await restaurant.save();
 
         console.log("Restaurante guardado com sucesso");
-        res.redirect("/restaurants");
+        //res.redirect("/restaurants");
+        res.redirect(passPage);
     } catch (error) {
         console.log("Error", error);
-        res.render("restaurants/crudRestaurantes/addRestaurant");
+        //res.render("restaurants/crudRestaurantes/addRestaurant");
+        res.render(res.locals.previousPage);
     }
 };
 
-restaurantsController.editRestaurant = async (req, res) => {
+restaurantsController.editRestaurant = async (req, res, passPage, failPage) => {
     try {
         const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
-        res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        //res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        res.render(passPage, { restaurant: restaurant });
     } catch (error) {
         console.log("Error", error);
-        res.redirect("/restaurants");
+        //res.redirect("/restaurants");
+        res.redirect(res.locals.previousPage);
     }
 };
 
@@ -271,7 +279,7 @@ E alterar o caminho da imagem, da logo, se necessario
 
 Quando altero o nome do restaurante, já é alterado no mongoDb o caminho no não é alterado o nome da pasta
 */
-restaurantsController.updatRestaurant = async (req, res) => {
+restaurantsController.updatRestaurant = async (req, res, passPage, failPage) => {
     const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
     try {
         //Upload da nova imagem se necessário
@@ -280,42 +288,47 @@ restaurantsController.updatRestaurant = async (req, res) => {
         //Validações
         let validation = await validationEditRestaurant(req.body, restaurant);
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         } 
 
         //Altera a pasta e tem de alterar também o caminho para a logo
         //Dasdos da nova imagem
-        let pathNewImg = req.file?.path || '';;
-        let newImage = '';
-
-        if(pathNewImg !== '') {
-            newImage =  pathR.basename(pathNewImg);
-        }
-
-        //Dados da imagem guardada no mongoDb
-        let newFile = "";
-        let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
         let caminhoCorrigido = restaurant.perfil.perfilPhoto;
-        const perfilPhoto = pathR.basename(caminhoCorrigido); //Saca a imagem do caminho
+        let pathNewImg = req.file?.path || '';
 
-        /*
-        O 1º if acontece quando não se altera a imagem 
-        O 2º if, quando se altera a imagem 
-        */
-        if (pathNewImg === '' && restaurant.name !== req.body.name) {
-            newFile = "public/images/Restaurants/" + req.body.named;
-            await updateFile(pathPerfilPhoto, newFile);
-            newFile = newFile + "/" + perfilPhoto;
-            caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
-        } else if (perfilPhoto !== newImage) {
-            if (restaurant.name !== req.body.name) {
-                newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
-            } else {
-                newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
+
+        if (restaurant.name !== req.body.name || pathNewImg !== '') {
+            let newImage = '';
+
+            if (pathNewImg !== '') {
+                newImage =  pathR.basename(pathNewImg);
             }
-
-            deleteImage(`public/images/Restaurants/${req.body.name}/${perfilPhoto}`);
-            caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+    
+            //Dados da imagem guardada no mongoDb
+            let newFile = "";
+  
+            const perfilPhoto = pathR.basename(caminhoCorrigido); //Saca a imagem do caminho
+    
+            /*
+            O 1º if acontece quando não se altera a imagem 
+            O 2º if, quando se altera a imagem 
+            */
+            if (pathNewImg === '' && restaurant.name !== req.body.name) {
+                newFile = "public/images/Restaurants/" + req.body.named;
+                let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
+                await updateFile(pathPerfilPhoto, newFile);
+                newFile = newFile + "/" + perfilPhoto;
+                caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+            } else if (perfilPhoto !== newImage) {
+                if (restaurant.name !== req.body.name) {
+                    newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
+                } else {
+                    newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
+                }
+    
+                deleteImage(`public/images/Restaurants/${req.body.name}/${perfilPhoto}`);
+                caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
+            }
         }
 
         await Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
@@ -334,21 +347,26 @@ restaurantsController.updatRestaurant = async (req, res) => {
         }, { new: true });
         
         console.log("Restaurante atualizado com sucesso");
-        res.redirect("/restaurants");
+        //res.redirect("/restaurants");
+        res.redirect(passPage);
     } catch (error) {
         console.log("Error", error);
-        res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        //res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        res.render(failPage, { restaurant: restaurant });
     }
 };
 
-restaurantsController.editPassword = async (req, res) => {
+restaurantsController.editPassword = async (req, res, passPage, failPage) => {
    const restaurantId = req.params.restaurantId;
    const restaurant = await Restaurant.findOne({ _id: restaurantId }).exec();
     try {   
-        res.render('restaurants/crudRestaurantes/editPassword', {restaurant: restaurant });
+        //res.render('restaurants/crudRestaurantes/editPassword', {restaurant: restaurant });
+        res.render(passPage, {restaurant: restaurant });
     } catch (error) {
         console.log("Error", error);
-        res.render("restaurants/crudRestaurantes/editRestaurant");
+        //res.render("restaurants/crudRestaurantes/editRestaurant");
+        //res.render(failPage);
+        res.redirect(res.locals.previousPage);
     }
 };
 
@@ -370,13 +388,13 @@ async function validateNewPassowrd(body, restPassword) {
     return problem;
 }
 
-restaurantsController.updatePassword = async (req, res) => {
+restaurantsController.updatePassword = async (req, res, passPage, failPage) => {
     const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
     try {
         let validation = await validateNewPassowrd(req.body, restaurant.perfil.password);
 
         if (validation !== "") {
-            return res.status(500).send(validation);
+            return res.render('errors/error500', {error: validation});
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -389,23 +407,27 @@ restaurantsController.updatePassword = async (req, res) => {
         }, { new: true });
 
         console.log("Password atualizada");
-        res.render('restaurants/crudRestaurantes/editRestaurant', {restaurant: restaurant });
+        //res.render('restaurants/crudRestaurantes/editRestaurant', {restaurant: restaurant });
+        //res.render(passPage, {restaurant: restaurant });
+        res.redirect(res.locals.previousPage);
     } catch (error) {
         console.log("Error", error);
-        res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        //res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant });
+        //res.render(failPage, { restaurant: restaurant });
+        res.redirect(res.locals.previousPage);
     }
-
 }
 
 /*
 As pastas estão a voltar a não ser removidas
 */
-restaurantsController.removeRestaurant = async (req, res) => {
+restaurantsController.removeRestaurant = async (req, res, passPage) => {
     try {
         await Restaurant.deleteOne({ name: req.params.restaurant });
         deletepackage(`public/images/Restaurants/${req.params.restaurant}/`);
         console.log("Restaurante eliminado!");
-        res.redirect("/restaurants");
+        //res.redirect("/restaurantsList");
+        res.redirect(res.locals.previousPage);
     } catch (error) {
         console.log("Error", error);
         res.status(500).send("Problema a apagar o restaurante");

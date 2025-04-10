@@ -34,6 +34,7 @@ var restaurant = require('./routes/restaurant');
 var admin = require('./routes/admin')
 var checkOut = require('./routes/checkOut'); // Aqui carrego o controller que quero usar
 
+var perfil = require('./routes/perfil');
 // Configuração da sessão (ajuste conforme necessário)
 app.use(session({
   secret: 'TrabalhoPaw',
@@ -60,9 +61,11 @@ app.use((req, res, next) => {
   if (req.path.startsWith('/images') || req.path.startsWith('/css') || req.path.startsWith('/js')) {
     return next();
   }
+  
   res.locals.currentPage = req.path === '/' ? 'homepage' : req.path;
   res.locals.previousPage = req.headers.referer || '/';
   res.locals.user = req.user || null;
+
   console.log('User:', res.locals.user);
   console.log('Current Page:', res.locals.currentPage);
   console.log('Previous Page:', res.locals.previousPage);
@@ -89,7 +92,8 @@ app.use('/login', login);
 app.use('/signUp', signUp); 
 app.use('/restaurants', restaurants); //Aparece a pagina noraml dos restaurantes
 app.use('/restaurants', restaurant); //Aqui tenho de meter o /restaurants, porque o proximo é um id que pode ter qualquer valor. (Ou seja não existe o /, no route)
-app.use('/admin', admin);
+app.use('/perfil', perfil); //Pagina para renderizar o perfil
+app.use('/perfil/admin', admin); //Paginas de perfil do admin
 app.use('/checkOut', checkOut); //Aqui carrego o controller que quero usar
 
 // catch 404 and forward to error handler

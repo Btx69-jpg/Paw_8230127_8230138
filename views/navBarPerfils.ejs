@@ -1,0 +1,7 @@
+<li class="nav-item">
+    <% if(user.perfil.priority === "Admin") { %>
+        <a class="nav-link" href="/perfil/admin"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil/admin" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+    <% } else if (user.perfil.priority === "Cliente") { %>
+        <a class="nav-link" href="/perfil/client"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil/client" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
+    <% }%>
+</li>
