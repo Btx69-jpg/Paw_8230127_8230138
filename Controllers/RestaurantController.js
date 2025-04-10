@@ -93,7 +93,7 @@ restaurantController.createMenu = async function (req, res) {
 
 restaurantController.saveMenu = async function(req, res) {
     try {
-      // Busca o restaurante com base no parâmetro enviado na rota
+      // Busca o restaurante com base no parâmetro enviado na rota Da erro
       const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
       if (!restaurant) {
         return res.status(404).send("Restaurante não encontrado");

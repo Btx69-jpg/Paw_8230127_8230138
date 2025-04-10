@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const auth = require('../Controllers/autoLoginMiddleware.js');
 
 router.get('/', (req, res) => {
+  auth.autoLoginMiddleware;
   res.render('index');
 });
 

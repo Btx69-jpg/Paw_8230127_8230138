@@ -9,10 +9,11 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o passport como argumento
-
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const SECRET_KEY = process.env.JWT_SECRET;
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-
 
 //Conexão com o Atlas (Não sei se tenho de fazer /DB)
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', {
@@ -77,6 +78,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const autoLoginMiddleware = require('./Controllers/autoLoginMiddleware.js');
+app.use(autoLoginMiddleware);
 
 //Importante ter em consideração a autentificação e a autorização
 //Caminho até ao browser

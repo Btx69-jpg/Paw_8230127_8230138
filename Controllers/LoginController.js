@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const passport = require('passport');
-
 const User = require("../Models/Perfils/User");
 const AddressOrder = require("../Models/Reusable/AddressOrder");
 const Perfil = require("../Models/Reusable/Perfil");

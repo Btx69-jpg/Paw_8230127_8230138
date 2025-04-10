@@ -1,7 +1,8 @@
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = process.env.JWT_SECRET;
 
 require('../Models/Perfils/User');
 const User = mongoose.model('User');
