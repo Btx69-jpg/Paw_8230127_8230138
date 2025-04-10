@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../Controllers/LoginController.js");
+const loginController = require("../Controllers/LoginController.js");
 const jwt = require('jsonwebtoken');
 
 
@@ -36,7 +36,7 @@ router.post("/", (req, res) => {
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production'
-    }, userController.authenticate);
+    }, loginController.authenticate);
   }
     
   return res.redirect('/');
