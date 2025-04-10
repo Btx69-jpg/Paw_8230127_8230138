@@ -106,7 +106,7 @@ restaurantController.saveMenu = async function(req, res) {
   
       // Recupera os pratos enviados no formulário
       let dishes = req.body.dishes;
-      console.log(dishes);
+      console.log('Pratos: ' + dishes);
       // Verifica se foram enviados pratos
       if (!dishes) {
         return res.status(400).send("Nenhum prato foi enviado");
