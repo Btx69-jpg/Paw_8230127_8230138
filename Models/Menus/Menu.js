@@ -22,7 +22,10 @@ var MenuSchema = new mongoose.Schema({
         required: true,
     },
     type: {
-        type: Category.schema, 
+        type: String,
+        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
+        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        default: {},
         required: true,
     },
     updated_at: { type: Date, default: Date.now },
