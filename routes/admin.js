@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
+//Controlars
 const adminController = require("../Controllers/AdminController.js");
-const categoryController = require("../Controllers/CategoriesController.js");
+
+//routes
+const restaurantRouter = require("./adminRoutes/listrestaurants.js");
+const userRouter = require("./adminRoutes/listusers.js");
+const categoriesRouter = require("./adminRoutes/categories.js");
 
 //Pagina do admin
 router.get("/", function(req, res) {
@@ -10,21 +15,12 @@ router.get("/", function(req, res) {
 });
 
 /*Routers para os restaurantes */
-router.get("/listRestaurants", function(req, res) {
-    adminController.listRestaurants(req, res);
-});
+router.use("/listRestaurants", restaurantRouter);
 
 /*Routers para os users */
-router.get("/listUsers", function(req, res) {
-    adminController.listUsers(req, res);
-});
+router.use("/listUsers", userRouter);
 
 /*Routers para as categorias */
-router.get("/listCategories", function(req, res) {
-    adminController.listCategories(req, res);
-});
+router.use("/listCategories", categoriesRouter);
 
-router.post("/listCategories/deleteCateory/:CategoryId", function(req, res) {
-    
-})
 module.exports = router;

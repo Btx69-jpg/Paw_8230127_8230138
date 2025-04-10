@@ -1,4 +1,3 @@
-<!-- Criar conta para o restaurante apos ser inserido. -->
 <!DOCTYPE html>
 <html lang="pt-PT">
     <head>
@@ -19,7 +18,7 @@
             <div class="add-restaurant-container">
                 <h1>Adicionar novo Restaurante</h1>
                 <!-- enctype="multipart/form-data" -->
-                <form action="/restaurants/saveRestaurant" method="POST" enctype="multipart/form-data">
+                <form action="<%= page.action%>" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
                         <input type="text" 
@@ -160,7 +159,7 @@
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-secondary">Limpar</button>
-                        <a href="<%= previousPage %>" class="btn btn-secondary">Voltar</a>
+                        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
                     </div>
                     
                 </form>

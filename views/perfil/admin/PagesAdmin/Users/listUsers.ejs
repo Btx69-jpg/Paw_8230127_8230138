@@ -1,3 +1,4 @@
+<% if(user !== null && user.perfil.priority === "Admin") { %>
 <!DOCTYPE html>
 <html lang="pt-PT">
     <head>
@@ -13,40 +14,54 @@
     </head>
 
     <body>
-        <%- include('../navBar') %>
+        <%- include('../../navBar') %>
 
         <div class="container">
         <h1 class="text-center my-4">Lista de Utilizadores</h1>
 
-        <!-- Verificas se os links estão bem
-        Meter para caso esteja banido, aparecer o botão de desban, e caso não esteja banido
-        o botão de banido 
-        -->
+        <!-- Validar links-->
+        <div class="d-flex justify-content-center mb-4">
+            <a href="/perfil/admin/listUsers/createUser" class="btn btn-success">Adicionar Utilizador</a>
+        </div>
         <% if (users.length > 0) { %>
+            <!-- Ideias de filtros 
+            pesquisar por prioridade
+            Pesquisar por estar banido ou não
+            Pesquisar por nome
+            Pesquisar por email ou numero
+            -->
+
             <div class="row justify-content-center">
             <% for(let i = 0; i < users.length; i++) { %>
                 <div class="col-md-4 mb-4">
                 <div class="restaurant-card text-center border rounded p-3 shadow-sm">
                     <h5 class="mb-3"><%= users[i].firstName %> <%= users[i].lastName%></h5>
+                    <p class="mb-3">Prioridade: <%= users[i].perfil.priority %></p>
                     <p class="mb-3">Email: <%= users[i].perfil.email %></p>
                     <p class="mb-3">Telefone: <%= users[i].perfil.phoneNumber %></p>
                     <div class="btn-group d-flex justify-content-center">
                     
-                        <form action="/users/listUsers/deleteUser/<%= users[i]._id %>" method="POST">
+                        <form action="/perfil/admin/listUsers/delete/<%= users[i]._id %>" method="POST">
                             <button type="submit" class="btn btn-danger">Remover</button>
                         </form>
                         
-                        <form action="/users/listUsers/editUser/<%= users[i]._id %>" method="GET">
+                        <form action="/perfil/admin/listUsers/editUser/<%= users[i]._id %>" method="GET">
                             <button type="submit" class="btn btn-primary">Editar</button>
                         </form>
 
-                        <form action="/users/listUsers/banUser/<%= users[i]._id %>" method="GET">
-                            <button type="submit" class="btn btn-primary">Banir</button>
-                        </form>
+                        <% if (users[i].perfil.banned === true) { %>
+                            <form action="/perfil/admin/listUsers/desban/<%= users[i]._id %>" method="POST">
+                                <button type="submit" class="btn btn-primary">Desbanir</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/perfil/admin/listUsers/ban/<%= users[i]._id %>" method="POST">
+                                <button type="submit" class="btn btn-primary">Banir</button>
+                            </form>
+                        <% } %>
                     </div>
 
                     <p class="mt-3">
-                        <a href="/users/listUsers/showUser/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
+                        <a href="/perfil/admin/listUsers/showUser/<%= users[i]._id %>" class="text-decoration-none">Mais Info.</a>
                     </p>
                 </div>
                 </div>
@@ -61,3 +76,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
+<% } else {%>
+    <%- include('../../../errors/error404')%>
+<% }%>

@@ -44,6 +44,11 @@ var RestaurantSchema = new mongoose.Schema({
         type: [Comment.schema],
         default: [], //Inicializa com o array vazio
     },
+    aprove: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

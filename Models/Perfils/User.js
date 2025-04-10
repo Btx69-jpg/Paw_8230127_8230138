@@ -22,12 +22,6 @@ var UserSchema = new mongoose.Schema({
         type: Perfil.schema,
         required: true,
     },
-    countAddress: {
-        type: Number,
-        default: 0,
-        min: [0, 'O valor minimo do contador é 0'],
-        max: [5, 'O número máximo de moradas é 5'],
-    },
     addresses: {
         type: [AddressOrder.schema],
         default: [] //Inicializa com o array vazio
