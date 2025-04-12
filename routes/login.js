@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 
 // Página de login
-router.get("/", userController.login);
+router.get("/", loginController.login);
 
 // Autenticação de utilizador
 router.post("/", (req, res) => {
