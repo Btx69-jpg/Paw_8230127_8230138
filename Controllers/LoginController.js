@@ -10,7 +10,6 @@ loginController.login = (req, res) => {
 
 // Autentica o utilizador
 loginController.authenticate = (req, res, next) => {
-    console.log("Autenticando utilizador...");
     passport.authenticate("local", {
         successRedirect: "/",
         failureRedirect: "/login",
