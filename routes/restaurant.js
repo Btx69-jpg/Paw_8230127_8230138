@@ -14,9 +14,11 @@ router.get('/:restaurant', function(req, res) {
 });
 
 /*Depois trocar para /:restaurant/:comments */
+/*
 router.get('/:restaurant/comments', function(req, res) {
     restaurant.comments(req, res);
 });
+*/
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
