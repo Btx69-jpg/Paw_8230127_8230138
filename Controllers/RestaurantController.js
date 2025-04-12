@@ -84,6 +84,8 @@ restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
         let categories = await carregarCategories();
+        
+        console.log(restaurant);
 
         res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
     } catch (err) {
