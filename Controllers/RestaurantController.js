@@ -90,7 +90,6 @@ restaurantController.createMenu = async function (req, res) {
         res.status(500).send("Erro interno no servidor");
     }
 };
-
 restaurantController.saveMenu = async function(req, res) {
     try {
       // Busca o restaurante com base no parâmetro enviado na rota Da erro
@@ -103,10 +102,8 @@ restaurantController.saveMenu = async function(req, res) {
       // Importante: Considere usar o nome correto do campo para o tipo do menu.
       // No formulário, o campo é "type", não "menuType"
       let menuType = req.body.type;
-  
       // Recupera os pratos enviados no formulário
       let dishes = req.body.dishes;
-      console.log(dishes);
       // Verifica se foram enviados pratos
       if (!dishes) {
         return res.status(400).send("Nenhum prato foi enviado");
@@ -151,7 +148,7 @@ restaurantController.saveMenu = async function(req, res) {
       res.redirect("/restaurants/" + restaurant.name);
     } catch (err) {
       console.error(err);
-      res.status(500).send("Erro ao guardar o menu no restaurante");
+      res.render("errors/error500", {error: err});
     }
   };
 
