@@ -1,10 +1,10 @@
 var mongoose = require("mongoose");
 const multer  = require('multer');
 
-var Restaurant = require("../Models/Perfils/Restaurant");
-var Dish = require("../Models/Menus/Dish");
-var Category = require("../Models/Reusable/Category");
-
+const Restaurant = require("../Models/Perfils/Restaurant");
+const Dish = require("../Models/Menus/Dish");
+const Category = require("../Models/Reusable/Category");
+const Menu = require("../Models/Menus/Menu")
 var storage;
 var upload;
 
@@ -30,7 +30,7 @@ async function renderCreateDish(res) {
     if(categories != null) {
         res.render("restaurants/restaurant/Dishs/createDish", {categories: categories});
     } else {
-        res.status(500).send("Problema a procurar as categorias dos pratos")
+        res.render("errors/error500", {error: "Problema a procurar as categorias dos pratos"});
     }
 }
 
@@ -41,7 +41,7 @@ async function renderEditDish(res, dish) {
     if(categories != null) {
         res.render("restaurants/restaurant/Dishs/editDish", {dish: dish}, {categories: categories});
     } else {
-        res.status(500).send("Problema a procurar as categorias dos pratos")
+        res.render("errors/error500", {error: "Problema a procurar os pratos"});
     }
 }
 
@@ -53,8 +53,7 @@ restaurantController.homePage = async function(req, res) {
         let categories = await carregarCategories();
         res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
     } catch (err) {
-        console.log("Erro: ", err);
-        res.status(500).send("Erro interno no servidor");
+        res.render("errors/error500", {error: err});
     }
 };
 
@@ -72,8 +71,7 @@ restaurantController.showMenu = function(req, res) {
     Dish.find({}).exec().then(function(dishs) {
         res.render("restaurants/restaurant/menu", {dishs: dishs});
       }).catch(function(err) {
-        console.log("Error", err);
-        res.status(500).send("Problema a procurar pelos pratos do menu");
+        res.render("errors/error500", {error: err});
       });
     
 };
@@ -82,23 +80,33 @@ restaurantController.showMenu = function(req, res) {
 restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        let categories = await carregarCategories();
+        const categories = await carregarCategories();
 
         res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
     } catch (err) {
-        console.log("Erro: ", err);
-        res.status(500).send("Erro interno no servidor");
+        res.render("errors/error500", {error: err});
     }
 };
 restaurantController.saveMenu = async function(req, res) {
     try {
       // Busca o restaurante com base no parâmetro enviado na rota Da erro
-      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log();
+      console.log("----------------------------");
+      
+      let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
       if (!restaurant) {
         return res.status(404).send("Restaurante não encontrado");
       }
   
-      console.log(req.body)
+      console.log(req.body);
       // Importante: Considere usar o nome correto do campo para o tipo do menu.
       // No formulário, o campo é "type", não "menuType"
       let menuType = req.body.type;
@@ -119,7 +127,9 @@ restaurantController.saveMenu = async function(req, res) {
       // (Caso deseje salvá-los individualmente no banco, poderá chamar dish.save())
       let dishObjects = [];
       for (let i = 0; i < dishes.length; i++) {
-        let dishData = dishes[i];
+        const dishData = dishes[i];
+
+        console.log(dishData);
         let dishObj = new Dish({
           name: dishData.name,
           description: dishData.description,
@@ -127,36 +137,39 @@ restaurantController.saveMenu = async function(req, res) {
           price: dishData.price,
           // photo: caminho (se houver o upload da foto configurado)
         });
+
         dishObjects.push(dishObj);
       }
       
       // Cria uma nova instância do menu
-      let menu = new Menu({
+      const menu = new Menu({
         name: req.body.name,
-        countDish: dishObjects.length,
         type: menuType, // Agora vem do req.body.type
-        dishes: dishObjects
+        dishes: dishObjects,
       });
   
+
       // Adiciona o menu ao restaurante encontrado
+      console.log(menu);
       restaurant.menus.push(menu);
-      
+  
+      console.log(restaurant);
+      //Erro no await restuarante.save()
       // Salva o restaurante com o novo menu
       await restaurant.save();
   
       console.log("Menu guardado com sucesso no restaurante");
       res.redirect("/restaurants/" + restaurant.name);
     } catch (err) {
-      console.error(err);
-      res.render("errors/error500", {error: err});
+      res.render("errors/error500", {error: err})
     }
-  };
-
+};
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
     Dish.findOne({_id: req.params.id}).exec(function (err, dish) {
         if(err) {
             console.log("Erro: ", err);
+            res.redirect(res.locals.previousPage);
         } else {
             res.render("restaurants/restaurant/Dishs/showDish", {dish: dish});
         }
@@ -221,7 +234,7 @@ restaurantController.editDish = function(req, res) {
         renderEditDish(res, dish);
     } catch (err) {
         console.log("Erro ao procurar a dish: ", err);
-        res.redirect("/restaurants/restaurant/menu/")
+        res.redirect("/restaurants/restaurant/menu/");
     }
 };
 
