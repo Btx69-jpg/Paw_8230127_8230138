@@ -1,19 +1,12 @@
 var mongoose = require('mongoose');
 var Dish = require('./Dish'); //Pratos do menu
-var Category = require('../Reusable/Category');
+//var Category = require('../Reusable/Category');
 
 var MenuSchema = new mongoose.Schema({
     name: {
         type: String,
         maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        required: true,
-    },
-    countDish: {
-        type: Number,
-        default: 1,
-        min: [1, 'O minimo de pratos são 1'],
-        max: [10, 'O máximo de pratos do menu são 10'],
         required: true,
     },
     dishes: { 
@@ -25,7 +18,6 @@ var MenuSchema = new mongoose.Schema({
         type: String,
         maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        default: {},
         required: true,
     },
     updated_at: { type: Date, default: Date.now },

@@ -9,61 +9,40 @@ var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carr
 /* Entra na Home Page do restaurante
 (vai ter de carregar, o restaurante carregado na primeira página) */ 
 /*Depois trocar para /:restaurant */
-router.get('/:restaurant', function(req, res) {
-    restaurant.homePage(req, res);
-});
+router.get('/:restaurant', restaurant.homePage);
 
 /*Depois trocar para /:restaurant/:comments */
-router.get('/:restaurant/comments', function(req, res) {
-    restaurant.comments(req, res);
-});
+router.get('/:restaurant/comments', restaurant.comments);
+
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
-router.get('/:restaurant/:menu', function(req, res) {
-    restaurant.showMenu(req, res);
-});
+router.get('/:restaurant/menu', restaurant.showMenu);
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
-router.get('/:restaurant/createMenu', function(req, res) {
-    restaurant.createMenu(req, res);
-});
+router.get('/:restaurant/createMenu', restaurant.createMenu);
 
 //Salva o menu criado
-router.post('/:restaurant/menu/saveMenu', function(req, res) {
-    restaurant.saveMenu(req, res);
-});
+router.post('/:restaurant/menu/saveMenu', restaurant.saveMenu);
 
 //Permite criar uma nova dish
 /*Depois trocar para /:restaurant/:menu/createDish */
-router.get('/:restaurant/menu/createDish', function(req, res) {
-    restaurant.createDish(req, res);
-});
+router.get('/:restaurant/menu/createDish', restaurant.createDish);
 
-router.post('/:restaurant/menu/saveDish', function(req, res) {
-    restaurant.saveDish(req, res);
-});
+router.post('/:restaurant/menu/saveDish', restaurant.saveDish);
 
 /*Depois trocar para /:restaurant/:menu/:prato */
-router.get('/:restaurant/menu/showDish/:id', function(req, res) {
-    restaurant.showDish(req, res);
-});
+router.get('/:restaurant/menu/showDish/:id', restaurant.showDish);
 
 /*Depois trocar para /:restaurant/:menu/:prato 
 Falta fazer
 */
-router.get('/:restaurant/menu/editDish/:id', function(req, res) {
-    restaurant.editDish(req, res);
-});
+router.get('/:restaurant/menu/editDish/:id', restaurant.editDish);
 
 /*Falta fazer */
-router.post('/:restaurant/menu/updateDish/:id', function(req, res) {
-    restaurant.updateDish(req, res);
-});
+router.post('/:restaurant/menu/updateDish/:id', restaurant.updateDish);
 
 /*Falta fazer */
-router.post('/:restaurant/menu/deleteDish/:id', function(req, res) {
-    restaurant.deleteDish(req, res);
-});
+router.post('/:restaurant/menu/deleteDish/:id', restaurant.deleteDish);
 
 module.exports = router;

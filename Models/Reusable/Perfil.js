@@ -28,8 +28,12 @@ var PerfilSchema = new mongoose.Schema({
     },
     priority: {
         type: String,
-        enum: ['Cliente', 'Admin', 'Restaurant', 'Dono'],
+        enum: ['Cliente', 'Admin', 'Restaurant', 'Dono', 'Funcionario'],
         required: true,
+    },
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant'
     },
     banned: {
         type: Boolean,

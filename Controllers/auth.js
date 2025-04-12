@@ -12,9 +12,7 @@ const userController = require("./LoginController.js");
 
 
 module.exports = function(passport) {
-
     passport.use(new localStrategy({ usernameField: 'email', passwordField:"password" }, async (email, password, done) => {
-
         User.findOne({ 'perfil.email': email }).then(user => {
             if (!user) {
                 return done(null, false, { message: 'Esta conta não existe!' });
@@ -25,11 +23,9 @@ module.exports = function(passport) {
                 if (isMatch) {
                     return done(null, user);
                 } else {
-                    return done(null, false, { message: 'Senha incorreta!' });
+                    return done(null, false, { message: 'Password incorreta!' });
                 }
-            });
-
-            
+            });      
         })
             
     }))

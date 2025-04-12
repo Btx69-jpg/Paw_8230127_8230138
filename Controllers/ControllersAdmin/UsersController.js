@@ -1,13 +1,17 @@
 var mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+
 //Models
 const User = require("../../Models/Perfils/User");
 const Perfil = require("../../Models/Reusable/Perfil");
 const Restaurantes = require("../../Models/Perfils/Restaurant");
+
 //Constrollers
 const signUpController = require("../SignUpController");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 var userController = {};
+
+//Associar um dono ao seu restaurante, atraves do id do restaurante
 
 userController.homePage = async function(req, res) {
     User.find({ 'perfil.priority': { $ne: "Admin" }}).exec()
@@ -24,16 +28,28 @@ userController.createUser = async function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
 }
 
-userController.findOneRestaurante = async function(email, phoneNumber) {
+userController.findOneRestaurante = async function(name) {
     try {
-        return await Restaurantes.findOne({ 'perfil.email': email, 'perfil.phoneNumber': phoneNumber });
+        return await Restaurantes.findOne( {name: name});
     } catch (err) {
         console.log(err);
         return null;
     }
 }
 
-async function validateNewUser(email, phoneNumber, priority) {
+async function validateNewUser(email, priority, restaurant) {
+    if (priority === "Dono") {
+        if (restaurant === "") {
+            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
+        } 
+        
+        const existingRestaurant = await userController.findOneRestaurante(restaurant);
+
+        if (!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse nome!"
+        }
+    }
+
     const existingUser = await signUpController.findOneEmail(email);
     const existingEmailRestaurant = await signUpController.findOneEmailRestaurante(email);
     
@@ -41,43 +57,42 @@ async function validateNewUser(email, phoneNumber, priority) {
         return "Já existe uma conta com este email!"
     }
 
-    if (priority === "Dono") {
-        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
-
-        if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!"
-        }
-    } 
     return "";
 }
 
-async function validateUpdateUser(user, email, phoneNumber, priority) {
-    if(priority === 'Dono') {
-        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
-
-        if(!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!"
-        } else if(existingRestaurant._id !== user._id) {
-            return "O restuarante que introduziu já tem dono"
+async function validateUpdateUser(user, email, priority, restaurant) {
+    if (priority === "Dono") {
+        if (restaurant === "") {
+            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
+        } 
+        
+        const existingRestaurant = await userController.findOneRestaurante(restaurant);
+        console.log(restaurant);
+        if (!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse nome!"
         }
     }
 
+    //O problema não está no _id, é igual ao da DB
     const existingUser = await User.findOne({
+        _id: { $ne: user._id },
         'perfil.email': email,
-        _id: { $ne: user._id }
     }).exec();
 
     const existingEmailRestaurant = await Restaurant.findOne({
-        'perfil.email': email,
-        _id: { $ne: user._id }
+        _id: { $ne: user._id },
+        'perfil.email': email || user.perfil.email,
     }).exec();
 
     //Ver bem esta validação, ela é capza de dar dores de cabeça futuras
-    if (existingUser || existingEmailRestaurant && user.perfil.priority !== "Dono" || priority !== "Dono") {
+    //Reitrei isto: " && user.perfil.priority !== "Dono" || priority !== "Dono""
+    if (existingUser || existingEmailRestaurant) {
         return "Já existe uma conta com este email!"
     }
+
     return "";
 }
+
 /*
 Testes:
 Cria um user cliente corretamente (funciona)
@@ -91,14 +106,14 @@ Entra aqui quando temos emails iguais mas por algum motivo não entra
 */
 userController.saveUser = async function(req, res) {
     try {
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
-        let errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
+        const errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
         }
 
-        let errorValidate = validateNewUser(email, phoneNumber, priority);
+        const errorValidate = await validateNewUser(email, priority, restaurant);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -109,12 +124,26 @@ userController.saveUser = async function(req, res) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         
-        const perfil = new Perfil({
-            phoneNumber: phoneNumber,
-            email: email,
-            password: hashedPassword,
-            priority: priority,
-        });
+        let perfil;
+
+        if (restaurant !== undefined) {
+            const foundRestaurant = await Restaurant.findOne( {name: restaurant}).exec();
+
+            perfil = new Perfil({
+                phoneNumber: phoneNumber,
+                email: email,
+                password: hashedPassword,
+                priority: priority,
+                restaurantId: foundRestaurant._id,
+            });
+        } else {
+            perfil = new Perfil({
+                phoneNumber: phoneNumber,
+                email: email,
+                password: hashedPassword,
+                priority: priority,
+            });
+        }
 
         const newUser = new User({
             firstName: firstName,
@@ -136,12 +165,26 @@ userController.saveUser = async function(req, res) {
 
 userController.editPage = function(req, res) {    
     User.findOne({ _id: req.params.userId }).exec()
-        .then(user => {
-            res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user});
+        .then(user => {     
+            console.log("User encontrado", user);
+
+            if(user.perfil.priority === "Dono" && user.perfil.restaurantId) {
+                Restaurant.findOne().exec()
+                    .then(restaurant => {
+                        res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: restaurant.name});
+                    })
+                    .catch(error => {
+                        console.log("Erro: ", error);
+                        res.redirect("perfil/admin/listUsers");
+                    });
+            } else {
+                res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: ""});
+            }
+
         })
         .catch(error => {
             console.log("Erro: ", error);
-            res.redirect("perfil/admin/listUsers");
+            res.redirect("/perfil/admin/listUsers");
         });
 }
 
@@ -149,52 +192,46 @@ userController.editPage = function(req, res) {
 //Já poso tirar o try catch
 userController.updateUser =  async function(req, res) {
     try {
-        const { firstName, lastName, email, phoneNumber, priority} = req.body;  
+        const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  
 
         //Validações aos campos
-        let errors = signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
+        let errors = await signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
     
         //Encontrar o user a atualizar
-        User.findOne({ _id: req.params.userId }).exec()
-            .then(user => {
-                console.log("User atualizado com sucesso")
-                res.redirect("/perfil/admin/listUsers");
-                let errorValidate = validateUpdateUser(user, email, phoneNumber, priority);
-        
-            
-                if(errorValidate !== "") {
-                    req.flash("error_msg", errorValidate);
-                    console.log("Error: ", errorValidate);
-                    return res.redirect(res.locals.previousPage);
-                }
+        let user = await User.findOne({ _id: req.params.userId }).exec();
+        console.log(user);
+        //Está aqui um problema
+        let errorValidate = await validateUpdateUser(user, email, priority, restaurant);
+    
+        if(errorValidate !== "") {
+            req.flash("error_msg", errorValidate);
+            console.log("Error: ", errorValidate);
+            return res.redirect(res.locals.previousPage);
+        }
 
-                //update
-                user.firstName = firstName;
-                user.lastName = lastName;
-                user.perfil.email = email;
-                user.perfil.phoneNumber = phoneNumber;
-                user.perfil.priority = priority;
-                
-                //guardar as alterações
-                user.save()
-                    .then(() => {
-                        console.log("User atualizado com sucesso!");
-                        res.redirect("/perfil/admin/listUser");
-                        //userController.homePage(res, req); (caso não leve corretamente para a lista)
-                    })
-                    .catch(error => {
-                        console.log("Erro:", error);
-                        req
-                    })
+        if(user.perfil.restaurantId && user.perfil.priority === "Dono" && priority !== "Dono") {
+            delete user.perfil.restaurantId;
+        }
+        //update
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.perfil.email = email;
+        user.perfil.phoneNumber = phoneNumber;
+        user.perfil.priority = priority;
+        
+        //guardar as alterações
+        user.save()
+            .then(() => {
+                console.log("User atualizado com sucesso!");
+                res.redirect("/perfil/admin/listUsers");
             })
             .catch(error => {
-                //Redireciona para a pagina de edit
-                console.log("Erro: ", error);
-                res.redirect("/perfil/admin/listUsers/editUser/" + req.params.userId);
-            });
+                console.log("Erro:", error);
+                req
+            })
     } catch(err) {
         console.log(err);
         res.redirect(res.locals.previousPage);

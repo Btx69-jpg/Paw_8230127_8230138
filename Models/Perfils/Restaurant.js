@@ -1,7 +1,3 @@
-/**
- * Importante ver se o retaurante vai ter apenas um menu ou varios
- * Aproveitar e ver se o carrinho vai ter pratos ou menus
- */
 var mongoose = require('mongoose');
 var Address = require("../Reusable/Address");
 var Perfil = require("../Reusable/Perfil");
