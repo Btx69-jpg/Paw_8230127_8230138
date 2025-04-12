@@ -4,19 +4,13 @@ const router = express.Router();
 const userController = require("../../Controllers/ControllersAdmin/UsersController.js");
 
 /*Routers para os users */
-router.get("/", function(req, res) {
-    userController.homePage(req, res);
-});
+router.get("/", userController.homePage);
 
 /* Carrega a pagina de criação do utilizador */
-router.get("/createUser", function(req, res) {
-    userController.createUser(req, res);
-});
+router.get("/createUser", userController.createUser);
 
 /* Guarda um novo utilizador na BD */
-router.post("/createUser", function(req, res) {
-    userController.saveUser(req, res);
-});
+router.post("/createUser", userController.saveUser);
 
 /* Carrega a pagina de criação do utilizador */
 router.get("/editUser/:userId", userController.editPage);
@@ -24,10 +18,7 @@ router.get("/editUser/:userId", userController.editPage);
 router.post("/editUser/:userId", userController.updateUser);
 
 /* Permite apagar um user */
-router.post("/delete/:userId", function(req, res) {
-    userController.deleteUser(req, res);
-});
-
+router.post("/delete/:userId",userController.deleteUser);
 
 //Depois trocar este dois para um put
 /*Desbanir um user manualmente */

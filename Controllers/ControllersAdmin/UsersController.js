@@ -28,16 +28,28 @@ userController.createUser = async function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
 }
 
-userController.findOneRestaurante = async function(email, phoneNumber) {
+userController.findOneRestaurante = async function(name) {
     try {
-        return await Restaurantes.findOne({ 'perfil.email': email, 'perfil.phoneNumber': phoneNumber });
+        return await Restaurantes.findOne( {name: name});
     } catch (err) {
         console.log(err);
         return null;
     }
 }
 
-async function validateNewUser(email, phoneNumber, priority) {
+async function validateNewUser(email, priority, restaurant) {
+    if (priority === "Dono") {
+        if (restaurant === "") {
+            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
+        } 
+        
+        const existingRestaurant = await userController.findOneRestaurante(restaurant);
+
+        if (!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse email e numero de telefone!"
+        }
+    }
+
     const existingUser = await signUpController.findOneEmail(email);
     const existingEmailRestaurant = await signUpController.findOneEmailRestaurante(email);
     
@@ -45,23 +57,20 @@ async function validateNewUser(email, phoneNumber, priority) {
         return "Já existe uma conta com este email!"
     }
 
+    return "";
+}
+
+async function validateUpdateUser(user, email, priority, restaurant) {
     if (priority === "Dono") {
-        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
+        if (restaurant === "") {
+            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
+        } 
+        
+        const existingRestaurant = await userController.findOneRestaurante(restaurant);
 
         if (!existingRestaurant) {
             return "Não existe nenhum restaurante com esse email e numero de telefone!"
         }
-    } 
-    return "";
-}
-
-async function validateUpdateUser(user, email, phoneNumber, priority) {
-    if(priority === 'Dono') {
-        const existingRestaurant = await userController.findOneRestaurante(email, phoneNumber);
-
-        if(!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!";
-        } 
     }
 
     //O problema não está no _id, é igual ao da DB
@@ -83,6 +92,7 @@ async function validateUpdateUser(user, email, phoneNumber, priority) {
 
     return "";
 }
+
 /*
 Testes:
 Cria um user cliente corretamente (funciona)
@@ -96,14 +106,14 @@ Entra aqui quando temos emails iguais mas por algum motivo não entra
 */
 userController.saveUser = async function(req, res) {
     try {
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
-        let errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
+        const errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
         }
 
-        let errorValidate = await validateNewUser(email, phoneNumber, priority);
+        const errorValidate = await validateNewUser(email, priority, restaurant);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -114,12 +124,26 @@ userController.saveUser = async function(req, res) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         
-        const perfil = new Perfil({
-            phoneNumber: phoneNumber,
-            email: email,
-            password: hashedPassword,
-            priority: priority,
-        });
+        let perfil;
+
+        if (restaurant !== undefined) {
+            const foundRestaurant = await Restaurant.findOne( {name: restaurant}).exec();
+
+            perfil = new Perfil({
+                phoneNumber: phoneNumber,
+                email: email,
+                password: hashedPassword,
+                priority: priority,
+                restaurantId: foundRestaurant._id,
+            });
+        } else {
+            perfil = new Perfil({
+                phoneNumber: phoneNumber,
+                email: email,
+                password: hashedPassword,
+                priority: priority,
+            });
+        }
 
         const newUser = new User({
             firstName: firstName,
@@ -141,8 +165,21 @@ userController.saveUser = async function(req, res) {
 
 userController.editPage = function(req, res) {    
     User.findOne({ _id: req.params.userId }).exec()
-        .then(user => {
-            res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user});
+        .then(user => {     
+
+            if(user.perfil.priority === "Dono" && user.perfil,restaurantId) {
+                Restaurant.findOne().exec()
+                    .then(restaurant => {
+                        res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: restaurant.name});
+                    })
+                    .catch(error => {
+                        console.log("Erro: ", error);
+                        res.redirect("perfil/admin/listUsers");
+                    });
+            } else {
+                res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: ""});
+            }
+
         })
         .catch(error => {
             console.log("Erro: ", error);
@@ -166,7 +203,7 @@ userController.updateUser =  async function(req, res) {
         let user = await User.findOne({ _id: req.params.userId }).exec();
         console.log(user);
         //Está aqui um problema
-        let errorValidate = await validateUpdateUser(user, email, phoneNumber, priority);
+        let errorValidate = await validateUpdateUser(user, email, priority);
     
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);

@@ -21,7 +21,7 @@ signUpController.findOneEmailRestaurante = async (email) => {
     return await Restaurant.findOne({ 'perfil.email': email });
 };
 
-signUpController.validationSave = function (firstName, lastName, email, phoneNumber, password = "", confirmPassword = "") {
+signUpController.validationSave = function (firstName, lastName, email, phoneNumber, password, confirmPassword) {
     let errors = [];
 
     if (!firstName || !lastName || !email || !phoneNumber || !password || !confirmPassword) {

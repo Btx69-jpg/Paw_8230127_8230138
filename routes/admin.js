@@ -10,9 +10,10 @@ const userRouter = require("./adminRoutes/listusers.js");
 const categoriesRouter = require("./adminRoutes/categories.js");
 
 //Pagina do admin
-router.get("/", function(req, res) {
-    adminController.homePage(req, res);
-});
+router.get("/", adminController.homePage);
+
+//Route para eliminar o admin
+router.post("/deleteAccount/:adminId", adminController.deleteAdm);
 
 /*Routers para os restaurantes */
 router.use("/listRestaurants", restaurantRouter);
