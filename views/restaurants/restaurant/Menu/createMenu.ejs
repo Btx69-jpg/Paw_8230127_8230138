@@ -47,7 +47,7 @@
     <%- include('../../../navBar.ejs') %>
 
     <%
-      let backgroundImg;
+      let backgroundImg = "";
       if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
         // Substitui barras invertidas por barras normais
         backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
