@@ -71,7 +71,7 @@ restaurantController.showMenu = function(req, res) {
 
     //Aqui seria apenas para carregar os pratos do menu e não todos os pratos criados
     Dish.find({}).exec().then(function(dishs) {
-        res.render("restaurants/restaurant/Menu/menu", {dishs: dishs});
+        res.render("restaurants/restaurant//menu", {dishs: dishs});
       }).catch(function(err) {
         console.log("Error", err);
         res.status(500).send("Problema a procurar pelos pratos do menu");
