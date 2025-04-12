@@ -38,8 +38,8 @@ router.post("/", (req, res) => {
       secure: process.env.NODE_ENV === 'production'
     }, loginController.authenticate);
   }
-
-
+    
+  return res.redirect('/');
 });
 
 router.get("/logOut", (req, res) => {
