@@ -3,7 +3,7 @@ const User = require('../Models/Perfils/User');
 const SECRET_KEY = process.env.JWT_SECRET;
 
 async function autoLoginMiddleware(req, res, next) {
-  // Se o usuário já estiver autenticado, passa para a próxima rota
+  // Se o utilizador já estiver autenticado, passa para a próxima rota
   if (req.user) return next();
 
   // Verifique se existe o cookie auth_token
@@ -14,7 +14,7 @@ async function autoLoginMiddleware(req, res, next) {
         try {
           const user = await User.findOne({ 'perfil.email': decoded.email });
           if (user) {
-            // Registra o usuário na sessão sem redirecionar de forma intempestiva
+            // Registra o utilizador na sessão sem redirecionar de forma intempestiva
             req.login(user, (loginErr) => {
               if (loginErr) {
                 console.error("Erro no auto login:", loginErr);
@@ -26,17 +26,17 @@ async function autoLoginMiddleware(req, res, next) {
                     console.error("Erro ao logar automaticamente: ", loginErr);
                     return res.render('login/login', { email: emailSalvo, error: 'Erro ao fazer login automático' });
                 }
-                // Usuário autenticado e sessão iniciada; redirecione para a página desejada
+                // utilizador autenticado e sessão iniciada; redirecione para a página desejada
                 return res.redirect('/');
             });
 
             });
           } else {
-            console.log("Usuário não encontrado para o email:", decoded.email);
+            console.log("Utilizador não encontrado para o email:", decoded.email);
             return next();
           }
         } catch (dbErr) {
-          console.error("Erro ao buscar usuário:", dbErr);
+          console.error("Erro ao buscar utilizador:", dbErr);
           return next();
         }
       } else {

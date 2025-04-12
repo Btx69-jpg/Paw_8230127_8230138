@@ -208,6 +208,39 @@ restaurantsController.createRestaurant = function(req, res, page) {
     res.render(page);
 };
 
+//Filtros de restaurantes
+restaurantsController.search = function(req, res) {
+    let query = {};
+    let posicao = req.query.posicao;
+    let salario = req.query.salario;
+  
+    console.log(posicao);
+    console.log(salario);
+    //Verifica se o salario tem valor
+  
+    //Estes nome tem de ser iguais ao que estão, no mongoDB, na dataBase, por isso que não estava a dar
+    if(posicao) {
+      query.position = posicao;
+    }
+  
+    if(salario) {
+      query.salary = { $gte: salario};
+    }
+    
+    /*
+    O .find ele serve para receber uma query, estilo a que faziamos em mongo, para procurar por algum dado, com base nessa query 
+    O codigo ele é parecido com o list, o que muda é que neste eu em vez de mostrar todos, mostro com base na query
+    */
+    Employee.find(query).exec()
+      .then(function (employees) {
+        res.render("employees/index", {employees: employees});
+      })
+      .catch(function(err) {
+        console.error("Erro ao filtrar por employees: ", err);
+        res.render("errors/error500", {error: "Erro ao filtrar por employees"});
+      }) 
+  };
+
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async (req, res, passPage, failPage) => {
     try { 
