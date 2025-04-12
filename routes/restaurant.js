@@ -20,7 +20,7 @@ router.get('/:restaurant/comments', function(req, res) {
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
-router.get('/:restaurant/menu', function(req, res) {
+router.get('/:restaurant/:menu', function(req, res) {
     restaurant.showMenu(req, res);
 });
 
