@@ -156,8 +156,21 @@
           </select>
         </div>
 
-        <% if() { %>
+        <% if(restaurant !== "" && restaurant !== null) { %>
           <!-- Crio já o div do restaurante com dados-->
+           <div class="form-group" id="divRestaurant">
+              <label for="restaurant">Nome do restaurant:</label>
+              <input type="text"
+              id="restaurant"
+              class="form-control"
+              name="restaurant"
+              placeholder = "Introduza o nome do restaurante"
+              maxLength= "100"
+              pattern= "^(?!.*[\\/]).+$"
+              title= "O nome não pode conter os caracteres '/' ou '\'"
+              value= "<%= restaurant %>"
+              required>
+           </div>
         <% }%>
 
         <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
@@ -167,7 +180,6 @@
             <a href="/perfil/admin/listUsers" class="btn btn-secondary">Voltar</a>
             <a href="/perfil/admin/createUser" class="btn btn-secondary">Limpar</a>
         </div>
-        
       </form>
     </div>
   </main>

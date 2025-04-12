@@ -166,8 +166,9 @@ userController.saveUser = async function(req, res) {
 userController.editPage = function(req, res) {    
     User.findOne({ _id: req.params.userId }).exec()
         .then(user => {     
+            console.log("User encontrado", user);
 
-            if(user.perfil.priority === "Dono" && user.perfil,restaurantId) {
+            if(user.perfil.priority === "Dono" && user.perfil.restaurantId) {
                 Restaurant.findOne().exec()
                     .then(restaurant => {
                         res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: restaurant.name});
@@ -183,7 +184,7 @@ userController.editPage = function(req, res) {
         })
         .catch(error => {
             console.log("Erro: ", error);
-            res.redirect("perfil/admin/listUsers");
+            res.redirect("/perfil/admin/listUsers");
         });
 }
 
