@@ -39,17 +39,14 @@
     <!-- Inclusão da Navbar -->
     <%- include('../../../navBar.ejs') %>
 
-    <% 
-      // Definindo a imagem de fundo
-      let backgroundImg;
+    <!-- Inclusão do Footer -->
+    <% let backgroundImg = "";
       if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
         backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
       } else {
         backgroundImg = "/images/Plataform/LogoSite/logo.png";
-      }
+      } 
     %>
-  
-    
 
     <!-- Seção Hero com imagem de fundo -->
     <section class="hero" style="background-image: url('<%= backgroundImg %>');">

@@ -83,6 +83,7 @@ restaurantController.showMenu = function(req, res) {
 restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        console.log(restaurant);
         let categories = await carregarCategories();
         
         console.log(restaurant);
@@ -90,7 +91,7 @@ restaurantController.createMenu = async function (req, res) {
         res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
     } catch (err) {
         console.log("Erro: ", err);
-        res.status(500).send("Erro interno no servidor");
+        res.render("errors/error500", {error: err});
     }
 };
 

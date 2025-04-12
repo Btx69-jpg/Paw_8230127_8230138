@@ -25,9 +25,7 @@ router.get('/:restaurant/:menu', function(req, res) {
 });
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
-router.get('/:restaurant/createMenu', function(req, res) {
-    restaurant.createMenu(req, res);
-});
+router.get('/:restaurant/createMenu', restaurant.createMenu);
 
 //Salva o menu criado
 router.post('/:restaurant/menu/saveMenu', function(req, res) {
