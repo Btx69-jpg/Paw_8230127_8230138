@@ -143,11 +143,12 @@
         <%- include('../../../../login/editUserCampos')%>
 
         <!-- Falta apenas meter como selected a option que diz respeito à prioridade do user-->
-        <div class="form-group">
+        <div class="form-group" id="divPrioridade">
           <label for="priority">Prioridade</label>
           <select id="priority" 
           name="priority" 
           class="form-control" 
+          onchange="inputDono()"
           required>
             <option value="Cliente" <%= userD.perfil.priority === 'Cliente' ? 'selected' : '' %>>Cliente</option>
             <option value="Admin" <%= userD.perfil.priority === 'Admin' ? 'selected' : '' %>>Admin</option>
@@ -206,7 +207,7 @@
           inputRest.placeholder = "Introduza o nome do restaurante";
           inputRest.maxLength= "100";
           inputRest.pattern= "^(?!.*[\\/]).+$";
-          inputRest.title= "O nome não pode conter os caracteres '/' ou '\'"
+          inputRest.title= "O nome não pode conter os caracteres '/' ou '\\'"
           inputRest.value= "<%= restaurant %>"
           inputRest.required= true;
 

@@ -46,7 +46,7 @@ async function validateNewUser(email, priority, restaurant) {
         const existingRestaurant = await userController.findOneRestaurante(restaurant);
 
         if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!"
+            return "Não existe nenhum restaurante com esse nome!"
         }
     }
 
@@ -67,9 +67,9 @@ async function validateUpdateUser(user, email, priority, restaurant) {
         } 
         
         const existingRestaurant = await userController.findOneRestaurante(restaurant);
-
+        console.log(restaurant);
         if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse email e numero de telefone!"
+            return "Não existe nenhum restaurante com esse nome!"
         }
     }
 
@@ -192,7 +192,7 @@ userController.editPage = function(req, res) {
 //Já poso tirar o try catch
 userController.updateUser =  async function(req, res) {
     try {
-        const { firstName, lastName, email, phoneNumber, priority} = req.body;  
+        const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  
 
         //Validações aos campos
         let errors = await signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
@@ -204,7 +204,7 @@ userController.updateUser =  async function(req, res) {
         let user = await User.findOne({ _id: req.params.userId }).exec();
         console.log(user);
         //Está aqui um problema
-        let errorValidate = await validateUpdateUser(user, email, priority);
+        let errorValidate = await validateUpdateUser(user, email, priority, restaurant);
     
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -212,6 +212,9 @@ userController.updateUser =  async function(req, res) {
             return res.redirect(res.locals.previousPage);
         }
 
+        if(user.perfil.restaurantId && user.perfil.priority === "Dono" && priority !== "Dono") {
+            delete user.perfil.restaurantId;
+        }
         //update
         user.firstName = firstName;
         user.lastName = lastName;
@@ -224,7 +227,6 @@ userController.updateUser =  async function(req, res) {
             .then(() => {
                 console.log("User atualizado com sucesso!");
                 res.redirect("/perfil/admin/listUsers");
-                //userController.homePage(res, req);
             })
             .catch(error => {
                 console.log("Erro:", error);
