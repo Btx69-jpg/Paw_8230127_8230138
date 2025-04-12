@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 router.get("/", loginController.login);
 
 // Autenticação de utilizador
-router.post("/login", (req, res) => {
+router.post("/", (req, res) => {
   const email= req.body.email;
   const rememberMe = req.body.rememberMe;
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
