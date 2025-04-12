@@ -69,7 +69,7 @@ restaurantController.showMenu = function(req, res) {
 
     //Aqui seria apenas para carregar os pratos do menu e não todos os pratos criados
     Dish.find({}).exec().then(function(dishs) {
-        res.render("restaurants/restaurant/Menu/menu", {dishs: dishs});
+        res.render("restaurants/restaurant//menu", {dishs: dishs});
       }).catch(function(err) {
         res.render("errors/error500", {error: err});
       });
@@ -89,17 +89,6 @@ restaurantController.createMenu = async function (req, res) {
 };
 restaurantController.saveMenu = async function(req, res) {
     try {
-      // Busca o restaurante com base no parâmetro enviado na rota Da erro
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log("----------------------------");
       
       let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
       if (!restaurant) {
