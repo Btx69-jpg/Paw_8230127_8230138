@@ -5,11 +5,6 @@ E também para a pagina com os pratos do menu
 var express = require('express');
 var router = express.Router();
 var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
-const multer  = require('multer');
-const fs = require('fs');
-const path = require('path');
-
-
 
 /* Entra na Home Page do restaurante
 (vai ter de carregar, o restaurante carregado na primeira página) */ 
@@ -29,6 +24,10 @@ router.get('/:restaurant/createMenu', restaurant.createMenu);
 
 //Salva o menu criado
 router.post('/:restaurant/menu/saveMenu', restaurant.saveMenu);
+
+router.get('/:restaurant/editMenu/:menuId', restaurant.editMenu);
+
+router.post('/:restaurant/updateMenu/:menuId', restaurant.saveEditMenu);
 
 //Permite criar uma nova dish
 /*Depois trocar para /:restaurant/:menu/createDish */

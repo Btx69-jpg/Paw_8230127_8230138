@@ -93,87 +93,170 @@ restaurantController.createMenu = async function (req, res) {
 
 restaurantController.saveMenu = async function(req, res) {
     try {
-      await saveImage(req, res);
-      let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-      if (!restaurant) {
-        return res.status(404).send("Restaurante não encontrado");
-      }
-  
-      console.log(req.body);
-      // Importante: Considere usar o nome correto do campo para o tipo do menu.
-      let menuType = req.body.type;
-      // Recupera os pratos enviados no formulário
-      let dishes = req.body.dishes;
-      // Verifica se foram enviados pratos
-      if (!dishes) {
-        return res.status(400).send("Nenhum prato foi enviado");
-      }
-      
-      // Se houver apenas um prato, o body-parser pode não criar um array,
-      // então garantimos que 'dishes' seja sempre um array.
-      if (!Array.isArray(dishes)) {
-        dishes = [dishes];
-      }
-      
-      // Cria instâncias do modelo Dish para cada prato recebido
-      // (Caso deseje salvá-los individualmente no banco, poderá chamar dish.save())
-      let dishObjects = [];
-      for (let i = 0; i < dishes.length; i++) {
-        const dishData = dishes[i];
+        await saveImage(req, res);
 
-        if (dishes[i + 1] != null) {
-            for(let j = 1; j < dishes.length; j++) {
-                if (i == j) {
-                    continue;
-                }
-                if (dishData.name == dishes[j].name) {
-                    return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
-                        restaurant: restaurant, 
-                        categories: await carregarCategories(), 
-                        error: "Não é permitido cadastrar pratos com nomes duplicados no mesmo menu."
-                      });
-                }
-            }
-        
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        if (!restaurant) {
+            return res.status(404).send("Restaurante não encontrado");
         }
 
-        //Ir buscar e guardar o caminho da imagem
-        let pathImage = req.file?.path || '';
-        const caminhoCorrigido = "/" + pathImage.replace(/^public[\\/]/, "");
-
-        console.log(dishData);
-        let dishObj = new Dish({
-          name: dishData.name,
-          description: dishData.description,
-          category: dishData.category,
-          price: dishData.price,
-          photo: caminhoCorrigido
+        // Mapeia os arquivos pelos índices dos pratos
+        const fileMap = {};
+        req.files.forEach(file => {
+            const match = file.fieldname.match(/dishes\[(\d+)\]\[photo\]/);
+            if (match) {
+                const index = parseInt(match[1], 10);
+                fileMap[index] = file;
+            }
         });
 
-        dishObjects.push(dishObj);
-      }
-      
-      // Cria uma nova instância do menu
-      const menu = new Menu({
-        name: req.body.name,
-        type: menuType, // Agora vem do req.body.type
-        dishes: dishObjects,
-      });
-  
+        let dishes = req.body.dishes;
+        if (!dishes) {
+            return res.status(400).send("Nenhum prato foi enviado");
+        }
 
-      // Adiciona o menu ao restaurante encontrado
-      console.log(menu);
-      restaurant.menus.push(menu);
-  
-      console.log(restaurant);
-      //Erro no await restuarante.save()
-      // Salva o restaurante com o novo menu
-      await restaurant.save();
-  
-      console.log("Menu guardado com sucesso no restaurante");
-      res.redirect("/restaurants/" + restaurant.name);
+        if (!Array.isArray(dishes)) {
+            dishes = [dishes];
+        }
+
+        let dishObjects = [];
+        for (let i = 0; i < dishes.length; i++) {
+            const dishData = dishes[i];
+            const file = fileMap[i];
+
+            if (!file) {
+                return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
+                    restaurant, 
+                    categories: await carregarCategories(), 
+                    error: `Imagem não encontrada para o prato ${i + 1}.`
+                });
+            }
+
+            // Verifica duplicatas
+            for (let j = i + 1; j < dishes.length; j++) {
+                if (dishData.name === dishes[j].name) {
+                    return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
+                        restaurant, 
+                        categories: await carregarCategories(), 
+                        error: "Nomes duplicados não são permitidos."
+                    });
+                }
+            }
+
+            const caminhoCorrigido = "/" + file.path.replace(/^public[\\/]/, "");
+
+            dishObjects.push(new Dish({
+                name: dishData.name,
+                description: dishData.description,
+                category: dishData.category,
+                price: dishData.price,
+                photo: caminhoCorrigido
+            }));
+        }
+
+        const menu = new Menu({
+            name: req.body.name,
+            type: req.body.type,
+            dishes: dishObjects,
+        });
+
+        restaurant.menus.push(menu);
+        await restaurant.save();
+
+        res.redirect("/restaurants/" + restaurant.name);
     } catch (err) {
-      res.render("errors/error500", {error: err})
+        console.error(err);
+        res.render("errors/error500", { error: err.message });
+    }
+};
+
+// Renderiza a página de edição do menu
+restaurantController.editMenu = async function(req, res) {
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        const menu = restaurant.menus.id(req.params.menuId);
+        const categories = await carregarCategories();
+
+        if (!menu) {
+            return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
+        }
+
+        res.render("restaurants/restaurant/Menu/editMenu", {
+            restaurant: restaurant,
+            menu: menu,
+            categories: categories
+        });
+    } catch (err) {
+        res.render("errors/error500", { error: err });
+    }
+};
+
+// Atualiza o menu no banco de dados
+restaurantController.saveEditMenu = async function(req, res) {
+    try {
+        await saveImage(req, res);
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        const menu = restaurant.menus.id(req.params.menuId);
+
+        // Atualiza dados básicos do menu
+        menu.name = req.body.name;
+        menu.type = req.body.type;
+
+        // Atualiza pratos existentes
+        req.body.dishes.forEach((dishData, index) => {
+            const existingDish = menu.dishes.id(dishData._id);
+            if (existingDish) {
+                existingDish.name = dishData.name;
+                existingDish.description = dishData.description;
+                existingDish.category = dishData.category;
+                existingDish.price = dishData.price;
+                
+                // Atualiza imagem se foi enviada nova
+                if (req.files && req.files[index]) {
+                    // Apaga imagem antiga
+                    if (fs.existsSync("public" + existingDish.photo)) {
+                        fs.unlinkSync("public" + existingDish.photo);
+                    }
+                    existingDish.photo = "/" + req.files[index].path.replace(/^public[\\/]/, "");
+                }
+            }
+        });
+
+        // Adiciona novos pratos
+        if (req.body.newDishes) {
+            req.body.newDishes.forEach((newDish, index) => {
+                const photoPath = req.files['newDishes'] ? 
+                    "/" + req.files['newDishes'][index].path.replace(/^public[\\/]/, "") : 
+                    "";
+                
+                menu.dishes.push(new Dish({
+                    name: newDish.name,
+                    description: newDish.description,
+                    category: newDish.category,
+                    price: newDish.price,
+                    photo: photoPath
+                }));
+            });
+        }
+
+        // Remove pratos deletados
+        if (req.body.deletedDishes) {
+            req.body.deletedDishes.forEach(dishId => {
+                const dishToRemove = menu.dishes.id(dishId);
+                if (dishToRemove) {
+                    // Apaga imagem associada
+                    if (fs.existsSync("public" + dishToRemove.photo)) {
+                        fs.unlinkSync("public" + dishToRemove.photo);
+                    }
+                    dishToRemove.remove();
+                }
+            });
+        }
+
+        await restaurant.save();
+        res.redirect(`/restaurants/${restaurant.name}/showMenu/${menu._id}`);
+    } catch (err) {
+        res.render("errors/error500", { error: err });
     }
 };
   
@@ -273,32 +356,30 @@ async function saveImage(req, res) {
     return new Promise((resolve, reject) => {
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {
-                const path = "public/images/Restaurants/" + req.params.restaurant + "/Menus/" + req.body.menuName + "/";
-                
-                try {
-                    fs.mkdirSync(path, { recursive: true });
-                    console.log('Pasta criada com sucesso!');
-                } catch (err) {
-                    console.error('Erro ao criar a pasta:', err);
-                }
-                cb(null, path);
+                const menuName = req.body.name.replace(/[^a-zA-Z0-9]/g, '_');
+                const pathFolder = `public/images/Restaurants/${req.params.restaurant}/Menus/${menuName}/`;
+                fs.mkdirSync(pathFolder, { recursive: true });
+                cb(null, pathFolder);
             },
             filename: function (req, file, cb) {
                 cb(null, file.originalname);
             }
         });
-        const uploadLogo = null;
-        console.log(req.body.dishes);
-        for (let i = 0; i < req.body.dishes.length; i++) {
-            if (req.body.dishes[i].photo) {
-                uploadLogo = multer({ storage: storageLogo }).array(req.body.dishes); // Aqui você pode usar o nome do campo correto para o arquivo de imagem
+
+        const uploadLogo = multer({ 
+            storage: storageLogo,
+            fileFilter: function (req, file, cb) {
+                if (file.mimetype.startsWith('image/')) {
+                    cb(null, true);
+                } else {
+                    cb(new Error('Apenas imagens são permitidas!'), false);
+                }
             }
-        }
-        
-        
-        // Executa o middleware do multer e aguarda sua finalização
+        }).any(); // Processa todos os arquivos
+
         uploadLogo(req, res, function(err) {
             if (err) {
+                console.error('Erro no upload:', err);
                 return reject(err);
             }
             resolve();

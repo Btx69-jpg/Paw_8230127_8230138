@@ -9,7 +9,6 @@
     <!-- Fonte Google -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      /* Estilos customizados */
       .hero {
         background-size: cover;
         background-position: center;
@@ -33,13 +32,29 @@
         text-align: center;
         color: #fff;
       }
+      .dish-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+      }
+      .dish-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      }
+      .dish-image {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+      }
+      .price-tag {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #198754;
+      }
     </style>
   </head>
   <body>
-    <!-- Inclusão da Navbar -->
     <%- include('../../../navBar.ejs') %>
 
-    <!-- Inclusão do Footer -->
     <% let backgroundImg = "";
       if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
         backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
@@ -48,7 +63,6 @@
       } 
     %>
 
-    <!-- Seção Hero com imagem de fundo -->
     <section class="hero" style="background-image: url('<%= backgroundImg %>');">
       <div class="hero-overlay"></div>
       <div class="hero-content">
@@ -57,57 +71,49 @@
       </div>
     </section>
 
-    <!-- Conteúdo Principal -->
     <div class="container my-5">
-      <!-- Informações do Menu -->
-      <div class="card mb-4">
-        <div class="card-header">
-          <h2>Detalhes do Menu</h2>
-        </div>
-        <div class="card-body">
-          <p><strong>Nome do Menu:</strong> <%= menu.name %></p>
-          <p><strong>Tipo do Menu:</strong> <%= menu.type %></p>
-          <p><strong>Quantidade de Pratos:</strong> <%= menu.countDish %></p>
+      <!-- Cabeçalho do Menu -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card border-0 bg-light">
+            <div class="card-body text-center">
+              <h2 class="card-title mb-3"><%= menu.name %></h2>
+              <div class="d-flex justify-content-center gap-4">
+                <span class="badge bg-primary fs-6"><%= menu.type %></span>
+                <span class="badge bg-secondary fs-6"><%= menu.countDish %> pratos</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Lista de Pratos -->
-      <div class="card">
-        <div class="card-header">
-          <h3>Pratos</h3>
-        </div>
-        <div class="card-body">
-          <% if (menu.dishes && menu.dishes.length > 0) { %>
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <thead class="table-dark">
-                <tr>
-                  <th>Nome</th>
-                  <th>Descrição</th>
-                  <th>Categoria</th>
-                  <th>Preço</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% menu.dishes.forEach(function(dish) { %>
-                  <tr>
-                    <td><%= dish.name %></td>
-                    <td><%= dish.description %></td>
-                    <td><%= dish.category %></td>
-                    <td>R$ <%= dish.price %></td>
-                  </tr>
-                <% }); %>
-              </tbody>
-            </table>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% menu.dishes.forEach(function(dish) { %>
+          <div class="col">
+            <div class="card dish-card h-100">
+              <% if (dish.photo) { %>
+                <img src="<%= dish.photo %>" class="card-img-top dish-image" alt="<%= dish.name %>">
+              <% } else { %>
+                <div class="dish-image bg-secondary d-flex align-items-center justify-content-center">
+                  <span class="text-white">Sem imagem</span>
+                </div>
+              <% } %>
+              <div class="card-body">
+                <h5 class="card-title"><%= dish.name %></h5>
+                <p class="card-text text-muted"><%= dish.description %></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-info"><%= dish.category %></span>
+                  <span class="price-tag"> <%= dish.price.toFixed(2) %> €</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <% } else { %>
-            <p class="text-center">Nenhum prato cadastrado neste menu.</p>
-          <% } %>
-        </div>
+        <% }); %>
       </div>
+
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
