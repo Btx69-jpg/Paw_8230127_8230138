@@ -32,12 +32,12 @@
                             <div class="btn-group d-flex justify-content-center">
                                 <!-- Troca o estado para true-->
                                 <form action="/perfil/admin/listRestaurants/aproves/<%= restaurants[i]._id %>" method="POST">
-                                    <button type="submit" class="btn btn-danger">Aprovar</button>
+                                    <button type="submit" class="btn btn-primary">Aprovar</button>
                                 </form>
                                 
                                 <!-- Apaga o restaurante da BD, é um delete-->
-                                <form action="/perfil/admin/listRestaurants/aproves/reject/<%= restaurants[i]._id %>" method="DELETE">
-                                    <button type="submit" class="btn btn-primary">Rejeitar</button>
+                                <form action="/perfil/admin/listRestaurants/aproves/reject/<%= restaurants[i]._id %>" method="POST">
+                                    <button type="submit" class="btn btn-danger">Rejeitar</button>
                                 </form>
                             </div>
 

@@ -10,8 +10,8 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o passport como argumento
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
+require('dotenv').config();
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 

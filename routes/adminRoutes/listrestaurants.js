@@ -4,22 +4,18 @@ const router = express.Router();
 const restaurantController = require("../../Controllers/ControllersAdmin/RestaurantController.js")
 
 /*Routers para os restaurantes */
-router.get("/", function(req, res) {
-    restaurantController.homePage(req, res);
-});
+router.get("/", restaurantController.homePage);
+
+/* Router para o filtrar os restaurantes */
+router.get("/search", restaurantController.search);
 
 /*Pagina para aprovar ou rejeitar restaurantes */
-router.get("/aproves", function(req, res) {
-    restaurantController.aprovePage(req, res);
-});
+router.get("/aproves", restaurantController.aprovePage);
 
-router.post("/aproves/:restaurantId", function(req, res) {
-    restaurantController.aproveRestaurant(req, res);
-});
+/* Aprova um restaurante metendo-o como aprove */
+router.post("/aproves/:restaurantId",restaurantController.aproveRestaurant);
 
-//Incompleto
-router.delete("/aproves/reject/:restaurantId", function(req, res) {
-    restaurantController.rejectRestaurant(req, res);
-});
+/* Rejeita o restaurante apagando-o da BD */
+router.post("/aproves/reject/:restaurantId", restaurantController.rejectRestaurant);
 
 module.exports = router;

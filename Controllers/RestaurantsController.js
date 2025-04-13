@@ -1,117 +1,17 @@
 var mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const passport = require('passport');
-const multer = require('multer');
-const fs = require('fs');
 const pathR = require('path');
 
+//Models
 var Restaurant = require("../Models/Perfils/Restaurant");
 var Address = require("../Models/Reusable/Address");
 var Perfil = require("../Models/Reusable/Perfil");
 var restaurantsController = {};
 
+//Metodos
+const { updatePackage, deletePackage } = require('./Functions/crudPackage');
+const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
 const totRestaurant = 15; 
-
-//Utilizo o promisse pelo o metodo ser assincrono logo preciso do promisse, para fazer callbacks
-async function updateFile(oldFile, newFile) {
-    try {
-        fs.renameSync(oldFile, newFile);
-        console.log('Pasta renomeada com sucesso!');
-    } catch (err) {
-        console.error('Erro ao renomear a pasta:', err);
-    }
-}
-
-function deletepackage(path) {
-    try {
-        fs.rmSync(path, { recursive: true, force: true });
-        console.log('Pasta apagada com sucesso!');
-    } catch (err) {
-        console.error('Erro ao apagar a pasta:', err);
-    }
-}
-
-function deleteImage(image) {
-    console.log("Apagar Imagem");
-    fs.unlink(image, (err) => {
-        if (err) {
-            console.error('Erro ao apagar a imagem:', err);
-            return;
-        }
-        console.log('Antiga Imagem apagada com sucesso!');
-    })
-}
-
-async function saveImage(req, res) {
-    return new Promise((resolve, reject) => {
-        const storageLogo = multer.diskStorage({
-            destination: function (req, file, cb) {
-                const path = "public/images/Restaurants/" + req.body.name + "/";
-                
-                try {
-                    fs.mkdirSync(path, { recursive: true });
-                    console.log('Pasta criada com sucesso!');
-                } catch (err) {
-                    console.error('Erro ao criar a pasta:', err);
-                }
-                cb(null, path);
-            },
-            filename: function (req, file, cb) {
-                cb(null, file.originalname);
-            }
-        });
-          
-        const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
-        
-        // Executa o middleware do multer e aguarda sua finalização
-        uploadLogo(req, res, function(err) {
-            if (err) {
-                return reject(err);
-            }
-            resolve();
-        });
-    }); 
-}
-
-/*
-Meter promisses
-
-Atualizar aqui o nome do package e depois se a imagem for nova, dar delete da atual e meter a nova
-Não está a alterar o caminho
-Tem erro ao apagar a imagem
-*/
-async function updateImage(req, res, restaurant) {
-    return new Promise((resolve, reject) => {
-        const storageupdatLogo = multer.diskStorage({
-            destination: function (req, file, cb) {
-                let path = "public/images/Restaurants/" + restaurant.name + "/";
-                let newPath = "";
-                
-                if(restaurant.name !== req.body.name) {
-                    newPath = "public/images/Restaurants/" + req.body.name;
-                    updateFile(path, newPath);
-                } else {
-                    newPath = path;
-                }
-                
-                cb(null, newPath);
-            },
-            filename: function (req, file, cb) {
-                cb(null, `${file.originalname}`)
-            }
-        })
-          
-        const uploadupdatLogo = multer({ storage: storageupdatLogo }).single('perfilPhoto');
-    
-        uploadupdatLogo(req, res, function (err) {
-            if (err) {
-              return reject(err);
-            }
-
-            resolve();
-        });
-    })
-}
 
 async function validationRestaurant(body) {
     const restaurants = await Restaurant.find({}).exec();
@@ -199,7 +99,7 @@ restaurantsController.restaurantsPage = function(req, res, passPage) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.status(500).send("Problema a procurar pelos restaurantes");
+            res.render("errors/error500", {error: err});
         });
 };
 
@@ -211,14 +111,10 @@ restaurantsController.createRestaurant = function(req, res, page) {
 //Filtros de restaurantes
 restaurantsController.search = function(req, res) {
     let query = {};
-    let restaurant = req.query.name;
-    let city = req.query.city;
-  
+    const restaurant = req.query.name;
+    const city = req.query.city;
     query.aprove = true;
-
-    console.log(restaurant);
-    console.log(city);
-
+    
     if (restaurant) {
       query.name = restaurant;
     }
@@ -227,18 +123,14 @@ restaurantsController.search = function(req, res) {
         query["address.city"] = city;
     }
     
-    /*
-    O .find ele serve para receber uma query, estilo a que faziamos em mongo, para procurar por algum dado, com base nessa query 
-    O codigo ele é parecido com o list, o que muda é que neste eu em vez de mostrar todos, mostro com base na query
-    */
     Restaurant.find(query).exec()
       .then(function (restaurants) {
         console.log(restaurants)
         res.render("restaurants/restaurants", {restaurants: restaurants});
       })
       .catch(function(err) {
-        console.error("Erro ao filtrar por employees: ", err);
-        res.render("errors/error500", {error: "Erro ao filtrar por employees"});
+        console.error("Erro ao filtrar pelos restuarantes: ", err);
+        res.render("errors/error500", {error: err});
       }); 
   };
 
@@ -350,7 +242,7 @@ restaurantsController.updatRestaurant = async (req, res, passPage, failPage) => 
             if (pathNewImg === '' && restaurant.name !== req.body.name) {
                 newFile = "public/images/Restaurants/" + req.body.named;
                 let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
-                await updateFile(pathPerfilPhoto, newFile);
+                await updatePackage(pathPerfilPhoto, newFile);
                 newFile = newFile + "/" + perfilPhoto;
                 caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
             } else if (perfilPhoto !== newImage) {
@@ -458,7 +350,7 @@ As pastas estão a voltar a não ser removidas
 restaurantsController.removeRestaurant = async (req, res, passPage) => {
     try {
         await Restaurant.deleteOne({ name: req.params.restaurant });
-        deletepackage(`public/images/Restaurants/${req.params.restaurant}/`);
+        deletePackage(`public/images/Restaurants/${req.params.restaurant}/`);
         console.log("Restaurante eliminado!");
         //res.redirect("/restaurantsList");
         res.redirect(res.locals.previousPage);
