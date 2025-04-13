@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-const User = requir("../Models/Perfils/User");
-const Restaurant = requir("../Models/Perfils/Restaurant");
+const User = require("../Models/Perfils/User");
+const Restaurant = require("../Models/Perfils/Restaurant");
 const loginController = {};
 
 // Renderiza página de login
@@ -20,43 +20,37 @@ loginController.authenticate = (req, res, next) => {
     })(req, res, next);
 };
 
-loginController.loginToken = function(req, res) {
-  const email = req.body.email;  
-  let _id = "";  
-  
-  User.findOne( {'perfil.email': email}).exec()
-    .then(user => {
-      if(user !== null) {
-        _id = user._id;
-      } else {
-        Restaurant.findOne( {'perfil.email': email}).exec()
-          .then(rest => {
-            if(rest !== null) {
-              _id = rest._id;
-            }
-          })
-          .catch(error => {
-            console.log("Error: ", error);
-            res.render(res.locals.previousPage);
-          })
-      }
-    })
-    .catch(error => {
-      console.log("Error: ", error);
-      res.render(res.locals.previousPage);
-    })   
+//Aqui pode não haver erro, pois ele vai até ao return
+loginController.loginToken = async function(req, res) {
+  const email = req.body.email;
+  let userId = "";
+  let name = "";
+  const user = await User.findOne({ 'perfil.email': email }).exec();
 
-  if(id === "") {
-    return res.render(403).status();
+  if (user) {
+    userId = user._id.toString();
+    name = user.firstName;
+  } else {
+    // Se não encontrou o usuário, tenta encontrar o restaurante
+    const rest = await Restaurant.findOne({ 'perfil.email': email }).exec();
+    if (rest) {
+      userId = rest._id.toString();
+      name = rest.name;
+    }
+  }
+
+  if (userId === "") {
+    return res.status(403).end();
   }    
 
   const rememberMe = req.body.rememberMe;
-  const token = jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+  console.log(token)
   if (rememberMe) {
     // Se "Lembrar-me" estiver selecionado, configura os cookies com validade (persistent cookies)
-    console.log('Definindo cookie rememberMe com _id:', _id);
-    res.cookie('rememberMe', _id, {
+    console.log('Definindo cookie rememberMe com _id:', email);
+    res.cookie('rememberMe', email, {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dias
       httpOnly: true,
       //secure: false
@@ -78,9 +72,11 @@ loginController.loginToken = function(req, res) {
       secure: process.env.NODE_ENV === 'production'
     }, loginController.authenticate);
   }
-    
+
+
   return res.redirect('/');
 }
+
 loginController.logout = function(req, res) {
     req.logout((err) => {
         if (err) {

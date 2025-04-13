@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const userController = require("../../Controllers/ControllersAdmin/UsersController.js");
+//Meter como na admin
 
 /*Routers para os users */
 router.get("/", userController.homePage);

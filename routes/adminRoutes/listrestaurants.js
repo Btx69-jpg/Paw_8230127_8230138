@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const restaurantController = require("../../Controllers/ControllersAdmin/RestaurantController.js")
+//Meter como na admin
 
 /*Routers para os restaurantes */
 router.get("/", restaurantController.homePage);

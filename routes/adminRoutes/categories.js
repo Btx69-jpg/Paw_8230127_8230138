@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const categoriesController = require("../../Controllers/ControllersAdmin/CategoriesController.js");
+//Meter como na admin
 
 /*Routers para as categorias */
 router.get("/", function(req, res) {

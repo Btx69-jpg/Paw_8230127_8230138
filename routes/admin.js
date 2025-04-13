@@ -14,15 +14,15 @@ const categoriesRouter = require("./adminRoutes/categories.js");
 router.get("/", authController.authenticateToken, typeUser.isAdmin, adminController.homePage);
 
 //Route para eliminar o admin
-router.post("/deleteAccount/:adminId", adminController.deleteAdm);
+router.post("/deleteAccount/:adminId", authController.authenticateToken, typeUser.isAdmin, adminController.deleteAdm);
 
 /*Routers para os restaurantes */
-router.use("/listRestaurants", restaurantRouter);
+router.use("/listRestaurants", authController.authenticateToken, typeUser.isAdmin, restaurantRouter);
 
 /*Routers para os users */
-router.use("/listUsers", userRouter);
+router.use("/listUsers", authController.authenticateToken, typeUser.isAdmin, userRouter);
 
 /*Routers para as categorias */
-router.use("/listCategories", categoriesRouter);
+router.use("/listCategories", authController.authenticateToken, typeUser.isAdmin, categoriesRouter);
 
 module.exports = router;
