@@ -9,6 +9,11 @@ router.get('/', function(req, res) {
     restaurants.restaurantsPage(req, res, "restaurants/restaurants");
 });
 
+router.get('/search', function(req, res) {
+    restaurants.search(req, res);
+});
+
+
 router.get('/createRestaurant', function(req, res) {
     restaurants.createRestaurant(req, res, "restaurants/crudRestaurantes/addRestaurant");
 });

@@ -30,31 +30,37 @@
     <% if (restaurants.length > 0) { %>
       
       <div class="row justify-content-center align-items-center g-3 mb-5">
-        <div class="col-auto">
-          <label for="name" class="col-form-label">Nome restaurante:</label>
-        </div>
-        <div class="col-auto">
-          <input type="text" 
-                 name="name" 
-                 id="name"
-                 class="form-control form-control-sm" 
-                 maxlength="100" 
-                 pattern="^(?!.*[\\/]).+$"
-                 title="O nome não pode conter os caracteres '/' ou '\'">
-        </div>
-        <div class="col-auto">
-          <label for="city" class="col-form-label">Cidade:</label>
-        </div>
-        <div class="col-auto">
-          <input type="text" 
-                 name="city" 
-                 id="city" 
-                 class="form-control form-control-sm" 
-                 placeholder="Introduza o nome da sua cidade"
-                 maxlength="100" 
-                 pattern="^[A-Za-zÀ-ÿ\s]+$"
-                 title="Apenas letras e espaços">
-        </div>
+        <form action="/restaurants/search" method="get">
+          <div class="col-auto">
+            <label for="name" class="col-form-label">Nome restaurante:</label>
+          </div>
+          <div class="col-auto">
+            <input type="text" 
+                   name="name" 
+                   id="name"
+                   class="form-control form-control-sm" 
+                   maxlength="100" 
+                   pattern="^(?!.*[\\/]).+$"
+                   title="O nome não pode conter os caracteres '/' ou '\'">
+          </div>
+          
+          <div class="col-auto">
+            <label for="city" class="col-form-label">Cidade:</label>
+          </div>
+          <div class="col-auto">
+            <input type="text" 
+                   name="city" 
+                   id="city" 
+                   class="form-control form-control-sm" 
+                   placeholder="Introduza o nome da sua cidade"
+                   maxlength="100" 
+                   pattern="^[A-Za-zÀ-ÿ\s]+$"
+                   title="Apenas letras e espaços">
+          </div>
+
+          <button>Filtrar</button>
+          <a href="/restaurants" class="btn btn-secundary">Clear</a>
+        </form>
       </div>
 
       <!-- Lista de restaurantes -->
