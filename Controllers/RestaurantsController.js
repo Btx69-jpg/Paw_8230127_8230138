@@ -227,7 +227,6 @@ restaurantsController.search = function(req, res) {
         query["address.city"] = city;
     }
     
-    console.log(query);
     /*
     O .find ele serve para receber uma query, estilo a que faziamos em mongo, para procurar por algum dado, com base nessa query 
     O codigo ele é parecido com o list, o que muda é que neste eu em vez de mostrar todos, mostro com base na query
