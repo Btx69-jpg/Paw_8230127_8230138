@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8">
+    <title>Visualizar Menu</title>
+    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonte Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* Estilos customizados */
+      .hero {
+        background-size: cover;
+        background-position: center;
+        height: 40vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Inclusão da Navbar -->
+    <%- include('../../../navBar.ejs') %>
+
+    <!-- Inclusão do Footer -->
+    <% let backgroundImg = "";
+      if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
+        backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
+      } else {
+        backgroundImg = "/images/Plataform/LogoSite/logo.png";
+      } 
+    %>
+
+    <!-- Seção Hero com imagem de fundo -->
+    <section class="hero" style="background-image: url('<%= backgroundImg %>');">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1><%= restaurant.name %></h1>
+        <p>Menu: <%= menu.name %></p>
+      </div>
+    </section>
+
+    <!-- Conteúdo Principal -->
+    <div class="container my-5">
+      <!-- Informações do Menu -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h2>Detalhes do Menu</h2>
+        </div>
+        <div class="card-body">
+          <p><strong>Nome do Menu:</strong> <%= menu.name %></p>
+          <p><strong>Tipo do Menu:</strong> <%= menu.type %></p>
+          <p><strong>Quantidade de Pratos:</strong> <%= menu.countDish %></p>
+        </div>
+      </div>
+
+      <!-- Lista de Pratos -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Pratos</h3>
+        </div>
+        <div class="card-body">
+          <% if (menu.dishes && menu.dishes.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-dark">
+                <tr>
+                  <th>Nome</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Preço</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% menu.dishes.forEach(function(dish) { %>
+                  <tr>
+                    <td><%= dish.name %></td>
+                    <td><%= dish.description %></td>
+                    <td><%= dish.category %></td>
+                    <td>R$ <%= dish.price %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+            <p class="text-center">Nenhum prato cadastrado neste menu.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
