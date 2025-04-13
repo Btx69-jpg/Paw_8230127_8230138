@@ -79,7 +79,9 @@
             placeholder="Nome do Menu"
             required
             maxlength="50"
-            pattern="^[a-zA-Z\\s]*$">
+            pattern="^[a-zA-Z\\s]*$"
+            oninvalid="this.setCustomValidity('Informe somente letras e espaços, máximo 50 caracteres.')"
+            >
         </div>
         <div class="mb-3">
           <label for="type" class="form-label">Tipo do Menu:</label>
@@ -90,6 +92,7 @@
               <% }); %>
             </select>
           <% } else { %>
+            <!-- Se não houver categorias, permite a entrada de texto livre CONFIRMAR SE FAZEMOS ASSIM OU SE APARECE UMA MENSAGEM A DIZER QUE NÃO EXISTEM CATEGORIAS E PARA CONTACTAR O ADMIN -->
             <input type="text" 
             name="type" 
             id="type" 
@@ -101,6 +104,12 @@
         <!-- Área de cadastro dos pratos -->
         <h4>Pratos</h4>
         <div id="dishesContainer">
+          <% if (error && error.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+              <%= error %>
+            </div>
+          <% } %>
+          
           <!-- Primeiro formulário de prato (index 0) utiliza select para categoria -->
           <div class="dish-form border p-3 mb-3" data-index="0">
             <h5>Prato 1</h5>
@@ -113,7 +122,8 @@
                 placeholder="Nome do prato"
                 required
                 maxlength="50"
-                pattern="^[a-zA-Z\\s]*$">
+                pattern="^[a-zA-Z\\s]*$"
+                oninvalid="this.setCustomValidity('Informe somente letras e espaços, máximo 50 caracteres.')">
             </div>
             <div class="mb-3">
               <label for="dishDescription0" class="form-label">Descrição:</label>
@@ -123,7 +133,8 @@
                 class="form-control"
                 placeholder="Descrição do prato"
                 required
-                maxlength="250">
+                maxlength="250"
+                oninvalid="this.setCustomValidity('Descrição do prato, máximo 250 caracteres.')">
             </div>
             <% if (categories && categories.length > 0) { %>
               <div class="mb-3">
@@ -149,7 +160,18 @@
                 placeholder="Preço do prato"
                 required
                 min="0"
-                step="0.01">
+                step="0.01"
+                oninvalid="this.setCustomValidity('Informe um preço válido.')">
+            </div>
+            
+            <div class="mb-3">
+              <label for="dishPhoto0" class="form-label">Foto do Prato:</label>
+              <input type="file" 
+              accept="image/*" 
+              name="dishes[0][photo]" 
+              id="dishPhoto0" 
+              class="form-control"
+              required>
             </div>
           </div>
         </div>
@@ -208,6 +230,15 @@
           <div class="mb-3">
             <label for="dishPrice${dishIndex}" class="form-label">Preço:</label>
             <input type="number" name="dishes[${dishIndex}][price]" id="dishPrice${dishIndex}" class="form-control" placeholder="Preço do prato" required min="0" step="0.01">
+          </div>
+          <div class="mb-3">
+              <label for="dishPhoto${dishIndex}" class="form-label">Foto do Prato:</label>
+              <input type="file" 
+              accept="image/*" 
+              name="dishes[${dishIndex}][photo]" 
+              id="dishPhoto${dishIndex}" 
+              class="form-control"
+              required>
           </div>
           <div class="mb-3">
             <button type="button" class="btn btn-danger removeDishBtn">Remover Prato</button>

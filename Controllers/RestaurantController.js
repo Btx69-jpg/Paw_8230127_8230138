@@ -4,7 +4,8 @@ const multer  = require('multer');
 const Restaurant = require("../Models/Perfils/Restaurant");
 const Dish = require("../Models/Menus/Dish");
 const Category = require("../Models/Reusable/Category");
-const Menu = require("../Models/Menus/Menu")
+const Menu = require("../Models/Menus/Menu");
+const { format } = require("morgan");
 var storage;
 var upload;
 
@@ -63,16 +64,18 @@ restaurantController.comments = function(req, res) {
 };
 
 //Permite visualizar um menu especifico de um restaurante
-restaurantController.showMenu = function(req, res) {
-    /*Depois mudar este find, para mostar os pratos de um determinado menu,
-    por enquanto está assim para testar apenas os dishs */
+restaurantController.showMenu = async function(req, res) {
 
-    //Aqui seria apenas para carregar os pratos do menu e não todos os pratos criados
-    Dish.find({}).exec().then(function(dishs) {
-        res.render("restaurants/restaurant//menu", {dishs: dishs});
-      }).catch(function(err) {
-        res.render("errors/error500", {error: err});
-      });
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+
+    // Utiliza o método .id() para procurar o menu pelo ID
+    const menu = restaurant.menus.id(req.params.menu);
+    if (!menu) {
+        return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
+    }
+    console.log("teste");
+
+    res.render("restaurants/restaurant/Menu/menu", {restaurant: restaurant, menu: menu});
     
 };
 
@@ -87,6 +90,7 @@ restaurantController.createMenu = async function (req, res) {
         res.render("errors/error500", {error: err});
     }
 };
+
 restaurantController.saveMenu = async function(req, res) {
     try {
       
@@ -97,7 +101,6 @@ restaurantController.saveMenu = async function(req, res) {
   
       console.log(req.body);
       // Importante: Considere usar o nome correto do campo para o tipo do menu.
-      // No formulário, o campo é "type", não "menuType"
       let menuType = req.body.type;
       // Recupera os pratos enviados no formulário
       let dishes = req.body.dishes;
@@ -118,13 +121,32 @@ restaurantController.saveMenu = async function(req, res) {
       for (let i = 0; i < dishes.length; i++) {
         const dishData = dishes[i];
 
+        if (dishes[i + 1] == null) {
+            for(let j = 1; j < dishes.length; j++) {
+                if (dishData.name == dishes[j].name) {
+                    return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
+                        restaurant: restaurant, 
+                        categories: await carregarCategories(), 
+                        error: "Não é permitido cadastrar pratos com nomes duplicados no mesmo menu."
+                      });
+                }
+            }
+        
+        }
+
+        await saveImage(req, res);
+
+        //Ir buscar e guardar o caminho da imagem
+        let pathImage = req.file?.path || '';
+        const caminhoCorrigido = "/" + pathImage.replace(/^public[\\/]/, "");
+
         console.log(dishData);
         let dishObj = new Dish({
           name: dishData.name,
           description: dishData.description,
           category: dishData.category,
           price: dishData.price,
-          // photo: caminho (se houver o upload da foto configurado)
+          photo: caminhoCorrigido
         });
 
         dishObjects.push(dishObj);
@@ -236,7 +258,7 @@ restaurantController.updateDish = function(req, res) {
 restaurantController.deleteDish = function(req, res) {
     Dish.remove({_id: req.params.id}, function(err) {
         if(err) {
-            console.log("Ocorreu um problema a eleiminar o prato");
+            console.log("Ocorreu um problema a eliminar o prato");
             res.render("/restaurants/restaurant/menu")
         } else {
             console.log("Prato eliminado com sucesso");
@@ -244,5 +266,36 @@ restaurantController.deleteDish = function(req, res) {
         }
     })
 };
+
+async function saveImage(req, res) {
+    return new Promise((resolve, reject) => {
+        const storageLogo = multer.diskStorage({
+            destination: function (req, file, cb) {
+                const path = "public/images/Restaurants/" + req.params.restaurant + "/Menus/" + req.body.menuName + "/";
+                
+                try {
+                    fs.mkdirSync(path, { recursive: true });
+                    console.log('Pasta criada com sucesso!');
+                } catch (err) {
+                    console.error('Erro ao criar a pasta:', err);
+                }
+                cb(null, path);
+            },
+            filename: function (req, file, cb) {
+                cb(null, file.originalname);
+            }
+        });
+          
+        const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
+        
+        // Executa o middleware do multer e aguarda sua finalização
+        uploadLogo(req, res, function(err) {
+            if (err) {
+                return reject(err);
+            }
+            resolve();
+        });
+    }); 
+}
 
 module.exports = restaurantController;

@@ -17,7 +17,7 @@ router.get('/:restaurant/comments', restaurant.comments);
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
-router.get('/:restaurant/menu', restaurant.showMenu);
+router.get('/:restaurant/showMenu/:menu', restaurant.showMenu);
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
 router.get('/:restaurant/createMenu', restaurant.createMenu);
