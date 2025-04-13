@@ -6,8 +6,8 @@ const Dish = require("../Models/Menus/Dish");
 const Category = require("../Models/Reusable/Category");
 const Menu = require("../Models/Menus/Menu");
 const { format } = require("morgan");
-var storage;
-var upload;
+const fs = require('fs'); // Certifique-se de importar o fs se ainda não estiver
+
 
 var restaurantController = {};
 
@@ -93,7 +93,7 @@ restaurantController.createMenu = async function (req, res) {
 
 restaurantController.saveMenu = async function(req, res) {
     try {
-      
+      await saveImage(req, res);
       let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
       if (!restaurant) {
         return res.status(404).send("Restaurante não encontrado");
@@ -121,8 +121,11 @@ restaurantController.saveMenu = async function(req, res) {
       for (let i = 0; i < dishes.length; i++) {
         const dishData = dishes[i];
 
-        if (dishes[i + 1] == null) {
+        if (dishes[i + 1] != null) {
             for(let j = 1; j < dishes.length; j++) {
+                if (i == j) {
+                    continue;
+                }
                 if (dishData.name == dishes[j].name) {
                     return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
                         restaurant: restaurant, 
@@ -133,8 +136,6 @@ restaurantController.saveMenu = async function(req, res) {
             }
         
         }
-
-        await saveImage(req, res);
 
         //Ir buscar e guardar o caminho da imagem
         let pathImage = req.file?.path || '';
@@ -175,6 +176,7 @@ restaurantController.saveMenu = async function(req, res) {
       res.render("errors/error500", {error: err})
     }
 };
+  
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
     Dish.findOne({_id: req.params.id}).exec(function (err, dish) {
@@ -285,8 +287,14 @@ async function saveImage(req, res) {
                 cb(null, file.originalname);
             }
         });
-          
-        const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
+        const uploadLogo = null;
+        console.log(req.body.dishes);
+        for (let i = 0; i < req.body.dishes.length; i++) {
+            if (req.body.dishes[i].photo) {
+                uploadLogo = multer({ storage: storageLogo }).array(req.body.dishes); // Aqui você pode usar o nome do campo correto para o arquivo de imagem
+            }
+        }
+        
         
         // Executa o middleware do multer e aguarda sua finalização
         uploadLogo(req, res, function(err) {
@@ -297,5 +305,28 @@ async function saveImage(req, res) {
         });
     }); 
 }
+
+// Configurando o storage para salvar as fotos dos pratos
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // Cria um caminho para armazenar as imagens: 
+      // "public/images/Restaurants/<nomeRestaurant>/Menus/<nomeMenu>/"
+      const pathFolder = "public/images/Restaurants/" + req.params.restaurant + "/Menus/" + req.body.menuName + "/";
+      try {
+        fs.mkdirSync(pathFolder, { recursive: true });
+        console.log('Pasta criada com sucesso!');
+      } catch (err) {
+        console.error('Erro ao criar a pasta:', err);
+      }
+      cb(null, pathFolder);
+    },
+    filename: function (req, file, cb) {
+      // Prefixo com timestamp para evitar nomes duplicados
+      cb(null, Date.now() + '-' + file.originalname);
+    }
+  });
+  
+  // Cria o upload middleware que aceita qualquer arquivo
+  const upload = multer({ storage: storage }).any();
 
 module.exports = restaurantController;

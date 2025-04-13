@@ -5,6 +5,11 @@ E também para a pagina com os pratos do menu
 var express = require('express');
 var router = express.Router();
 var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
+const multer  = require('multer');
+const fs = require('fs');
+const path = require('path');
+
+
 
 /* Entra na Home Page do restaurante
 (vai ter de carregar, o restaurante carregado na primeira página) */ 
