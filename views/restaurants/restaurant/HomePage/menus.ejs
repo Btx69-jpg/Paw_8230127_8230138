@@ -43,7 +43,9 @@
                     <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
                     <p class="card-text"><%= restaurant.menus[i].description %></p>
                     <p class="card-text">Tipo: <%= restaurant.menus[i].category %></p>
-                    <a href="/restaurants/<%= restaurant.name %>/<%= restaurant.menus[i].name %>/" class="btn btn-outline-primary">Ver Menu</a>
+                    <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= restaurant.menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
+
+                    <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= restaurant.menus[i]._id %>" class="btn btn-warning">Editar Menu</a>
                 </div>
                 </div>
             </div>

@@ -17,13 +17,17 @@ router.get('/:restaurant/comments', restaurant.comments);
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
-router.get('/:restaurant/menu', restaurant.showMenu);
+router.get('/:restaurant/showMenu/:menu', restaurant.showMenu);
 
 /*Depois trocar para /:restaurant/:menu/createMenu */
 router.get('/:restaurant/createMenu', restaurant.createMenu);
 
 //Salva o menu criado
 router.post('/:restaurant/menu/saveMenu', restaurant.saveMenu);
+
+router.get('/:restaurant/editMenu/:menuId', restaurant.editMenu);
+
+router.post('/:restaurant/updateMenu/:menuId', restaurant.saveEditMenu);
 
 //Permite criar uma nova dish
 /*Depois trocar para /:restaurant/:menu/createDish */
