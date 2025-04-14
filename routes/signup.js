@@ -1,11 +1,13 @@
 var express = require('express');
 var router = express.Router();
+
 const signUpController = require("../Controllers/SignUpController.js");
+const blockSignUp = require("./functions/validateLogin.js");
 
 // Página de registo
-router.get("/", signUpController.signup);
+router.get("/", blockSignUp.possibleBlockLogin, signUpController.signup);
 
 // Registo de utilizador
-router.post("/", signUpController.save);
+router.post("/", blockSignUp.possibleBlockLogin, signUpController.save);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const loginController = {};
 
 // Renderiza página de login
 loginController.login = function(req, res) {
-    res.render("login/login");
+  res.render("login/login");
 };
 
 // Autentica o utilizador
