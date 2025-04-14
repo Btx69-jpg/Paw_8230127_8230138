@@ -35,6 +35,8 @@ router.get('/:restaurant/menu/createDish', restaurant.createDish);
 
 router.post('/:restaurant/menu/saveDish', restaurant.saveDish);
 
+router.post('/:restaurant/deleteMenu/:menuId', restaurant.deleteMenu);
+
 /*Depois trocar para /:restaurant/:menu/:prato */
 router.get('/:restaurant/menu/showDish/:id', restaurant.showDish);
 

@@ -14,7 +14,7 @@
             margin-bottom: 1rem;
             background-color: #f8f9fa;
         }
-        .dish-image-preview {
+        .image-preview {
             max-width: 150px;
             height: auto;
             margin-bottom: 1rem;
@@ -81,6 +81,20 @@
                         <label class="form-label">Nome do Menu:</label>
                         <input type="text" name="name" class="form-control" value="<%= menu.name %>" required>
                     </div>
+
+                    <% if (menu.photo) { %>
+                        <div class="mb-3 text-center">
+                            <img src="<%= menu.photo %>" class="image-preview">
+                        </div>
+                        
+                    <% } %>
+                    <div class="mb-3">
+                        <label class="form-label">Alterar foto do Menu:</label>
+                        <input type="file" 
+                            name="menuPhoto" 
+                            class="form-control">
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Tipo do Menu:</label>
                         <select name="type" class="form-select" required>
@@ -115,7 +129,7 @@
 
                             <% if (dish.photo) { %>
                                 <div class="mb-3 text-center">
-                                    <img src="<%= dish.photo %>" class="dish-image-preview">
+                                    <img src="<%= dish.photo %>" class="image-preview">
                                 </div>
                                 
                             <% } %>
@@ -186,6 +200,9 @@
 
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
+
+                <button type="button" class="btn btn-danger btn-lg" onclick="confirmDelete()">Apagar Menu Completo</button>
+
                 <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" 
                    class="btn btn-outline-secondary">
                     Cancelar
@@ -250,6 +267,24 @@
             
             container.appendChild(dishDiv);
             newDishIndex++;
+        }
+
+        function confirmDelete() {
+            if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
+                fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = `/restaurants/<%= restaurant.name %>`;
+                    } else {
+                        alert('Erro ao apagar o menu');
+                    }
+                });
+            }
         }
     </script>
 

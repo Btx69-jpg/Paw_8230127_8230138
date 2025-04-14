@@ -100,6 +100,10 @@ restaurantController.saveMenu = async function(req, res) {
             return res.status(404).send("Restaurante não encontrado");
         }
 
+        // Obter a foto do menu
+        const menuPhotoFile = req.files.find(file => file.fieldname === 'menuPhoto');
+        const menuPhotoPath = menuPhotoFile ? "/" + menuPhotoFile.path.replace(/^public[\\/]/, "") : null;
+
         // Mapeia os arquivos pelos índices dos pratos
         const fileMap = {};
         req.files.forEach(file => {
@@ -158,6 +162,7 @@ restaurantController.saveMenu = async function(req, res) {
             name: req.body.name,
             type: req.body.type,
             dishes: dishObjects,
+            photo: menuPhotoPath
         });
 
         restaurant.menus.push(menu);
@@ -201,6 +206,15 @@ restaurantController.saveEditMenu = async function(req, res) {
         // Atualiza dados básicos do menu
         menu.name = req.body.name;
         menu.type = req.body.type;
+
+        const menuPhotoFile = req.files.find(file => file.fieldname === 'menuPhoto');
+        if (menuPhotoFile) {
+            // Apagar imagem antiga se existir
+            if (menu.photo && fs.existsSync("public" + menu.photo)) {
+                fs.unlinkSync("public" + menu.photo);
+            }
+            menu.photo = "/" + menuPhotoFile.path.replace(/^public[\\/]/, "");
+        }
 
         // Atualiza pratos existentes
         if (req.files) {
@@ -289,6 +303,38 @@ if (deletedDishes.length > 0) {
         res.render("errors/error500", { error: err });
     }
 };
+
+restaurantController.deleteMenu = async function(req, res) {
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+        const menu = restaurant.menus.id(req.params.menuId);
+
+        if (!menu) {
+            return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
+        }
+
+        // Apagar foto do menu
+        if (menu.photo && fs.existsSync("public" + menu.photo)) {
+            fs.unlinkSync("public" + menu.photo);
+        }
+
+        // Apagar fotos dos pratos
+        menu.dishes.forEach(dish => {
+            if (dish.photo && fs.existsSync("public" + dish.photo)) {
+                fs.unlinkSync("public" + dish.photo);
+            }
+        });
+
+        // Remover menu do array
+        restaurant.menus.pull(menu);
+        await restaurant.save();
+
+        res.redirect(`/restaurants/${restaurant.name}`);
+
+    } catch (err) {
+        res.render("errors/error500", { error: err });
+    }
+};
   
 //Permite com detalhes o prato especifico de um menu
 restaurantController.showDish = function(req, res) {
@@ -319,19 +365,7 @@ Falta guaradar a imagem no public e guardar o caminho no mongo
 */
 restaurantController.saveDish = function(req, res) {
     
-    /*
-        storage = multer.diskStorage({
-            destination: function (req, file, cb) {
-                cb(null, 'public/images/')
-            },
-            filename: function (req, file, cb) {
-                cb(null, `${Date.now()}-${file.originalname}`)
-            }
-        });
 
-        let pathImage = req.file?.path || '';
-        const caminho = pathImage.replace(/^public[\\/]/, "");
-    */
     let dish = new Dish({
         name: req.body.name,
         description: req.body.description,
@@ -416,7 +450,7 @@ async function saveImage(req, res) {
         });
     }); 
 }
-
+/* SE DEIXAR DE DAR, DESCOMENTAR O CODIGO A BAIXO
 // Configurando o storage para salvar as fotos dos pratos
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -439,5 +473,5 @@ const storage = multer.diskStorage({
   
   // Cria o upload middleware que aceita qualquer arquivo
   const upload = multer({ storage: storage }).any();
-
+*/
 module.exports = restaurantController;
