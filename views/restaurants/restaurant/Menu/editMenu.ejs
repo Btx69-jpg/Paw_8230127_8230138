@@ -170,6 +170,37 @@
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label">Porções:</label>
+                                <div class="portion-container">
+                                    <% portions.forEach(function(portion) { 
+                                        const dishPortion = dish.portions.find(p => p.portion.toString() === portion._id.toString());
+                                    %>
+                                        <div class="form-check">
+                                            <input class="form-check-input portion-checkbox" 
+                                                type="checkbox" 
+                                                name="dishes[<%= index %>][portions][]" 
+                                                value="<%= portion._id %>"
+                                                id="portion-<%= portion._id %>-<%= index %>"
+                                                <%= dishPortion ? 'checked' : '' %>>
+                                            
+                                            <label class="form-check-label" for="portion-<%= portion._id %>-<%= index %>">
+                                                <%= portion.portion %>
+                                            </label>
+                                            
+                                            <input type="number" 
+                                                class="form-control portion-price" 
+                                                name="dishes[<%= index %>][portionPrices][]"
+                                                value="<%= dishPortion ? dishPortion.price.toFixed(2) : '' %>"
+                                                min="0" 
+                                                step="0.01"
+                                                <%= dishPortion ? '' : 'disabled' %>
+                                                required>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+
                             <div class="form-check">
                                 <input class="form-check-input" 
                                     type="checkbox" 
@@ -286,6 +317,21 @@
                 });
             }
         }
+
+            // Ativar/desativar preços conforme checkbox
+    document.querySelectorAll('.portion-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const priceInput = this.closest('.form-check').querySelector('.portion-price');
+            priceInput.disabled = !this.checked;
+            priceInput.required = this.checked;
+            if (!this.checked) priceInput.value = '';
+        });
+    });
+
+    // Validação inicial para porções já marcadas
+    document.querySelectorAll('.portion-checkbox:checked').forEach(checkbox => {
+        checkbox.dispatchEvent(new Event('change'));
+    });
     </script>
 
 </body>

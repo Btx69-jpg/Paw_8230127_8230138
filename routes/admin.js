@@ -12,6 +12,8 @@ const typeUserMiddleware = require("../Middleware/TypeUserMiddleware.js");
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
 const userRouter = require("./adminRoutes/listusers.js");
 const categoriesRouter = require("./adminRoutes/categories.js");
+const portionsRouter = require("./adminRoutes/portions.js");
+
 
 //Pagina do admin
 router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.homePage);
@@ -27,5 +29,7 @@ router.use("/listUsers", authTokenMiddleware.authenticateToken, typeUserMiddlewa
 
 /*Routers para as categorias */
 router.use("/listCategories", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesRouter);
+
+router.use("/listPortions", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsRouter);
 
 module.exports = router;

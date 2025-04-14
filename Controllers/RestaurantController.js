@@ -5,6 +5,7 @@ const Restaurant = require("../Models/Perfils/Restaurant");
 const Dish = require("../Models/Menus/Dish");
 const Category = require("../Models/Reusable/Category");
 const Menu = require("../Models/Menus/Menu");
+const Portion = require("../Models/Reusable/Portion");
 const { format } = require("morgan");
 const fs = require('fs'); // Certifique-se de importar o fs se ainda não estiver
 
@@ -25,11 +26,23 @@ async function carregarCategories() {
     return categories;
 }
 
+async function carregarPortions() {
+    let portions = [];
+    try {
+        portions = await Portion.find({}).exec();
+    } catch (err) {
+        console.error(err);
+        portions = null;
+    }
+    return portions;
+}
+
 async function renderCreateDish(res) {
     let categories = await carregarCategories();
+    let portions = await carregarPortions();
 
     if(categories != null) {
-        res.render("restaurants/restaurant/Dishs/createDish", {categories: categories});
+        res.render("restaurants/restaurant/Dishs/createDish", {categories: categorie, portions: portions});
     } else {
         res.render("errors/error500", {error: "Problema a procurar as categorias dos pratos"});
     }
@@ -84,8 +97,9 @@ restaurantController.createMenu = async function (req, res) {
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
         const categories = await carregarCategories();
+        const portions = await carregarPortions();
 
-        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories });
+        res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories, portions: portions });
     } catch (err) {
         res.render("errors/error500", {error: err});
     }
@@ -128,6 +142,22 @@ restaurantController.saveMenu = async function(req, res) {
             const dishData = dishes[i];
             const file = fileMap[i];
 
+            // Validação de porções
+            const portions = [];
+            if (dishData.portions) {
+                const portionPrices = Array.isArray(dishData.portionPrices) ? dishData.portionPrices : [dishData.portionPrices];
+                
+                dishData.portions.forEach((portionId, idx) => {
+                    if (!portionPrices[idx] || isNaN(portionPrices[idx])) {
+                        throw new Error(`Preço obrigatório para a porção selecionada no prato ${i + 1}`);
+                    }
+                    portions.push({
+                        portion: portionId,
+                        price: parseFloat(portionPrices[idx])
+                    });
+                });
+            }
+
             if (!file) {
                 return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
                     restaurant, 
@@ -154,6 +184,7 @@ restaurantController.saveMenu = async function(req, res) {
                 description: dishData.description,
                 category: dishData.category,
                 price: dishData.price,
+                portions: portions,
                 photo: caminhoCorrigido
             }));
         }
@@ -181,6 +212,7 @@ restaurantController.editMenu = async function(req, res) {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
         const menu = restaurant.menus.id(req.params.menuId);
         const categories = await carregarCategories();
+        let portions = await carregarPortions();
 
         if (!menu) {
             return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
@@ -189,7 +221,8 @@ restaurantController.editMenu = async function(req, res) {
         res.render("restaurants/restaurant/Menu/editMenu", {
             restaurant: restaurant,
             menu: menu,
-            categories: categories
+            categories: categories,
+            portions: portions,
         });
     } catch (err) {
         res.render("errors/error500", { error: err });
@@ -202,6 +235,7 @@ restaurantController.saveEditMenu = async function(req, res) {
         await saveImage(req, res);
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
         const menu = restaurant.menus.id(req.params.menuId);
+        const portions = await Portion.find({}).exec();
 
         // Atualiza dados básicos do menu
         menu.name = req.body.name;
@@ -236,6 +270,26 @@ restaurantController.saveEditMenu = async function(req, res) {
                     existingDish.description = dishData.description;
                     existingDish.category = dishData.category;
                     existingDish.price = dishData.price;
+
+                    const portionsData = [];
+                    if (dishData.portions) {
+                        const prices = Array.isArray(dishData.portionPrices) ? 
+                            dishData.portionPrices : 
+                            [dishData.portionPrices];
+
+                        dishData.portions.forEach((portionId, idx) => {
+                            if (!prices[idx] || isNaN(prices[idx])) {
+                                throw new Error(`Preço obrigatório para porção no prato ${existingDish.name}`);
+                            }
+                            portionsData.push({
+                                portion: portionId,
+                                price: parseFloat(prices[idx])
+                            });
+                        });
+                    }
+                    existingDish.portions = portionsData;
+                
+
         
                     // Atualizar imagem se houver arquivo para este índice
                     if (existingDishesFiles[index]) {
