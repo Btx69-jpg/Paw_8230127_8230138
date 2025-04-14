@@ -203,55 +203,85 @@ restaurantController.saveEditMenu = async function(req, res) {
         menu.type = req.body.type;
 
         // Atualiza pratos existentes
-        req.body.dishes.forEach((dishData, index) => {
-            const existingDish = menu.dishes.id(dishData._id);
-            if (existingDish) {
-                existingDish.name = dishData.name;
-                existingDish.description = dishData.description;
-                existingDish.category = dishData.category;
-                existingDish.price = dishData.price;
-                
-                // Atualiza imagem se foi enviada nova
-                if (req.files && req.files[index]) {
-                    // Apaga imagem antiga
-                    if (fs.existsSync("public" + existingDish.photo)) {
-                        fs.unlinkSync("public" + existingDish.photo);
-                    }
-                    existingDish.photo = "/" + req.files[index].path.replace(/^public[\\/]/, "");
+        if (req.files) {
+            // Mapear arquivos para pratos existentes
+            const existingDishesFiles = {};
+            req.files.forEach(file => {
+                const match = file.fieldname.match(/dishes\[(\d+)\]\[photo\]/);
+                if (match) {
+                    const index = parseInt(match[1], 10);
+                    existingDishesFiles[index] = file;
                 }
+            });
+        
+            req.body.dishes.forEach((dishData, index) => {
+                const existingDish = menu.dishes.id(dishData._id);
+                if (existingDish) {
+                    
+                    existingDish.name = dishData.name;
+                    existingDish.description = dishData.description;
+                    existingDish.category = dishData.category;
+                    existingDish.price = dishData.price;
+        
+                    // Atualizar imagem se houver arquivo para este índice
+                    if (existingDishesFiles[index]) {
+                        // Apagar imagem antiga
+                        if (fs.existsSync("public" + existingDish.photo)) {
+                            fs.unlinkSync("public" + existingDish.photo);
+                        }
+                        existingDish.photo = "/" + existingDishesFiles[index].path.replace(/^public[\\/]/, "");
+                    }
+                }
+            });
+        }
+
+ // Atualiza o tratamento de novos pratos
+if (req.body.newDishes) {
+    // Cria um mapa das novas imagens
+    const newDishesFiles = {};
+    req.files.forEach(file => {
+        const match = file.fieldname.match(/newDishes\[(\d+)\]\[photo\]/);
+        if (match) {
+            const index = parseInt(match[1], 10);
+            newDishesFiles[index] = file;
+        }
+    });
+
+    Object.keys(req.body.newDishes).forEach(index => {
+        const newDish = req.body.newDishes[index];
+        const file = newDishesFiles[index];
+
+        if (!file) {
+            return res.status(400).render("errors/error400", {
+                error: `Imagem obrigatória para o novo prato ${parseInt(index) + 1}`
+            });
+        }
+
+        menu.dishes.push(new Dish({
+            name: newDish.name,
+            description: newDish.description,
+            category: newDish.category,
+            price: newDish.price,
+            photo: "/" + file.path.replace(/^public[\\/]/, "")
+        }));
+    });
+    }
+
+    const deletedDishes = Array.isArray(req.body.deletedDishes) 
+    ? req.body.deletedDishes 
+    : [req.body.deletedDishes].filter(Boolean);
+
+if (deletedDishes.length > 0) {
+    deletedDishes.forEach(dishId => {
+        const dishToRemove = menu.dishes.id(dishId);
+        if (dishToRemove) {
+            if (fs.existsSync("public" + dishToRemove.photo)) {
+                fs.unlinkSync("public" + dishToRemove.photo);
             }
-        });
-
-        // Adiciona novos pratos
-        if (req.body.newDishes) {
-            req.body.newDishes.forEach((newDish, index) => {
-                const photoPath = req.files['newDishes'] ? 
-                    "/" + req.files['newDishes'][index].path.replace(/^public[\\/]/, "") : 
-                    "";
-                
-                menu.dishes.push(new Dish({
-                    name: newDish.name,
-                    description: newDish.description,
-                    category: newDish.category,
-                    price: newDish.price,
-                    photo: photoPath
-                }));
-            });
+            menu.dishes.remove(dishToRemove);
         }
-
-        // Remove pratos deletados
-        if (req.body.deletedDishes) {
-            req.body.deletedDishes.forEach(dishId => {
-                const dishToRemove = menu.dishes.id(dishId);
-                if (dishToRemove) {
-                    // Apaga imagem associada
-                    if (fs.existsSync("public" + dishToRemove.photo)) {
-                        fs.unlinkSync("public" + dishToRemove.photo);
-                    }
-                    dishToRemove.remove();
-                }
-            });
-        }
+    });
+}
 
         await restaurant.save();
         res.redirect(`/restaurants/${restaurant.name}/showMenu/${menu._id}`);
