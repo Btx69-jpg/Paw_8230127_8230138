@@ -7,7 +7,6 @@ function isAdmin(req, res, next) {
             next();
         } else {
             res.render("errors/error500", {error: "O user não existe ou não tem permissões para aceder há página"})
-            //res.sendStatus(403);
         }
     } else {
         console.log("Não existe cookie para admin");
