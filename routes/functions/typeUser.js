@@ -7,78 +7,83 @@ const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Alterar isto tudo para apenas ver o valor de uma cokkie
 function isAdmin(req, res, next) {
-    User.findOne( {_id: req.user.userId}).exec()
-        .then(user => {
-            if(user && user.perfil && user.perfil.banned !== true && user.perfil.priority === 'Admin') {
-                next();
-            } else {
-                console.log("O user não existe ou não tem permissões para aceder há página");
-                res.sendStatus(403);
-            }
-        }) 
-        .catch(error => {
-            console.log(error);
-        })
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Admin") {
+            next();
+        } else {
+            res.render("errors/error500", {error: "O user não existe ou não tem permissões para aceder há página"})
+            //res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
 }
 
 function isCliente(req, res, next) {
-    User.findOne( {_id: req.user.userId}).exec()
-        .then(user => {
-            if (user && user.perfil && user.perfil.banned !== true && user.perfil.priority === 'Cliente') {
-                next();
-            } else {
-                console.log("O user não existe ou não tem permissões para aceder há página");
-                res.sendStatus(403);
-            }
-        }) 
-        .catch(error => {
-            console.log(error);
-        })
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Cliente") {
+            next();
+        } else {
+            console.log("O user não existe ou não tem permissões para aceder há página");
+            res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
 }
 
 function isDono(req, res, next) {
-    User.findOne( {_id: req.user.userId}).exec()
-        .then(user => {
-            if (user && user.perfil &&  user.perfil.banned !== true && user.perfil.priority === 'Dono') {
-                next();
-            } else {
-                console.log("O user não existe ou não tem permissões para aceder há página");
-                res.sendStatus(403);
-            }
-        }) 
-        .catch(error => {
-            console.log(error);
-        })
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Dono") {
+            next();
+        } else {
+            console.log("O user não existe ou não tem permissões para aceder há página");
+            res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
 }
 
 function isRestaurant(req, res, next) {
-    Restaurant.findOne( {_id: req.user.userId}).exec()
-        .then(restaurant => {
-            if (restaurant && restaurant.perfil && user.perfil.banned !== true && restaurant.perfil.priority === 'Restaurante' ) {
-                next();
-            } else {
-                console.log("O user não existe ou não tem permissões para aceder há página");
-                res.sendStatus(403);
-            }
-        }) 
-        .catch(error => {
-            console.log(error);
-        })
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Restaurante") {
+            next();
+        } else {
+            console.log("O user não existe ou não tem permissões para aceder há página");
+            res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
 }
 
 function isDonoRestaurantOrAdmin(req, res, next) {
-    User.findOne( {_id: req.user.userId}).exec()
-        .then(user => {
-            if (user && user.perfil && user.perfil.banned !== true && user.perfil.priority === "Admin" || user.perfil.priority === 'Dono' || user.perfil.priority === "Restaurante" ) {
-                next();
-            } else {
-                console.log("O user não existe ou não tem permissões para aceder há página");
-                res.sendStatus(403);
-            }
-        }) 
-        .catch(error => {
-            console.log(error);
-        })
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cookie === "Admin" || cokkie === "Dono" || cokkie === "Restaurante") {
+            next();
+        } else {
+            console.log("O user não existe ou não tem permissões para aceder há página");
+            res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
 }
 
 module.exports = {

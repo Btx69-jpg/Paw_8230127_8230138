@@ -30,7 +30,6 @@ loginController.loginToken = async function(req, res) {
   if (user) {
     userId = user._id;
   } else {
-    // Se não encontrou o usuário, tenta encontrar o restaurante
     const rest = await Restaurant.findOne({ 'perfil.email': email }).exec();
     if (rest) {
       userId = rest._id;
