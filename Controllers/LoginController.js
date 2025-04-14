@@ -20,34 +20,35 @@ loginController.authenticate = (req, res, next) => {
     })(req, res, next);
 };
 
-//Aqui pode não haver erro, pois ele vai até ao return
+//Cria o token e adiciona uma cokkie com o tipo de prioridade do user
 loginController.loginToken = async function(req, res) {
   const email = req.body.email;
   let userId = "";
-  let name = "";
 
   const user = await User.findOne({ 'perfil.email': email }).exec();
 
   if (user) {
     userId = user._id;
-    name = user.firstName;
   } else {
     // Se não encontrou o usuário, tenta encontrar o restaurante
     const rest = await Restaurant.findOne({ 'perfil.email': email }).exec();
     if (rest) {
       userId = rest._id;
-      name = rest.name;
     }
   }
 
+  //Validações
   if (userId === "") {
     return res.status(403).end();
   }    
 
+  if (user.perfil.banned) {
+    return res.render("erros/error500", {error: "O utilizador não pode fazer login, pois encontra-se banido"});
+  }
+
   const rememberMe = req.body.rememberMe;
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
-  console.log(token)
   if (rememberMe) {
     // Se "Lembrar-me" estiver selecionado, configura os cookies com validade (persistent cookies)
     console.log('Definindo cookie rememberMe com _id:', userId);
@@ -74,7 +75,8 @@ loginController.loginToken = async function(req, res) {
     }, loginController.authenticate);
   }
 
-
+  //Cookie para mandar a prioridade do user
+  res.cookie('priority', user.perfil.priority);
   return res.redirect('/');
 }
 
@@ -87,6 +89,7 @@ loginController.logout = function(req, res) {
 
         res.clearCookie('auth_token');
         res.clearCookie('rememberMe');
+        res.clearCookie('priority');
         req.flash("success_msg", "Logout realizado com sucesso!");
         res.redirect("/");
     });
