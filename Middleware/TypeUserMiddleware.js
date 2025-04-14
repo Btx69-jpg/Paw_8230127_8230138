@@ -1,11 +1,4 @@
-// packageOperations.js
-const fs = require('fs');
-
-//Models
-const User = require("../../Models/Perfils/User");
-const Restaurant = require("../../Models/Perfils/Restaurant");
-
-//Alterar isto tudo para apenas ver o valor de uma cokkie
+//Verifica se o user autenticado é um admin
 function isAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
@@ -22,6 +15,7 @@ function isAdmin(req, res, next) {
     }
 }
 
+//Verifica se o user autenticado é um cliente
 function isCliente(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
@@ -38,6 +32,7 @@ function isCliente(req, res, next) {
     }
 }
 
+//Verifica se o user autenticado é um dono
 function isDono(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
@@ -54,6 +49,7 @@ function isDono(req, res, next) {
     }
 }
 
+//Verifica se o user autenticado é um restaurante
 function isRestaurant(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
@@ -70,6 +66,7 @@ function isRestaurant(req, res, next) {
     }
 }
 
+//Verifica se o user autenticado é um admin, dono ou restaurante
 function isDonoRestaurantOrAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;

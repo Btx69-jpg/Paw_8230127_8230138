@@ -1,23 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../../Controllers/AuthController.js");
-const typeUser = require("../functions/typeUser.js");
+const authTokenMiddleware = require("../../Middleware/AuthTokenMiddleware.js");
+const typeUserMiddleware = require("../../Middleware/TypeUserMiddleware.js");
 const categoriesController = require("../../Controllers/ControllersAdmin/CategoriesController.js");
 //Meter como na admin
 
 /*Routers para as categorias */
-router.get("/", authController.authenticateToken, typeUser.isAdmin, categoriesController.homePage);
+router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.homePage);
 
-router.get("/createCategory", authController.authenticateToken, typeUser.isAdmin, categoriesController.createCategory);
+router.get("/createCategory", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.createCategory);
 
-router.post("/saveCategory", authController.authenticateToken, typeUser.isAdmin, categoriesController.saveCategory);
+router.post("/saveCategory", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.saveCategory);
 
-router.get("/editCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.editCategory);
+router.get("/editCategory/:categoryId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.editCategory);
 
-router.post("/updatCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.updatCategory);
+router.post("/updatCategory/:categoryId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.updatCategory);
 
 //Posso depois alterar para um delete
-router.post("/deletetCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.deleteCategory);
+router.post("/deletetCategory/:categoryId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesController.deleteCategory);
 
 module.exports = router;

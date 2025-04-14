@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
 
 //Controllers
-var authController = {};
+var authtokenMiddleware = {};
 
 //Metodo utilizado nas rotas onde os users têm de estar obrigatoriamente autenticados
-authController.authenticateToken = function(req, res, next) {
+authtokenMiddleware.authenticateToken = function(req, res, next) {
     const token = req.cookies.auth_token || req.headers['authorization'];
 
     console.log("Token: ", token);
@@ -24,4 +24,4 @@ authController.authenticateToken = function(req, res, next) {
       });
 };
 
-module.exports = authController;
+module.exports = authtokenMiddleware;
