@@ -4,7 +4,7 @@ const router = express.Router();
 
 //Controllers
 const loginController = require("../Controllers/LoginController.js");
-const blockLogin = require("./functions/validateLogin.js");
+const blockLogin = require("../Middleware/ValidateLoginMiddleware.js");
 // Página de login
 router.get("/", blockLogin.possibleBlockLogin, loginController.login);
 

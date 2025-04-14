@@ -71,7 +71,7 @@ function isDonoRestaurantOrAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
         
-        if (cookie === "Admin" || cokkie === "Dono" || cokkie === "Restaurante") {
+        if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Restaurante") {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
