@@ -1,15 +1,6 @@
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET;
-
-require('../Models/Perfils/User');
-const User = mongoose.model('User');
-const AddressOrder = require("../Models/Reusable/AddressOrder");
-const Perfil = require("../Models/Reusable/Perfil");
-const userController = require("./LoginController.js");
-
+const User = require('../Models/Perfils/User');
 
 module.exports = function(passport) {
     passport.use(new localStrategy({ usernameField: 'email', passwordField:"password" }, async (email, password, done) => {
@@ -20,6 +11,7 @@ module.exports = function(passport) {
 
             bcrypt.compare(password, user.perfil.password, (err, isMatch) => {
                 if (err) throw err;
+                
                 if (isMatch) {
                     return done(null, user);
                 } else {
