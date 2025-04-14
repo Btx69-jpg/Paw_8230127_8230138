@@ -81,7 +81,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-const autoLoginMiddleware = require('./Controllers/autoLoginMiddleware.js');
+const autoLoginMiddleware = require('./Middleware/AutoLoginMiddleware');
 app.use(autoLoginMiddleware);
 
 //Importante ter em consideração a autentificação e a autorização
