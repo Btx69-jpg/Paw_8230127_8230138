@@ -10,9 +10,9 @@ async function autoLoginMiddleware(req, res, next) {
   if (req.cookies && req.cookies.auth_token) {
     const token = req.cookies.auth_token;
     jwt.verify(token, SECRET_KEY, async (err, decoded) => {
-      if (!err && decoded && decoded.email) {
+      if (!err && decoded && decoded.userId) {
         try {
-          const user = await User.findOne({ 'perfil.email': decoded.email });
+          const user = await User.findOne({ _id: decoded.userId });
           if (user) {
             // Registra o utilizador na sessão sem redirecionar de forma intempestiva
             req.login(user, (loginErr) => {
@@ -20,11 +20,11 @@ async function autoLoginMiddleware(req, res, next) {
                 console.error("Erro no auto login:", loginErr);
                 return next(); // Mesmo com erro, permite continuar para a rota
               }
-              console.log("Auto login efetuado para:", decoded.email);
+              console.log("Auto login efetuado para:", decoded.userId);
               req.login(user, (loginErr) => {
                 if (loginErr) {
                     console.error("Erro ao logar automaticamente: ", loginErr);
-                    return res.render('login/login', { email: emailSalvo, error: 'Erro ao fazer login automático' });
+                    return res.render('login/login', { email: user.perfil.email, error: 'Erro ao fazer login automático' });
                 }
                 // utilizador autenticado e sessão iniciada; redirecione para a página desejada
                 return res.redirect('/');
@@ -32,7 +32,7 @@ async function autoLoginMiddleware(req, res, next) {
 
             });
           } else {
-            console.log("Utilizador não encontrado para o email:", decoded.email);
+            console.log("Utilizador não encontrado para o id:", decoded.userId);
             return next();
           }
         } catch (dbErr) {

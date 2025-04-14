@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-//Controlars
+//Controllers
 const adminController = require("../Controllers/AdminController.js");
 const authController = require("../Controllers/AuthController.js");
 const typeUser = require("./functions/typeUser.js");
+
 //routes
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
 const userRouter = require("./adminRoutes/listusers.js");

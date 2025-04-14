@@ -116,13 +116,14 @@ restaurantsController.search = function(req, res) {
     query.aprove = true;
     
     if (restaurant) {
-      query.name = restaurant;
+      query.name = { "$regex": restaurant, "$options": "i" };
     }
   
     if (city) {
-        query["address.city"] = city;
+        query["address.city"] = { "$regex": city, "$options": "i" };
     }
     
+    console.log(query);
     Restaurant.find(query).exec()
       .then(function (restaurants) {
         console.log(restaurants)

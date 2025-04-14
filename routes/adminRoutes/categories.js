@@ -1,33 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
+const authController = require("../../Controllers/AuthController.js");
+const typeUser = require("../functions/typeUser.js");
 const categoriesController = require("../../Controllers/ControllersAdmin/CategoriesController.js");
 //Meter como na admin
 
 /*Routers para as categorias */
-router.get("/", function(req, res) {
-    categoriesController.homePage(req, res);
-});
+router.get("/", authController.authenticateToken, typeUser.isAdmin, categoriesController.homePage);
 
-router.get("/createCategory", function(req, res) {
-    categoriesController.createCategory(req, res);
-});
+router.get("/createCategory", authController.authenticateToken, typeUser.isAdmin, categoriesController.createCategory);
 
-router.post("/saveCategory", function(req, res) {
-    categoriesController.saveCategory(req, res);
-});
+router.post("/saveCategory", authController.authenticateToken, typeUser.isAdmin, categoriesController.saveCategory);
 
-router.get("/editCategory/:categoryId", function(req, res) {
-    categoriesController.editCategory(req, res);
-});
+router.get("/editCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.editCategory);
 
-router.post("/updatCategory/:categoryId", function(req, res) {
-    categoriesController.updatCategory(req, res);
-});
+router.post("/updatCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.updatCategory);
 
 //Posso depois alterar para um delete
-router.post("/deletetCategory/:categoryId", function(req, res) {
-    categoriesController.deleteCategory(req, res);
-});
+router.post("/deletetCategory/:categoryId", authController.authenticateToken, typeUser.isAdmin, categoriesController.deleteCategory);
 
 module.exports = router;

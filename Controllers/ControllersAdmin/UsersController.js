@@ -28,6 +28,55 @@ userController.createUser = async function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
 }
 
+userController.search = function(req, res) {
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("-----------------------------");
+    let query = {};
+    const firstName = req.query.firstName;
+    const lastName = req.query.lastName;
+    const priority = req.query.priority;
+    const banned = req.query.banned;
+
+    if (firstName) {
+        query.firstName = { "$regex": firstName, "$options": "i" };
+    }
+    
+    if (lastName) {
+        query.lastName = { "$regex": lastName, "$options": "i" };
+    }
+
+    if(priority !== "all") {
+        query["perfil.priority"] = priority;
+    } else {
+        query["perfil.priority"] = { $ne: "Admin" };
+    }
+    console.log(banned);
+
+    if (banned === "true") {
+        query["perfil.banned"] = true;
+    } else if (banned === "false") {
+        query["perfil.banned"] = false;
+    }
+
+    console.log(query)
+    
+    User.find(query).exec()
+        .then(function (users) {
+            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users});
+        })
+        .catch(function(err) {
+            console.error("Erro ao filtrar pelos restuarantes: ", err);
+            res.render("errors/error500", {error: err});
+        }); 
+};
+
 userController.findOneRestaurante = async function(name) {
     try {
         return await Restaurantes.findOne( {name: name});

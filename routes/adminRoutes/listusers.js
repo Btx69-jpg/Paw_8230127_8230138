@@ -1,31 +1,37 @@
 const express = require("express");
 const router = express.Router();
 
+const authController = require("../../Controllers/AuthController.js");
+const typeUser = require("../functions/typeUser.js");
 const userController = require("../../Controllers/ControllersAdmin/UsersController.js");
+
 //Meter como na admin
 
 /*Routers para os users */
-router.get("/", userController.homePage);
+router.get("/", authController.authenticateToken, typeUser.isAdmin, userController.homePage);
+
+/* Route para realizar filtros aos dados */
+router.get("/search", authController.authenticateToken, typeUser.isAdmin, userController.search);
 
 /* Carrega a pagina de criação do utilizador */
-router.get("/createUser", userController.createUser);
+router.get("/createUser", authController.authenticateToken, typeUser.isAdmin, userController.createUser);
 
 /* Guarda um novo utilizador na BD */
-router.post("/createUser", userController.saveUser);
+router.post("/createUser", authController.authenticateToken, typeUser.isAdmin, userController.saveUser);
 
 /* Carrega a pagina de criação do utilizador */
-router.get("/editUser/:userId", userController.editPage);
+router.get("/editUser/:userId", authController.authenticateToken, typeUser.isAdmin, userController.editPage);
 
-router.post("/editUser/:userId", userController.updateUser);
+/* Edita os dados do utilizador */
+router.post("/editUser/:userId", authController.authenticateToken, typeUser.isAdmin, userController.updateUser);
 
 /* Permite apagar um user */
-router.post("/delete/:userId",userController.deleteUser);
+router.post("/delete/:userId", authController.authenticateToken, typeUser.isAdmin, userController.deleteUser);
 
-//Depois trocar este dois para um put
 /*Desbanir um user manualmente */
-router.post("/desban/:userId", userController.desban);
+router.post("/desban/:userId", authController.authenticateToken, typeUser.isAdmin, userController.desban);
 
 /* Banir um utilizador */
-router.post("/ban/:userId", userController.ban);
+router.post("/ban/:userId", authController.authenticateToken, typeUser.isAdmin, userController.ban);
 
 module.exports = router;

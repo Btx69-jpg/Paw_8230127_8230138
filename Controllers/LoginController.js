@@ -25,16 +25,17 @@ loginController.loginToken = async function(req, res) {
   const email = req.body.email;
   let userId = "";
   let name = "";
+
   const user = await User.findOne({ 'perfil.email': email }).exec();
 
   if (user) {
-    userId = user._id.toString();
+    userId = user._id;
     name = user.firstName;
   } else {
     // Se não encontrou o usuário, tenta encontrar o restaurante
     const rest = await Restaurant.findOne({ 'perfil.email': email }).exec();
     if (rest) {
-      userId = rest._id.toString();
+      userId = rest._id;
       name = rest.name;
     }
   }
@@ -44,13 +45,13 @@ loginController.loginToken = async function(req, res) {
   }    
 
   const rememberMe = req.body.rememberMe;
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
   console.log(token)
   if (rememberMe) {
     // Se "Lembrar-me" estiver selecionado, configura os cookies com validade (persistent cookies)
-    console.log('Definindo cookie rememberMe com _id:', email);
-    res.cookie('rememberMe', email, {
+    console.log('Definindo cookie rememberMe com _id:', userId);
+    res.cookie('rememberMe', userId, {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dias
       httpOnly: true,
       //secure: false

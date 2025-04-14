@@ -59,7 +59,8 @@
     name="phoneNumber" 
     id="phoneNumber" 
     class="form-control" 
-    placeholder="Introduza o número telefónico"  
+    placeholder="Introduza o número telefónico" 
+    value="<%= typeof phoneNumber !== 'undefined' ? phoneNumber : '' %>" 
     pattern="[0-9]{9}" 
     title="O telefone deve ter 9 dígitos"
     required>
@@ -100,41 +101,7 @@
     </div>
 </div>
 
-<script>
-    // Função para validar se as passwords são iguais
-    function validatePassword() {
-      var password = document.getElementById('password');
-      var confirmPassword = document.getElementById('confirmPassword');
-  
-      if (confirmPassword.value !== password.value) {
-        // Define mensagem customizada se não forem iguais
-        confirmPassword.setCustomValidity('As passwords não coincidem.');
-      } else {
-        // Remove a mensagem se forem iguais
-        confirmPassword.setCustomValidity('');
-      }
-    }
-
-    (function () {
-    'use strict';
-    var form = document.getElementById('signupForm');
-
-    form.addEventListener('submit', function (event) {
-      if (!form.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      form.classList.add('was-validated');
-    }, false);
-  })();
-
-    function handleInvalidInput(input) {
-    if (!input.value) {
-      input.setCustomValidity('Campo obrigatório!');
-    } else {
-      input.setCustomValidity('Por favor, insira apenas letras e espaços.');
-    }
-  }
-  </script>
-
-
+<!-- Importação dos js de validação-->
+<script src="/javascripts/validations/validatePassword.js"></script>
+<script src="/javascripts/validations/validateName.js"></script>
+<script src="/javascripts/validations/validateSubmit.js"></script>

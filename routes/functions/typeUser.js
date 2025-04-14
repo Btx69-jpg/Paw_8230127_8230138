@@ -2,19 +2,17 @@
 const fs = require('fs');
 
 //Models
-const User = require("../../Models/Perfils/User")
+const User = require("../../Models/Perfils/User");
+const Restaurant = require("../../Models/Perfils/Restaurant");
 
+//Alterar isto tudo para apenas ver o valor de uma cokkie
 function isAdmin(req, res, next) {
-    console.log("isAdmin")
-    console.log(req.user);
-
-    User.findOne( {'perfil.email': req.user.email}).exec()
+    User.findOne( {_id: req.user.userId}).exec()
         .then(user => {
-            console.log("User find: ", user);
-            if(user && user.perfil && user.perfil.priority === 'Admin') {
+            if(user && user.perfil && user.perfil.banned !== true && user.perfil.priority === 'Admin') {
                 next();
             } else {
-                
+                console.log("O user não existe ou não tem permissões para aceder há página");
                 res.sendStatus(403);
             }
         }) 
@@ -24,26 +22,63 @@ function isAdmin(req, res, next) {
 }
 
 function isCliente(req, res, next) {
-    if (req.user && req.user.perfil && req.user.perfil.priority === 'Cliente') {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
+    User.findOne( {_id: req.user.userId}).exec()
+        .then(user => {
+            if (user && user.perfil && user.perfil.banned !== true && user.perfil.priority === 'Cliente') {
+                next();
+            } else {
+                console.log("O user não existe ou não tem permissões para aceder há página");
+                res.sendStatus(403);
+            }
+        }) 
+        .catch(error => {
+            console.log(error);
+        })
 }
 
 function isDono(req, res, next) {
-    if (req.user && req.user.perfil && req.user.perfil.priority === 'Dono') {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
+    User.findOne( {_id: req.user.userId}).exec()
+        .then(user => {
+            if (user && user.perfil &&  user.perfil.banned !== true && user.perfil.priority === 'Dono') {
+                next();
+            } else {
+                console.log("O user não existe ou não tem permissões para aceder há página");
+                res.sendStatus(403);
+            }
+        }) 
+        .catch(error => {
+            console.log(error);
+        })
 }
+
 function isRestaurant(req, res, next) {
-    if (req.user && req.user.perfil && req.user.perfil.priority === 'Restaurante') {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
+    Restaurant.findOne( {_id: req.user.userId}).exec()
+        .then(restaurant => {
+            if (restaurant && restaurant.perfil && user.perfil.banned !== true && restaurant.perfil.priority === 'Restaurante' ) {
+                next();
+            } else {
+                console.log("O user não existe ou não tem permissões para aceder há página");
+                res.sendStatus(403);
+            }
+        }) 
+        .catch(error => {
+            console.log(error);
+        })
+}
+
+function isDonoRestaurantOrAdmin(req, res, next) {
+    User.findOne( {_id: req.user.userId}).exec()
+        .then(user => {
+            if (user && user.perfil && user.perfil.banned !== true && user.perfil.priority === "Admin" || user.perfil.priority === 'Dono' || user.perfil.priority === "Restaurante" ) {
+                next();
+            } else {
+                console.log("O user não existe ou não tem permissões para aceder há página");
+                res.sendStatus(403);
+            }
+        }) 
+        .catch(error => {
+            console.log(error);
+        })
 }
 
 module.exports = {
@@ -51,4 +86,5 @@ module.exports = {
     isCliente,
     isDono,
     isRestaurant,
+    isDonoRestaurantOrAdmin,
 };

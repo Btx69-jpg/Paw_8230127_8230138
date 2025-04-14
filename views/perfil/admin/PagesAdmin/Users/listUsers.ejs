@@ -31,6 +31,74 @@
             Pesquisar por email ou numero
             -->
 
+            <div class="row justify-content-center align-items-center mb-4">
+                <form action="/perfil/admin/listUsers/search" method="GET" class="col-md-8 col-lg-6">
+                  
+                  <div class="row g-2">
+                    <div class="form-group">
+                        <label for="firstName">First name</label>
+                        <input 
+                          type="text" 
+                          name="firstName" 
+                          id="firstName" 
+                          class="form-control" 
+                          placeholder="Input first name" 
+                          value="<%= typeof firstName !== 'undefined' ? firstName : '' %>"
+                          pattern="^[A-Za-zÀ-ÿ\s]+$"
+                          oninvalid="handleInvalidInput(this)"
+                          oninput="this.setCustomValidity('')"/>
+                        <div class="invalid-feedback">
+                          O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last name</label>
+                        <input 
+                          type="text" 
+                          name="lastName" 
+                          id="lastName" 
+                          class="form-control" 
+                          placeholder="Input last name" 
+                          value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
+                          pattern="^[A-Za-zÀ-ÿ\s]+$"
+                          oninvalid="handleInvalidInput(this)"
+                          oninput="this.setCustomValidity('')"/>
+                        <div class="invalid-feedback">
+                          O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="divPrioridade">
+                        <label for="priority">Prioridade</label>
+                        <select id="priority" 
+                        name="priority" 
+                        class="form-control">
+                            <option value="all">Qualquer</option>
+                            <option value="Cliente">Cliente</option>
+                            <option value="Dono">Dono</option>
+                            <option value="Funcionario">Funcionario</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="divPrioridade">
+                        <label for="banned">Banido?</label>
+                        <select id="banned" 
+                        name="banned" 
+                        class="form-control">
+                            <option value="all">Todos</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </div>
+   
+                  <div class="mt-3 d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                    <a href="/perfil/admin/listUsers/" class="btn btn-secondary btn-sm">Clear</a>
+                  </div>
+                </form>
+              </div>
+
             <div class="row justify-content-center">
             <% for(let i = 0; i < users.length; i++) { %>
                 <div class="col-md-4 mb-4">

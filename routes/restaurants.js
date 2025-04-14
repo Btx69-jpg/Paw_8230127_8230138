@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+const authController = require("../Controllers/AuthController.js");
+const typeUser = require("./functions/typeUser.js");
 var restaurants = require("../Controllers/RestaurantsController.js"); // Aqui carrego o controller que quero usar
 
 /* Entra na Home Page do restaurante 
@@ -13,11 +15,12 @@ router.get('/search', function(req, res) {
     restaurants.search(req, res);
 });
 
-router.get('/createRestaurant', function(req, res) {
+router.get('/createRestaurant', authController.authenticateToken, typeUser.isDonoRestaurantOrAdmin,  function(req, res) {
     restaurants.createRestaurant(req, res, "restaurants/crudRestaurantes/addRestaurant");
+
 });
 
-router.post('/saveRestaurant', function(req, res) {
+router.post('/saveRestaurant', authController.authenticateToken, typeUser.isDonoRestaurantOrAdmin, function(req, res) {
     restaurants.saveRestaurant(req, res, "/restaurants", "restaurants/crudRestaurantes/addRestaurant");
 });
 
