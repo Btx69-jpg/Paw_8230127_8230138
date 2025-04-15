@@ -17,7 +17,7 @@ var UserSchema = new mongoose.Schema({
         max: [50, 'O ultimo nome deve ter no máximo 50 caracteres'],
         match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
         required: true,
-    },
+    },  
     perfil: {
         type: Perfil.schema,
         required: true,
@@ -25,7 +25,7 @@ var UserSchema = new mongoose.Schema({
     addresses: {
         type: [AddressOrder.schema],
         default: [] //Inicializa com o array vazio
-    },      
+    },  
     cart: {
         type: [Order.schema],
         default: [], // Inicializa com um array vazio

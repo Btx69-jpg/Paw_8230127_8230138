@@ -24,15 +24,14 @@ loginController.authenticate = (req, res, next) => {
 loginController.loginToken = async function(req, res) {
   const email = req.body.email;
   let userId = "";
+  let account = await User.findOne({ 'perfil.email': email }).exec();
 
-  const user = await User.findOne({ 'perfil.email': email }).exec();
-
-  if (user) {
-    userId = user._id;
+  if (account) {
+    userId = account._id;
   } else {
-    const rest = await Restaurant.findOne({ 'perfil.email': email }).exec();
-    if (rest) {
-      userId = rest._id;
+    account = await Restaurant.findOne({ 'perfil.email': email }).exec();
+    if (account) {
+      userId = account._id;
     }
   }
 
@@ -41,7 +40,7 @@ loginController.loginToken = async function(req, res) {
     return res.status(403).end();
   }    
 
-  if (user.perfil.banned) {
+  if (account.perfil.banned) {
     return res.render("erros/error500", {error: "O utilizador não pode fazer login, pois encontra-se banido"});
   }
 
@@ -75,7 +74,7 @@ loginController.loginToken = async function(req, res) {
   }
 
   //Cookie para mandar a prioridade do user
-  res.cookie('priority', user.perfil.priority);
+  res.cookie('priority', account.perfil.priority);
   return res.redirect('/');
 }
 

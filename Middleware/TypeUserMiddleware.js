@@ -65,6 +65,22 @@ function isRestaurant(req, res, next) {
     }
 }
 
+function isDonoOrRestaurant(req, res, next) {
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Dono" || cokkie === "Restaurante") {
+            next();
+        } else {
+            console.log("O user não existe ou não tem permissões para aceder há página");
+            res.sendStatus(403);
+        }
+    } else {
+        console.log("Não existe cookie para admin");
+        res.sendStatus(403);
+    }
+}
+
 //Verifica se o user autenticado é um admin, dono ou restaurante
 function isDonoRestaurantOrAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {
@@ -87,5 +103,6 @@ module.exports = {
     isCliente,
     isDono,
     isRestaurant,
+    isDonoOrRestaurant,
     isDonoRestaurantOrAdmin,
 };

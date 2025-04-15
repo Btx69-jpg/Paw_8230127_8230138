@@ -20,7 +20,9 @@
             
             <div class="add-restaurant-container">
                 <h1>Editar <%= restaurant.name %></h1>
-                <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
+                <% if (priority === "Restaurante" || priority === "Dono") { %>
+                    <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
+                <% } %>
                 <!-- enctype="multipart/form-data" -->
                 <form action="/restaurants/updatRestaurant/<%= restaurant._id %>" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
@@ -85,8 +87,6 @@
                         value="<%= restaurant.perfil.email %>"
                         required>
                     </div>
-                    
-                    <script src="/javascript/desencriptarPass.js"></script>
 
                     <div class="mb-3">
                         <label for="street" class="form-label">Morada:</label>
