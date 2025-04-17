@@ -78,11 +78,11 @@
                 <h5 class="mb-3"><%= restaurants[i].name %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/listRestaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST">
+                  <form action="/perfil/admin/listRestaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
                   
-                  <form action="/listRestaurants/editRestaurant/<%= restaurants[i]._id %>" method="GET">
+                  <form action="/perfil/admin/listRestaurants/editRestaurant/<%= restaurants[i]._id %>" method="GET">
                     <button type="submit" class="btn btn-primary">Editar</button>
                   </form>
                 </div>

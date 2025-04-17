@@ -45,7 +45,6 @@ async function autoLoginMiddleware(req, res, next) {
       }
     });
   } else {
-    // Se nenhum token for fornecido, passa para a próxima rota
     return next();
   }
 }
