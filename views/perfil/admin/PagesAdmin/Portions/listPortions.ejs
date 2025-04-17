@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8">
+    <title>Lista de Porções</title>
+
+    <!-- Logo do site -->
+    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/stylesheets/Perfils/navBar.css">
+    <link rel="stylesheet" href="/stylesheets/Perfils/lists.css">
+  </head>
+
+  <body>
+    <%- include('../../navBar') %>
+
+    <div class="container">
+      <h1 class="text-center my-4">Lista de Porções</h1>
+
+      <div class="d-flex justify-content-center mb-4">
+        <a href="/perfil/admin/listPortions/createPortion" class="btn btn-success">Adicionar Porção</a>
+      </div>
+
+      <% if (portions.length > 0) { %>
+        <div class="row justify-content-center">
+          <% for(let i = 0; i < portions.length; i++) { %>
+            <div class="col-md-4 mb-4">
+              <div class="restaurant-card text-center border rounded p-3 shadow-sm">
+                <h5 class="mb-3"><%= portions[i].portion %></h5>
+
+                <div class="btn-group d-flex justify-content-center">
+                  <form action="/perfil/admin/listPortions/deletetPortion/<%= portions[i]._id %>" method="POST">
+                    <button type="submit" class="btn btn-danger">Remover</button>
+                  </form>
+                  <form action="/perfil/admin/listPortions/editPortion/<%= portions[i]._id %>" method="GET">
+                    <button type="submit" class="btn btn-primary">Editar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } else { %>
+        <p class="text-center">Ainda sem Porções</p>
+      <% } %>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

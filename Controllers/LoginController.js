@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-
+const SECRET_KEY = process.env.JWT_SECRET;
 const User = require("../Models/Perfils/User");
 const Restaurant = require("../Models/Perfils/Restaurant");
 const loginController = {};
@@ -11,72 +11,55 @@ loginController.login = function(req, res) {
   res.render("login/login");
 };
 
-// Autentica o utilizador
-loginController.authenticate = (req, res, next) => {
-    passport.authenticate("local", {
-        successRedirect: "/",
-        failureRedirect: "/login",
-        failureFlash: true,
-    })(req, res, next);
-};
 
 //Cria o token e adiciona uma cokkie com o tipo de prioridade do user
-loginController.loginToken = async function(req, res) {
-  const email = req.body.email;
-  let userId = "";
-  let account = await User.findOne({ 'perfil.email': email }).exec();
-
-  if (account) {
-    userId = account._id;
-  } else {
-    account = await Restaurant.findOne({ 'perfil.email': email }).exec();
-    if (account) {
-      userId = account._id;
+loginController.loginToken = (req, res, next) => {
+  // 1) Chama o passport e recebe (err, user, info)
+  passport.authenticate('local', (err, user, info) => {
+    
+    if (err) {
+      console.error("Erro ao autenticar:", err);
+      req.flash('error', info.message);
+      return res.redirect('/login');
     }
-  }
+    if (!user) {
+      // Mensagem de erro vinda do Strategy
+      req.flash('error', info.message);
+      return res.redirect('/login');
+    }
 
-  //Validações
-  if (userId === "") {
-    return res.status(403).end();
-  }    
+    // 2) Faz o login na sessão
+    req.login(user, loginErr => {
+      if (loginErr) {
+        console.error("Erro no req.login:", loginErr);
+        req.flash('error', 'Erro ao fazer login. Tente novamente.');
+        return res.redirect('/login');
+      }
 
-  if (account.perfil.banned) {
-    return res.render("erros/error500", {error: "O utilizador não pode fazer login, pois encontra-se banido"});
-  }
+      // 3) Só após login bem‑sucedido é que geramos o token
+      const payload   = { userId: user._id };
+      const token     = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
+      const remember  = req.body.rememberMe;
 
-  const rememberMe = req.body.rememberMe;
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
+      // 4) Define cookies
+      if (remember) {
+        res.cookie('auth_token', token, {
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          secure: process.env.NODE_ENV === 'production'
+        });
+      } else {
+        res.cookie('auth_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production'
+        });
+      }
+      res.cookie('priority', user.perfil.priority);
 
-  if (rememberMe) {
-    // Se "Lembrar-me" estiver selecionado, configura os cookies com validade (persistent cookies)
-    console.log('Definindo cookie rememberMe com _id:', userId);
-    res.cookie('rememberMe', userId, {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dias
-      httpOnly: true,
-      //secure: false
-      secure: process.env.NODE_ENV === 'production'
+      return res.redirect('/');
     });
-    console.log('Definindo cookie auth_token')
-    res.cookie('auth_token', token, {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dias
-      httpOnly: true,
-      //secure: false 
-      secure: process.env.NODE_ENV === 'production'
-    });
-  } else {
-    // Se não estiver marcado, limpa o cookie "rememberMe"
-    res.clearCookie('rememberMe');
-    // Aqui definimos o cookie "auth_token" sem maxAge, tornando-o um cookie de sessão
-    res.cookie('auth_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production'
-    }, loginController.authenticate);
-  }
-
-  //Cookie para mandar a prioridade do user
-  res.cookie('priority', account.perfil.priority);
-  return res.redirect('/');
-}
+  })(req, res, next);
+};
 
 loginController.logout = function(req, res) {
     req.logout((err) => {

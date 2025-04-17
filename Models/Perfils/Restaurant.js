@@ -3,6 +3,7 @@ var Address = require("../Reusable/Address");
 var Perfil = require("../Reusable/Perfil");
 var Comment = require("../Comments/Comment");
 var Menu = require("../Menus/Menu");
+var Order = require("../Orders/Order");
 
 var RestaurantSchema = new mongoose.Schema({
     name: {
@@ -43,6 +44,11 @@ var RestaurantSchema = new mongoose.Schema({
     aprove: {
         type: Boolean,
         default: false,
+        required: true,
+    },
+    orders: {
+        type: [Order.schema],
+        default: [], //Inicializa com o array vazio
         required: true,
     },
     updated_at: { type: Date, default: Date.now },

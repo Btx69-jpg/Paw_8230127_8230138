@@ -1,10 +1,11 @@
 var mongoose = require('mongoose');
+var Portion = require('../Reusable/Portion'); //Pratos do menu
 //Talvez mudar a categoria para ref
 var DishSchema = new mongoose.Schema({
     name: {
         type: String,
         maxlength: [50, 'O título deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], //Garante que o nome só tem letras, com acentos ou não, e espaços
         required: true,
     },
     description: {
@@ -15,7 +16,7 @@ var DishSchema = new mongoose.Schema({
     category: {
         type: String,
         maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], //Garante que o nome só tem letras, com acentos ou não, e espaços
         default: "",
         required: true,
     },
@@ -25,6 +26,13 @@ var DishSchema = new mongoose.Schema({
         min: [0, 'O preço mínimo é 0'],
         required: true,
     },
+    portions: [{
+        portion: { type: mongoose.Schema.Types.ObjectId, ref: 'Portion' },
+        price: {
+            type: Number,
+            required: true
+        }
+    }],
     photo: {
         type: String,
         default: "",

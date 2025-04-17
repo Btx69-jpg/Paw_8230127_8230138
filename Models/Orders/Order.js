@@ -39,9 +39,9 @@ var OrderSchema = new mongoose.Schema({
         min: [0, 'O valor mínimo da encomenda deve ser 0'],
         required: true,
     },
-    statu: {
+    status: {
         type: String,
-        enum: ['Expedida', 'Entregue'],
+        enum: ['Pendente', 'Expedida', 'Entregue'],
         default: 'Expedida',
     },
     updated_at: { type: Date, default: Date.now },

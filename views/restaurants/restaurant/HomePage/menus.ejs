@@ -38,7 +38,7 @@
             <% for (let i = 0; i < restaurant.menus.length; i++) { %>
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                <img src="/images/restaurant1.jpg" class="card-img-top" alt="Imagem do Menu">
+                <img src="<%= restaurant.menus[i].photo %>" class="card-img-top" alt="Imagem do Menu" maxlength="225" height="225">
                 <div class="card-body">
                     <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
                     <p class="card-text"><%= restaurant.menus[i].description %></p>
