@@ -1,338 +1,351 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <title>Editar Menu</title>
-    <style>
-        .dish-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: #f8f9fa;
-        }
-        .image-preview {
-            max-width: 150px;
-            height: auto;
-            margin-bottom: 1rem;
-        }
-      /* Seus estilos aqui */
-      .hero {
-        background-size: cover;
-        background-position: center;
-        height: 60vh;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.4);
-      }
-      .hero-content {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        color: #fff;
-        padding: 0 5vw;
-      }
-      .hero-content h1 {
-        font-size: 4vw;
-        margin-bottom: 2vh;
-      }
-      .hero-content p {
-        font-size: 2vw;
-        margin-bottom: 3vh;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Editar Menu</title>
+  <style>
+    .dish-card {
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: #f8f9fa;
+    }
+    .image-preview {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    /* Estilos para os itens de porção */
+    .portion-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .portion-content {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+    }
+    .remove-portion {
+      color: #dc3545;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <%- include('../../../navBar.ejs') %>
+  <%- include('../../../navBar.ejs') %>
 
-    <% let backgroundImg = restaurant.perfil?.perfilPhoto ? 
-        restaurant.perfil.perfilPhoto.replace(/\\/g, '/') : 
-        "/images/Plataform/LogoSite/logo.png" %>
+  <%- include('../../../hero.ejs', { title: 'Editar Menu', content: menu.name  }) %>
 
-    <section class="hero mb-5" style="background-image: url('<%= backgroundImg %>');">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="text-white">Editar Menu</h1>
-            <p class="lead text-white"><%= menu.name %></p>
-        </div>
-    </section>
-
-    <div class="container">
-        <form action="/restaurants/<%= restaurant.name %>/updateMenu/<%= menu._id %>" method="POST" enctype="multipart/form-data">
-            <!-- Dados do Menu -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white ">
-                    <h5 class="mb-0">Informações do Menu</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nome do Menu:</label>
-                        <input type="text" name="name" class="form-control" value="<%= menu.name %>" required>
-                    </div>
-
-                    <% if (menu.photo) { %>
-                        <div class="mb-3 text-center">
-                            <img src="<%= menu.photo %>" class="image-preview">
-                        </div>
-                        
-                    <% } %>
-                    <div class="mb-3">
-                        <label class="form-label">Alterar foto do Menu:</label>
-                        <input type="file" 
-                            name="menuPhoto" 
-                            class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Tipo do Menu:</label>
-                        <select name="type" class="form-select" required>
-                            <% categories.forEach(function(cat) { %>
-                                <option value="<%= cat.category %>" <%= menu.type === cat.category ? 'selected' : '' %>>
-                                    <%= cat.category %>
-                                </option>
-                            <% }); %>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pratos Existentes -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Pratos Atuais</h5>
-                </div>
-                <div class="card-body">
-                    <% menu.dishes.forEach((dish, index) => { %>
-                        <div class="dish-card">
-                            <input type="hidden" name="dishes[<%= index %>][_id]" value="<%= dish._id %>">
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Nome do Prato:</label>
-                                <input type="text" 
-                                    name="dishes[<%= index %>][name]" 
-                                    class="form-control" 
-                                    value="<%= dish.name %>" 
-                                    required>
-                            </div>
-
-                            <% if (dish.photo) { %>
-                                <div class="mb-3 text-center">
-                                    <img src="<%= dish.photo %>" class="image-preview">
-                                </div>
-                                
-                            <% } %>
-
-                            <div class="mb-3">
-                                <label class="form-label">Alterar Imagem:</label>
-                                <input type="file" 
-                                    name="dishes[<%= index %>][photo]" 
-                                    class="form-control">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Descrição:</label>
-                                <textarea name="dishes[<%= index %>][description]" 
-                                    class="form-control" 
-                                    rows="2" required><%= dish.description %></textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Categoria:</label>
-                                    <select name="dishes[<%= index %>][category]" class="form-select" required>
-                                        <% categories.forEach(function(cat) { %>
-                                            <option value="<%= cat.category %>" <%= dish.category === cat.category ? 'selected' : '' %>>
-                                                <%= cat.category %>
-                                            </option>
-                                        <% }); %>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Preço:</label>
-                                    <input type="number" 
-                                        name="dishes[<%= index %>][price]" 
-                                        class="form-control" 
-                                        step="0.01" 
-                                        value="<%= dish.price %>" 
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Porções:</label>
-                                <div class="portion-container">
-                                    <% portions.forEach(function(portion) { 
-                                        const dishPortion = dish.portions.find(p => p.portion.toString() === portion._id.toString());
-                                    %>
-                                        <div class="form-check">
-                                            <input class="form-check-input portion-checkbox" 
-                                                type="checkbox" 
-                                                name="dishes[<%= index %>][portions][]" 
-                                                value="<%= portion._id %>"
-                                                id="portion-<%= portion._id %>-<%= index %>"
-                                                <%= dishPortion ? 'checked' : '' %>>
-                                            
-                                            <label class="form-check-label" for="portion-<%= portion._id %>-<%= index %>">
-                                                <%= portion.portion %>
-                                            </label>
-                                            
-                                            <input type="number" 
-                                                class="form-control portion-price" 
-                                                name="dishes[<%= index %>][portionPrices][]"
-                                                value="<%= dishPortion ? dishPortion.price.toFixed(2) : '' %>"
-                                                min="0" 
-                                                step="0.01"
-                                                <%= dishPortion ? '' : 'disabled' %>
-                                                required>
-                                        </div>
-                                    <% }); %>
-                                </div>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input" 
-                                    type="checkbox" 
-                                    name="deletedDishes" 
-                                    value="<%= dish._id %>" 
-                                    id="deleteDish<%= index %>">
-                                <label class="form-check-label text-danger" for="deleteDish<%= index %>">
-                                    Remover este prato
-                                </label>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-
-            <!-- Novos Pratos -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Adicionar Novos Pratos</h5>
-                </div>
-                <div class="card-body">
-                    <div id="newDishesContainer"></div>
-                    <button type="button" class="btn btn-secondary" onclick="addNewDishField()">
-                        Adicionar Prato
-                    </button>
-                </div>
-            </div>
-
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
-
-                <button type="button" class="btn btn-danger btn-lg" onclick="confirmDelete()">Apagar Menu Completo</button>
-
-                <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" 
-                   class="btn btn-outline-secondary">
-                    Cancelar
-                </a>
-            </div>
-        </form>
+  <div class="container">
+    <div class="container my-3">
+      <a href="/restaurants/<%= restaurant.name %>" class="btn btn-primary">&lt;</a>
     </div>
 
-    <script>
-        let newDishIndex = 0;
-        
-        function addNewDishField() {
-            const container = document.getElementById('newDishesContainer');
-            
-            const dishDiv = document.createElement('div');
-            dishDiv.className = 'dish-card mb-3';
-            dishDiv.innerHTML = `
-                <h6>Novo Prato ${newDishIndex + 1}</h6>
-                <div class="mb-3">
-                    <label class="form-label">Nome:</label>
-                    <input type="text" 
-                        name="newDishes[${newDishIndex}][name]" 
-                        class="form-control" 
-                        required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Imagem:</label>
-                    <input type="file" 
-                        name="newDishes[${newDishIndex}][photo]" 
-                        class="form-control" 
-                        required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Descrição:</label>
-                    <textarea name="newDishes[${newDishIndex}][description]" 
-                        class="form-control" 
-                        rows="2" 
-                        required></textarea>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Categoria:</label>
-                        <select name="newDishes[${newDishIndex}][category]" class="form-select" required>
-                            <% categories.forEach(function(cat) { %>
-                                <option value="<%= cat.category %>"><%= cat.category %></option>
-                            <% }); %>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Preço:</label>
-                        <input type="number" 
-                            name="newDishes[${newDishIndex}][price]" 
-                            class="form-control" 
-                            step="0.01" 
-                            required>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
-                    Remover
-                </button>
-            `;
-            
-            container.appendChild(dishDiv);
-            newDishIndex++;
-        }
+    <form action="/restaurants/<%= restaurant.name %>/updateMenu/<%= menu._id %>" method="POST" enctype="multipart/form-data">
+      <!-- Dados do Menu -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white ">
+          <h5 class="mb-0">Informações do Menu</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Nome do Menu:</label>
+            <input type="text" name="name" class="form-control" value="<%= menu.name %>" required>
+          </div>
 
-        function confirmDelete() {
-            if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
-                fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = `/restaurants/<%= restaurant.name %>`;
-                    } else {
-                        alert('Erro ao apagar o menu');
-                    }
-                });
-            }
-        }
+          <% if (menu.photo) { %>
+            <div class="mb-3 text-center">
+              <img src="<%= menu.photo %>" class="image-preview">
+            </div>
+          <% } %>
+          <div class="mb-3">
+            <label class="form-label">Alterar foto do Menu:</label>
+            <input type="file" name="menuPhoto" class="form-control">
+          </div>
 
-            // Ativar/desativar preços conforme checkbox
-    document.querySelectorAll('.portion-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const priceInput = this.closest('.form-check').querySelector('.portion-price');
-            priceInput.disabled = !this.checked;
-            priceInput.required = this.checked;
-            if (!this.checked) priceInput.value = '';
+          <div class="mb-3">
+            <label class="form-label">Tipo do Menu:</label>
+            <select name="type" class="form-select" required>
+              <% categories.forEach(function(cat) { %>
+                <option value="<%= cat.category %>" <%= menu.type === cat.category ? 'selected' : '' %>>
+                  <%= cat.category %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pratos Existentes -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Pratos Atuais</h5>
+        </div>
+        <div class="card-body">
+          <% menu.dishes.forEach((dish, index) => { %>
+            <div class="dish-card">
+              <input type="hidden" name="dishes[<%= index %>][_id]" value="<%= dish._id %>">
+              <div class="mb-3">
+                <label class="form-label">Nome do Prato:</label>
+                <input type="text" name="dishes[<%= index %>][name]" class="form-control" value="<%= dish.name %>" required>
+              </div>
+
+              <% if (dish.photo) { %>
+                <div class="mb-3 text-center">
+                  <img src="<%= dish.photo %>" class="image-preview">
+                </div>
+              <% } %>
+
+              <div class="mb-3">
+                <label class="form-label">Alterar Imagem:</label>
+                <input type="file" name="dishes[<%= index %>][photo]" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Descrição:</label>
+                <textarea name="dishes[<%= index %>][description]" class="form-control" rows="2" required><%= dish.description %></textarea>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Categoria:</label>
+                  <select name="dishes[<%= index %>][category]" class="form-select" required>
+                    <% categories.forEach(function(cat) { %>
+                      <option value="<%= cat.category %>" <%= dish.category === cat.category ? 'selected' : '' %>>
+                        <%= cat.category %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Preço:</label>
+                  <input type="number" name="dishes[<%= index %>][price]" class="form-control" step="0.01" value="<%= dish.price %>" required>
+                </div>
+              </div>
+
+              <!-- Seção de Porções (dinâmica) -->
+              <div class="mb-3">
+                <label class="form-label">Porções:</label>
+                <div id="portionsContainer-<%= index %>" class="portions-container mb-3" data-index="<%= index %>">
+                  <% 
+                    // Obter os IDs das porções já selecionadas para este prato
+                    let selectedPortions = dish.portions.map(dp => dp.portion.toString());
+                    // Renderiza as porções já associadas
+                    dish.portions.forEach(function(dishPortion) { 
+                      const portionData = portions.find(p => p._id.toString() === dishPortion.portion.toString());
+                  %>
+                    <div class="portion-item">
+                      <div class="portion-content">
+                        <input type="hidden" name="dishes[<%= index %>][portions][]" value="<%= dishPortion.portion %>">
+                        <span><%= portionData ? portionData.portion : 'Desconhecido' %></span>
+                        <input type="number" class="form-control" name="dishes[<%= index %>][portionPrices][]" placeholder="Preço" min="0" step="0.01" value="<%= dishPortion.price.toFixed(2) %>" required>
+                      </div>
+                      <span class="remove-portion" onclick="removePortion(this)">✕</span>
+                    </div>
+                  <% }); %>
+                </div>
+                <div class="input-group">
+                  <select id="portionSelect-<%= index %>" class="form-select portion-select" data-index="<%= index %>" onchange="addPortion(this)">
+                    <option value="">Selecione uma porção...</option>
+                    <% portions.forEach(function(portion) { 
+                         // Exibe somente as porções não selecionadas anteriormente
+                         if (!selectedPortions.includes(portion._id.toString())) { %>
+                      <option value="<%= portion._id %>"><%= portion.portion %></option>
+                    <% } }); %>
+                  </select>
+                  <button type="button" class="btn btn-outline-secondary" onclick="addPortion(document.getElementById('portionSelect-<%= index %>'))">
+                    Adicionar
+                  </button>
+                </div>
+                <small class="text-danger portion-error" style="display: none">
+                  Pelo menos uma porção é obrigatória.
+                </small>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="deletedDishes" value="<%= dish._id %>" id="deleteDish<%= index %>">
+                <label class="form-check-label text-danger" for="deleteDish<%= index %>">
+                  Remover este prato
+                </label>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+      <!-- Novos Pratos -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Adicionar Novos Pratos</h5>
+        </div>
+        <div class="card-body">
+          <div id="newDishesContainer"></div>
+          <button type="button" class="btn btn-secondary" onclick="addNewDishField()">
+            Adicionar Prato
+          </button>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
+        <button type="button" class="btn btn-danger btn-lg" onclick="confirmDelete()">Apagar Menu Completo</button>
+        <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" class="btn btn-outline-secondary">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
+  <script>
+    var portionsData = <%- JSON.stringify(portions) %>;
+  </script>
+
+  <script>
+    // Função para adicionar porção (funciona tanto para pratos existentes quanto para novos)
+    function addPortion(selectElement) {
+      const index = selectElement.dataset.index;
+      const container = document.getElementById(`portionsContainer-${index}`);
+      const portionId = selectElement.value;
+      if (!portionId) return;
+      const portionName = selectElement.options[selectElement.selectedIndex].text;
+
+      // Define o prefixo do nome conforme se é prato existente ou novo
+      const isNew = (String(index).startsWith("new-"));
+      const namePrefix = isNew ? `newDishes[${index.split('-')[1]}]` : `dishes[${index}]`;
+
+      // Verifica se a porção já foi adicionada no prato
+      if (container.querySelector(`input[name^="${namePrefix}[portions]"][value="${portionId}"]`)) {
+        alert("Esta porção já foi adicionada");
+        return;
+      }
+
+      // Cria o item de porção com o campo de preço obrigatório
+      const div = document.createElement("div");
+      div.className = "portion-item";
+      div.innerHTML = `
+        <div class="portion-content">
+          <input type="hidden" name="${namePrefix}[portions][]" value="${portionId}">
+          <span>${portionName}</span>
+          <input type="number" class="form-control" name="${namePrefix}[portionPrices][]" placeholder="Preço" min="0" step="0.01" required>
+        </div>
+        <span class="remove-portion" onclick="removePortion(this)">✕</span>
+      `;
+      container.appendChild(div);
+
+      // Oculta a opção selecionada no dropdown para evitar duplicidade
+      selectElement.options[selectElement.selectedIndex].style.display = 'none';
+      selectElement.value = "";
+
+      validatePortions(index);
+    }
+
+    // Função para remover porção e reexibir a opção no dropdown
+    function removePortion(element) {
+      const portionItem = element.closest(".portion-item");
+      const container = portionItem.closest(".portions-container");
+      const portionId = portionItem.querySelector('input[type="hidden"]').value;
+      const index = container.dataset.index;
+      const selectElement = document.getElementById(`portionSelect-${index}`);
+      Array.from(selectElement.options).forEach(option => {
+        if (option.value === portionId) {
+          option.style.display = '';
+        }
+      });
+      portionItem.remove();
+      validatePortions(index);
+    }
+
+    // Validação para garantir que ao menos uma porção seja selecionada
+    function validatePortions(index) {
+      const container = document.getElementById(`portionsContainer-${index}`);
+      const error = container.closest(".mb-3").querySelector(".portion-error");
+      error.style.display = container.children.length === 0 ? "block" : "none";
+    }
+
+    // Função para adicionar novos pratos (inclui área de porções dinâmica)
+    let newDishIndex = 0;
+    function addNewDishField() {
+      const container = document.getElementById('newDishesContainer');
+      const dishDiv = document.createElement('div');
+      dishDiv.className = 'dish-card mb-3';
+      dishDiv.innerHTML = `
+        <h6>Novo Prato ${newDishIndex + 1}</h6>
+        <div class="mb-3">
+          <label class="form-label">Nome:</label>
+          <input type="text" name="newDishes[${newDishIndex}][name]" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Imagem:</label>
+          <input type="file" name="newDishes[${newDishIndex}][photo]" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Descrição:</label>
+          <textarea name="newDishes[${newDishIndex}][description]" class="form-control" rows="2" required></textarea>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Categoria:</label>
+            <select name="newDishes[${newDishIndex}][category]" class="form-select" required>
+              <% categories.forEach(function(cat) { %>
+                <option value="<%= cat.category %>"><%= cat.category %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Preço:</label>
+            <input type="number" name="newDishes[${newDishIndex}][price]" class="form-control" step="0.01" required>
+          </div>
+        </div>
+        <!-- Seção de Porções para o novo prato -->
+        <div class="mb-3">
+          <label class="form-label">Porções:</label>
+          <div id="portionsContainer-new-${newDishIndex}" class="portions-container mb-3" data-index="new-${newDishIndex}"></div>
+          <div class="input-group">
+            <select id="portionSelect-new-${newDishIndex}" class="form-select portion-select" data-index="new-${newDishIndex}" onchange="addPortion(this)">
+              <option value="">Selecione uma porção...</option>
+              ${portionsData.map(portion => `<option value="${portion._id}">${portion.portion}</option>`).join('')}
+            </select>
+            <button type="button" class="btn btn-outline-secondary" onclick="addPortion(document.getElementById('portionSelect-new-${newDishIndex}'))">
+              Adicionar
+            </button>
+          </div>
+          <small class="text-danger portion-error" style="display: none">
+            Pelo menos uma porção é obrigatória.
+          </small>
+        </div>
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+          Remover
+        </button>
+      `;
+      container.appendChild(dishDiv);
+      newDishIndex++;
+    }
+
+    // Função para confirmar a exclusão do menu
+    function confirmDelete() {
+      if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
+        fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = `/restaurants/<%= restaurant.name %>`;
+          } else {
+            alert('Erro ao apagar o menu');
+          }
         });
-    });
-
-    // Validação inicial para porções já marcadas
-    document.querySelectorAll('.portion-checkbox:checked').forEach(checkbox => {
-        checkbox.dispatchEvent(new Event('change'));
-    });
-    </script>
-
+      }
+    }
+  </script>
 </body>
 </html>

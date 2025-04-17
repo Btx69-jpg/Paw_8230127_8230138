@@ -77,20 +77,38 @@ restaurantController.comments = function(req, res) {
 };
 
 //Permite visualizar um menu especifico de um restaurante
-restaurantController.showMenu = async function(req, res) {
-
-    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-
-    // Utiliza o método .id() para procurar o menu pelo ID
-    const menu = restaurant.menus.id(req.params.menu);
-    if (!menu) {
-        return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
-    }
-    console.log("teste");
-
-    res.render("restaurants/restaurant/Menu/menu", {restaurant: restaurant, menu: menu});
-    
+restaurantController.orderManagement = async function(req, res) {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+    res.render("restaurants/restaurant/orderManagement", { restaurant: restaurant});
 };
+
+// Permite visualizar um menu específico de um restaurante
+restaurantController.showMenu = async function (req, res) {
+    try {
+      // Realiza a consulta e popula o caminho aninhado: menus.dishes.portions.portion
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+        .populate({
+          path: "menus.dishes.portions.portion",
+          model: "Portion"
+        })
+        .exec();
+  
+      // Extrai o menu específico a partir do array de menus
+      const menu = restaurant.menus.id(req.params.menu);
+      if (!menu) {
+        return res
+          .status(404)
+          .render("errors/error404", { error: "Menu não encontrado" });
+      }
+  
+      res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, menu: menu });
+    } catch (err) {
+      console.error(err);
+      res.status(500).render("errors/error", { error: "Erro ao recuperar o menu" });
+    }
+  };
+  
+  
 
 //Permite criar um novo menu no restaurante
 restaurantController.createMenu = async function (req, res) {
@@ -144,8 +162,20 @@ restaurantController.saveMenu = async function(req, res) {
 
             // Validação de porções
             const portions = [];
+
+            if (dishData.portions.length === 0) {
+                return res.status(400).render("restaurants/restaurant/Menu/createMenu", { 
+                    restaurant, 
+                    categories: await carregarCategories(), 
+                    portions: await carregarPortions(),
+                    error: `Pelo menos uma porção é obrigatória para o prato ${i + 1}`
+                });
+            }
+
             if (dishData.portions) {
                 const portionPrices = Array.isArray(dishData.portionPrices) ? dishData.portionPrices : [dishData.portionPrices];
+
+
                 
                 dishData.portions.forEach((portionId, idx) => {
                     if (!portionPrices[idx] || isNaN(portionPrices[idx])) {

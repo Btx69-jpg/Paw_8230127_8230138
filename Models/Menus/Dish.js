@@ -28,7 +28,10 @@ var DishSchema = new mongoose.Schema({
     },
     portions: [{
         portion: { type: mongoose.Schema.Types.ObjectId, ref: 'Portion' },
-        price: Number
+        price: {
+            type: Number,
+            required: true
+        }
     }],
     photo: {
         type: String,

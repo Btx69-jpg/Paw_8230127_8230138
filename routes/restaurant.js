@@ -14,6 +14,9 @@ router.get('/:restaurant', restaurant.homePage);
 /*Depois trocar para /:restaurant/:comments */
 router.get('/:restaurant/comments', restaurant.comments);
 
+//rota para gestão de pedidos para o restaurante
+router.get('/:restaurant/orderManagement', restaurant.orderManagement);
+
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
