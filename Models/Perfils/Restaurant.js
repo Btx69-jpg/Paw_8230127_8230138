@@ -51,6 +51,10 @@ var RestaurantSchema = new mongoose.Schema({
         default: [], //Inicializa com o array vazio
         required: true,
     },
+    tempUserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

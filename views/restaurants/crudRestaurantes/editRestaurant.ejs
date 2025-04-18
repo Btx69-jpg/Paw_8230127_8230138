@@ -12,6 +12,7 @@
         
         <!-- CSS-->
         <link rel="stylesheet" href="/stylesheets/Restaurants/restaurantAdd.css">
+        <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/restaurantPhoto.css">
     </head>
     <body>
         <div class="container">
@@ -23,7 +24,7 @@
                 <% if (priority === "Restaurante" || priority === "Dono") { %>
                     <a href="/restaurants/editRestaurant/editPassword/<%= restaurant._id %>" class="btn btn-secondary">Alterar password</a>
                 <% } %>
-                <!-- enctype="multipart/form-data" -->
+
                 <form action="/restaurants/updatRestaurant/<%= restaurant._id %>" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nome:</label>
@@ -139,8 +140,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="description" class="form-label">Foto de perfil</label>
-                        <img src="<%=restaurant.perfil.perfilPhoto %>" alt="Foto de perfil">
+                        <label for="photo_rest" class="form-label d-block">Foto de perfil</label>
+                        <img src="<%=restaurant.perfil.perfilPhoto %>" alt="Foto de perfil" name="photo_rest" class="photo_Rest">
                     </div>
 
                     <div class="mb-3">

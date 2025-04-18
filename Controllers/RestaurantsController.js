@@ -12,6 +12,7 @@ var restaurantsController = {};
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
 const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
 const { error } = require("console");
+const User = require("../Models/Perfils/User");
 const totRestaurant = 15; 
 
 async function validationRestaurant(body) {
@@ -104,7 +105,26 @@ restaurantsController.restaurantsPage = function(req, res) {
 };
 
 restaurantsController.createRestaurant = function(req, res) {
-    res.render('restaurants/crudRestaurantes/addRestaurant');
+    let action = "";
+
+    switch (res.locals.currentPage) {
+        case "/restaurants": {
+            action = "/restaurants/saveRestaurant";
+            break;
+        } case "/perfil/admin/listRestaurants": {
+            action = "/perfil/admin/listRestaurants/saveRestaurant";
+            break;
+        } case "/registRestaurant": {
+            action = "/registRestaurant/saveRestaurant"
+            break;
+        } default: {
+            action = "";
+            break;
+        }
+    }
+
+    console.log("Ação:", action);
+    res.render('restaurants/crudRestaurantes/addRestaurant', {action: action});
 };
 
 //Filtra por restaurantes (Reutilizar codigo também no admin)
@@ -135,6 +155,22 @@ restaurantsController.search = function(req, res) {
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
     try { 
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+
+        console.log("--------------------------------------------------------------------");
         await saveImage(req, res);
         
         //Realização das verificações
@@ -152,37 +188,76 @@ restaurantsController.saveRestaurant = async function(req, res) {
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         
         let aproved = false;
-        if(req.cookies.priority === "Admin") {
+        const cookie = req.cookies.priority
+        
+        if (cookie === "Admin") {
             aproved = true;
-        }
-        // Cria um novo restaurante com os dados fornecidos
-        let restaurant = new Restaurant({
-            name: req.body.name,
-            perfil: new Perfil({
-                perfilPhoto: caminhoCorrigido,
-                email: req.body.email,
-                password: hashedPassword,
-                phoneNumber: req.body.phoneNumber,
-                priority: "Restaurant",
-            }),
-            sigla: req.body.sigla,
-            nif: req.body.nif, 
-            address: new Address({
-                street: req.body.street,
-                postal_code: req.body.postal_code,
-                city: req.body.city
-            }),
-            description: req.body.description,
-            aprove: aproved,
-        });
+        } 
 
+        // Cria um novo restaurante com os dados fornecidos
+        let restaurant = null;
+
+        if(cookie === "Cliente") {
+            console.log("Id do user: ", req.user.userId);
+            restaurant = new Restaurant({
+                name: req.body.name,
+                perfil: new Perfil({
+                    perfilPhoto: caminhoCorrigido,
+                    email: req.body.email,
+                    password: hashedPassword,
+                    phoneNumber: req.body.phoneNumber,
+                    priority: "Restaurant",
+                }),
+                sigla: req.body.sigla,
+                nif: req.body.nif, 
+                address: new Address({
+                    street: req.body.street,
+                    postal_code: req.body.postal_code,
+                    city: req.body.city
+                }),
+                description: req.body.description,
+                aprove: aproved,
+                tempUserId: req.user.userId,
+            });
+        } else {
+            restaurant = new Restaurant({
+                name: req.body.name,
+                perfil: new Perfil({
+                    perfilPhoto: caminhoCorrigido,
+                    email: req.body.email,
+                    password: hashedPassword,
+                    phoneNumber: req.body.phoneNumber,
+                    priority: "Restaurant",
+                }),
+                sigla: req.body.sigla,
+                nif: req.body.nif, 
+                address: new Address({
+                    street: req.body.street,
+                    postal_code: req.body.postal_code,
+                    city: req.body.city
+                }),
+                description: req.body.description,
+                aprove: aproved,
+            });
+        }
         // Guarda o restaurante a bd
         await restaurant.save();
 
-        if(res.locals.currentPage === "/restaurants/saveRestaurant") {
-            res.redirect("/restaurants");
-        } else if (res.locals.currentPage === "/perfil/admin/listRestaurants/saveRestaurant") {
-            res.redirect("/perfil/admin/listRestaurants")
+        console.log("Restaurante: ", restaurant)
+        switch (res.locals.currentPage) {
+            case "/restaurants/saveRestaurant": {
+                res.redirect("/restaurants");
+                break;
+            } case "/perfil/admin/listRestaurants/saveRestaurant": {
+                res.redirect("/perfil/admin/listRestaurants")
+                break;
+            } case "/registRestaurant/saveRestaurant": {
+                res.redirect("/");
+                break;
+            }default: {
+                console.log("Parou no break, logo não sei que pagina redirecionar");
+                break;
+            }
         }
     } catch (error) {
         console.log("Error", error);
