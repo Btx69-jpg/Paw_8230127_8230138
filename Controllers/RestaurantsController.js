@@ -225,7 +225,6 @@ restaurantsController.updatRestaurant = async (req, res) => {
         let caminhoCorrigido = restaurant.perfil.perfilPhoto;
         let pathNewImg = req.file?.path || '';
 
-
         if (restaurant.name !== req.body.name || pathNewImg !== '') {
             let newImage = '';
 
@@ -291,64 +290,6 @@ restaurantsController.updatRestaurant = async (req, res) => {
         }
     }
 };
-
-/*
-
-restaurantsController.editPassword = function(req, res) {
-    Restaurant.findOne({ _id: req.params.restaurantId }).exec()
-        .then(restaurant => {
-            res.render('restaurants/crudRestaurantes/editPassword', {restaurant: restaurant});
-        })
-        .catch(error => {
-            console.log("Error", error);
-            res.redirect(res.locals.previousPage);
-        });
-};
-
-async function validateNewPassowrd(body, restPassword) {
-    if(body.newPassword !== body.confirmNewPassword) {
-        return "As novas password não coincidem";
-    }
-
-    let problem = "";
-
-    if(!(await bcrypt.compare(body.atualPassword, restPassword))) {
-        return "A passowd atual inserida está incorreta";
-    } 
-
-    if(await bcrypt.compare(body.newPassword, restPassword)) {
-        return "A nova password é igual há antiga";
-    }
-
-    return problem;
-}
-
-restaurantsController.updatePassword = async (req, res) => {
-    const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
-    try {
-        let validation = await validateNewPassowrd(req.body, restaurant.perfil.password);
-
-        if (validation !== "") {
-            return res.render('errors/error500', {error: validation});
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedNewPassword = await bcrypt.hash(req.body.newPassword, salt);
-
-        await Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
-            $set: {
-                'perfil.password': hashedNewPassword,
-            },
-        }, { new: true });
-
-        console.log("Password atualizada com sucessi");
-        res.redirect(`/restaurants/editRestaurant/${req.params.restaurantId}`);
-    } catch (error) {
-        console.log("Error", error);
-        res.redirect(`/restaurants/editRestaurant/editPassword/${req.params.restaurantId}`);
-    }
-}
-*/
 
 /* Metodo para remover um restaurant */
 restaurantsController.removeRestaurant = async (req, res) => {

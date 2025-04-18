@@ -21,9 +21,8 @@ router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmi
 
 //Renderiza a pagina de edit do admin
 router.get("/editDados/:adminId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.editPage);
-
 //Atualizar dados
-
+router.post("/updateAdmin/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.updateAdmin);
 
 //Renderizar pagina para alterar a password
 router.get("/editPassword/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, passwordController.editPassword);

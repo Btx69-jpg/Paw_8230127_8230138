@@ -1,0 +1,9 @@
+.profile-pic {
+    display: block;
+    width: 100%;              /* ocupa todo o container horizontal */
+    max-width: 150px;         /* não cresce além de 150px */
+    aspect-ratio: 1 / 1;      /* força proporção 1:1 */
+    object-fit: cover;        /* cobre todo o quadrado */
+    border-radius: 50%;       /* canto arredondado, fica um círculo */
+    margin-bottom: 1rem;
+}
