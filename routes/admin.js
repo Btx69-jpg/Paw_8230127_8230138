@@ -12,11 +12,24 @@ const typeUserMiddleware = require("../Middleware/TypeUserMiddleware.js");
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
 const userRouter = require("./adminRoutes/listusers.js");
 const categoriesRouter = require("./adminRoutes/categories.js");
+const passwordController = require("../Controllers/PasswordController.js");
 const portionsRouter = require("./adminRoutes/portions.js");
 
 
 //Pagina do admin
 router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.homePage);
+
+//Renderiza a pagina de edit do admin
+router.get("/editDados/:adminId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.editPage);
+
+//Atualizar dados
+
+
+//Renderizar pagina para alterar a password
+router.get("/editPassword/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, passwordController.editPassword);
+
+//Atualiza a password do admin
+router.post("/changePassword/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, passwordController.updatePassword);
 
 //Route para eliminar o admin
 router.post("/deleteAccount/:adminId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.deleteAdm);
@@ -30,6 +43,7 @@ router.use("/listUsers", authTokenMiddleware.authenticateToken, typeUserMiddlewa
 /*Routers para as categorias */
 router.use("/listCategories", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesRouter);
 
+/**Router para as porçoes */
 router.use("/listPortions", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsRouter);
 
 module.exports = router;

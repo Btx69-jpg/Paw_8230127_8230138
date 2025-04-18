@@ -29,15 +29,6 @@ userController.createUser = async function(req, res) {
 }
 
 userController.search = function(req, res) {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("-----------------------------");
     let query = {};
     const firstName = req.query.firstName;
     const lastName = req.query.lastName;
@@ -307,6 +298,18 @@ userController.deleteUser = async function(req, res) {
 
         if(user) {
             let imagePath = user.perfil.perfilPhoto;
+            
+            //Caso o user seja dono de um restaurante
+            /*
+            if(user.perfil && user.perfil.priority === "Dono" && user.perfil.restaurantId) {
+                const restaurant = await Restaurantes.findOne( {_id: user.perfil.restaurantId}).exec();
+
+                if(restaurant) {
+                   await restaurant.deleteOne(); 
+                }
+            }
+
+            */
             await user.deleteOne();
             console.log("User eliminado com sucesso!");
 

@@ -292,6 +292,8 @@ restaurantsController.updatRestaurant = async (req, res) => {
     }
 };
 
+/*
+
 restaurantsController.editPassword = function(req, res) {
     Restaurant.findOne({ _id: req.params.restaurantId }).exec()
         .then(restaurant => {
@@ -346,6 +348,7 @@ restaurantsController.updatePassword = async (req, res) => {
         res.redirect(`/restaurants/editRestaurant/editPassword/${req.params.restaurantId}`);
     }
 }
+*/
 
 /* Metodo para remover um restaurant */
 restaurantsController.removeRestaurant = async (req, res) => {
