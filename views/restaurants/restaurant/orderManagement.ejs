@@ -1,29 +1,162 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <!-- Logotipo-->
-        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestão de Pedidos</title>
+    <link rel="icon" href="/images/Plataform/LogoSite/logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <%- include('../../navBar.ejs') %> <%- include('../../hero.ejs', { title:
+    'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <!-- Fonte Google -->
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
-    </head>
-    
-    <body>
-        <%- include('../../navBar.ejs') %>
-        <%- include('../../hero.ejs', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
-
-        <div class="container">
-            <!-- Botão de voltar -->
-            <div class="mb-4" >
-                <a href="<%= previousPage %>" class="btn btn-secondary">Voltar</a>
-            </div>
-      
-            <div class="mb-4">
-
-            </div>
-            
+    <div class="container my-4">
+      <!-- TRÊS TABELAS PARA OS ESTADOS -->
+      <div class="row">
+        <% ['Pendente','Expedida','Entregue'].forEach(status => { %>
+        <div class="col-md-4">
+          <h5><%= status %></h5>
+          <table class="table table-sm table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Nome</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-<%= status %>"></tbody>
+          </table>
         </div>
+        <% }) %>
+      </div>
+    </div>
 
-    </body>
+  <div class="container">
+    <form id="newOrderForm" class="row g-3 mb-5">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Criar encomenda</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Nome da Encomenda</label>
+            <input type="text" name="name" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Cliente (ID)</label>
+            <input type="text" name="client" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Morada (AddressOrder ID)</label>
+            <input
+              type="text"
+              name="addressOrder"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Itens (JSON)</label>
+            <textarea
+              name="itens"
+              class="form-control"
+              placeholder='[{"product":"x","qty":1,"price":2.5}]'
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Total (€)</label>
+            <input
+              type="number"
+              name="totEncomenda"
+              step="0.01"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <button class="btn btn-success">Criar Encomenda</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    </div>
+
+    <script>
+      const restaurant = "<%= restaurant.name %>";
+
+      // Carrega encomendas ao iniciar
+      fetch(`/restaurants/${restaurant}/orders`)
+        .then((r) => r.json())
+        .then((orders) => orders.forEach(renderOrderRow));
+
+      // Função que cria e anexa a linha
+      function renderOrderRow(order) {
+        const tbody = document.getElementById("tbody-" + order.status);
+        const tr = document.createElement("tr");
+        tr.dataset.id = order._id;
+        tr.innerHTML = `
+        <td>${order.name}</td>
+        <td>${order.totEncomenda.toFixed(2)} €</td>
+        <td>
+          <select class="form-select form-select-sm status-select">
+            <option${
+              order.status === "Pendente" ? " selected" : ""
+            }>Pendente</option>
+            <option${
+              order.status === "Expedida" ? " selected" : ""
+            }>Expedida</option>
+            <option${
+              order.status === "Entregue" ? " selected" : ""
+            }>Entregue</option>
+          </select>
+        </td>`;
+        // Listener para mudar estado
+        tr.querySelector(".status-select").addEventListener("change", (e) => {
+          const novo = e.target.value;
+          fetch(`/restaurants/${restaurant}/orders/${order._id}/status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: novo }),
+          })
+            .then((r) => r.json())
+            .then((updated) => {
+              // move a linha de TBODY
+              tr.remove();
+              document
+                .getElementById("tbody-" + updated.status)
+                .appendChild(tr);
+            });
+        });
+        tbody.appendChild(tr);
+      }
+
+      document
+        .getElementById("newOrderForm")
+        .addEventListener("submit", (ev) => {
+          ev.preventDefault();
+          const data = {
+            name: ev.target.name.value,
+            client: ev.target.client.value,
+            addressOrder: ev.target.addressOrder.value,
+            itens: JSON.parse(ev.target.itens.value),
+            totEncomenda: parseFloat(ev.target.totEncomenda.value),
+          };
+          fetch(`/restaurants/${restaurant}/orders`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          })
+            .then((r) => r.json())
+            .then((order) => {
+              renderOrderRow(order);
+              ev.target.reset();
+            })
+            .catch((err) => alert("Erro: " + err.message));
+        });
+    </script>
+  </body>
 </html>

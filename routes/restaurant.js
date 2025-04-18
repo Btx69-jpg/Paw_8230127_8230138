@@ -17,6 +17,17 @@ router.get('/:restaurant/comments', restaurant.comments);
 //rota para gestão de pedidos para o restaurante
 router.get('/:restaurant/orderManagement', restaurant.orderManagement);
 
+// Listar todas as encomendas (JSON)
+router.get('/:restaurant/orders', restaurant.getOrders);
+
+// Criar nova encomenda
+router.post('/:restaurant/orders', restaurant.createOrder);
+
+// Atualizar estado de uma encomenda
+router.put('/:restaurant/orders/:orderId/status', restaurant.updateOrderStatus);
+
+
+
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */

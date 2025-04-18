@@ -10,7 +10,7 @@ var OrderSchema = new mongoose.Schema({
     },
     client: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cliente',
+        ref: 'User',
         required: true,
     },
     addressOrder: {
@@ -31,7 +31,6 @@ var OrderSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         min: [Date.now, 'A data não pode ser no passado'],
-        max: [Date.now, 'A data não pode ser no futuro'],
     },
     totEncomenda: {
         type: Number,

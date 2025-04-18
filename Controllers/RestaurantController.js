@@ -6,6 +6,9 @@ const Dish = require("../Models/Menus/Dish");
 const Category = require("../Models/Reusable/Category");
 const Menu = require("../Models/Menus/Menu");
 const Portion = require("../Models/Reusable/Portion");
+const Order = require("../Models/Orders/Order");
+const Address = require("../Models/Reusable/Address");
+const AddressOrder = require("../Models/Reusable/AddressOrder");
 const { format } = require("morgan");
 const fs = require('fs'); // Certifique-se de importar o fs se ainda não estiver
 
@@ -76,11 +79,71 @@ restaurantController.comments = function(req, res) {
     res.render("restaurants/restaurant/comments");
 };
 
-//Permite visualizar um menu especifico de um restaurante
+// GET /restaurants/:restaurant/orderManagement
 restaurantController.orderManagement = async function(req, res) {
     const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
-    res.render("restaurants/restaurant/orderManagement", { restaurant: restaurant});
-};
+      .populate('orders.client orders.addressOrder')
+      .exec();
+  
+    // Separa por status
+    const pendentes = restaurant.orders.filter(o => o.status === 'Pendente');
+    const expedidas = restaurant.orders.filter(o => o.status === 'Expedida');
+    const entregues = restaurant.orders.filter(o => o.status === 'Entregue');
+  
+    res.render("restaurants/restaurant/orderManagement", {
+      restaurant,pendentes, expedidas, entregues
+    });
+  };
+  
+ // GET /:restaurant/orders
+restaurantController.getOrders = async function(req, res) {
+    try {
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      return res.json(restaurant.orders);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  };
+  
+  // POST /:restaurant/orders
+  restaurantController.createOrder = async function(req, res) {
+    try {
+      const { name, client, addressOrder, itens, totEncomenda } = req.body;
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      // validações básicas omitidas…
+      const newOrder = {
+        name,
+        client,
+        addressOrder,
+        itens,         // array de itens conforme Item.schema
+        totEncomenda,
+        status: 'Pendente'
+      };
+      restaurant.orders.push(newOrder);
+      await restaurant.save();
+      // devolve a encomenda com o _id atribuído pelo Mongo
+      const created = restaurant.orders[ restaurant.orders.length - 1 ];
+      return res.status(201).json(created);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  };
+  
+  // PUT /:restaurant/orders/:orderId/status
+  restaurantController.updateOrderStatus = async function(req, res) {
+    try {
+      const { status } = req.body;
+      const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+      const order = restaurant.orders.id(req.params.orderId);
+      if (!order) return res.status(404).json({ error: 'Encomenda não encontrada' });
+      order.status = status;
+      await restaurant.save();
+      return res.json(order);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  };
+  
 
 // Permite visualizar um menu específico de um restaurante
 restaurantController.showMenu = async function (req, res) {
