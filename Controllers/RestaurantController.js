@@ -108,14 +108,13 @@ restaurantController.getOrders = async function(req, res) {
   // POST /:restaurant/orders
   restaurantController.createOrder = async function(req, res) {
     try {
-      const { name, client, addressOrder, itens, totEncomenda } = req.body;
+      const { client, addressOrder, itens, totEncomenda } = req.body;
       const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-      // validações básicas omitidas…
+
       const newOrder = {
-        name,
         client,
         addressOrder,
-        itens,         // array de itens conforme Item.schema
+        itens,       
         totEncomenda,
         status: 'Pendente'
       };
@@ -170,6 +169,24 @@ restaurantController.showMenu = async function (req, res) {
       res.status(500).render("errors/error", { error: "Erro ao recuperar o menu" });
     }
   };
+
+restaurantController.getMenus = async function(req, res) {
+  try {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+      .populate({
+        path: 'menus.dishes'
+      })
+      .exec();
+    const menus = restaurant.menus.map(menu => ({
+      _id: menu._id,
+      name: menu.name,
+      dishes: menu.dishes.map(d => ({ _id: d._id, name: d.name, price: d.price }))
+    }));
+    res.json(menus);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
   
   
 
