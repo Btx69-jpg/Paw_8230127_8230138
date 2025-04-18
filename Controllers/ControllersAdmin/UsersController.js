@@ -113,7 +113,6 @@ async function validateUpdateUser(user, email, priority, restaurant) {
         }
     }
 
-    //O problema não está no _id, é igual ao da DB
     const existingUser = await User.findOne({
         _id: { $ne: user._id },
         'perfil.email': email,

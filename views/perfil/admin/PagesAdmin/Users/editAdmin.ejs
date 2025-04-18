@@ -161,7 +161,7 @@
     <div class="signup-container">
         <h1>Editar conta</h1>
 
-        <form action="/perfil/admin/editaAdmin/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
+        <form action="/perfil/admin/updateAdmin/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
           <%- include('../../../../login/editUserCampos', {userD: userD})%>
 
           <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
