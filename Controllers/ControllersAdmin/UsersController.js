@@ -7,6 +7,7 @@ const Perfil = require("../../Models/Reusable/Perfil");
 const Restaurantes = require("../../Models/Perfils/Restaurant");
 
 //Constrollers
+const { createPackage} = require("../Functions/crudPackage");
 const signUpController = require("../SignUpController");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 var userController = {};
@@ -145,6 +146,23 @@ Entra aqui quando temos emails iguais mas por algum motivo não entra
 */
 userController.saveUser = async function(req, res) {
     try {
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log("-------------");
         const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
         const errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
@@ -184,7 +202,7 @@ userController.saveUser = async function(req, res) {
             });
         }
 
-        const newUser = new User({
+        let newUser = new User({
             firstName: firstName,
             lastName: lastName,
             perfil: perfil,
@@ -192,7 +210,10 @@ userController.saveUser = async function(req, res) {
         });
 
         await newUser.save();
-
+        
+        //const userPath = "public/images/Users/" + newUser._id;
+        
+        //createPackage(userPath);
         req.flash("success_msg", "Registo realizado com sucesso!");
         res.redirect("/perfil/admin/listUsers");
     } catch (err) {

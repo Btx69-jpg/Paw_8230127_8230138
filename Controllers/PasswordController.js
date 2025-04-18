@@ -25,18 +25,18 @@ passwordController.editPassword = async function(req, res) {
     }
 };
 
-async function validateNewPassowrd(body, restPassword) {
+async function validateNewPassowrd(body, userPassword) {
     if(body.newPassword !== body.confirmNewPassword) {
         return "As novas password não coincidem";
     }
 
     let problem = "";
 
-    if(!(await bcrypt.compare(body.atualPassword, restPassword))) {
+    if(!(await bcrypt.compare(body.atualPassword, userPassword))) {
         return "A passowd atual inserida está incorreta";
     } 
 
-    if(await bcrypt.compare(body.newPassword, restPassword)) {
+    if (await bcrypt.compare(body.newPassword, userPassword)) {
         return "A nova password é igual há antiga";
     }
 
@@ -66,7 +66,8 @@ passwordController.updatePassword = async (req, res) => {
         const hashedNewPassword = await bcrypt.hash(req.body.newPassword, salt);
 
         account.perfil.password = hashedNewPassword;
-
+        await account.save();
+        
         console.log("Password atualizada com sucesso");
         
         if(priority === "Restaurant") {

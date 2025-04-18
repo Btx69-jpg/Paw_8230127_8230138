@@ -1,9 +1,12 @@
 var mongoose = require("mongoose");
-
+const multer = require('multer');
 //Models
 const User = require("../Models/Perfils/User");
-const Restaurant = require("../Models/Perfils/Restaurant")
+const Restaurant = require("../Models/Perfils/Restaurant");
+
 //Controllers
+
+const { deleteImage} = require("./Functions/crudImagesRest");
 const signUpController = require("./SignUpController");
 var adminController = {};
 
@@ -58,11 +61,37 @@ async function validateEmailUser(user, email, phoneNumber) {
     return "";
 }
 
+//O erro ocorre aqui
+async function updateImage(req, res, admin) {
+    return new Promise((resolve, reject) => {
+        const storageupdatLogo = multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, "public/images/Users/Admin/");
+            },
+            filename: function (req, file, cb) {
+                cb(null, `${file.originalname}`)
+            }
+        })
+          
+        const uploadUpdatePhoto = multer({ storage: storageupdatLogo }).single('perfilPhoto');
+
+        uploadUpdatePhoto(req, res, function (err) {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve();
+        });
+    })
+}
 /*
 Meter para ele editar também a sua foto de perfil aqui
 */
 adminController.updateAdmin = async function(req, res) {
     try {
+        let user = await User.findOne({_id: req.params.accountId}).exec();
+        await updateImage(req, res, user);
+
         const { firstName, lastName, email, phoneNumber} = req.body;  
 
         //Validações aos campos
@@ -71,9 +100,6 @@ adminController.updateAdmin = async function(req, res) {
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
-    
-        //Encontrar o user a atualizar
-        let user = await User.findOne({ _id: req.params.adminId }).exec();
        
         //Está aqui um problema
         const errorValidate = await validateEmailUser(user, email, phoneNumber);
@@ -89,11 +115,25 @@ adminController.updateAdmin = async function(req, res) {
         user.lastName = lastName;
         user.perfil.email = email;
         user.perfil.phoneNumber = phoneNumber;
+
+        let oldPhoto = user.perfil.perfilPhoto;
+        let pathNewImg = req.file?.path || '';
+        console.log("Nova Imagem: ", pathNewImg);
         
+        if (pathNewImg !== '') {
+            pathNewImg = "/" + pathNewImg.replace(/^public[\\/]/, "");
+            user.perfil.perfilPhoto = pathNewImg;
+        }
+
         //guardar as alterações
         user.save()
             .then(() => {
                 console.log("User atualizado com sucesso!");
+                if(user.perfil.perfilPhoto !== oldPhoto) {
+                    console.log("Apagar imagem");
+                    oldPhoto = "public" + oldPhoto;
+                    deleteImage(oldPhoto);
+                }
                 res.redirect("/perfil/admin");
             })
             .catch(error => {

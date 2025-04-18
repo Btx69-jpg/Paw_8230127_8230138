@@ -1,5 +1,14 @@
 const fs = require('fs');
 
+function createPackage(path) {
+    try {
+        fs.mkdirSync(path, { recursive: true });
+        console.log('Pasta renomeada com sucesso!');
+    } catch (err) {
+        console.error('Erro ao renomear a pasta:', err);
+    }
+}
+
 async function updatePackage(oldFile, newFile) {
     try {
         fs.renameSync(oldFile, newFile);
@@ -19,6 +28,7 @@ function deletePackage(path) {
 }
 
 module.exports = {
+    createPackage,
     updatePackage,
     deletePackage
 };
