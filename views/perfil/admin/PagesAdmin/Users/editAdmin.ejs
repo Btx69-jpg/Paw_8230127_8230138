@@ -12,12 +12,14 @@
       background-color: #f5f5f5;
       font-family: sans-serif;
     }
+    
     main {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
+    
     .signup-container {
       /* Utiliza dimensões relativas para maior adaptabilidade */
       width: 90vw;
@@ -28,6 +30,7 @@
       border-radius: 2vh;
       box-shadow: 0 1vh 2vh rgba(0,0,0,0.1);
     }
+
     h1 {
       margin-bottom: 2vh;
       text-align: center;
@@ -54,16 +57,20 @@
       align-items: center;
       margin-bottom: 2vh;
     }
+    
     .terms-group input[type="checkbox"] {
       margin-right: 1vw;
     }
+    
     .terms-group a {
       color: #3f51b5;
       text-decoration: none;
     }
+    
     .terms-group a:hover {
       text-decoration: underline;
     }
+    
     button[type="submit"] {
       background-color: #5865F2;
       color: #fff;
@@ -74,20 +81,24 @@
       cursor: pointer;
       margin-bottom: 2vh;
     }
+    
     button[type="submit"]:hover {
       background-color: #4b57d7;
     }
+    
     .divider {
       text-align: center;
       margin: 3vh 0;
       position: relative;
     }
+    
     .divider span {
       background-color: #fff;
       padding: 0 2vw;
       position: relative;
       z-index: 1;
     }
+    
     .divider::before {
       content: "";
       display: block;
@@ -99,11 +110,13 @@
       left: 0;
       z-index: 0;
     }
+    
     .social-login {
       display: flex;
       justify-content: space-around;
       margin-bottom: 2vh;
     }
+    
     .social-login a {
       display: inline-flex;
       align-items: center;
@@ -114,20 +127,25 @@
       background-color: #eee;
       transition: background-color 0.3s;
     }
+    
     .social-login a:hover {
       background-color: #ddd;
     }
+    
     .social-login img {
       width: 3vw;
       height: 3vw;
     }
+    
     p {
       text-align: center;
     }
+    
     p a {
       color: #3f51b5;
       text-decoration: none;
     }
+
     p a:hover {
       text-decoration: underline;
     }
@@ -138,17 +156,17 @@
     <div class="signup-container">
         <h1>Editar conta</h1>
 
-      <form action="/perfil/admin/editaAdmin/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
-        <%- include('../../../../login/editUserCampos', {userD: userD})%>
+        <form action="/perfil/admin/editaAdmin/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
+          <%- include('../../../../login/editUserCampos', {userD: userD})%>
 
-        <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
-        <button type="submit">Alterar</button>
+          <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
+          <button type="submit">Alterar</button>
 
-        <div class="d-grid gap-2">  
-            <a href="/perfil/admin/listUsers" class="btn btn-secondary">Voltar</a>
-            <a href="/perfil/admin/createUser" class="btn btn-secondary">Limpar</a>
-        </div>
-      </form>
+          <div class="d-grid gap-2">  
+              <a href="/perfil/admin/listUsers" class="btn btn-secondary">Voltar</a>
+              <a href="/perfil/admin/createUser" class="btn btn-secondary">Limpar</a>
+          </div>
+        </form>
     </div>
   </main>
 
