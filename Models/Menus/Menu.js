@@ -21,6 +21,10 @@ var MenuSchema = new mongoose.Schema({
         default: "",
         required: true,
     },
+    photo: {
+        type: String,
+        default: "",
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

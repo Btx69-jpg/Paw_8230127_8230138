@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Visualizar Menu</title>
-    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png">
+    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Fonte Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
     <style>
       .hero {
         background-size: cover;
@@ -24,7 +24,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.5);
+        background-color: rgba(0, 0, 0, 0.5);
       }
       .hero-content {
         position: relative;
@@ -54,22 +54,28 @@
   </head>
   <body>
     <%- include('../../../navBar.ejs') %>
-
-    <% let backgroundImg = "";
-      if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") {
-        backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/');
-      } else {
-        backgroundImg = "/images/Plataform/LogoSite/logo.png";
+    <% 
+      let backgroundImg = ""; 
+      if (restaurant.perfil && restaurant.perfil.perfilPhoto && restaurant.perfil.perfilPhoto.trim() !== "") { 
+        backgroundImg = restaurant.perfil.perfilPhoto.replace(/\\/g, '/'); 
+      } else { 
+        backgroundImg = "/images/Plataform/LogoSite/logo.png"; 
       } 
     %>
 
-    <section class="hero" style="background-image: url('<%= backgroundImg %>');">
+    <section class="hero" style="background-image: url('<%= backgroundImg %>')">
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <h1><%= restaurant.name %></h1>
         <p>Menu: <%= menu.name %></p>
       </div>
     </section>
+
+    <div>
+      <div class="container my-3" style="border-radius: 100;">
+        <a href="/restaurants/<%= restaurant.name %>" class="btn btn-primary">&lt;</a>
+      </div>
+    </div>
 
     <div class="container my-5">
       <!-- Cabeçalho do Menu -->
@@ -87,13 +93,12 @@
         </div>
       </div>
 
-
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <% menu.dishes.forEach(function(dish) { %>
           <div class="col">
             <div class="card dish-card h-100">
               <% if (dish.photo) { %>
-                <img src="<%= dish.photo %>" class="card-img-top dish-image" alt="<%= dish.name %>">
+                <img src="<%= dish.photo %>" class="card-img-top dish-image" alt="<%= dish.name %>" />
               <% } else { %>
                 <div class="dish-image bg-secondary d-flex align-items-center justify-content-center">
                   <span class="text-white">Sem imagem</span>
@@ -104,14 +109,30 @@
                 <p class="card-text text-muted"><%= dish.description %></p>
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="badge bg-info"><%= dish.category %></span>
-                  <span class="price-tag"> <%= dish.price.toFixed(2) %> €</span>
+                  <span class="price-tag"><%= dish.price.toFixed(2) %> €</span>
+                </div>
+                <div class="mt-3">
+                  <h6>Porções:</h6>
+                  <% dish.portions.forEach(function(portion) { %>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>
+                        <% if (portion.portion && portion.portion.portion) { %>
+                          <%= portion.portion.portion %>
+                        <% } else if (portion.portion) { %>
+                          <%= portion.portion %>
+                        <% } else { %>
+                          Porção não disponível
+                        <% } %>
+                      </span>
+                      <span class="text-muted"><%= portion.price.toFixed(2) %> €</span>
+                    </div>
+                  <% }); %>
                 </div>
               </div>
             </div>
           </div>
         <% }); %>
       </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -14,6 +14,9 @@ router.get('/:restaurant', restaurant.homePage);
 /*Depois trocar para /:restaurant/:comments */
 router.get('/:restaurant/comments', restaurant.comments);
 
+//rota para gestão de pedidos para o restaurante
+router.get('/:restaurant/orderManagement', restaurant.orderManagement);
+
 // Entra na pagina de registo
 //Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
 /*Depois trocar para /:restaurant/:menu */
@@ -34,6 +37,8 @@ router.post('/:restaurant/updateMenu/:menuId', restaurant.saveEditMenu);
 router.get('/:restaurant/menu/createDish', restaurant.createDish);
 
 router.post('/:restaurant/menu/saveDish', restaurant.saveDish);
+
+router.post('/:restaurant/deleteMenu/:menuId', restaurant.deleteMenu);
 
 /*Depois trocar para /:restaurant/:menu/:prato */
 router.get('/:restaurant/menu/showDish/:id', restaurant.showDish);

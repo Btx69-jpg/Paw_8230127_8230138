@@ -74,8 +74,21 @@
               <h5 class="mb-3"><%= restaurants[i].name %></h5>
               <img src="<%= restaurants[i].perfil.perfilPhoto %>" alt="Logo do restaurante" class="img-fluid mb-3">
 
-              <!--Meter para so editar se for admin ou se for restaurante ou dono e ser o proprio restaurante-->
-              <% if(user !== null && user.perfil.priority === "Admin" ) {%>
+              <% if(user !== null && user.perfil.priority !== "Cliente" ) {%>
+                <% if(user.perfil.priority !== "Admin" ) {%>
+                  <% if(user.perfil.priority === "Dono" && user.perfil.restaurantId === restaurants[i]._id) {%>
+                    <div class="btn-group d-flex justify-content-center mb-2">
+                      <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST" class="me-2">
+                        <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                      </form>
+                      <form action="/restaurants/editRestaurant/<%= restaurants[i]._id %>" method="GET">
+                        <button type="submit" class="btn btn-primary btn-sm">Editar</button>
+                      </form>
+                    </div>
+                  <% } %>
+
+
+                <% } else {%>
                 <div class="btn-group d-flex justify-content-center mb-2">
                   <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST" class="me-2">
                     <button type="submit" class="btn btn-danger btn-sm">Remover</button>
@@ -84,6 +97,7 @@
                     <button type="submit" class="btn btn-primary btn-sm">Editar</button>
                   </form>
                 </div>
+                <% } %>
               <% } %>
               <p class="mt-2">
                 <a href="/restaurants/<%= restaurants[i].name %>" class="text-decoration-none">Mais Info.</a>

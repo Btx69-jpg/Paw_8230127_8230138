@@ -36,6 +36,9 @@ var checkOut = require('./routes/checkOut'); // Aqui carrego o controller que qu
 
 var perfil = require('./routes/perfil');
 // Configuração da sessão (ajuste conforme necessário)
+
+app.use(cookieParser());
+
 app.use(session({
   secret: 'TrabalhoPaw',
   resave: true,
@@ -47,6 +50,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
+
+const autoLoginMiddleware = require('./Middleware/AutoLoginMiddleware');
+app.use(autoLoginMiddleware);
+
 
 // Middleware para tornar mensagens disponíveis em `res.locals`
 app.use((req, res, next) => {
@@ -79,10 +86,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-const autoLoginMiddleware = require('./Middleware/AutoLoginMiddleware');
-app.use(autoLoginMiddleware);
 
 //Importante ter em consideração a autentificação e a autorização
 //Caminho até ao browser

@@ -21,9 +21,11 @@
 
     <div class="container">
       <!-- Botão de voltar -->
-      <div class="text-center mb-4">
+      <div class="mb-4" >
           <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+          <a href="/restaurants/<%= restaurant.name %>/orderManagement" class="btn btn-primary">Gestão de pedidos</a>
       </div>
+
 
       <!-- Informações do Restaurante -->
       <%- include('HomePage/InfoRestaurant'), { restaurant: restaurant } %>
