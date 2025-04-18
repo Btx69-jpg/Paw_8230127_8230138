@@ -2,12 +2,6 @@ var mongoose = require('mongoose');
 var Item = require('./Item'); 
 
 var OrderSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'],
-        required: true,
-    },
     client: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
