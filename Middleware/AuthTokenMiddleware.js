@@ -17,9 +17,10 @@ authtokenMiddleware.authenticateToken = function(req, res, next) {
           console.log("Erro token")
           return res.sendStatus(403); // Token inválido ou expirado
         }
+
         // Armazena as informações do usuário na requisição
         req.user = decoded;
-        console.log("Req.user: ", req.user);
+
         next();
       });
 };

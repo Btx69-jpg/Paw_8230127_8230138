@@ -255,6 +255,7 @@ userController.updateUser =  async function(req, res) {
         if(user.perfil.restaurantId && user.perfil.priority === "Dono" && priority !== "Dono") {
             delete user.perfil.restaurantId;
         }
+        
         //update
         user.firstName = firstName;
         user.lastName = lastName;
@@ -270,7 +271,7 @@ userController.updateUser =  async function(req, res) {
             })
             .catch(error => {
                 console.log("Erro:", error);
-                req
+                res.redirect(`/perfil/admin/listUsers/editUser/${req.params.userId}`);
             })
     } catch(err) {
         console.log(err);

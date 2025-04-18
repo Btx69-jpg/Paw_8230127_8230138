@@ -44,19 +44,6 @@ async function validateNewPassowrd(body, restPassword) {
 }
 
 passwordController.updatePassword = async (req, res) => {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("------------------------");
     console.log("Update Password");
     const priority = req.cookies.priority;
 
@@ -69,7 +56,7 @@ passwordController.updatePassword = async (req, res) => {
             account = await User.findOne({ _id: req.params.accountId }).exec();
         }
         
-        let validation = await validateNewPassowrd(req.body, restaurant.perfil.password);
+        let validation = await validateNewPassowrd(req.body, account.perfil.password);
 
         if (validation !== "") {
             return res.render('errors/error500', {error: validation});
