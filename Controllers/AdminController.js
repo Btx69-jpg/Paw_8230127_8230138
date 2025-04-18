@@ -10,6 +10,11 @@ adminController.homePage = function(req, res) {
     res.render("perfil/admin/adminPage");
 };
 
+
+adminController.editPage = function(req, res) {
+    res.render("perfil/admin/PagesAdmin/Users/editAdmin", {userD: res.locals.user});
+};
+
 //Se calhar antes do delete se tudo estiver vem o melhor é dar o logout
 adminController.deleteAdm = async function(req, res) {
     User.deleteOne( {_id: req.params.adminId}).exec()

@@ -8,6 +8,7 @@ function isAdmin(req, res, next) {
         } else {
             res.render("errors/error500", {error: "O user não existe ou não tem permissões para aceder há página"})
         }
+
     } else {
         console.log("Não existe cookie para admin");
         res.sendStatus(403);
@@ -26,7 +27,7 @@ function isCliente(req, res, next) {
             res.sendStatus(403);
         }
     } else {
-        console.log("Não existe cookie para admin");
+        console.log("Não existe cookie para clientes");
         res.sendStatus(403);
     }
 }
@@ -43,7 +44,7 @@ function isDono(req, res, next) {
             res.sendStatus(403);
         }
     } else {
-        console.log("Não existe cookie para admin");
+        console.log("Não existe cookie para donos");
         res.sendStatus(403);
     }
 }
@@ -60,7 +61,7 @@ function isRestaurant(req, res, next) {
             res.sendStatus(403);
         }
     } else {
-        console.log("Não existe cookie para admin");
+        console.log("Não existe cookie para restaurantes");
         res.sendStatus(403);
     }
 }
@@ -76,7 +77,7 @@ function isDonoOrRestaurant(req, res, next) {
             res.sendStatus(403);
         }
     } else {
-        console.log("Não existe cookie para admin");
+        console.log("Não existe cookie para donos ou restaurantes");
         res.sendStatus(403);
     }
 }
@@ -93,7 +94,7 @@ function isDonoRestaurantOrAdmin(req, res, next) {
             res.sendStatus(403);
         }
     } else {
-        console.log("Não existe cookie para admin");
+        console.log("Não existe cookie para donos ou restaurantes ou admin");
         res.sendStatus(403);
     }
 }
