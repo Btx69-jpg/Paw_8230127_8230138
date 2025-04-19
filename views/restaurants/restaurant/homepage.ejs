@@ -22,8 +22,14 @@
     <div class="container">
       <!-- Botão de voltar -->
       <div class="mb-4" >
-          <a href="/restaurants" class="btn btn-secondary">Voltar</a>
-          <a href="/restaurants/<%= restaurant.name %>/orderManagement" class="btn btn-primary">Gestão de pedidos</a>
+        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+
+        <% if(user !== null && user.perfil !== null && 
+          (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+          
+          <a href="/restaurants/<%= restaurant.name %>/orderManagement" class="btn btn-primary">Gestão de pedidos</a>  
+          
+        <% } %>    
       </div>
 
 

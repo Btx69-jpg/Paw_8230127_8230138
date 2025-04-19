@@ -3,9 +3,12 @@
         <h2 class="section-title text-center">Menus</h2>
     </div>
 
-    <div class="col-12 text-center mb-4">
-        <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
-    </div>
+    <% if(user !== null && user.perfil !== null && 
+        (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+        <div class="col-12 text-center mb-4">
+            <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
+        </div>
+    <% } %>
     <% if (restaurant.menus.length > 0) { %>
         <!-- Filtro para os menus -->
         <div class="col-12 mb-4">
@@ -36,19 +39,22 @@
         <!-- Cards dos menus -->
         <div class="row">
             <% for (let i = 0; i < restaurant.menus.length; i++) { %>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                <img src="<%= restaurant.menus[i].photo %>" class="card-img-top" alt="Imagem do Menu" maxlength="225" height="225">
-                <div class="card-body">
-                    <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
-                    <p class="card-text"><%= restaurant.menus[i].description %></p>
-                    <p class="card-text">Tipo: <%= restaurant.menus[i].category %></p>
-                    <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= restaurant.menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
-
-                    <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= restaurant.menus[i]._id %>" class="btn btn-warning">Editar Menu</a>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="<%= restaurant.menus[i].photo %>" class="card-img-top" alt="Imagem do Menu" maxlength="225" height="225">
+                        <div class="card-body">
+                            <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
+                            <p class="card-text"><%= restaurant.menus[i].description %></p>
+                            <p class="card-text">Tipo: <%= restaurant.menus[i].category %></p>
+                            <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= restaurant.menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
+                        
+                            <% if(user !== null && user.perfil !== null && 
+                            (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+                                <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= restaurant.menus[i]._id %>" class="btn btn-warning">Editar Menu</a>
+                            <% } %>
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
             <% } %>
         </div>
     <% } else { %>
