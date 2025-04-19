@@ -23,7 +23,6 @@ function isCliente(req, res, next) {
         if (cokkie === "Cliente") {
             next();
         } else {
-            console.log("O user não existe ou não tem permissões para aceder há página");
             res.render("errors/error", {numError: 403});
         }
     } else {
@@ -40,7 +39,6 @@ function isDono(req, res, next) {
         if (cokkie === "Dono") {
             next();
         } else {
-            console.log("O user não existe ou não tem permissões para aceder há página");
             res.render("errors/error", {numError: 403});
         }
     } else {
@@ -57,7 +55,6 @@ function isRestaurant(req, res, next) {
         if (cokkie === "Restaurante") {
             next();
         } else {
-            console.log("O user não existe ou não tem permissões para aceder há página");
             res.render("errors/error", {numError: 403});
         }
     } else {
@@ -73,11 +70,26 @@ function isDonoOrRestaurant(req, res, next) {
         if (cokkie === "Dono" || cokkie === "Restaurante") {
             next();
         } else {
-            console.log("O user não existe ou não tem permissões para aceder há página");
             res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para donos ou restaurantes");
+        res.render("errors/error", {numError: 403});
+    }
+}
+
+//Verifica se o user autenticado é um dono
+function isDonoOrAdmin(req, res, next) {
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Dono" || cokkie === "Admin") {
+            next();
+        } else {
+            res.render("errors/error", {numError: 403});
+        }
+    } else {
+        console.log("Não existe cookie para donos");
         res.render("errors/error", {numError: 403});
     }
 }
@@ -90,7 +102,6 @@ function isDonoRestaurantOrAdmin(req, res, next) {
         if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Restaurante") {
             next();
         } else {
-            console.log("O user não existe ou não tem permissões para aceder há página");
             res.render("errors/error", {numError: 403});
         }
     } else {
@@ -105,5 +116,6 @@ module.exports = {
     isDono,
     isRestaurant,
     isDonoOrRestaurant,
+    isDonoOrAdmin, 
     isDonoRestaurantOrAdmin,
 };

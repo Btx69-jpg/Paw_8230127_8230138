@@ -3,15 +3,19 @@ var router = express.Router({ mergeParams: true }); //Penso ser necessario, se d
 const mongoose = require('mongoose');
 
 //Controllers 
-var restaurant = require("../../Controllers/RestaurantController.js"); 
+var order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
 
 //rota para gestão de pedidos para o restaurante
-router.get('/orderManagement', restaurant.orderManagement);
+//router.get('/orderManagement', restaurant.orderManagement);
 
-router.get('/orders', restaurant.getOrders);
+/**
+router.get('/createOrder', restaurant.getOrders);
+
+router.post('/saveOrder', )
 
 router.post('/orders', restaurant.createOrder);
 
 router.put('/orders/:orderId/status', restaurant.updateOrderStatus);
-
+ 
+ */
 module.exports = router;

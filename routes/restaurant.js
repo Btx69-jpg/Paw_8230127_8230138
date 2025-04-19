@@ -3,6 +3,11 @@ var router = express.Router({ mergeParams: true }); /*Permite desta forma com qu
 
 //Controller
 var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
+var menu = require("../Controllers/ControllersRestaurant/MenuController.js")
+
+//Middlewares
+const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
+const {isDonoOrAdmin} = require("../Middleware/TypeUserMiddleware.js");
 
 //Rotas
 const order = require("./restaurantRoutes/orders.js");
@@ -12,25 +17,7 @@ const comments = require("./restaurantRoutes/comments.js");
 /* Rota que renderiza a home page de um restaurante */
 router.get('/', restaurant.homePage);
 
-/* Rota que lista menus e pratos */
-router.get('/menus', restaurant.getMenus);
-
-/* Carrega a pagina que mostra informação sobre o menu */
-router.get('/showMenu/:menu', restaurant.showMenu);
-
-/* Rota que carrega a pagina para criar um menu  */
-router.get('/createMenu', restaurant.createMenu);
-
-/*Rota que renderiza a pagina para editar um menu */
-router.get('/editMenu/:menuId', restaurant.editMenu);
-
-/* Rota que dá update a um menu */
-router.post('/updateMenu/:menuId', restaurant.saveEditMenu);
-
-/* Rota que dá delete a um menu */
-router.post('/deleteMenu/:menuId', restaurant.deleteMenu);
-
-//Outros route
+//Carregamento das restantes rotas
 /* Redireciona para o route das orders */
 router.use('/orders', order);
 
@@ -39,5 +26,30 @@ router.use('/comments', comments);
 
 /* Redireciona para a route das dish */
 router.use('/menu', dish);
+
+
+/* Rota que lista menus e pratos */
+router.get('/menus', menu.getMenus);
+
+/* Carrega a pagina que mostra informação sobre o menu */
+router.get('/showMenu/:menu', menu.showMenu);
+
+/*Rota para utilizar os middlewares nas routas abaixo */
+router.use(authenticateToken, isDonoOrAdmin);
+
+/* Rota que carrega a pagina para criar um menu  */
+router.get('/createMenu', menu.createMenu);
+
+/* Rota para dar save de menu */
+router.post('/saveMenu', menu.saveMenu);
+
+/*Rota que renderiza a pagina para editar um menu */
+router.get('/editMenu/:menuId', menu.editMenu);
+
+/* Rota que dá update a um menu */
+router.post('/updateMenu/:menuId', menu.saveEditMenu);
+
+/* Rota que dá delete a um menu */
+router.post('/deleteMenu/:menuId', menu.deleteMenu);
 
 module.exports = router;
