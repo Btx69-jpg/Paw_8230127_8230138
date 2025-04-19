@@ -6,6 +6,7 @@ const fs = require('fs');
 const Restaurant = require("../../Models/Perfils/Restaurant");
 const Menu = require("../../Models/Menus/Menu");
 const Dish = require("../../Models/Menus/Dish");
+const Portion = require("../../Models/Reusable/Portion");
 
 //Controllers
 var menuController = {};
@@ -73,7 +74,7 @@ menuController.showMenu = async function (req, res) {
       console.error(err);
       res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });
     }
-  };
+};
 
 menuController.getMenus = async function(req, res) {
     try {
@@ -104,7 +105,7 @@ menuController.createMenu = async function (req, res) {
 
         res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories, portions: portions });
     } catch (err) {
-        res.render("errors/error500", {error: err});
+        res.render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -215,7 +216,7 @@ menuController.saveMenu = async function(req, res) {
         res.redirect("/restaurants/" + restaurant.name);
     } catch (err) {
         console.error(err);
-        res.render("errors/error500", { error: err.message });
+        res.render("errors/error", {numError: 500, error: err.message});
     }
 };
 
@@ -238,7 +239,7 @@ menuController.editMenu = async function(req, res) {
             portions: portions,
         });
     } catch (err) {
-        res.render("errors/error500", { error: err });
+        res.render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -275,44 +276,46 @@ menuController.saveEditMenu = async function(req, res) {
                 }
             });
         
-            req.body.dishes.forEach((dishData, index) => {
-                const existingDish = menu.dishes.id(dishData._id);
-                
-                if (existingDish) {
-                    existingDish.name = dishData.name;
-                    existingDish.description = dishData.description;
-                    existingDish.category = dishData.category;
-                    existingDish.price = dishData.price;
-
-                    const portionsData = [];
-                    if (dishData.portions) {
-                        const prices = Array.isArray(dishData.portionPrices) ? 
-                            dishData.portionPrices : 
-                            [dishData.portionPrices];
-
-                        dishData.portions.forEach((portionId, idx) => {
-                            if (!prices[idx] || isNaN(prices[idx])) {
-                                throw new Error(`Preço obrigatório para porção no prato ${existingDish.name}`);
-                            }
-                            portionsData.push({
-                                portion: portionId,
-                                price: parseFloat(prices[idx])
+            if (req.body.dishes) {
+                req.body.dishes.forEach((dishData, index) => {
+                    const existingDish = menu.dishes.id(dishData._id);
+                    
+                    if (existingDish) {
+                        existingDish.name = dishData.name;
+                        existingDish.description = dishData.description;
+                        existingDish.category = dishData.category;
+                        existingDish.price = dishData.price;
+    
+                        const portionsData = [];
+                        if (dishData.portions) {
+                            const prices = Array.isArray(dishData.portionPrices) ? 
+                                dishData.portionPrices : 
+                                [dishData.portionPrices];
+    
+                            dishData.portions.forEach((portionId, idx) => {
+                                if (!prices[idx] || isNaN(prices[idx])) {
+                                    throw new Error(`Preço obrigatório para porção no prato ${existingDish.name}`);
+                                }
+                                portionsData.push({
+                                    portion: portionId,
+                                    price: parseFloat(prices[idx])
+                                });
                             });
-                        });
-                    }
-
-                    existingDish.portions = portionsData;
-        
-                    // Atualizar imagem se houver arquivo para este índice
-                    if (existingDishesFiles[index]) {
-                        // Apagar imagem antiga
-                        if (fs.existsSync("public" + existingDish.photo)) {
-                            fs.unlinkSync("public" + existingDish.photo);
                         }
-                        existingDish.photo = "/" + existingDishesFiles[index].path.replace(/^public[\\/]/, "");
+    
+                        existingDish.portions = portionsData;
+            
+                        // Atualizar imagem se houver arquivo para este índice
+                        if (existingDishesFiles[index]) {
+                            // Apagar imagem antiga
+                            if (fs.existsSync("public" + existingDish.photo)) {
+                                fs.unlinkSync("public" + existingDish.photo);
+                            }
+                            existingDish.photo = "/" + existingDishesFiles[index].path.replace(/^public[\\/]/, "");
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         // Atualiza o tratamento de novos pratos
@@ -366,7 +369,7 @@ menuController.saveEditMenu = async function(req, res) {
         await restaurant.save();
         res.redirect(`/restaurants/${restaurant.name}/showMenu/${menu._id}`);
     } catch (err) {
-        res.render("errors/error500", { error: err });
+        res.render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -397,7 +400,7 @@ menuController.deleteMenu = async function(req, res) {
 
         res.redirect(`/restaurants/${restaurant.name}`);
     } catch (err) {
-        res.render("errors/error500", { error: err });
+        res.render("errors/error", {numError: 500, error: err});
     }
 };
 

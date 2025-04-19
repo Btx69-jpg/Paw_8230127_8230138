@@ -5,20 +5,68 @@ const Restaurant = require("../Models/Perfils/Restaurant");
 
 //Metodos
 const {carregarCategories} = require("./Functions/categories.js");
-const {carregarPortions} = require("./Functions/portions.js");
 
 var restaurantController = {};
 
-//Depois quando os restuarant e menu estiverem todos vem, modeificar os links todos
 restaurantController.homePage = async function(req, res) {
-    console.log("Nome do restaurante: ", req.params.restaurant);
-    try {
-        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        let categories = await carregarCategories();
-        res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
-    } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
-    }
+  try {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+    const categories = await carregarCategories();
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
+  } catch (err) {
+      res.render("errors/error", {numError: 500, error: err});
+  }
+};
+
+/*
+Terminar, só falta mandar o menu no render
+*/
+restaurantController.searchMenu = async function(req, res) {
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log("----------------------");
+  let query = {};
+  const menu = req.query.mameMenu;
+  const numDish = req.query.numDish;
+  const type = req.query.type;
+
+  if (menu) {
+      query.menus.name = menu;
+  }
+  
+  /*
+    if (numDish) {
+      query.$expr = {
+        $gt: [
+          { $size: "$.dishes" }, // assumes first menu
+          parseInt(numDish)
+        ]
+      };
+  }
+  */
+
+  if(type) {
+    query["menu.type"] = type;
+  }
+  
+  console.log("Query: ", query);
+  try {
+    const restaurant = await Restaurant.find({ name: req.params.restaurant }).exec();
+    const menus = await restaurant.find({query}).exec();
+    const categories = await carregarCategories();
+    console.log("Restaurante: ")
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
+  } catch (err) {
+      res.render("errors/error", {numError: 500, error: err});
+  }
+
 };
 
 

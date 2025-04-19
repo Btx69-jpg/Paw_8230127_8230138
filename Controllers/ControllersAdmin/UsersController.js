@@ -7,7 +7,6 @@ const Perfil = require("../../Models/Reusable/Perfil");
 const Restaurantes = require("../../Models/Perfils/Restaurant");
 
 //Constrollers
-const { createPackage} = require("../Functions/crudPackage");
 const signUpController = require("../SignUpController");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 var userController = {};
@@ -98,7 +97,7 @@ async function validateNewUser(email, phoneNumber, priority, restaurantName) {
         ]
     }).exec();
     
-    const existingRestaurant = await Restaurant.findOne({
+    const existingEmailRestaurant = await Restaurant.findOne({
         $or: [
             { 'perfil.email': email },
             { 'perfil.phoneNumber': phoneNumber }

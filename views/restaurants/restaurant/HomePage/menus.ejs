@@ -12,7 +12,7 @@
     <% if (restaurant.menus.length > 0) { %>
         <!-- Filtro para os menus -->
         <div class="col-12 mb-4">
-            <form action="/restaurants/<%= restaurant.name %>" method="get" class="row g-3">
+            <form action="/restaurants/<%= restaurant.name %>/search" method="GET" class="row g-3">
             
                 <div class="col-md-4">
                     <label for="mameMenu" class="form-label">Nome do Menu:</label>
@@ -25,8 +25,15 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label for="category" class="form-label">Categoria do Menu:</label>
-                    <input type="text" class="form-control" name="category" id="category" placeholder="Categoria do menu" maxlength="50" pattern="[A-Za-z\s]*">
+                    <label for="type" class="form-label">Tipo do Menu:</label>
+                    <select name="type" id="type" class="form-select" required>
+                    <% if (categories && categories.length > 0) { %>
+                        <option value="all">Todas</option>
+                        <% categories.forEach(function(cat) { %>
+                            <option value="<%= cat.category %>"><%= cat.category %></option>
+                        <% }); %>
+                    <% } %>
+                    </select>
                 </div>
 
                 <div class="col-12 d-flex justify-content-end">
@@ -45,7 +52,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Menu <%= restaurant.menus[i].name %></h5>
                             <p class="card-text"><%= restaurant.menus[i].description %></p>
-                            <p class="card-text">Tipo: <%= restaurant.menus[i].category %></p>
+                            <p class="card-text">Tipo: <%= restaurant.menus[i].type %></p>
                             <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= restaurant.menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
                         
                             <% if(user !== null && user.perfil !== null && 

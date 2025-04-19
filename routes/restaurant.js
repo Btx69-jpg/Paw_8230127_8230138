@@ -3,7 +3,7 @@ var router = express.Router({ mergeParams: true }); /*Permite desta forma com qu
 
 //Controller
 var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
-var menu = require("../Controllers/ControllersRestaurant/MenuController.js")
+var menu = require("../Controllers/ControllersRestaurant/MenuController.js");
 
 //Middlewares
 const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
@@ -29,6 +29,9 @@ router.use('/menu', dish);
 
 /* Carrega a pagina que mostra informação sobre o menu */
 router.get('/showMenu/:menu', menu.showMenu);
+
+/* Rota para o filtro do menu */
+router.get('/search', restaurant.searchMenu);
 
 /*Rota para utilizar os middlewares nas routas abaixo */
 router.use(authenticateToken, isDonoOrAdmin);

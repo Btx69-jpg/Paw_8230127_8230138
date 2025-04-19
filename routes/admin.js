@@ -5,8 +5,8 @@ const router = express.Router();
 const adminController = require("../Controllers/AdminController.js");
 
 //Middlewares
-const authTokenMiddleware = require("../Middleware/AuthTokenMiddleware.js");
-const typeUserMiddleware = require("../Middleware/TypeUserMiddleware.js");
+const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
+const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
 
 //routes
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
@@ -15,34 +15,37 @@ const categoriesRouter = require("./adminRoutes/categories.js");
 const passwordController = require("../Controllers/PasswordController.js");
 const portionsRouter = require("./adminRoutes/portions.js");
 
+//Rota que atribui as restantes a validação do token e verficia se o user é Admin
+router.use(authenticateToken, isAdmin);
+
 //Pagina do admin
-router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.homePage);
+router.get("/", adminController.homePage);
 
 //Renderiza a pagina de edit do admin
-router.get("/editDados/:adminId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.editPage);
+router.get("/editDados/:adminId", adminController.editPage);
 
 //Atualizar dados
-router.post("/updateAdmin/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.updateAdmin);
+router.post("/updateAdmin/:accountId", adminController.updateAdmin);
 
 //Renderizar pagina para alterar a password
-router.get("/editPassword/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, passwordController.editPassword);
+router.get("/editPassword/:accountId", passwordController.editPassword);
 
 //Atualiza a password do admin
-router.post("/changePassword/:accountId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, passwordController.updatePassword);
+router.post("/changePassword/:accountId", passwordController.updatePassword);
 
 //Route para eliminar o admin
-router.post("/deleteAccount/:adminId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.deleteAdm);
+router.post("/deleteAccount/:adminId", adminController.deleteAdm);
 
 /*Routers para os restaurantes */
-router.use("/listRestaurants", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, restaurantRouter);
+router.use("/listRestaurants", restaurantRouter);
 
 /*Routers para os users */
-router.use("/listUsers", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, userRouter);
+router.use("/listUsers", userRouter);
 
 /*Routers para as categorias */
-router.use("/listCategories", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, categoriesRouter);
+router.use("/listCategories", categoriesRouter);
 
 /**Router para as porçoes */
-router.use("/listPortions", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsRouter);
+router.use("/listPortions", portionsRouter);
 
 module.exports = router;

@@ -17,7 +17,7 @@
   
   <body>
     <!-- NavBar específica para restaurante -->
-    <%- include('navBarRest'), { restaurant: restaurant } %>
+    <%- include('navBarRest') %>
 
     <div class="container">
       <!-- Botão de voltar -->
@@ -34,13 +34,13 @@
 
 
       <!-- Informações do Restaurante -->
-      <%- include('HomePage/InfoRestaurant'), { restaurant: restaurant } %>
+      <%- include('HomePage/InfoRestaurant')%>
 
       <!-- Avaliações -->
-      <%- include('HomePage/avaliation'), { restaurant: restaurant } %>
+      <%- include('HomePage/avaliation')%>
 
       <!-- Menus -->
-      <%- include('HomePage/menus'), { restaurant: restaurant } %>
+      <%- include('HomePage/menus')%>
     </div>
 
     <!-- Bootstrap JS Bundle -->
