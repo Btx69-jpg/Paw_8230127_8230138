@@ -10,8 +10,8 @@
     />
   </head>
   <body>
-    <%- include('../../navBar.ejs') %>
-    <%- include('../../hero.ejs', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
+    <%- include('navBarRest') %>
+    <%- include('../../hero', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
 
     <div class="container my-4">
       <!-- TRÊS TABELAS PARA OS ESTADOS -->
@@ -56,12 +56,40 @@
               <label class="form-label">Morada</label>
               <input
                 type="text"
-                name="addressOrder"
-                id="addressOrder"
+                name="street"
+                id="street"
                 class="form-control"
                 required
               />
             </div>
+            
+            <div class="mb-3 row">
+              <div class="col-md-6">
+                <label for="postal_code" class="form-label">Código Postal</label>
+                <input
+                  type="text"
+                  name="postal_code"
+                  id="postal_code"
+                  class="form-control"
+                  value="<%= restaurant.address.postal_code %>"
+                  readonly
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="city" class="form-label">Cidade</label>
+                <input
+                  type="text"
+                  name="city"
+                  id="city"
+                  class="form-control"
+                  value="<%= restaurant.address.city %>"
+                  readonly
+                  required
+                />
+              </div>
+            </div>
+
 
             <!-- Seletor de Menus -->
             <div class="mb-3">

@@ -6,16 +6,15 @@ const mongoose = require('mongoose');
 var order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
 
 //rota para gestão de pedidos para o restaurante
-//router.get('/orderManagement', restaurant.orderManagement);
 
-/**
-router.get('/createOrder', restaurant.getOrders);
+router.get('/', order.orderManagement);
 
-router.post('/saveOrder', )
+router.get('/createOrder', order.createOrder);
 
-router.post('/orders', restaurant.createOrder);
+//router.post('/saveOrder', order.)
 
-router.put('/orders/:orderId/status', restaurant.updateOrderStatus);
+//router.post('/orders', order.createOrder);
+
+router.put('/:orderId/status', order.updateOrderStatus);
  
- */
 module.exports = router;
