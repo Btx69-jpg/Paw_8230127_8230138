@@ -78,91 +78,49 @@ userController.findOneRestaurante = async function(name) {
     }
 }
 
-async function validateNewUser(email, priority, restaurant) {
+async function validateNewUser(email, phoneNumber, priority, restaurantName) {
     if (priority === "Dono") {
         if (restaurant === "") {
             return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
         } 
         
-        const existingRestaurant = await userController.findOneRestaurante(restaurant);
+        const existingRestaurant = await userController.findOneRestaurante(restaurantName);
 
-        if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse nome!"
-        }
-    }
-
-    const existingUser = await signUpController.findOneEmail(email);
-    const existingEmailRestaurant = await signUpController.findOneEmailRestaurante(email);
-    
-    if (existingUser || existingEmailRestaurant && priority !== "Dono") {
-        return "Já existe uma conta com este email!"
-    }
-
-    return "";
-}
-
-async function validateUpdateUser(user, email, priority, restaurant) {
-    if (priority === "Dono") {
-        if (restaurant === "") {
-            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
-        } 
-        
-        const existingRestaurant = await userController.findOneRestaurante(restaurant);
-        console.log(restaurant);
         if (!existingRestaurant) {
             return "Não existe nenhum restaurante com esse nome!"
         }
     }
 
     const existingUser = await User.findOne({
-        _id: { $ne: user._id },
-        'perfil.email': email,
+        $or: [
+            { 'perfil.email': email },
+            { 'perfil.phoneNumber': phoneNumber }
+        ]
+    }).exec();
+    
+    const existingRestaurant = await Restaurant.findOne({
+        $or: [
+            { 'perfil.email': email },
+            { 'perfil.phoneNumber': phoneNumber }
+        ]
     }).exec();
 
-    const existingEmailRestaurant = await Restaurant.findOne({
-        _id: { $ne: user._id },
-        'perfil.email': email || user.perfil.email,
-    }).exec();
-
-    //Ver bem esta validação, ela é capza de dar dores de cabeça futuras
-    //Reitrei isto: " && user.perfil.priority !== "Dono" || priority !== "Dono""
-    if (existingUser || existingEmailRestaurant) {
-        return "Já existe uma conta com este email!"
+    if (existingUser || existingEmailRestaurant && priority !== "Dono") {
+        if (existingUser.perfil.email === email || existingEmailRestaurant.perfil.email === email) {
+            return "Já existe uma conta com este email!";
+        } else {
+            return "Já existe uma conta com esse numero telefonico!";
+        }
     }
 
     return "";
 }
 
-/*
-Testes:
-Cria um user cliente corretamente (funciona)
-Cria um admin corretamente (funciona)
-Cria um dono corretamente (funciona)
-Quando crio um dono e não meto o meail ou phoneNumber correto volta para tras?
-Ver se caso haja erros, se é redirecionado de volta para o addPage (sim)
-
-Erros: Por algum motivo quando
-Entra aqui quando temos emails iguais mas por algum motivo não entra 
-*/
+/**
+ * Metodo para criar um novo utilizador
+ */
 userController.saveUser = async function(req, res) {
     try {
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log("-------------");
         const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
         const errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
@@ -170,7 +128,7 @@ userController.saveUser = async function(req, res) {
             return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
         }
 
-        const errorValidate = await validateNewUser(email, priority, restaurant);
+        const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurant);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -248,8 +206,48 @@ userController.editPage = function(req, res) {
         });
 }
 
-//Ver se o render funciona
-//Já poso tirar o try catch
+async function validateUpdateUser(user, email, priority, restaurant) {
+    if (priority === "Dono") {
+        if (restaurant === "") {
+            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
+        } 
+        
+        const existingRestaurant = await userController.findOneRestaurante(restaurant);
+        console.log(restaurant);
+        if (!existingRestaurant) {
+            return "Não existe nenhum restaurante com esse nome!"
+        }
+    }
+
+    const existingUser = await User.findOne({
+        _id: { $ne: user._id },
+        $or: [
+            { 'perfil.email': email },
+            { 'perfil.phoneNumber': phoneNumber }
+        ]
+    }).exec();
+
+    const existingEmailRestaurant = await Restaurant.findOne({
+        $or: [
+            { 'perfil.email': email },
+            { 'perfil.phoneNumber': phoneNumber }
+        ]
+    }).exec();
+
+    if (existingUser || existingEmailRestaurant) {
+        if (existingUser.perfil.email === email || existingEmailRestaurant.perfil.email === email) {
+            return "Já existe uma conta com este email!";
+        } else {
+            return "Já existe uma conta com esse numero telefonico!";
+        }
+    }
+
+    return "";
+}
+
+/**
+ * Metodo para atualizar um user existente
+ */
 userController.updateUser =  async function(req, res) {
     try {
         const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  

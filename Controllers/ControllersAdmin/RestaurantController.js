@@ -91,18 +91,24 @@ function existsRestaurantsDesaprove() {
         });
 }
 
+function existRestaurant(restaurant) {
+    let problem = "";
+    if (!restaurant) {
+        problem= "O restaurante não existe";
+    } else if (!restaurant.tempUserId) {
+        problem = "O restaurante não possui nenhum dono";
+    }
+
+    return problem;
+}
+
 //Admin aprovar um restaurante
 restaurantController.aproveRestaurant = async function(req, res) {
     try {
         let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId});
 
-        if (!restaurant) {
-            console.log("O restaurante não existe")
-            return res.redirect("/perfil/admin/listRestaurants");
-        }
-          
-        if (!restaurant.tempUserId) {
-            console.log("O restaurante não possui nenhum dono");
+        let problemRest = existRestaurant(restaurant);
+        if (problemRest !== "") {
             return res.redirect("/perfil/admin/listRestaurants");
         }
   

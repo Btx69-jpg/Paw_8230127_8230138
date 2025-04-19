@@ -33,7 +33,7 @@ adminController.deleteAdm = async function(req, res) {
 };
 
 
-async function validateEmailUser(user, email, phoneNumber) {
+async function validateUser(user, email, phoneNumber) {
     const existingUser = await User.findOne({
         _id: { $ne: user._id },
         $or: [
@@ -43,7 +43,6 @@ async function validateEmailUser(user, email, phoneNumber) {
     }).exec();
 
     const existingEmailRestaurant = await Restaurant.findOne({
-        _id: { $ne: user._id },
         $or: [
             { 'perfil.email': email },
             { 'perfil.phoneNumber': phoneNumber }
@@ -102,7 +101,7 @@ adminController.updateAdmin = async function(req, res) {
         }
        
         //Está aqui um problema
-        const errorValidate = await validateEmailUser(user, email, phoneNumber);
+        const errorValidate = await validateUser(user, email, phoneNumber);
     
         if (errorValidate !== "") {
             req.flash("error_msg", errorValidate);
