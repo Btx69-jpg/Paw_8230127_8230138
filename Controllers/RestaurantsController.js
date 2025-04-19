@@ -100,7 +100,7 @@ restaurantsController.restaurantsPage = function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.render("errors/error500", {error: err});
+            res.render("errors/error", {numError: 500, error: err});
         });
 };
 
@@ -148,36 +148,20 @@ restaurantsController.search = function(req, res) {
       })
       .catch(function(err) {
         console.error("Erro ao filtrar pelos restuarantes: ", err);
-        res.render("errors/error500", {error: err});
+        res.render("errors/error", {numError: 500, error: err});
       }); 
   };
 
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
     try { 
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-
-        console.log("--------------------------------------------------------------------");
         await saveImage(req, res);
         
         //Realização das verificações
         let validation = await validationRestaurant(req.body);
         
         if (validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         }
 
         //Ir buscar e guardar o caminho da imagem
@@ -254,7 +238,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
             } case "/registRestaurant/saveRestaurant": {
                 res.redirect("/");
                 break;
-            } default: {
+            }default: {
                 console.log("Parou no break, logo não sei que pagina redirecionar");
                 break;
             }
@@ -292,7 +276,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
         //Validações
         let validation = await validationEditRestaurant(req.body, restaurant);
         if (validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         } 
 
         //Altera a pasta e tem de alterar também o caminho para a logo
@@ -376,7 +360,7 @@ restaurantsController.removeRestaurant = async (req, res) => {
     } catch (error) {
         console.log("Error", error);
         console.log("Problema a eliminar o restaurant")
-        res.render("errors/error500", {error: error})
+        res.render("errors/error", {numError: 500, error: error});
     }
 };
 

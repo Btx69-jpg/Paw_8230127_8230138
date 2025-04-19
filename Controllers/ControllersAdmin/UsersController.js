@@ -21,7 +21,7 @@ userController.homePage = async function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.render('errors/error500', {error: "Problema a procurar pelos Users"});
+            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Users"});
         });
 };
 
@@ -65,7 +65,7 @@ userController.search = function(req, res) {
         })
         .catch(function(err) {
             console.error("Erro ao filtrar pelos restuarantes: ", err);
-            res.render("errors/error500", {error: err});
+            res.render("errors/error", {numError: 500, error: err});
         }); 
 };
 
@@ -306,7 +306,7 @@ function deleteImg(imagePath) {
         if (err) {
             let erro = "Erro ao apagar a foto de perfil do user:" + err;
             console.error(erro);
-            return res.render("/errors/error500", { error: erro });
+            return res.render("errors/error", {numError: 500, error: erro});
         }
 
         console.log('Imagem apagada com sucesso');

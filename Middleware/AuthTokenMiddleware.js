@@ -15,7 +15,7 @@ authtokenMiddleware.authenticateToken = function(req, res, next) {
     jwt.verify(token, SECRET_KEY, (err, decoded) => {
         if (err) {
           console.log("Erro token")
-          return res.sendStatus(403); // Token inválido ou expirado
+          return res.render("errors/error", {numError: 403});
         }
 
         // Armazena as informações do usuário na requisição

@@ -6,12 +6,12 @@ function isAdmin(req, res, next) {
         if (cokkie === "Admin") {
             next();
         } else {
-            res.render("errors/error500", {error: "O user não existe ou não tem permissões para aceder há página"})
+            res.render("errors/error", {numError: 403});
         }
 
     } else {
         console.log("Não existe cookie para admin");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 
@@ -41,11 +41,11 @@ function isDono(req, res, next) {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
-            res.sendStatus(403);
+            res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para donos");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 
@@ -58,11 +58,11 @@ function isRestaurant(req, res, next) {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
-            res.sendStatus(403);
+            res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para restaurantes");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 
@@ -74,11 +74,11 @@ function isDonoOrRestaurant(req, res, next) {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
-            res.sendStatus(403);
+            res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para donos ou restaurantes");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 
@@ -91,11 +91,11 @@ function isDonoRestaurantOrAdmin(req, res, next) {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
-            res.sendStatus(403);
+            res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para donos ou restaurantes ou admin");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 

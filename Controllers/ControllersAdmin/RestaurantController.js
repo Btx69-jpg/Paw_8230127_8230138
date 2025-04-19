@@ -22,12 +22,12 @@ restaurantController.homePage = function(req, res) {
                     res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, desaprove: desaprove});
                 }).catch(err => {
                     console.log("Error", err);
-                    res.render('errors/error500', {error: "Problema a procurar pelos Restaurantes"});
+                    res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
                 }); 
             
         }).catch(function(err) {
             console.log("Error", err);
-            res.render('errors/error500', {error: "Problema a procurar pelos Restaurantes"});
+            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
         });   
 };
 
@@ -56,7 +56,7 @@ restaurantController.search = function(req, res) {
         })
         .catch(function(err) {
             console.error("Erro ao filtrar pelos restuarantes: ", err);
-            res.render("errors/error500", {error: err});
+            res.render("errors/error", {numError: 500, error: err});
         }); 
 };
 
@@ -71,7 +71,7 @@ restaurantController.aprovePage = async function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.render('errors/error500', {error: "Problema a procurar pelos Restaurantes"});
+            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
         });   
 };
 

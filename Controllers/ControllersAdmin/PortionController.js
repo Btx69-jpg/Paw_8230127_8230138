@@ -60,7 +60,7 @@ portionsController.savePortion = async function(req, res) {
     try {
         const validation = await validationPortion(req.body.portion);
         if(validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         }
 
         const newPortion = new Portion(req.body)
@@ -92,13 +92,13 @@ portionsController.updatPortion = async function(req, res) {
         let portion = await Portion.findOne({_id: req.params.portionId}).exec();
 
         if(!portion) {
-            return res.render('errors/error500', {error: "A Porção não existe"});
+            return res.render("errors/error", {numError: 500, error: "A Porção não existe"});
         }
 
         const validation = await validationPortion(req.body.portion);
         
         if(validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         }
 
         portion.portion = req.body.portion;

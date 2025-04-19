@@ -12,7 +12,7 @@ categoriesController.homePage = function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.status(500).send("Problema a procurar pelos Restaurantes");
+            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
         });  
 };
 
@@ -60,7 +60,7 @@ categoriesController.saveCategory = async function(req, res) {
     try {
         const validation = await validationCategory(req.body.category);
         if(validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         }
 
         //Posso decalara assim
@@ -93,13 +93,13 @@ categoriesController.updatCategory = async function(req, res) {
         let category = await Category.findOne({_id: req.params.categoryId}).exec();
 
         if(!category) {
-            return res.render('errors/error500', {error: "A categoria não existe"});
+            return res.render("errors/error", {numError: 500, error: "A categoria não existe"});;
         }
 
         const validation = await validationCategory(req.body.category);
         
         if(validation !== "") {
-            return res.render('errors/error500', {error: validation});
+            return res.render("errors/error", {numError: 500, error: validation});
         }
 
         //Atualizo a categoria, sem a necessidade de dar outro update
