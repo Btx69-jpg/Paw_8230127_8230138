@@ -1,32 +1,87 @@
-<nav class="navbar navbar-light">
-    <div class="container d-flex justify-content-between align-items-center">
-      <!-- Lado esquerdo: Logo + Nome do Restaurante -->
-      <div class="d-flex align-items-center">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <!-- Depois meter logo do restaurant -->
-          <% if(restaurant.perfil.perfilPhoto != "") {%>
-            <img src="<%=restaurant.perfil.perfilPhoto%>" alt="Logo do restaurant">  
-          <%} else {%> 
-            <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site">
-          <%}%>
-          <span class="brand-name"><%= restaurant.name %></span>
-        </a>
-      </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+      <% if(restaurant.perfil.perfilPhoto != "") {%>
+        <img src="<%=restaurant.perfil.perfilPhoto%>" alt="Logo do restaurant" style="max-width: 50px;">  
+        <a class="navbar-brand" href="/restaurants/<%= restaurant.name %>"><%= restaurant.name %></a>
+      <%} else {%> 
+        <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site" style="max-width: 50px;"> 
+        <a class="navbar-brand" href="/<%= restaurant.name %>">Click&Eat</a>
+      <%}%>
 
-      <!-- Lado direito: Ícones e/ou perfil -->
-      <div class="nav-icons d-flex align-items-center">
-        <!-- Ícone do Perfil -->
-        <a href="../Perfil/PerfilUser.html">
-            <img src="/images/Plataform/RestaurantPage/PerfilIcon.png" alt="Perfil">
-        </a>
-        
-        <!-- Ícone do Carrinho -->
-        <a href="../Perfil/Carrinho.html">
-          <img src="/images/Plataform/RestaurantPage/Carrinho.png" alt="Carrinho">
-        </a>
 
-        <!-- Foto do Utilizador (opcional) -->
-        <img class="profile-pic" src="/images/Plataform/RestaurantPage/userPhoto.png" alt="Foto de Perfil">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+              <% if (!user) { %>
+                  <% if (currentPage === 'homepage') { %>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/signUp">Sign up</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/login">Login</a>
+                      </li>
+                  <% } else { %>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/signUp">Sign up</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/login">Login</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="<%= previousPage %>">Voltar</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/">Main Page</a>
+                      </li>
+                  <% } %>
+              <% } else { %>
+                  <% if (currentPage === 'homepage') { %>
+                      <%- include('../../navBarPerfils') %>
+                      <li class="nav-item">  
+                          <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
+                      </li>
+
+                      <li class="nav-item">
+                          <a class="nav-link" href="/login/logOut">Log Out</a>
+                      </li>
+                      <% } else if (currentPage === '/checkOut') { %>
+                        <%- include('../../navBarPerfils') %>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login/logOut">Log Out</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%= previousPage %>">Voltar</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Main Page</a>
+                        </li>
+                  
+                      <% } else { %>
+                        <%- include('../../navBarPerfils') %>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login/logOut">Log Out</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%= previousPage %>">Voltar</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Main Page</a>
+                        </li>
+                  <% } %>
+              <% } %>
+          </ul>
       </div>
-    </div>
+  </div>
 </nav>
