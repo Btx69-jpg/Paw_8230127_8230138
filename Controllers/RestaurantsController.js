@@ -254,7 +254,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
             } case "/registRestaurant/saveRestaurant": {
                 res.redirect("/");
                 break;
-            }default: {
+            } default: {
                 console.log("Parou no break, logo não sei que pagina redirecionar");
                 break;
             }

@@ -24,11 +24,11 @@ function isCliente(req, res, next) {
             next();
         } else {
             console.log("O user não existe ou não tem permissões para aceder há página");
-            res.sendStatus(403);
+            res.render("errors/error", {numError: 403});
         }
     } else {
         console.log("Não existe cookie para clientes");
-        res.sendStatus(403);
+        res.render("errors/error", {numError: 403});
     }
 }
 

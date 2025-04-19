@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <%- include('errorPage/titleError', {numError: numError}) %>
+        <link rel="stylesheet" href="/stylesheets/errors/errorPages.css">
+    </head>
+    <body>
+        <div class="container">
+            
+            <% if(error !== "") { %>
+                <%- include('errorPage/bodyError', {numError: numError, error: error}) %>
+            <% } else { %>
+                <%- include('errorPage/bodyError', {numError: numError}) %>
+            <% } %>
+            <span class="go-back"><a href="<%= previousPage %>">Voltar</a></span>
+        </div>
+
+    </body>
+</html>

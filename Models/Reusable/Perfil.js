@@ -31,10 +31,10 @@ var PerfilSchema = new mongoose.Schema({
         enum: ['Cliente', 'Admin', 'Restaurant', 'Dono', 'Funcionario'],
         required: true,
     },
-    restaurantId: {
+    restaurantIds: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Restaurant'
-    },
+    }],
     banned: {
         type: Boolean,
         default: false,

@@ -4,6 +4,7 @@ var Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Metodos
 const { deletePackage } = require('../Functions/crudPackage');
+const User = require("../../Models/Perfils/User");
 var restaurantController = {};
 
 restaurantController.homePage = function(req, res) {
@@ -91,8 +92,61 @@ function existsRestaurantsDesaprove() {
 }
 
 //Admin aprovar um restaurante
-restaurantController.aproveRestaurant = function(req, res) {
-    Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
+restaurantController.aproveRestaurant = async function(req, res) {
+    try {
+        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId});
+
+        if (!restaurant) {
+            console.log("O restaurante não existe")
+            return res.redirect("/perfil/admin/listRestaurants");
+        }
+          
+        if (!restaurant.tempUserId) {
+            console.log("O restaurante não possui nenhum dono");
+            return res.redirect("/perfil/admin/listRestaurants");
+        }
+  
+        //Se o restaurante tem um user associado vamos procura-lo 
+        let user = await User.findOne({ _id: restaurant.tempUserId});
+
+        if (!user) {
+            console.log("O user associado ao restaurante não existe");
+            return res.redirect("/perfil/admin/listRestaurants");
+        }
+
+        //Se esse user existe então vamos atualiza-lo para dono
+        if (user.perfil.priority !== "Dono") {
+            user.perfil.priority = "Dono";
+        }
+
+        user.perfil.restaurantIds.push(restaurant._id);
+
+        await user.save();
+        console.log("Estatutos do user atualizados com sucesso");
+        
+        //A seguir de atualizar o user atualizamos o restaurante
+        delete restaurant.tempUserId;
+        restaurant.countDonos++;
+        restaurant.aprove = true;
+
+        await restaurant.save();
+        console.log("Restaruante adicionado com sucesso");
+        existsRestaurantsDesaprove()
+            .then(exists => {
+                if (exists) {
+                    res.redirect("/perfil/admin/listRestaurants/aproves");
+                } else {
+                    res.redirect("/perfil/admin/listRestaurants");
+                }
+            });
+
+    } catch (error) {
+        console.log("Erro: ", error);
+        res.redirect("/perfil/admin/listRestaurants");
+    }
+};
+    /*
+        Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
         $set: {
             aprove: true,
         },
@@ -113,8 +167,7 @@ restaurantController.aproveRestaurant = function(req, res) {
             console.log("Erro: ", error);
             res.redirect("/perfil/admin/listRestaurants");
         });
-};
-
+    */
 /*Tentar só arrnajar uma forma melhor de referenciar o caminho
 da pasta, tentar retirar o /images/Restaurants, pois é texto e já 
 está escrito na variavel e pode ser desnecessario.
