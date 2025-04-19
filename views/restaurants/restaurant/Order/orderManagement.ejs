@@ -10,131 +10,12 @@
     />
   </head>
   <body>
-    <%- include('navBarRest') %>
-    <%- include('../../hero', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
+    <%- include('../navBarRest') %>
+    <%- include('../../../hero', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
 
-    <div class="container my-4">
-      <!-- TRÊS TABELAS PARA OS ESTADOS -->
-      <div class="row">
-        <% ['Pendente','Expedida','Entregue'].forEach(status => { %>
-        <div class="col-md-4">
-          <h5><%= status %></h5>
-          <table class="table table-sm table-bordered">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Total</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-<%= status %>"></tbody>
-          </table>
-        </div>
-        <% }) %>
-      </div>
-    </div>
+    <%- include('showOrders') %>
 
-    <div class="container">
-      <form id="newOrderForm" class="row g-3 mb-5">
-        <div class="card mb-4">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Criar encomenda</h5>
-          </div>
-          <div class="card-body">
-
-            <!-- Tipo de entrega -->
-            <div class="mb-3">
-              <label class="form-label">Tipo de entrega</label>
-              <select id="orderType" class="form-select" name="orderType" required>
-                <option value="delivery">Entrega</option>
-                <option value="pickup">Recolha no restaurante</option>
-              </select>
-            </div>
-
-            <!-- Morada -->
-            <div class="mb-3">
-              <label class="form-label">Morada</label>
-              <input
-                type="text"
-                name="street"
-                id="street"
-                class="form-control"
-                required
-              />
-            </div>
-            
-            <div class="mb-3 row">
-              <div class="col-md-6">
-                <label for="postal_code" class="form-label">Código Postal</label>
-                <input
-                  type="text"
-                  name="postal_code"
-                  id="postal_code"
-                  class="form-control"
-                  value="<%= restaurant.address.postal_code %>"
-                  readonly
-                  required
-                />
-              </div>
-              <div class="col-md-6">
-                <label for="city" class="form-label">Cidade</label>
-                <input
-                  type="text"
-                  name="city"
-                  id="city"
-                  class="form-control"
-                  value="<%= restaurant.address.city %>"
-                  readonly
-                  required
-                />
-              </div>
-            </div>
-
-
-            <!-- Seletor de Menus -->
-            <div class="mb-3">
-              <label class="form-label">Menu</label>
-              <select id="menuSelect" class="form-select">
-                <option value="">-- Escolha um menu --</option>
-              </select>
-            </div>
-
-            <!-- Lista de Pratos do menu -->
-            <div class="mb-3">
-              <label class="form-label">Pratos disponíveis</label>
-              <div id="dishesContainer"></div>
-            </div>
-
-            <!-- Itens selecionados -->
-            <div class="mb-3">
-              <label class="form-label">Itens selecionados</label>
-              <ul id="selectedItemsList" class="list-group"></ul>
-            </div>
-
-            <!-- Total -->
-            <div class="mb-3">
-              <label class="form-label">Total (€)</label>
-              <input
-                type="number"
-                name="totEncomenda"
-                id="totEncomenda"
-                step="0.01"
-                class="form-control"
-                readonly
-                required
-              />
-            </div>
-
-            <!-- Campo oculto para itens JSON -->
-            <input type="hidden" name="itens" id="itensInput" />
-
-            <div class="mb-3">
-              <button class="btn btn-success">Criar Encomenda</button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+    <%- include('createOrder') %>
 
     <script>
       const restaurant = "<%= restaurant.name %>";
@@ -143,12 +24,12 @@
       let selectedItems = [];
 
       // Carrega encomendas
-      fetch(`/restaurants/${restaurant}/orders`)
+      fetch(`/restaurants/${restaurant}/orders/getOrders`)
         .then(r => r.json())
         .then(orders => orders.forEach(renderOrderRow));
 
       // Carrega menus
-      fetch(`/restaurants/${restaurant}/menus`)
+      fetch(`/restaurants/orders/${restaurant}/orders/getMenus`)
         .then(r => r.json())
         .then(data => {
           menus = data;

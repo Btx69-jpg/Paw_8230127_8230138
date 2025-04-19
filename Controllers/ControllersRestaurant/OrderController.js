@@ -18,7 +18,7 @@ orderController.orderManagement = async function(req, res) {
     const expedidas = restaurant.orders.filter(o => o.status === 'Expedida');
     const entregues = restaurant.orders.filter(o => o.status === 'Entregue');
   
-    res.render("restaurants/restaurant/orderManagement", {
+    res.render("restaurants/restaurant/Order/orderManagement", {
       restaurant, pendentes, expedidas, entregues
     });
 };

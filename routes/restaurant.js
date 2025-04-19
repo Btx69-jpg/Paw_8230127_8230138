@@ -27,10 +27,6 @@ router.use('/comments', comments);
 /* Redireciona para a route das dish */
 router.use('/menu', dish);
 
-
-/* Rota que lista menus e pratos */
-router.get('/menus', menu.getMenus);
-
 /* Carrega a pagina que mostra informação sobre o menu */
 router.get('/showMenu/:menu', menu.showMenu);
 

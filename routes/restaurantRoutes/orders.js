@@ -13,8 +13,11 @@ router.get('/createOrder', order.createOrder);
 
 //router.post('/saveOrder', order.)
 
-//router.post('/orders', order.createOrder);
+//router.post('/getOrders', order.createOrder);
 
 router.put('/:orderId/status', order.updateOrderStatus);
  
+/* Rota que lista menus e pratos */
+router.get('/getMenus', menu.getMenus);
+
 module.exports = router;
