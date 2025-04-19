@@ -63,8 +63,19 @@ async function renderEditDish(res, dish) {
 }
 
 restaurantController.homePage = async function(req, res) {
-    //Copiar o veiw da ficha6, para mostar apenas 1 restaurante e mandar no render
-    //Depois meter res.redirect("/employees/show/" + employee._id);
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("----------------------------------------");
+    ///Está a vir a undefined
+    console.log("Nome do restaurante: ", req.params.restaurant);
     try {
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
         let categories = await carregarCategories();
@@ -171,26 +182,28 @@ restaurantController.showMenu = async function (req, res) {
       res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, menu: menu });
     } catch (err) {
       console.error(err);
-      res.status(500).render("errors/error", { error: "Erro ao recuperar o menu" });
+      res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });
     }
   };
 
 restaurantController.getMenus = async function(req, res) {
-  try {
-    const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
-      .populate({
-        path: 'menus.dishes'
-      })
-      .exec();
-    const menus = restaurant.menus.map(menu => ({
-      _id: menu._id,
-      name: menu.name,
-      dishes: menu.dishes.map(d => ({ _id: d._id, name: d.name, price: d.price }))
-    }));
-    res.json(menus);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+            .populate({
+            path: 'menus.dishes'
+            })
+            .exec();
+        
+        const menus = restaurant.menus.map(menu => ({
+            _id: menu._id,
+            name: menu.name,
+            dishes: menu.dishes.map(d => ({ _id: d._id, name: d.name, price: d.price }))
+        }));
+
+        res.json(menus);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
   
   

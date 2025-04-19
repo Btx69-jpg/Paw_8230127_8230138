@@ -8,33 +8,13 @@
       href="/images/Plataform/LogoSite/logo.png"
     />
     <!-- Link da fonte -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
 
-      .portion-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-      .portion-content {
-        flex: 1;
-        display: flex;
-        gap: 10px;
-      }
-      .remove-portion {
-        color: #dc3545;
-        cursor: pointer;
-      }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"rel="stylesheet"/>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  
+    <!-- CSS-->
+    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/Pratos/portion.css">
   </head>
   <body>
     <%- include('../../../navBar.ejs') %> 
@@ -78,8 +58,8 @@
             placeholder="Nome do Menu"
             required
             maxlength="50"
-            pattern="^[a-zA-Z\\s]*$"
-            oninvalid="this.setCustomValidity('Informe somente letras e espaços, máximo 50 caracteres.')"
+            pattern="^(?!.*[\\/]).+$"
+            oninvalid="this.setCustomValidity('Introduza somente letras e espaços, máximo 50 caracteres.')"
           />
         </div>
         <div class="mb-3">
@@ -133,7 +113,7 @@
                 placeholder="Nome do prato"
                 required
                 maxlength="50"
-                pattern="^[a-zA-Z\\s]*$"
+                pattern="^[A-Za-zÀ-ÿ\s]+$"
                 oninvalid="this.setCustomValidity('Informe somente letras e espaços, máximo 50 caracteres.')"
               />
             </div>
@@ -267,7 +247,7 @@
           <h5>Prato ${dishIndex + 1}</h5>
           <div class="mb-3">
             <label for="dishName${dishIndex}" class="form-label">Nome:</label>
-            <input type="text" name="dishes[${dishIndex}][name]" id="dishName${dishIndex}" class="form-control" placeholder="Nome do prato" required maxlength="50" pattern="^[a-zA-Z\\s]*$">
+            <input type="text" name="dishes[${dishIndex}][name]" id="dishName${dishIndex}" class="form-control" placeholder="Nome do prato" required maxlength="50" pattern="^[A-Za-zÀ-ÿ\s]+$">
           </div>
           <div class="mb-3">
             <label for="dishDescription${dishIndex}" class="form-label">Descrição:</label>

@@ -1,37 +1,5 @@
-<style>
-        .hero {
-      background-size: cover;
-      background-position: center;
-      height: 60vh;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      color: #fff;
-      padding: 0 5vw;
-    }
-    .hero-content h1 {
-      font-size: 4vw;
-      margin-bottom: 2vh;
-    }
-    .hero-content p {
-      font-size: 2vw;
-      margin-bottom: 3vh;
-    }
-</style>
+<link rel="stylesheet" href="/stylesheets/hero.css">
+
 <% let backgroundImg = restaurant.perfil?.perfilPhoto ? restaurant.perfil.perfilPhoto.replace(/\\/g, '/') : "/images/Plataform/LogoSite/logo.png" %>
 
 <section class="hero mb-5" style="background-image: url('<%= backgroundImg %>');">

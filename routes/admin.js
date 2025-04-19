@@ -15,7 +15,6 @@ const categoriesRouter = require("./adminRoutes/categories.js");
 const passwordController = require("../Controllers/PasswordController.js");
 const portionsRouter = require("./adminRoutes/portions.js");
 
-
 //Pagina do admin
 router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, adminController.homePage);
 

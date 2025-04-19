@@ -1,65 +1,43 @@
-/*Aqui e o nosso HomePage, que vai ter o cmainho,
-para a pagina principal, com o menu, avaliações
-E também para a pagina com os pratos do menu
-*/
 var express = require('express');
-var router = express.Router();
+var router = express.Router({ mergeParams: true }); /*Permite desta forma com que o route receba o parametro /:restaurant da route restaurants */
+
+//Controller
 var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
 
-/* Entra na Home Page do restaurante
-(vai ter de carregar, o restaurante carregado na primeira página) */ 
-/*Depois trocar para /:restaurant */
-router.get('/:restaurant', restaurant.homePage);
+//Rotas
+const order = require("./restaurantRoutes/orders.js");
+const dish = require("./restaurantRoutes/dish.js");
+const comments = require("./restaurantRoutes/comments.js");
 
-/*Depois trocar para /:restaurant/:comments */
-router.get('/:restaurant/comments', restaurant.comments);
+/* Rota que renderiza a home page de um restaurante */
+router.get('/', restaurant.homePage);
 
-//rota para gestão de pedidos para o restaurante
-router.get('/:restaurant/orderManagement', restaurant.orderManagement);
+/* Rota que lista menus e pratos */
+router.get('/menus', restaurant.getMenus);
 
-router.get('/:restaurant/orders', restaurant.getOrders);
-router.post('/:restaurant/orders', restaurant.createOrder);
-router.put('/:restaurant/orders/:orderId/status', restaurant.updateOrderStatus);
+/* Carrega a pagina que mostra informação sobre o menu */
+router.get('/showMenu/:menu', restaurant.showMenu);
 
-// Nova rota para listar menus e pratos
-router.get('/:restaurant/menus', restaurant.getMenus);
+/* Rota que carrega a pagina para criar um menu  */
+router.get('/createMenu', restaurant.createMenu);
 
+/*Rota que renderiza a pagina para editar um menu */
+router.get('/editMenu/:menuId', restaurant.editMenu);
 
-// Entra na pagina de registo
-//Depois em vez de /menu, meter /:menu, para aparecer o nome do menu
-/*Depois trocar para /:restaurant/:menu */
-router.get('/:restaurant/showMenu/:menu', restaurant.showMenu);
+/* Rota que dá update a um menu */
+router.post('/updateMenu/:menuId', restaurant.saveEditMenu);
 
-/*Depois trocar para /:restaurant/:menu/createMenu */
-router.get('/:restaurant/createMenu', restaurant.createMenu);
+/* Rota que dá delete a um menu */
+router.post('/deleteMenu/:menuId', restaurant.deleteMenu);
 
-//Salva o menu criado
-router.post('/:restaurant/menu/saveMenu', restaurant.saveMenu);
+//Outros route
+/* Redireciona para o route das orders */
+router.use('/orders', order);
 
-router.get('/:restaurant/editMenu/:menuId', restaurant.editMenu);
+/* Redireciona para o route dos comentarios */
+router.use('/comments', comments);
 
-router.post('/:restaurant/updateMenu/:menuId', restaurant.saveEditMenu);
-
-//Permite criar uma nova dish
-/*Depois trocar para /:restaurant/:menu/createDish */
-router.get('/:restaurant/menu/createDish', restaurant.createDish);
-
-router.post('/:restaurant/menu/saveDish', restaurant.saveDish);
-
-router.post('/:restaurant/deleteMenu/:menuId', restaurant.deleteMenu);
-
-/*Depois trocar para /:restaurant/:menu/:prato */
-router.get('/:restaurant/menu/showDish/:id', restaurant.showDish);
-
-/*Depois trocar para /:restaurant/:menu/:prato 
-Falta fazer
-*/
-router.get('/:restaurant/menu/editDish/:id', restaurant.editDish);
-
-/*Falta fazer */
-router.post('/:restaurant/menu/updateDish/:id', restaurant.updateDish);
-
-/*Falta fazer */
-router.post('/:restaurant/menu/deleteDish/:id', restaurant.deleteDish);
+/* Redireciona para a route das dish */
+router.use('/menu', dish);
 
 module.exports = router;

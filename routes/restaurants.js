@@ -5,6 +5,10 @@ const authTokenMiddleware = require("../Middleware/AuthTokenMiddleware.js");
 const typeUserMiddleware = require("../Middleware/TypeUserMiddleware.js");
 const restaurants = require("../Controllers/RestaurantsController.js"); 
 const passwordController = require("../Controllers/PasswordController.js");
+
+//Routes
+const routeRestaurant = require("./restaurant.js");
+
 /* Renderiza a homePage do restaurante */
 router.get('/', restaurants.restaurantsPage);
 
@@ -33,5 +37,9 @@ router.post('/editRestaurant/changePassword/:accountId', authTokenMiddleware.aut
 
 /* Dá delete a um restaurante */
 router.post('/deleteRestaurant/:restaurant', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.removeRestaurant);
+
+
+/* Leva para a route de um restaurante (especifico) */
+router.use('/:restaurant', routeRestaurant);
 
 module.exports = router;

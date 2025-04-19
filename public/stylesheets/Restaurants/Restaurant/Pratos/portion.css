@@ -1,0 +1,17 @@
+.portion-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.portion-content {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.remove-portion {
+    color: #dc3545;
+    cursor: pointer;
+}
