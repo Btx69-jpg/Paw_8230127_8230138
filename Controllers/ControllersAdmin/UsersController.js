@@ -4,19 +4,21 @@ const bcrypt = require("bcryptjs");
 //Models
 const User = require("../../Models/Perfils/User");
 const Perfil = require("../../Models/Reusable/Perfil");
-const Restaurantes = require("../../Models/Perfils/Restaurant");
+const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Constrollers
 const signUpController = require("../SignUpController");
-const Restaurant = require("../../Models/Perfils/Restaurant");
+
 var userController = {};
 
 //Associar um dono ao seu restaurante, atraves do id do restaurante
 
 userController.homePage = async function(req, res) {
+    const priority = "all";
+    const banned = "all";
     User.find({ 'perfil.priority': { $ne: "Admin" }}).exec()
         .then(function(users) {
-            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users});
+            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users, filters: {priority, banned}});
         })
         .catch(function(err) {
             console.log("Error", err);
@@ -50,7 +52,7 @@ userController.search = function(req, res) {
     }
     console.log(banned);
 
-    if (banned === "true") {
+    if (banned === "Sim") {
         query["perfil.banned"] = true;
     } else if (banned === "false") {
         query["perfil.banned"] = false;
@@ -60,7 +62,7 @@ userController.search = function(req, res) {
     
     User.find(query).exec()
         .then(function (users) {
-            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users});
+            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users, filters: {firstName, lastName, priority, banned}});
         })
         .catch(function(err) {
             console.error("Erro ao filtrar pelos restuarantes: ", err);
@@ -70,7 +72,7 @@ userController.search = function(req, res) {
 
 userController.findOneRestaurante = async function(name) {
     try {
-        return await Restaurantes.findOne( {name: name});
+        return await Restaurant.findOne( {name: name});
     } catch (err) {
         console.log(err);
         return null;
@@ -317,17 +319,6 @@ userController.deleteUser = async function(req, res) {
         if(user) {
             let imagePath = user.perfil.perfilPhoto;
             
-            //Caso o user seja dono de um restaurante
-            /*
-            if(user.perfil && user.perfil.priority === "Dono" && user.perfil.restaurantId) {
-                const restaurant = await Restaurantes.findOne( {_id: user.perfil.restaurantId}).exec();
-
-                if(restaurant) {
-                   await restaurant.deleteOne(); 
-                }
-            }
-
-            */
             await user.deleteOne();
             console.log("User eliminado com sucesso!");
 

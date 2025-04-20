@@ -130,23 +130,6 @@ restaurantsController.createRestaurant = function(req, res) {
 
 //Filtra por restaurantes (Reutilizar codigo também no admin)
 restaurantsController.search = function(req, res) {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("------------------------");
-    console.log("Pagina atual: ", res.locals.currentPage);
     let query = {};
     const { name = '', city = ''} = req.query;
     query.aprove = true;

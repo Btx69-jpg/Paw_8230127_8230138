@@ -43,8 +43,8 @@
                           id="firstName" 
                           class="form-control" 
                           placeholder="Input first name" 
-                          value="<%= typeof firstName !== 'undefined' ? firstName : '' %>"
                           pattern="^[A-Za-zÀ-ÿ\s]+$"
+                          value="<%= filters.firstName %>"
                           oninvalid="handleInvalidInput(this)"
                           oninput="this.setCustomValidity('')"/>
                         <div class="invalid-feedback">
@@ -60,8 +60,8 @@
                           id="lastName" 
                           class="form-control" 
                           placeholder="Input last name" 
-                          value="<%= typeof lastName !== 'undefined' ? lastName : '' %>" 
                           pattern="^[A-Za-zÀ-ÿ\s]+$"
+                          value="<%= filters.lastName %>"
                           oninvalid="handleInvalidInput(this)"
                           oninput="this.setCustomValidity('')"/>
                         <div class="invalid-feedback">
@@ -74,10 +74,10 @@
                         <select id="priority" 
                         name="priority" 
                         class="form-control">
-                            <option value="all">Qualquer</option>
-                            <option value="Cliente">Cliente</option>
-                            <option value="Dono">Dono</option>
-                            <option value="Funcionario">Funcionario</option>
+                            <option value="all" <%= filters.priority === 'all' ? 'selected' : '' %>>Qualquer</option>
+                            <option value="Cliente" <%= filters.priority === 'Cliente' ? 'selected' : '' %>>Cliente</option>
+                            <option value="Dono" <%= filters.priority === 'Dono' ? 'selected' : '' %>>Dono</option>
+                            <option value="Funcionario" <%= filters.priority === 'Funcionario' ? 'selected' : '' %>>Funcionario</option>
                         </select>
                     </div>
 
@@ -86,9 +86,9 @@
                         <select id="banned" 
                         name="banned" 
                         class="form-control">
-                            <option value="all">Todos</option>
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
+                            <option value="all" <%= filters.banned === 'all' ? 'selected' : '' %>>Todos</option>
+                            <option value="Sim" <%= filters.banned === 'Sim' ? 'selected' : '' %>>Sim</option>
+                            <option value="Nao" <%= filters.banned === 'Nao' ? 'selected' : '' %>>Não</option>
                         </select>
                     </div>
    

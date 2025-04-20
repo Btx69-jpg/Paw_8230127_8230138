@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var Portion = require('../Reusable/Portion'); //Pratos do menu
+
 var NutrientSchema = require('./Nutrient'); //Pratos do menu
-//Talvez mudar a categoria para ref
+
 var DishSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -38,7 +38,7 @@ var DishSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    nutritionalInfo: [ NutrientSchema ],
+    nutritionalInfo: [ NutrientSchema.schema ],
     updated_at: { type: Date, default: Date.now },
 });
 

@@ -8,7 +8,7 @@ const NutrientSchema = new mongoose.Schema({
       protein:    { type: Number, default: 0 },
       fat:        { type: Number, default: 0 },
       carbohydrates: { type: Number, default: 0 },
-        sugars:     { type: Number, default: 0 },
+      sugars:     { type: Number, default: 0 },
     }
   });
   
