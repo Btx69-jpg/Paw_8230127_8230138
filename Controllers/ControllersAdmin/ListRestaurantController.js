@@ -5,9 +5,9 @@ var Restaurant = require("../../Models/Perfils/Restaurant");
 //Metodos
 const { deletePackage } = require('../Functions/crudPackage');
 const User = require("../../Models/Perfils/User");
-var restaurantController = {};
+var listRestaurantController = {};
 
-restaurantController.homePage = function(req, res) {
+listRestaurantController.homePage = function(req, res) {
     Restaurant.find({ aprove: true}).exec()
         .then(restaurants => {
 
@@ -19,7 +19,7 @@ restaurantController.homePage = function(req, res) {
                         desaprove = true;
                     }
 
-                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, desaprove: desaprove});
+                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, filters: {}, desaprove: desaprove});
                 }).catch(err => {
                     console.log("Error", err);
                     res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
@@ -31,36 +31,7 @@ restaurantController.homePage = function(req, res) {
         });   
 };
 
-restaurantController.search = function(req, res) {
-    let query = {};
-    const restaurant = req.query.name;
-    const city = req.query.city;
-    
-    query.aprove = true;
-
-    if (restaurant) {
-        query.name = restaurant;
-    }
-    
-    if (city) {
-        query["address.city"] = city;
-    }
-    
-    Restaurant.find(query).exec()
-        .then(function (restaurants) {
-            
-            existsRestaurantsDesaprove()
-                .then(exists => {
-                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, desaprove: exists});
-                });
-        })
-        .catch(function(err) {
-            console.error("Erro ao filtrar pelos restuarantes: ", err);
-            res.render("errors/error", {numError: 500, error: err});
-        }); 
-};
-
-restaurantController.aprovePage = async function(req, res) {
+listRestaurantController.aprovePage = async function(req, res) {
     Restaurant.find({ aprove: false}).exec()
         .then(function(restaurants) {
             if(restaurants.length > 0) {
@@ -91,6 +62,8 @@ function existsRestaurantsDesaprove() {
         });
 }
 
+listRestaurantController.existsRestaurantsDesaprove = existsRestaurantsDesaprove;
+
 function existRestaurant(restaurant) {
     let problem = "";
     if (!restaurant) {
@@ -102,8 +75,8 @@ function existRestaurant(restaurant) {
     return problem;
 }
 
-//Admin aprovar um restaurante
-restaurantController.aproveRestaurant = async function(req, res) {
+//Admin aprovar um restaurante (Testar outra vez)
+listRestaurantController.aproveRestaurant = async function(req, res) {
     try {
         let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId});
 
@@ -131,7 +104,7 @@ restaurantController.aproveRestaurant = async function(req, res) {
         console.log("Estatutos do user atualizados com sucesso");
         
         //A seguir de atualizar o user atualizamos o restaurante
-        delete restaurant.tempUserId;
+        await delete restaurant.tempUserId;
         restaurant.countDonos++;
         restaurant.aprove = true;
 
@@ -151,34 +124,11 @@ restaurantController.aproveRestaurant = async function(req, res) {
         res.redirect("/perfil/admin/listRestaurants");
     }
 };
-    /*
-        Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
-        $set: {
-            aprove: true,
-        },
-    }, { new: true }).exec()
-        .then(rest => {
-            console.log("Restuarante aprovado com sucesso");
-        
-            existsRestaurantsDesaprove()
-                .then(exists => {
-                    if (exists) {
-                        res.redirect("/perfil/admin/listRestaurants/aproves");
-                    } else {
-                        res.redirect("/perfil/admin/listRestaurants");
-                    }
-                });
-        })
-        .catch(error => {
-            console.log("Erro: ", error);
-            res.redirect("/perfil/admin/listRestaurants");
-        });
-    */
 /*Tentar só arrnajar uma forma melhor de referenciar o caminho
 da pasta, tentar retirar o /images/Restaurants, pois é texto e já 
 está escrito na variavel e pode ser desnecessario.
 */
-restaurantController.rejectRestaurant = function(req, res) {
+listRestaurantController.rejectRestaurant = function(req, res) {
     Restaurant.findByIdAndDelete(req.params.restaurantId)
         .then(deletedRestaurant => {
             if (!deletedRestaurant) {
@@ -207,4 +157,4 @@ restaurantController.rejectRestaurant = function(req, res) {
         });
 };
 
-module.exports = restaurantController;
+module.exports = listRestaurantController;

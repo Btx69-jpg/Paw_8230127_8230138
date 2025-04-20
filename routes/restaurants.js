@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const authTokenMiddleware = require("../Middleware/AuthTokenMiddleware.js");
-const typeUserMiddleware = require("../Middleware/TypeUserMiddleware.js");
+const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
+const {isDonoRestaurantOrAdmin, isDonoOrRestaurant} = require("../Middleware/TypeUserMiddleware.js");
 const restaurants = require("../Controllers/RestaurantsController.js"); 
 const passwordController = require("../Controllers/PasswordController.js");
 
@@ -18,26 +18,25 @@ Reaproveitar também no restaurant do admin
 router.get('/search', restaurants.search);
 
 /* Renderiza a página para criar um novo restaurante */
-router.get('/createRestaurant', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.createRestaurant);
+router.get('/createRestaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.createRestaurant);
 
 /* Guarda um novo restaurante */
-router.post('/saveRestaurant', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.saveRestaurant);
+router.post('/saveRestaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.saveRestaurant);
 
 /* Renderiza a pagina para editar um restaurante */
-router.get('/editRestaurant/:restaurantId', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.editRestaurant);
+router.get('/editRestaurant/:restaurantId', authenticateToken, isDonoRestaurantOrAdmin, restaurants.editRestaurant);
 
 /* Guarda as alterações feitas a um restaurante */
-router.post('/updatRestaurant/:restaurantId', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.updatRestaurant);
+router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoRestaurantOrAdmin, restaurants.updatRestaurant);
 
 /* Renderiza a pagina para editar a password */
-router.get('/editRestaurant/editPassword/:accountId', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoOrRestaurant, passwordController.editPassword);
+router.get('/editRestaurant/editPassword/:accountId', authenticateToken, isDonoOrRestaurant, passwordController.editPassword);
 
 /* Atualiza a password do utilizador */
-router.post('/editRestaurant/changePassword/:accountId', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoOrRestaurant, passwordController.updatePassword);
+router.post('/editRestaurant/changePassword/:accountId', authenticateToken, isDonoOrRestaurant, passwordController.updatePassword);
 
 /* Dá delete a um restaurante */
-router.post('/deleteRestaurant/:restaurant', authTokenMiddleware.authenticateToken, typeUserMiddleware.isDonoRestaurantOrAdmin, restaurants.removeRestaurant);
-
+router.post('/deleteRestaurant/:restaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.removeRestaurant);
 
 /* Leva para a route de um restaurante (especifico) */
 router.use('/:restaurant', routeRestaurant);

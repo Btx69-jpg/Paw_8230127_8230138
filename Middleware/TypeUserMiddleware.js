@@ -52,7 +52,7 @@ function isRestaurant(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
         
-        if (cokkie === "Restaurante") {
+        if (cokkie === "Restaurant") {
             next();
         } else {
             res.render("errors/error", {numError: 403});
@@ -67,7 +67,7 @@ function isDonoOrRestaurant(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
         
-        if (cokkie === "Dono" || cokkie === "Restaurante") {
+        if (cokkie === "Dono" || cokkie === "Restaurant") {
             next();
         } else {
             res.render("errors/error", {numError: 403});
@@ -99,7 +99,7 @@ function isDonoRestaurantOrAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
         
-        if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Restaurante") {
+        if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Restaurant") {
             next();
         } else {
             res.render("errors/error", {numError: 403});

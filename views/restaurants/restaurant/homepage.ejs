@@ -25,7 +25,7 @@
         <a href="/restaurants" class="btn btn-secondary">Voltar</a>
 
         <% if(user !== null && user.perfil !== null && 
-          (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+          (user.perfil.priority === "Dono" || user.perfil.priority === "Restaurant")) { %>
           
           <a href="/restaurants/<%= restaurant.name %>/orders" class="btn btn-primary">Gestão de pedidos</a>  
           
@@ -40,7 +40,7 @@
       <%- include('HomePage/avaliation')%>
 
       <!-- Menus -->
-      <%- include('HomePage/menus')%>
+      <%- include('HomePage/menus', {menus: menus})%>
     </div>
 
     <!-- Bootstrap JS Bundle -->
