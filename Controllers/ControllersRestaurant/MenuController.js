@@ -12,7 +12,7 @@ const Portion = require("../../Models/Reusable/Portion");
 var menuController = {};
 
 //Metodos
-const {carregarCategories} = require("../Functions/categories.js");
+const {carregarCategories, carregarCategoriesMenu} = require("../Functions/categories.js");
 const {carregarPortions} = require("../Functions/portions.js");
 
 async function saveImage(req, res) {
@@ -53,23 +53,25 @@ async function saveImage(req, res) {
 // Permite visualizar um menu específico de um restaurante
 menuController.showMenu = async function (req, res) {
     try {
-      // Realiza a consulta e popula o caminho aninhado: menus.dishes.portions.portion
-      const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
-        .populate({
-          path: "menus.dishes.portions.portion",
-          model: "Portion"
-        })
-        .exec();
+        // Realiza a consulta e popula o caminho aninhado: menus.dishes.portions.portion
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+            .populate({
+                path: "menus.dishes.portions.portion",
+                model: "Portion"
+            }).exec();
   
-      // Extrai o menu específico a partir do array de menus
-      const menu = restaurant.menus.id(req.params.menu);
-      if (!menu) {
-        return res
-          .status(404)
-          .render("errors/error404", { error: "Menu não encontrado" });
-      }
-  
-      res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, menu: menu });
+        // Extrai o menu específico a partir do array de menus
+        const menu = restaurant.menus.id(req.params.menu);
+        if (!menu) {
+            return res
+            .status(404)
+            .render("errors/error404", { error: "Menu não encontrado" });
+        }
+    
+        const categories = await carregarCategoriesMenu(menu);
+        const portions = await carregarPortions();
+        console.log("Categorias: ", categories);
+        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {}, menu: menu, categories: categories, portions: portions });
     } catch (err) {
       console.error(err);
       res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });

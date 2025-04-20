@@ -16,25 +16,27 @@
             
                 <div class="col-md-4">
                     <label for="mameMenu" class="form-label">Nome do Menu:</label>
-                    <input type="text" class="form-control" name="mameMenu" id="mameMenu" placeholder="Nome do menu" maxlength="50" pattern="[A-Za-z\s]*">
+                    <input type="text" 
+                    class="form-control" 
+                    name="mameMenu" 
+                    id="mameMenu" 
+                    placeholder="Nome do menu" 
+                    maxlength="50" 
+                    pattern="[A-Za-z\s]*"
+                    value="<%= filters.name %>">
                 </div>
-
-                <div class="col-md-4">
-                    <label for="numDish" class="form-label">Número de Pratos:</label>
-                    <input type="number" class="form-control" name="numDish" id="numDish" placeholder="Número de pratos" min="1" max="10">
-                </div>
-
-                <div class="col-md-4">
-                    <label for="type" class="form-label">Tipo do Menu:</label>
-                    <select name="type" id="type" class="form-select" required>
-                    <% if (categories && categories.length > 0) { %>
-                        <option value="all">Todas</option>
-                        <% categories.forEach(function(cat) { %>
-                            <option value="<%= cat.category %>"><%= cat.category %></option>
-                        <% }); %>
-                    <% } %>
-                    </select>
-                </div>
+                
+                <% if (categories && categories.length > 0) { %>
+                    <div class="col-md-4">
+                        <label for="type" class="form-label">Tipo do Menu:</label>
+                        <select name="type" id="type" class="form-select" required>
+                            <option value="all">Todas</option>
+                            <% categories.forEach(function(category) { %>
+                                <option value="<%= category %>" <%= filters.priority === 'category' ? 'selected' : '' %>><%= category %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                <% } %>
 
                 <div class="col-12 d-flex justify-content-end">
                     <a href="/restaurants/<%= restaurant.name %>" class="btn btn-secondary me-2">Clear</a>

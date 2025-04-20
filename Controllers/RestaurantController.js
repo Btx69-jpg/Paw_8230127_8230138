@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 const Restaurant = require("../Models/Perfils/Restaurant");
 
 //Metodos
-const {carregarCategories} = require("./Functions/categories.js");
+const {carregarCategoriesMenus} = require("./Functions/categories.js");
 
 var restaurantController = {};
 
@@ -12,8 +12,8 @@ restaurantController.homePage = async function(req, res) {
   try {
     const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     const menus = restaurant.menus;
-    const categories = await carregarCategories();
-    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, categories: categories });
+    const categories = await carregarCategoriesMenus(menus);
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {}, categories: categories });
   } catch (err) {
       res.render("errors/error", {numError: 500, error: err});
   }
@@ -23,36 +23,17 @@ restaurantController.homePage = async function(req, res) {
 Terminar, só falta mandar o menu no render
 */
 restaurantController.searchMenu = async function(req, res) {
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log("----------------------");
   let query = {};
-  const menu = req.query.mameMenu;
+  const name = req.query.mameMenu;
   const numDish = req.query.numDish;
   const type = req.query.type;
 
-  if (menu) {
-      query.name = menu;
+  if (name) {
+      query.name = name;
+      console.log("Nome do menu: ", name);
   }
-  
-/*    
-  if (numDish) {
-      query.$expr = {
-        $gt: [
-          { $size: "$.dishes" }, // assumes first menu
-          parseInt(numDish)
-        ]
-      };
-  } */
 
-  if(type && type !== "all") {
+  if (type && type !== "all") {
     query.type = type;
   }
   
@@ -71,19 +52,19 @@ restaurantController.searchMenu = async function(req, res) {
       */
       menus = await restaurant.menus.filter(menu => {
         return Object.entries(query)
-          .every(([field, value]) =>
-            menu[field] === value
-          );
+          .every(([field, value]) => {
+
+           return menu[field] === value
+        });
       });
     }
 
-    const categories = await carregarCategories();
-    console.log("Restaurante: ")
-    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, categories: categories });
+    const categories = await carregarCategoriesMenus(menus);
+    console.log("Restaurante: ");
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {name, numDish, type}, categories: categories });
   } catch (err) {
       res.render("errors/error", {numError: 500, error: err});
   }
-
 };
 
 module.exports = restaurantController;
