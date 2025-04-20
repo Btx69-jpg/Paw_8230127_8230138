@@ -70,11 +70,106 @@ menuController.showMenu = async function (req, res) {
     
         const categories = await carregarCategoriesMenu(menu);
         const portions = await carregarPortions();
-        console.log("Categorias: ", categories);
         res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {}, menu: menu, categories: categories, portions: portions });
     } catch (err) {
       console.error(err);
       res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });
+    }
+};
+
+//Filtro dos pratos
+menuController.searchMenu = async function (req, res) {
+    try {
+        const dishName = req.query.dishName;
+        const category = req.query.category;
+        const price = req.query.price;
+        const portion = req.query.portion; 
+
+        if(portion) {
+            if(portion === "all") {
+                //Pesquisar pela portion com menor preco e associar o preço
+
+            } else {
+                //Pesquisar pela portion especifica com menor preço e ver se ele tem essa portion
+            }
+        }
+    
+        const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
+            .populate({
+                path: "menus.dishes.portions.portion",
+                model: "Portion"
+            }).exec();
+
+        // Extrai o menu específico a partir do array de menus
+        let menu = restaurant.menus.id(req.params.menu);
+        if (!menu) {
+            return res
+            .status(404)
+            .render("errors/error404", { error: "Menu não encontrado" });
+        }
+
+        menu.dishes = await menu.dishes.filter(dish => {
+            // 1) Filtro para o nome
+            if (dishName && dish.name !== dishName) {
+                return false;
+            }
+          
+            // 2) Filtro por tipo
+            if (category && category !== 'all' && dish.category !== category) {
+                return false;
+            }
+          
+            // 3) Seleção da porção a usar no filtro de preço
+            let candidatePortion = null;
+          
+            if (portion === 'all') {
+                // a) encontrar a porção de menor preço
+                if (dish.portions.length === 0) {
+                    return false; // sem porções, descartamos o prato
+                }
+                
+                candidatePortion = dish.portions[0];
+                
+                for (let i = 1; i < dish.portions.length; i++) {
+                    const p = dish.portions[i];
+                
+                    if (p.price < candidatePortion.price) {
+                        candidatePortion = p;
+                    }
+                }
+            } else {
+                // b) procurar a porção específica pelo nome (ou _id)
+                candidatePortion = dish.portions.find(p => {
+                    // se fizeste populate, p.portion.portion é o nome
+                    
+                    if (p.portion.portion && p.portion.portion === portion) {
+                        return true;
+                    }
+                    
+                    // senão compara o ObjectId
+                    return p.portion.toString() === portion;
+                });
+                // se não encontrou, descartamos o prato
+                if (!candidatePortion) {
+                    return false;
+                }
+            }
+
+            // 4) Filtro de preço (se for um número válido)
+            if (price && price > 0 && candidatePortion.price < price) {
+                return false;
+            }
+            
+            // passou em todos os filtros
+            return true;
+        });
+    
+        console.log("Dishes: ", menu.dishes);
+        const categories = await carregarCategoriesMenu(menu);
+        const portions = await carregarPortions();
+        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion }, menu: menu, categories: categories, portions: portions });
+    } catch (err) {
+        res.render("errors/error", {numError: 500, error: err});
     }
 };
 

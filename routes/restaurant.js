@@ -30,8 +30,11 @@ router.use('/menu', dish);
 /* Carrega a pagina que mostra informação sobre o menu */
 router.get('/showMenu/:menu', menu.showMenu);
 
-/* Rota para o filtro do menu */
+/* Rota para filtrar os menus */
 router.get('/search', restaurant.searchMenu);
+
+/* Carrega a pagina que mostra informação sobre o menu */
+router.get('/showMenu/:menu/search', menu.searchMenu);
 
 /*Rota para utilizar os middlewares nas routas abaixo */
 router.use(authenticateToken, isDonoOrAdmin);

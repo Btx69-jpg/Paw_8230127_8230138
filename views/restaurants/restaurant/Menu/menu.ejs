@@ -95,7 +95,7 @@
       </div>
 
       <div class="row justify-content-center mb-4">
-        <form action="/restaurants/<%= restaurant.name %>/search" method="GET" class="col-md-10 row g-3 justify-content-center">
+        <form action="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>/search" method="GET" class="col-md-10 row g-3 justify-content-center">
       
           <div class="col-md-4">
             <label for="dishName" class="form-label">Nome do Menu:</label>
@@ -111,11 +111,11 @@
       
           <% if (categories && categories.length > 0) { %>  
             <div class="col-md-4">
-              <label for="type" class="form-label">Tipo do Prato:</label>
-              <select name="type" id="type" class="form-select" required>
+              <label for="category" class="form-label">Tipo do Prato:</label>
+              <select name="category" id="category" class="form-select" required>
                 <option value="all">Todos</option>                
                 <% categories.forEach(function(category) { %>
-                  <option value="<%= category %>" <%= filters.type === category ? 'selected' : '' %>><%= category %></option>
+                  <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
                 <% }); %>
               </select>
             </div>
@@ -124,11 +124,13 @@
           <div class="col-md-4">
             <label for="price" class="form-label">Preço:</label>
             <input type="number" 
-                   class="form-control" 
-                   name="price" 
-                   id="price" 
-                   placeholder="Preço" 
-                   value="<%= filters.price %>">
+                  class="form-control" 
+                  name="price" 
+                  id="price" 
+                  placeholder="Preço" 
+                  min="0"
+                  step="0.01" 
+                  value="<%= filters.price %>">
           </div>
       
           <% if (portions && portions.length > 0) { %>    
@@ -137,14 +139,14 @@
               <select name="portion" id="portion" class="form-select" required>
                 <option value="all">Todos</option>
                 <% portions.forEach(function(port) { %>
-                  <option value="<%= port.portion %>" <%= filters.type === port.portion ? 'selected' : '' %>><%= port.portion %></option>
+                  <option value="<%= port.portion %>" <%= filters.portion === port.portion ? 'selected' : '' %>><%= port.portion %></option>
                 <% }); %>
               </select>
             </div>
           <% } %>
       
           <div class="col-12 d-flex justify-content-center mt-3 gap-2">
-            <a href="/restaurants/<%= restaurant.name %>" class="btn btn-secondary">Clear</a>
+            <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" class="btn btn-secondary">Clear</a>
             <button type="submit" class="btn btn-primary">Submeter</button>
           </div>
       
