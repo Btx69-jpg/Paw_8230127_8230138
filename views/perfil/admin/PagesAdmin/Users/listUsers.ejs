@@ -24,80 +24,70 @@
             <a href="/perfil/admin/listUsers/createUser" class="btn btn-success">Adicionar Utilizador</a>
         </div>
         <% if (users.length > 0) { %>
-            <!-- Ideias de filtros 
-            pesquisar por prioridade
-            Pesquisar por estar banido ou não
-            Pesquisar por nome
-            Pesquisar por email ou numero
-            -->
-
             <div class="row justify-content-center align-items-center mb-4">
-                <form action="/perfil/admin/listUsers/search" method="GET" class="col-md-8 col-lg-6">
+                <form action="/perfil/admin/listUsers/search" method="GET" class="col-md-8 col-lg-6">  
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-md-6">
+                            <label for="firstName">First name</label>
+                            <input 
+                                type="text" 
+                                name="firstName" 
+                                id="firstName" 
+                                class="form-control" 
+                                placeholder="Input first name" 
+                                pattern="^[A-Za-zÀ-ÿ\s]+$"
+                                value="<%= filters.firstName %>"
+                                oninvalid="handleInvalidInput(this)"
+                                oninput="this.setCustomValidity('')"/>
+                            <div class="invalid-feedback">
+                                O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                            </div>
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <label for="lastName">Last name</label>
+                            <input 
+                                type="text" 
+                                name="lastName" 
+                                id="lastName" 
+                                class="form-control" 
+                                placeholder="Input last name" 
+                                pattern="^[A-Za-zÀ-ÿ\s]+$"
+                                value="<%= filters.lastName %>"
+                                oninvalid="handleInvalidInput(this)"
+                                oninput="this.setCustomValidity('')"/>
+                            <div class="invalid-feedback">
+                                O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                            </div>
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label for="priority">Prioridade</label>
+                            <select id="priority" name="priority" class="form-control">
+                                <option value="all" <%= filters.priority === 'all' ? 'selected' : '' %>>Qualquer</option>
+                                <option value="Cliente" <%= filters.priority === 'Cliente' ? 'selected' : '' %>>Cliente</option>
+                                <option value="Dono" <%= filters.priority === 'Dono' ? 'selected' : '' %>>Dono</option>
+                                <option value="Funcionario" <%= filters.priority === 'Funcionario' ? 'selected' : '' %>>Funcionario</option>
+                            </select>
+                        </div>
+                
+                        <div class="col-md-6">
+                            <label for="banned">Banido?</label>
+                            <select id="banned" name="banned" class="form-control">
+                                <option value="all" <%= filters.banned === 'all' ? 'selected' : '' %>>Todos</option>
+                                <option value="Sim" <%= filters.banned === 'Sim' ? 'selected' : '' %>>Sim</option>
+                                <option value="Nao" <%= filters.banned === 'Nao' ? 'selected' : '' %>>Não</option>
+                            </select>
+                        </div>
+                    
+                        <div class="col-12 d-flex justify-content-center gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                            <a href="/perfil/admin/listUsers/" class="btn btn-secondary btn-sm">Clear</a>
+                        </div>
+                    </div>
                   
-                  <div class="row g-2">
-                    <div class="form-group">
-                        <label for="firstName">First name</label>
-                        <input 
-                          type="text" 
-                          name="firstName" 
-                          id="firstName" 
-                          class="form-control" 
-                          placeholder="Input first name" 
-                          pattern="^[A-Za-zÀ-ÿ\s]+$"
-                          value="<%= filters.firstName %>"
-                          oninvalid="handleInvalidInput(this)"
-                          oninput="this.setCustomValidity('')"/>
-                        <div class="invalid-feedback">
-                          O nome deve conter apenas letras e espaços, e não pode estar vazio.
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="lastName">Last name</label>
-                        <input 
-                          type="text" 
-                          name="lastName" 
-                          id="lastName" 
-                          class="form-control" 
-                          placeholder="Input last name" 
-                          pattern="^[A-Za-zÀ-ÿ\s]+$"
-                          value="<%= filters.lastName %>"
-                          oninvalid="handleInvalidInput(this)"
-                          oninput="this.setCustomValidity('')"/>
-                        <div class="invalid-feedback">
-                          O nome deve conter apenas letras e espaços, e não pode estar vazio.
-                        </div>
-                    </div>
-                    
-                    <div class="form-group" id="divPrioridade">
-                        <label for="priority">Prioridade</label>
-                        <select id="priority" 
-                        name="priority" 
-                        class="form-control">
-                            <option value="all" <%= filters.priority === 'all' ? 'selected' : '' %>>Qualquer</option>
-                            <option value="Cliente" <%= filters.priority === 'Cliente' ? 'selected' : '' %>>Cliente</option>
-                            <option value="Dono" <%= filters.priority === 'Dono' ? 'selected' : '' %>>Dono</option>
-                            <option value="Funcionario" <%= filters.priority === 'Funcionario' ? 'selected' : '' %>>Funcionario</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" id="divPrioridade">
-                        <label for="banned">Banido?</label>
-                        <select id="banned" 
-                        name="banned" 
-                        class="form-control">
-                            <option value="all" <%= filters.banned === 'all' ? 'selected' : '' %>>Todos</option>
-                            <option value="Sim" <%= filters.banned === 'Sim' ? 'selected' : '' %>>Sim</option>
-                            <option value="Nao" <%= filters.banned === 'Nao' ? 'selected' : '' %>>Não</option>
-                        </select>
-                    </div>
-   
-                  <div class="mt-3 d-flex justify-content-center gap-2">
-                    <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                    <a href="/perfil/admin/listUsers/" class="btn btn-secondary btn-sm">Clear</a>
-                  </div>
                 </form>
-              </div>
+            </div>
 
             <div class="row justify-content-center">
             <% for(let i = 0; i < users.length; i++) { %>
