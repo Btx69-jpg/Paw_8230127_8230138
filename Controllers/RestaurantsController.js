@@ -11,8 +11,9 @@ var restaurantsController = {};
 //Metodos
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
 const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
-const { error } = require("console");
-const User = require("../Models/Perfils/User");
+const { existsRestaurantsDesaprove } = require("./ControllersAdmin/ListRestaurantController");
+
+//Constantes
 const totRestaurant = 15; 
 
 async function validationRestaurant(body) {
@@ -96,7 +97,7 @@ async function validationEditRestaurant(body, restaurant) {
 restaurantsController.restaurantsPage = function(req, res) {
     Restaurant.find({ aprove: true}).exec()
         .then(function(restaurants) {
-            res.render("restaurants/restaurants", {restaurants: restaurants});
+            res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}});
         })
         .catch(function(err) {
             console.log("Error", err);
@@ -129,13 +130,29 @@ restaurantsController.createRestaurant = function(req, res) {
 
 //Filtra por restaurantes (Reutilizar codigo também no admin)
 restaurantsController.search = function(req, res) {
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("------------------------");
+    console.log("Pagina atual: ", res.locals.currentPage);
     let query = {};
-    const restaurant = req.query.name;
-    const city = req.query.city;
+    const { name = '', city = ''} = req.query;
     query.aprove = true;
     
-    if (restaurant) {
-      query.name = { "$regex": restaurant, "$options": "i" };
+    if (name) {
+      query.name = { "$regex": name, "$options": "i" };
     }
   
     if (city) {
@@ -144,7 +161,16 @@ restaurantsController.search = function(req, res) {
     
     Restaurant.find(query).exec()
       .then(function (restaurants) {
-        res.render("restaurants/restaurants", {restaurants: restaurants});
+        let paginaAtual = res.locals.currentPage;
+        
+        if (paginaAtual === "/restaurants/search") {
+            res.render("restaurants/restaurants", {restaurants: restaurants, filters: {name, city} });
+        } else if(paginaAtual === "/perfil/admin/listRestaurants/search") {
+            existsRestaurantsDesaprove()
+                .then(exists => {
+                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, filters: {name, city}, desaprove: exists});
+                });
+        }
       })
       .catch(function(err) {
         console.error("Erro ao filtrar pelos restuarantes: ", err);

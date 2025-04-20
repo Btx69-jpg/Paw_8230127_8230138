@@ -34,7 +34,12 @@
             </div>
           <% } %>
 
-          <div class="row justify-content-center align-items-center mb-4">
+          <!-- Filtro -->
+          <%- include('../../../../restaurants/filterRestaurants', {
+            action: "/perfil/admin/listRestaurants/search",
+            clear: "/perfil/admin/listRestaurants/"
+          }) %>
+<!--           <div class="row justify-content-center align-items-center mb-4">
             <form action="/perfil/admin/listRestaurants/search" method="GET" class="col-md-8 col-lg-6">
               
               <div class="row g-2">
@@ -48,7 +53,8 @@
                         class="form-control form-control-sm" 
                         maxlength="100" 
                         pattern="^(?!.*[\\/]).+$"
-                        title="O nome não pode conter os caracteres '/' ou '\'">
+                        title="O nome não pode conter os caracteres '/' ou '\'"
+                        >
                 </div>
     
                 <div class="col-sm-6">
@@ -69,7 +75,7 @@
                 <a href="/perfil/admin/listRestaurants/" class="btn btn-secondary btn-sm">Clear</a>
               </div>
             </form>
-          </div>
+          </div>-->
 
           <% for(let i = 0; i < restaurants.length; i++) { %>
             <div class="col-md-4 mb-4">

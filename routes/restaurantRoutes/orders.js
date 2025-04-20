@@ -3,19 +3,27 @@ var router = express.Router({ mergeParams: true }); //Penso ser necessario, se d
 const mongoose = require('mongoose');
 
 //Controllers 
-var order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
-
+const order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
+const menu = require("../../Controllers/ControllersRestaurant/MenuController.js")
 //rota para gestão de pedidos para o restaurante
-//router.get('/orderManagement', restaurant.orderManagement);
 
-/**
-router.get('/createOrder', restaurant.getOrders);
+const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
+const {isDonoOrRestaurant} = require("../../Middleware/TypeUserMiddleware.js");
 
-router.post('/saveOrder', )
+//Rota que aplica a verificação de token e validação de user às restantes
+router.use(authenticateToken, isDonoOrRestaurant);
 
-router.post('/orders', restaurant.createOrder);
+router.get('/', order.orderManagement);
 
-router.put('/orders/:orderId/status', restaurant.updateOrderStatus);
+router.get('/createOrder', order.createOrder);
+
+//router.post('/saveOrder', order.)
+
+//router.post('/getOrders', order.createOrder);
+
+router.put('/:orderId/status', order.updateOrderStatus);
  
- */
+/* Rota que lista menus e pratos */
+router.get('/getMenus', menu.getMenus);
+
 module.exports = router;

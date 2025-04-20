@@ -5,51 +5,85 @@ const Restaurant = require("../Models/Perfils/Restaurant");
 
 //Metodos
 const {carregarCategories} = require("./Functions/categories.js");
-const {carregarPortions} = require("./Functions/portions.js");
 
 var restaurantController = {};
 
-//Depois quando os restuarant e menu estiverem todos vem, modeificar os links todos
 restaurantController.homePage = async function(req, res) {
-    console.log("Nome do restaurante: ", req.params.restaurant);
-    try {
-        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-        let categories = await carregarCategories();
-        res.render("restaurants/restaurant/homepage", { restaurant: restaurant, categories: categories });
-    } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
-    }
+  try {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+    const menus = restaurant.menus;
+    const categories = await carregarCategories();
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, categories: categories });
+  } catch (err) {
+      res.render("errors/error", {numError: 500, error: err});
+  }
 };
 
-
-//Codigo que guarda uma dish
 /*
-Depois meter o resto do codigo, para associar a dish a um menu especifico de um restaurante especifico
-Meter depois verificações a ver se esta Dish já não existie
-*/ 
-
-/* SE DEIXAR DE DAR, DESCOMENTAR O CODIGO A BAIXO
-// Configurando o storage para salvar as fotos dos pratos
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      // Cria um caminho para armazenar as imagens: 
-      // "public/images/Restaurants/<nomeRestaurant>/Menus/<nomeMenu>/"
-      const pathFolder = "public/images/Restaurants/" + req.params.restaurant + "/Menus/" + req.body.menuName + "/";
-      try {
-        fs.mkdirSync(pathFolder, { recursive: true });
-        console.log('Pasta criada com sucesso!');
-      } catch (err) {
-        console.error('Erro ao criar a pasta:', err);
-      }
-      cb(null, pathFolder);
-    },
-    filename: function (req, file, cb) {
-      // Prefixo com timestamp para evitar nomes duplicados
-      cb(null, Date.now() + '-' + file.originalname);
-    }
-  });
-  
-  // Cria o upload middleware que aceita qualquer arquivo
-  const upload = multer({ storage: storage }).any();
+Terminar, só falta mandar o menu no render
 */
+restaurantController.searchMenu = async function(req, res) {
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log("----------------------");
+  let query = {};
+  const menu = req.query.mameMenu;
+  const numDish = req.query.numDish;
+  const type = req.query.type;
+
+  if (menu) {
+      query.name = menu;
+  }
+  
+/*    
+  if (numDish) {
+      query.$expr = {
+        $gt: [
+          { $size: "$.dishes" }, // assumes first menu
+          parseInt(numDish)
+        ]
+      };
+  } */
+
+  if(type && type !== "all") {
+    query.type = type;
+  }
+  
+  console.log("Query: ", query);
+  try {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+    let menus = [];
+
+    if (restaurant) {
+      /*
+      O filter ele percorre todos os elementos do array, e para cada elemento chama a função callback
+      Se o callback devolver true esse elemento é incluido no array, se retornar false é descartado.
+
+      Object.entries --> converte a query numa lista de pares, [campo, valor], ex: [['name', 'HappyMeals'], ['type', 'carne']]
+      .every --> metodo que retornar ture somente se todos os elementos do array, satisfazerem a condição do mesmo
+      */
+      menus = await restaurant.menus.filter(menu => {
+        return Object.entries(query)
+          .every(([field, value]) =>
+            menu[field] === value
+          );
+      });
+    }
+
+    const categories = await carregarCategories();
+    console.log("Restaurante: ")
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, categories: categories });
+  } catch (err) {
+      res.render("errors/error", {numError: 500, error: err});
+  }
+
+};
+
 module.exports = restaurantController;

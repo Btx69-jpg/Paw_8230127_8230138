@@ -17,9 +17,9 @@
     <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/Pratos/portion.css">
   </head>
   <body>
-    <%- include('../../../navBar.ejs') %> 
+    <%- include('../navBarRest') %>
 
-    <%- include('../../../hero.ejs', { content: restaurant.name, title: "Criar Menu" }) %>
+    <%- include('../../../hero', { content: restaurant.name, title: "Criar Menu" }) %>
 
     <div>
       <div class="container my-3" style="border-radius: 100">

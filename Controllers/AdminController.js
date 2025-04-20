@@ -32,7 +32,6 @@ adminController.deleteAdm = async function(req, res) {
         })
 };
 
-
 async function validateUser(user, email, phoneNumber) {
     const existingUser = await User.findOne({
         _id: { $ne: user._id },
