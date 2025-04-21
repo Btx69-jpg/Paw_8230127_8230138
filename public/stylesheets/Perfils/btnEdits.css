@@ -1,0 +1,20 @@
+.custom-btn {
+    background-color: #007bff; /* Cor de fundo azul */
+    border: none;              /* Remove a borda */
+    border-radius: 5px;        /* Arredonda os cantos */
+    color: #fff;               /* Texto branco */
+    padding: 10px 20px;        /* Espaçamento interno */
+    font-size: 16px;           /* Tamanho da fonte */
+    cursor: pointer;           /* Cursor de pointer ao passar o mouse */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transição suave para hover */
+}
+
+.custom-btn:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    transform: scale(1.02);    /* Leve aumento no botão */
+}
+
+.custom-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.5); /* Destaque ao focar */
+}

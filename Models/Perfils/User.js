@@ -35,10 +35,6 @@ var UserSchema = new mongoose.Schema({
         min: ['1900-01-01', 'A data mínima é 1900-01-01'],
         max: [new Date(), 'A data máxima é a data atual'],
     },
-    phoneNumber: {
-        type: Number,
-        match: [/^[0-9]{9}$/, 'O número de telefone deve conter exatamente 9 digitos'],
-    },
     updated_at: { type: Date, default: Date.now },
 });
 

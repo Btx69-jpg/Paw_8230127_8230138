@@ -1,30 +1,32 @@
 var mongoose = require('mongoose');
+
+//Models
 var Item = require('./Item'); 
+var FaturaRestaurant = require("./FaturaRestaurant");
+var FaturaUser = require("./FaturaCliente");
 
 var OrderSchema = new mongoose.Schema({
+    date: {
+        type: Date,
+        default: Date.now,
+        min: [Date.now, 'A data não pode ser no passado'],
+    },
     client: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: FaturaUser.schema,
         required: true,
+    },
+    restaurant: {
+        type: FaturaRestaurant.schema,
+        required: true,  
     },
     addressOrder: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AddressOrder',
         required: true,
     },
-    countItems: {
-        type: Number,
-        default: 1,
-        min: [1, 'A Encomenda, necessita no minimo de 0 order'] //Ver se era melhor meter um já que o outro campo é obrigatorio
-    },
     itens: {
         type: [Item.schema],
         required: true,
-    },
-    date: {
-        type: Date,
-        default: Date.now,
-        min: [Date.now, 'A data não pode ser no passado'],
     },
     totEncomenda: {
         type: Number,

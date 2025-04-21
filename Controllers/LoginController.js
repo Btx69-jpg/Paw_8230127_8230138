@@ -48,13 +48,22 @@ loginController.loginToken = (req, res, next) => {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           secure: process.env.NODE_ENV === 'production'
         });
+
+        res.cookie('priority', user.perfil.priority, {
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
       } else {
         res.cookie('auth_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production'
         });
+
+        res.cookie('priority', user.perfil.priority, {
+          httpOnly: true,
+        });
       }
-      res.cookie('priority', user.perfil.priority);
+
 
       return res.redirect('/');
     });
