@@ -17,6 +17,7 @@ router.get('/', order.orderManagement);
 
 router.get('/createOrder', order.createOrder);
 
+router.get("/historic", order.historicOrder);
 //router.post('/saveOrder', order.)
 
 //router.post('/getOrders', order.createOrder);

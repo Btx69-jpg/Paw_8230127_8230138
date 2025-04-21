@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 
 //Models
 const Restaurant = require("../../Models/Perfils/Restaurant");
+const User = require("../../Models/Perfils/User");
 const Order = require("../../Models/Orders/Order");
 
 var orderController = {};
@@ -22,7 +23,42 @@ orderController.orderManagement = async function(req, res) {
       restaurant, pendentes, expedidas, entregues
     });
 };
-  
+
+orderController.historicOrder = async function(req, res) {
+    try {
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log("--------------------------------------------");
+        let account = null;
+        const priority = req.cookies.priority;
+
+        if(priority === "Restaurant") {
+            account = await Restaurant.findOne( {name: req.params.restaurant}).exec();
+        }
+
+        if(!account) {
+            return res.status(500).render("errors/error", {numError: 500, error: "Conta não encontrada"});
+        }
+
+        const restName = account.name;
+        const maxData = new Date().toISOString().split("T")[0];
+
+        res.render("perfil/orders/historicOrder", {account: account, historic: account.perfil.historicOrders, maxData: maxData, filters: {}});
+    } catch (error) {
+        console.log("Erro: ", error);
+        res.redirect(res.locals.previousPage);
+    }
+
+}
+
 // GET /:restaurant/orders
 orderController.getOrders = async function(req, res) {
     try {

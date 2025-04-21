@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- Depois adaptar para dar também para o cliente-->
+<html lang="pt-PT">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Historico de encomendas</title>
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <style>
+            .hero {
+              background-size: cover;
+              background-position: center;
+              height: 40vh;
+              position: relative;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .hero-overlay {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+            }
+            .hero-content {
+              position: relative;
+              z-index: 2;
+              text-align: center;
+              color: #fff;
+            }
+            .dish-card {
+              transition: transform 0.3s, box-shadow 0.3s;
+              height: 100%;
+            }
+            .dish-card:hover {
+              transform: translateY(-5px);
+              box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+            .dish-image {
+              height: 200px;
+              object-fit: cover;
+              width: 100%;
+            }
+            .price-tag {
+              font-size: 1.25rem;
+              font-weight: 700;
+              color: #198754;
+            }
+          </style>
+    </head>
+
+    <body>
+        <%- include('../../restaurants/restaurant/navBarRest', {restaurant: account}) %>
+        <%- include('../../hero', { restaurant: account, title: 'Historico de encomendas', content: 'Aqui está o seu hisotrico de encomendas.' }) %>
+
+        <div class="container my-4">
+            <div class="col-12 col-md-10 col-lg-8 mx-auto mb-4">
+                <form action="/restaurants/<%= account.name %>/orders/historic/search" method="GET" class="row g-3 justify-content-center">
+                    <% if (account.perfil.priority === "Restaurant") { %>
+                        <div class="col-md-4">
+                            <label for="cliente" class="form-label">Nome do Cliente:</label>
+                            <input type="text" class="form-control" name="cliente" id="cliente" placeholder="Nome do Restaurante" maxlength="100" pattern="^(?!.*[\\/]).+$" value="<%= filters.cliente %>">
+                        </div>
+                    <% } else { %>
+                        <div class="col-md-4">
+                            <label for="nameRest" class="form-label">Nome do Restaurante:</label>
+                            <input type="text" class="form-control" name="nameRest" id="nameRest" placeholder="Nome do Restaurante" maxlength="100" pattern="^(?!.*[\\/]).+$" value="<%= filters.nameRest %>">
+                        </div>
+                    <% } %>
+
+                    <div class="col-md-4">
+                        <label for="price" class="form-label">Preço:</label>
+                        <input type="number" class="form-control" name="price" id="price" placeholder="Preço" min="0" step="0.01" value="<%= filters.price %>">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="from" class="form-label">Da data:</label>
+                        <input type="date" class="form-control" id="from" name="from" placeholder="Introduza uma data" min="2000-01-01" max="<%= maxData %>" value="<%= filters.from %>">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="to" class="form-label">Da data:</label>
+                        <input type="date" class="form-control" id="to" name="to" placeholder="Introduza uma data" min="2000-01-01" max="<%= maxData %>" value="<%= filters.to %>">
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center">
+                        <a href="/restaurants/<%= account.name %>/orders/historic" class="btn btn-secondary me-2">Clear</a>
+                        <button type="submit" class="btn btn-primary">Submeter</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-12 col-md-10 col-lg-8 mx-auto">
+                <% if(historic.length > 0) { %>
+                    <div class="row g-4 justify-content-center">
+                        <% for(let i = historic.length - 1; i > 0; i--) { %>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card dish-card h-100">
+                                    <% if (account.perfil.perfilPhoto) { %>
+                                        <img src="<%= account.perfil.perfilPhoto %>" class="card-img-top dish-image" alt="Photo do restaurante" />
+                                    <% } else { %>
+                                        <div class="dish-image bg-secondary d-flex align-items-center justify-content-center">
+                                            <span class="text-white">Sem imagem</span>
+                                        </div>
+                                    <% } %>
+
+                                    <div class="card-body">
+                                        <h5 class="card-title">Nome do restaurante: <%= account.name %></h5>
+                                        <h6><%= historic[i].itens.length %> items</h6>
+                                        <h6><%= historic[i].date %></h6>
+                                        <h6><%= historic[i].status %></h6>
+                                        <a href="/restaurants/<%= restaurant.name %>/orders/historic/<%= historic[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } else { %>
+                    <p class="text-center">Ainda não possui encomendas</p>
+                <% } %>
+            </div>
+        </div>
+    </body>
+</html>
