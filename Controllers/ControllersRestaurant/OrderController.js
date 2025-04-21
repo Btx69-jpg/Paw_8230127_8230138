@@ -26,17 +26,6 @@ orderController.orderManagement = async function(req, res) {
 
 orderController.historicOrder = async function(req, res) {
     try {
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log("--------------------------------------------");
         let account = null;
         const priority = req.cookies.priority;
 
@@ -48,7 +37,6 @@ orderController.historicOrder = async function(req, res) {
             return res.status(500).render("errors/error", {numError: 500, error: "Conta não encontrada"});
         }
 
-        const restName = account.name;
         const maxData = new Date().toISOString().split("T")[0];
 
         res.render("perfil/orders/historicOrder", {account: account, historic: account.perfil.historicOrders, maxData: maxData, filters: {}});
@@ -56,7 +44,39 @@ orderController.historicOrder = async function(req, res) {
         console.log("Erro: ", error);
         res.redirect(res.locals.previousPage);
     }
+}
 
+orderController.showOrder = function(req, res) {
+    Restaurant.findOne( {name: req.params.restaurant}).exec()
+        .then(rest => {
+            if(rest) {
+                let found = false
+                let i = 0;
+                let orderId = req.params.orderId;
+                
+                while(i < rest.perfil.historicOrders && !found) {
+                    if(rest.perfil.historicOrders[i] == orderId) {
+                        found = true;
+                    } else {
+                        i++;
+                    }
+                }
+
+                if (!found) {
+                    console.log("Não foi encontrado nenhuma order");
+                    res.redirect(res.locals.previousPage); 
+                }
+
+                res.render("perfil/orders/showOrder", {order: rest.perfil.historicOrders[i], priority: req.cookies.priority});
+            } else {
+                console.log("Não foi encontrado nenhum restaurante");
+                res.redirect(res.locals.previousPage);
+            }
+        })
+        .carch(error => {
+            console.log("Erro: ", error);
+            res.redirect(res.locals.previousPage);
+        })
 }
 
 // GET /:restaurant/orders

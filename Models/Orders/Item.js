@@ -1,9 +1,17 @@
 var mongoose = require('mongoose');
-var Dish = require('../Menus/Dish'); //Pratos
 
 var ItemSchema = new mongoose.Schema({
-    dish: {
-        type: Dish.schema,
+    nameDish: {
+        type: String,
+        maxlength: [50, 'O título deve ter no máximo 50 caracteres'],
+        match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], //Garante que o nome só tem letras, com acentos ou não, e espaços
+        required: true,
+    },
+    portionDish: {
+        type: String,
+        maxlength: [25, 'O nome deve ter no máximo 50 caracteres'],
+        match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], //Garante que o nome só tem letras, com acentos ou não, e espaços
+        default: "",
         required: true,
     },
     quantity: {

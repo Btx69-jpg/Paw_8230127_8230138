@@ -28,7 +28,7 @@ var OrderSchema = new mongoose.Schema({
         type: [Item.schema],
         required: true,
     },
-    totEncomenda: {
+    price: {
         type: Number,
         default: 0,
         min: [0, 'O valor mínimo da encomenda deve ser 0'],

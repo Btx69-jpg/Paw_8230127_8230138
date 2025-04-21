@@ -3,53 +3,128 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Historico de encomendas</title>
-
-        <!-- Icon do site-->
+        <title>Detalhes da Encomenda</title>
         <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
-
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    </head>
-
-    <body>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
         
-        <!--
-        data da encomenda,
-        Rua de entrega
-        Pratos do pedido (dados, preço, quantidades)
-        Total da compra
-        Preciso mostra dados do cliente (se for restaurante), Mostra dados do restaurante (caso cliente dados de faturacao)
-        -->
+        <style>
+            body {
+                background-color: #f5f5f5;
+                font-family: Sans-Serif;
+            }
+            main {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+            .order-container {
+                width: 90vw;
+                max-width: 600px;
+                background-color: #fff;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+            }
+            .order-header {
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .form-group label {
+                font-weight: 600;
+            }
+            .form-control-plaintext {
+                padding-left: 0;
+                border: none;
+                background-color: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div class="order-container">
+                <h2 class="order-header">Encomenda #<%= order._id %></h2>
+                <div class="form-group">
+                    <label>Data da encomenda:</label>
+                    <p class="form-control-plaintext"><%= order.date %></p>
+                </div>
 
-        <p>ID: xxxxxxxxxxxxxxxxxxx</p>
-        <p>Data da encomenda: xxxxxxxxxxxxx</p>
+                <% if (priority === "Restaurant") { %>
+                    <h4>Dados do Cliente</h4>
+                    <div class="form-group">
+                        <label>Nome:</label>
+                        <p class="form-control-plaintext"><%= order.client.firstName %> <%= order.client.lastName %></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <p class="form-control-plaintext"><%= order.client.email %></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone:</label>
+                        <p class="form-control-plaintext"><%= order.client.phoneNumber %></p>
+                    </div>
+                <% } else { %>
+                    <h4>Dados do Restaurante</h4>
+                    <div class="form-group">
+                        <label>Nome:</label>
+                        <p class="form-control-plaintext"><%= order.client.name %></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <p class="form-control-plaintext"><%= order.client.email %></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone:</label>
+                        <p class="form-control-plaintext"><%= order.client.phoneNumber %></p>
+                    </div>
+                <% } %>
 
-        <% if(priority === "Restaurant") { %>
-            <!-- Mostra dados de faturação do cliente-->
-            <h1>Cliente</h1>
-            <p>Nome: xxxxxxxxxxxx</p>
-            <p>Email: xxxxxxxxxxxx</p>
-            <p>Telefone: xxxxxxxxxxx</p>
-            
-            <!-- Meter um if para so mostrar o nif, caso tenha sido utilizado nif na encomenda-->
-        <% } else { %>
-            <!-- Mostra dados do restaurante-->
-            <h1>Restaurante</h1>
-            <p>Nome: xxxxxxxxxxxx</p>
-            <p>Email: xxxxxxxxxxxx</p>
-            <p>Telefone: xxxxxxxxxxx</p>
-            <p>Morada: xxxxxxxxxxxxxxxxxx</p>
-        <% } %>
+                <h4>Endereço de Entrega</h4>
+                <div class="form-group">
+                    <label>Morada:</label>
+                    <p class="form-control-plaintext">
+                    <%= order.addressOrder.address.street %>,
+                    <%= order.addressOrder.address.postal_code %>,
+                    <%= order.addressOrder.address.city %>
+                    </p>
+                </div>
 
-        <p>Morada de entrega: xxxxxxxxxxxxxxxxxx</p>
+                <% if (order.addressOrder.nif) { %>
+                    <div class="form-group">
+                        <label>NIF:</label>
+                        <p class="form-control-plaintext"><%= order.addressOrder.nif %></p>
+                    </div>
+                <% } %>
 
-        <!-- Dados do prato meter ciclo for -->
-        <p>Nome: xxxxx</p>
-        <p>Porção: xxxxxxxxxxxxx</p>
-        <p>Quantidade: xxxxxxxxx</p>
-        <p>Preço: xxxxxxxxxxxxxxx </p> <!-- Quantidade * preço da unidade-->
+                <h4>Itens da Encomenda</h4>
+                <% if (order.itens.length > 0) { %>
+                    <% order.itens.forEach(function(item) { %>
+                        <div class="form-group">
+                            <label><%= item.nameDish %></label>
+                            <p class="form-control-plaintext">
+                                Porção: <%= item.portionDish %> | Quantidade: <%= item.quantity %> | Preço: €<%= item.price.toFixed(2) %>
+                            </p>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="form-group">
+                        <p class="text-center">A encomenda não tem pratos</p>
+                    </div>
+                <% } %>
 
-        <p>Total da entrega: xxxxx</p>
+                <div class="form-group">
+                    <label>Total da entrega:</label>
+                    <p class="form-control-plaintext">€<%= order.price.toFixed(2) %></p>
+                </div>
+
+                
+                <div class="d-grid gap-2">  
+                    <a href="/restaurants/<%= order.restaurant.name %>/orders/historic" class="btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+        </main>
     </body>
 </html>
