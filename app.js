@@ -102,7 +102,6 @@ app.use('/perfil', perfil); //Pagina para renderizar o perfil
 app.use('/perfil/admin', admin); //Paginas de perfil do admin
 app.use('/checkOut', checkOut); //Aqui carrego o controller que quero usar
 
-
 //Middleware que mostra a pagina 404 personalizada
 app.use((req, res, next) => {
   const isStatic = req.path.match(/\.(jpg|jpeg|png|gif|css|js|svg|ico|webp|woff2?|ttf)$/i);
@@ -117,13 +116,6 @@ app.use((req, res, next) => {
     user: req.user || null
   });
 });
-
-// catch 404 and forward to error handler
-/*
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-*/
 
 // error handler
 app.use(function(err, req, res, next) {

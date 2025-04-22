@@ -1,0 +1,14 @@
+<div class="container">
+    <h3>Avisos de Dados Nutricionais</h3>
+    <ul>
+      <% warnings.forEach(warning => { %>
+        <li class="text-warning"><%= warning %></li>
+      <% }); %>
+    </ul>
+    
+    <form action="/continue-save" method="post">
+      <input type="hidden" name="confirm" value="true">
+      <button type="submit" class="btn btn-primary">Continuar e Salvar</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back()">Corrigir Ingredientes</button>
+    </form>
+  </div>

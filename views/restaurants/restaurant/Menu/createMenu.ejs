@@ -9,41 +9,50 @@
     />
     <!-- Link da fonte -->
 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"rel="stylesheet"/>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <!-- CSS-->
-    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/Pratos/portion.css">
+    <link
+      rel="stylesheet"
+      href="/stylesheets/Restaurants/Restaurant/Pratos/portion.css"
+    />
   </head>
   <body>
-    <%- include('../navBarRest') %>
-
-    <%- include('../../../hero', { content: restaurant.name, title: "Criar Menu" }) %>
+    <%- include('../navBarRest') %> <%- include('../../../hero', { content:
+    restaurant.name, title: "Criar Menu" }) %>
 
     <div>
       <div class="container my-3" style="border-radius: 100">
-        <a href="/restaurants/<%= restaurant.name %>" class="btn btn-primary">&lt;</a>
+        <a href="/restaurants/<%= restaurant.name %>" class="btn btn-primary"
+          >&lt;</a
+        >
       </div>
     </div>
 
     <% if (error && error.length > 0) { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Erro!</strong> <%= error %>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Erro!</strong> <%= error %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
     <% } %>
 
     <!-- Formulário do Menu -->
     <div class="container my-5">
-      <!-- Altere a action para a rota que processa o salvamento do Menu, incluindo os pratos -->
       <form
-        action="/restaurants/<%= restaurant.name %>/menu/saveMenu"
+        action="/restaurants/<%= restaurant.name %>/saveMenu"
         method="post"
         enctype="multipart/form-data"
       >
@@ -76,20 +85,20 @@
         <div class="mb-3">
           <label for="type" class="form-label">Tipo do Menu:</label>
           <% if (categories && categories.length > 0) { %>
-            <select name="type" id="type" class="form-select" required>
-              <% categories.forEach(function(cat) { %>
-                <option value="<%= cat.category %>"><%= cat.category %></option>
-              <% }); %>
-            </select>
+          <select name="type" id="type" class="form-select" required>
+            <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.category %>"><%= cat.category %></option>
+            <% }); %>
+          </select>
           <% } else { %>
-            <!-- Caso não haja categorias, entrada de texto -->
-            <input
-              type="text"
-              name="type"
-              id="type"
-              class="form-control"
-              required
-            />
+          <!-- Caso não haja categorias, entrada de texto -->
+          <input
+            type="text"
+            name="type"
+            id="type"
+            class="form-control"
+            required
+          />
           <% } %>
         </div>
 
@@ -97,7 +106,7 @@
         <h4>Pratos</h4>
         <div id="dishesContainer">
           <% if (error && error.length > 0) { %>
-            <div class="alert alert-danger" role="alert"><%= error %></div>
+          <div class="alert alert-danger" role="alert"><%= error %></div>
           <% } %>
 
           <!-- Primeiro formulário de prato (index 0) -->
@@ -118,7 +127,9 @@
               />
             </div>
             <div class="mb-3">
-              <label for="dishDescription0" class="form-label">Descrição:</label>
+              <label for="dishDescription0" class="form-label"
+                >Descrição:</label
+              >
               <input
                 type="text"
                 name="dishes[0][description]"
@@ -131,30 +142,30 @@
               />
             </div>
             <% if (categories && categories.length > 0) { %>
-              <div class="mb-3">
-                <label for="dishCategory0" class="form-label">Categoria:</label>
-                <select
-                  name="dishes[0][category]"
-                  id="dishCategory0"
-                  class="form-select"
-                  required
-                >
-                  <% categories.forEach(function(cat) { %>
-                    <option value="<%= cat.category %>"><%= cat.category %></option>
-                  <% }); %>
-                </select>
-              </div>
+            <div class="mb-3">
+              <label for="dishCategory0" class="form-label">Categoria:</label>
+              <select
+                name="dishes[0][category]"
+                id="dishCategory0"
+                class="form-select"
+                required
+              >
+                <% categories.forEach(function(cat) { %>
+                <option value="<%= cat.category %>"><%= cat.category %></option>
+                <% }); %>
+              </select>
+            </div>
             <% } else { %>
-              <div class="mb-3">
-                <label for="dishCategory0" class="form-label">Categoria:</label>
-                <input
-                  type="text"
-                  name="dishes[0][category]"
-                  id="dishCategory0"
-                  class="form-control"
-                  required
-                />
-              </div>
+            <div class="mb-3">
+              <label for="dishCategory0" class="form-label">Categoria:</label>
+              <input
+                type="text"
+                name="dishes[0][category]"
+                id="dishCategory0"
+                class="form-control"
+                required
+              />
+            </div>
             <% } %>
             <div class="mb-3">
               <label for="dishPrice0" class="form-label">Preço:</label>
@@ -170,9 +181,53 @@
                 oninvalid="this.setCustomValidity('Informe um preço válido.')"
               />
             </div>
+
+            <div class="mb-3">
+              <label class="form-label">Ingredientes:</label>
+              <div id="ingredientsContainer-0">
+                <div class="ingredient-item mb-2">
+                  <div class="input-group">
+                    <select
+                      class="form-select search-type"
+                      style="max-width: 150px"
+                    >
+                      <option value="name">Por Nome</option>
+                      <option value="barcode">Por Código</option>
+                    </select>
+                    <input
+                      type="text"
+                      name="dishes[0][ingredients][]"
+                      class="form-control ingredient-input"
+                      placeholder="Nome do ingrediente"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger remove-ingredient"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary add-ingredient"
+              >
+                Adicionar Ingrediente
+              </button>
+              <small class="text-muted"
+                >Use vírgulas para múltiplos itens ou códigos de barras</small
+              >
+            </div>
+
             <div class="mb-3">
               <label class="form-label">Porções:</label>
-              <div id="portionsContainer-0" class="portions-container mb-3" data-index="0">
+              <div
+                id="portionsContainer-0"
+                class="portions-container mb-3"
+                data-index="0"
+              >
                 <!-- Porções adicionadas aparecerão aqui -->
               </div>
               <div class="input-group">
@@ -184,9 +239,9 @@
                 >
                   <option value="">Selecione uma porção...</option>
                   <% portions.forEach(function(portion) { %>
-                    <option value="<%= portion._id %>">
-                      <%= portion.portion %>
-                    </option>
+                  <option value="<%= portion._id %>">
+                    <%= portion.portion %>
+                  </option>
                   <% }); %>
                 </select>
                 <button
@@ -232,18 +287,20 @@
     <!-- Script para adição e remoção dinâmica dos formulários de prato -->
     <script>
       let dishIndex = 1; // O primeiro formulário já está indexado como 0
-      
-      document.getElementById("addDishBtn").addEventListener("click", function () {
-        if (dishIndex >= 10) {
-          alert("O máximo de pratos é 10.");
-          return;
-        }
-        const container = document.getElementById("dishesContainer");
-        const newDish = document.createElement("div");
-        newDish.classList.add("dish-form", "border", "p-3", "mb-3");
-        newDish.setAttribute("data-index", dishIndex);
-        // Para pratos adicionais, a categoria é de livre escrita (ou pode ser alterado conforme a lógica desejada)
-        newDish.innerHTML = `
+
+      document
+        .getElementById("addDishBtn")
+        .addEventListener("click", function () {
+          if (dishIndex >= 10) {
+            alert("O máximo de pratos é 10.");
+            return;
+          }
+          const container = document.getElementById("dishesContainer");
+          const newDish = document.createElement("div");
+          newDish.classList.add("dish-form", "border", "p-3", "mb-3");
+          newDish.setAttribute("data-index", dishIndex);
+          // Para pratos adicionais, a categoria é de livre escrita (ou pode ser alterado conforme a lógica desejada)
+          newDish.innerHTML = `
           <h5>Prato ${dishIndex + 1}</h5>
           <div class="mb-3">
             <label for="dishName${dishIndex}" class="form-label">Nome:</label>
@@ -272,6 +329,31 @@
             <label for="dishPrice${dishIndex}" class="form-label">Preço:</label>
             <input type="number" name="dishes[${dishIndex}][price]" id="dishPrice${dishIndex}" class="form-control" placeholder="Preço do prato" required min="0" step="0.01">
           </div>
+
+          <div class="mb-3">
+  <label class="form-label">Ingredientes:</label>
+  <div id="ingredientsContainer-${dishIndex}">
+    <div class="ingredient-item mb-2">
+      <div class="input-group">
+        <select class="form-select search-type" style="max-width: 150px;">
+          <option value="name">Por Nome</option>
+          <option value="barcode">Por Código</option>
+        </select>
+        <input
+          type="text"
+          name="dishes[${dishIndex}][ingredients][]"
+          class="form-control ingredient-input"
+          placeholder="Nome do ingrediente"
+          required
+        />
+        <button type="button" class="btn btn-outline-danger remove-ingredient">×</button>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-sm btn-secondary add-ingredient">Adicionar Ingrediente</button>
+  <small class="text-muted">Use vírgulas para múltiplos itens ou códigos de barras</small>
+</div>
+
           <div class="mb-3">
             <label class="form-label">Porções:</label>
             <div id="portionsContainer-${dishIndex}" class="portions-container mb-3" data-index="${dishIndex}"></div>
@@ -283,9 +365,12 @@
                 onchange="addPortion(this)"
               >
                 <option value="">Selecione uma porção...</option>
-                ${portionsData.map(portion => 
-                  `<option value="${portion._id}">${portion.portion}</option>`
-                ).join('')}
+                ${portionsData
+                  .map(
+                    (portion) =>
+                      `<option value="${portion._id}">${portion.portion}</option>`
+                  )
+                  .join("")}
               </select>
               <button 
                 type="button" 
@@ -307,21 +392,23 @@
             <button type="button" class="btn btn-danger removeDishBtn">Remover Prato</button>
           </div>
         `;
-        container.appendChild(newDish);
-        dishIndex++;
-      });
+          container.appendChild(newDish);
+          dishIndex++;
+        });
 
-      document.getElementById("dishesContainer").addEventListener("click", function (e) {
-        if (e.target && e.target.classList.contains("removeDishBtn")) {
-          // Garante que haja pelo menos um prato (o primeiro não pode ser removido)
-          if (document.querySelectorAll(".dish-form").length > 1) {
-            e.target.closest(".dish-form").remove();
-            reindexDishes();
-          } else {
-            alert("Você precisa ter pelo menos um prato no menu.");
+      document
+        .getElementById("dishesContainer")
+        .addEventListener("click", function (e) {
+          if (e.target && e.target.classList.contains("removeDishBtn")) {
+            // Garante que haja pelo menos um prato (o primeiro não pode ser removido)
+            if (document.querySelectorAll(".dish-form").length > 1) {
+              e.target.closest(".dish-form").remove();
+              reindexDishes();
+            } else {
+              alert("Você precisa ter pelo menos um prato no menu.");
+            }
           }
-        }
-      });
+        });
 
       function reindexDishes() {
         const dishForms = document.querySelectorAll(".dish-form");
@@ -333,7 +420,8 @@
           const elements = form.querySelectorAll("input, select, label");
           elements.forEach((el) => {
             if (
-              (el.tagName.toLowerCase() === "input" || el.tagName.toLowerCase() === "select") &&
+              (el.tagName.toLowerCase() === "input" ||
+                el.tagName.toLowerCase() === "select") &&
               el.hasAttribute("name")
             ) {
               let nome = el.getAttribute("name");
@@ -344,7 +432,10 @@
               let novoId = el.getAttribute("id").replace(/\d+$/, index);
               el.setAttribute("id", novoId);
             }
-            if (el.tagName.toLowerCase() === "label" && el.hasAttribute("for")) {
+            if (
+              el.tagName.toLowerCase() === "label" &&
+              el.hasAttribute("for")
+            ) {
               let novoFor = el.getAttribute("for").replace(/\d+$/, index);
               el.setAttribute("for", novoFor);
             }
@@ -357,7 +448,9 @@
       document.addEventListener("DOMContentLoaded", function () {
         document.body.addEventListener("change", function (e) {
           if (e.target.classList.contains("portion-checkbox")) {
-            const priceInput = e.target.closest(".form-check").querySelector(".portion-price");
+            const priceInput = e.target
+              .closest(".form-check")
+              .querySelector(".portion-price");
             priceInput.disabled = !e.target.checked;
             if (e.target.checked) {
               priceInput.required = true;
@@ -375,10 +468,15 @@
         const container = document.getElementById(`portionsContainer-${index}`);
         const portionId = selectElement.value;
         if (!portionId) return;
-        const portionName = selectElement.options[selectElement.selectedIndex].text;
+        const portionName =
+          selectElement.options[selectElement.selectedIndex].text;
 
         // Verifica se a porção já foi adicionada
-        if (document.querySelector(`input[name^="dishes[${index}][portions]"][value="${portionId}"]`)) {
+        if (
+          document.querySelector(
+            `input[name^="dishes[${index}][portions]"][value="${portionId}"]`
+          )
+        ) {
           alert("Esta porção já foi adicionada");
           return;
         }
@@ -397,7 +495,8 @@
         container.appendChild(div);
 
         // Ao invés de desabilitar a opção, oculta-a do dropdown para que não seja visível
-        selectElement.options[selectElement.selectedIndex].style.display = 'none';
+        selectElement.options[selectElement.selectedIndex].style.display =
+          "none";
         selectElement.value = "";
         validatePortions(index);
       }
@@ -405,14 +504,18 @@
       function removePortion(element) {
         const portionItem = element.closest(".portion-item");
         const container = portionItem.closest(".portions-container");
-        const portionId = portionItem.querySelector('input[type="hidden"]').value;
+        const portionId = portionItem.querySelector(
+          'input[type="hidden"]'
+        ).value;
         const containerIndex = container.dataset.index;
-        const selectElement = document.getElementById(`portionSelect-${containerIndex}`);
+        const selectElement = document.getElementById(
+          `portionSelect-${containerIndex}`
+        );
 
         // Restaura a opção removida para que volte a ser exibida
-        Array.from(selectElement.options).forEach(option => {
+        Array.from(selectElement.options).forEach((option) => {
           if (option.value === portionId) {
-            option.style.display = '';
+            option.style.display = "";
           }
         });
         portionItem.remove();
@@ -422,9 +525,47 @@
       // Validação para garantir que ao menos uma porção seja adicionada por prato
       function validatePortions(index) {
         const container = document.getElementById(`portionsContainer-${index}`);
-        const error = container.closest(".mb-3").querySelector(".portion-error");
-        error.style.display = container.children.length === 0 ? "block" : "none";
+        const error = container
+          .closest(".mb-3")
+          .querySelector(".portion-error");
+        error.style.display =
+          container.children.length === 0 ? "block" : "none";
       }
+
+      // Gerenciamento de ingredientes
+      document.querySelectorAll(".add-ingredient").forEach((button) => {
+        button.addEventListener("click", function () {
+          const container = this.previousElementSibling;
+          const newItem = document.createElement("div");
+          newItem.className = "ingredient-item mb-2";
+          newItem.innerHTML = `
+      <div class="input-group">
+        <select class="form-select search-type" style="max-width: 150px;">
+          <option value="name">Por Nome</option>
+          <option value="barcode">Por Código</option>
+        </select>
+        <input
+          type="text"
+          name="${container.firstElementChild.querySelector("input").name}"
+          class="form-control ingredient-input"
+          placeholder="Nome do ingrediente"
+          required
+        />
+        <button type="button" class="btn btn-outline-danger remove-ingredient">×</button>
+      </div>
+    `;
+          container.appendChild(newItem);
+        });
+      });
+
+      document.body.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-ingredient")) {
+          const container = e.target.closest("#ingredientsContainer-0"); // Ajuste o índice conforme necessário
+          if (container.children.length > 1) {
+            e.target.closest(".ingredient-item").remove();
+          }
+        }
+      });
     </script>
   </body>
 </html>
