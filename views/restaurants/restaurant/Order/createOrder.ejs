@@ -1,123 +1,139 @@
 <div class="container">
-    <form id="newOrderForm" class="row g-3 mb-5">
-      <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Criar encomenda</h5>
+  <form id="newOrderForm" class="row g-3 mb-5">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Criar encomenda</h5>
+      </div>
+      <div class="card-body">
+
+        <!-- Tipo de entrega -->
+        <div class="mb-3">
+          <label class="form-label">Tipo de entrega</label>
+          <select id="orderType" class="form-select" name="orderType" required>
+            <option value="delivery">Entrega</option>
+            <option value="pickup">Recolha no restaurante</option>
+          </select>
         </div>
-        <div class="card-body">
 
-          <!-- Tipo de entrega -->
-          <div class="mb-3">
-            <label class="form-label">Tipo de entrega</label>
-            <select id="orderType" class="form-select" name="orderType" required>
-              <option value="delivery">Entrega</option>
-              <option value="pickup">Recolha no restaurante</option>
-            </select>
-          </div>
-
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="firstName" class="form-label">Primeiro Nome</label>
-              <input
-                type="text"
-                name="firstName"
-                id="firstName"
-                class="form-control"
-                placeholder="Introduza o primeiro nome do cliente"
-                required
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label for="lastName" class="form-label">Ultimo Nome</label>
-              <input
-                type="text"
-                name="lastName"
-                id="lastName"
-                class="form-control"
-                placeholder="Introduza o ultimo nome do cliente"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Telefone:</label>
-            <input type="tel" 
-              name="phoneNumber" 
-              id="phoneNumber" 
-              class="form-control" 
-              placeholder="Introduza o número telefónico do cliente"  
-              pattern="[0-9]{9}" 
-              title="O telefone deve ter 9 dígitos"
-              required>
-          </div>
-
-          <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" 
-              name="email" 
-              id="email" 
-              class="form-control" 
-              placeholder="Introduza o email do cliente" 
-              pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
-              maxlength="50" 
-              required>
-          </div>
-
-          <!-- Morada -->
-          <div class="mb-3">
-            <label class="form-label">Morada</label>
+        <div class="mb-3 row">
+          <div class="col-md-6">
+            <label for="firstName" class="form-label">Primeiro Nome</label>
             <input
               type="text"
-              name="street"
-              id="street"
+              name="firstName"
+              id="firstName"
               class="form-control"
-              placeholder="Introduza a morada (rua, nº, andar)"
+              placeholder="Introduza o primeiro nome do cliente"
               required
             />
           </div>
-          
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="postal_code" class="form-label">Código Postal</label>
-              <input
-                type="text"
-                name="postal_code"
-                id="postal_code"
-                class="form-control"
-                value="<%= restaurant.address.postal_code %>"
-                readonly
-                required
-              />
-            </div>
-            <div class="col-md-6">
-              <label for="city" class="form-label">Cidade</label>
-              <input
-                type="text"
-                name="city"
-                id="city"
-                class="form-control"
-                value="<%= restaurant.address.city %>"
-                readonly
-                required
-              />
-            </div>
+
+          <div class="col-md-6">
+            <label for="lastName" class="form-label">Ultimo Nome</label>
+            <input
+              type="text"
+              name="lastName"
+              id="lastName"
+              class="form-control"
+              placeholder="Introduza o ultimo nome do cliente"
+              required
+            />
           </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Telefone:</label>
+          <input type="tel" 
+            name="phoneNumber" 
+            id="phoneNumber" 
+            class="form-control" 
+            placeholder="Introduza o número telefónico do cliente"  
+            pattern="[0-9]{9}" 
+            title="O telefone deve ter 9 dígitos"
+            required>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" 
+            name="email" 
+            id="email" 
+            class="form-control" 
+            placeholder="Introduza o email do cliente" 
+            pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+            maxlength="50" 
+            required>
+        </div>
+
+        <!-- Morada -->
+        <div class="mb-3">
+          <label class="form-label">Morada</label>
+          <input
+            type="text"
+            name="street"
+            id="street"
+            class="form-control"
+            placeholder="Introduza a morada (rua, nº, andar)"
+            required
+          />
+        </div>
+        
+        <div class="mb-3 row">
+          <div class="col-md-6">
+            <label for="postal_code" class="form-label">Código Postal</label>
+            <input
+              type="text"
+              name="postal_code"
+              id="postal_code"
+              class="form-control"
+              value="<%= restaurant.address.postal_code %>"
+              readonly
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="city" class="form-label">Cidade</label>
+            <input
+              type="text"
+              name="city"
+              id="city"
+              class="form-control"
+              value="<%= restaurant.address.city %>"
+              readonly
+              required
+            />
+          </div>
+        </div>
 
 
-          <!-- Seletor de Menus -->
+        <!-- Seletor de Menus -->
+        <% if(menus.length > 0) { %>
           <div class="mb-3">
             <label class="form-label">Menu</label>
-            <select id="menuSelect" class="form-select">
-              <option value="">-- Escolha um menu --</option>
+            <select id="menuSelect" 
+            name="menuSelect" 
+            class="form-select"
+            onchange="preencherPratos(this.value)"
+            required>
+              <option value="all">-- Escolha um menu --</option>
+              <% for(let i = 0; i < menus.length; i++) { %>
+                <option value="<%= menus[i].name %>"><%= menus[i].name %></option>
+              <% } %>
             </select>
           </div>
 
           <!-- Lista de Pratos do menu -->
           <div class="mb-3">
-            <label class="form-label">Pratos disponíveis</label>
-            <div id="dishesContainer"></div>
+            <div class="mb-3">
+              <label class="form-label">Pratos Disponíveis</label>
+              <select id="pratos" 
+              name="pratos" 
+              class="form-select"
+              disabled 
+              required>
+                  <option value="all">-- Escolha um prato --</option>
+              </select>
+            </div>
           </div>
 
           <!-- Itens selecionados -->
@@ -126,28 +142,208 @@
             <ul id="selectedItemsList" class="list-group"></ul>
           </div>
 
-          <!-- Total -->
-          <div class="mb-3">
-            <label class="form-label">Total (€)</label>
-            <input
-              type="number"
-              name="totEncomenda"
-              id="totEncomenda"
-              step="0.01"
-              class="form-control"
-              value="0.00"
-              readonly
-              required
-            />
-          </div>
+        <% } %>
 
-          <!-- Campo oculto para itens JSON -->
-          <input type="hidden" name="itens" id="itensInput" />
+        <!-- Total -->
+        <div class="mb-3">
+          <label class="form-label">Total (€)</label>
+          <input
+            type="number"
+            name="totEncomenda"
+            id="totEncomenda"
+            step="0.01"
+            class="form-control"
+            value="0.00"
+            readonly
+            required
+          />
+        </div>
 
-          <div class="mb-3">
-            <button class="btn btn-success">Criar Encomenda</button>
-          </div>
+        <!-- Campo oculto para itens JSON -->
+        <input type="hidden" name="itens" id="itensInput" />
+
+        <div class="mb-3">
+          <button class="btn btn-success">Criar Encomenda</button>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+  
+  <script type="application/json" id="menus-data">
+    <%- JSON.stringify(menus) %>
+  </script>
+
+  <script>
+    function preencherPratos(menuName) {
+      const pratosSelect = document.getElementById('pratos');
+      pratosSelect.innerHTML = '<option value="all">-- Escolha um prato --</option>'; //Apago os pratos antigos
+
+      // recupera o array de menus do JSON
+      const menus = JSON.parse(document.getElementById('menus-data').textContent);
+      console.log(menus);
+      const escolhido = menus.find(m => m.name === menuName);
+
+      if (!escolhido) {
+        pratosSelect.disabled = true;
+        return;
+      }
+
+      pratosSelect.disabled = false;
+      const optDefault = document.createElement('option');
+
+      escolhido.dishes.forEach(dish => {
+        const opt = document.createElement('option');
+        opt.value = dish.name;
+        opt.textContent = dish.name;
+        pratosSelect.appendChild(opt);
+      });
+    }
+  </script>
+  <!--
+  <script>
+    const restaurant = "<%= restaurant.name %>";
+    const restaurantAddress = "<%= restaurant.address %>";
+    let menus = [];
+    let selectedItems = [];
+
+    // Carrega encomendas
+    fetch(`/restaurants/${restaurant}/orders/getOrders`)
+      .then(r => r.json())
+      .then(orders => orders.forEach(renderOrderRow));
+
+    // Carrega menus
+    fetch(`/restaurants/orders/${restaurant}/orders/getMenus`)
+      .then(r => r.json())
+      .then(data => {
+        menus = data;
+        populateMenuSelect();
+      });
+
+    function populateMenuSelect() {
+      const sel = document.getElementById('menuSelect');
+      menus.forEach(menu => {
+        const opt = document.createElement('option');
+        opt.value = menu._id;
+        opt.textContent = menu.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    document.getElementById('menuSelect').addEventListener('change', e => {
+      const menuId = e.target.value;
+      const menu = menus.find(m => m._id === menuId);
+      renderDishes(menu ? menu.dishes : []);
+    });
+
+    function renderDishes(dishes) {
+      const container = document.getElementById('dishesContainer');
+      container.innerHTML = '';
+      dishes.forEach(d => {
+        const div = document.createElement('div');
+        div.className = 'input-group mb-2';
+        div.innerHTML = `
+          <span class="input-group-text">${d.name} (€${d.price.toFixed(2)})</span>
+          <input type="number" min="0" value="0" class="form-control dish-qty" data-id="${d._id}" data-name="${d.name}" data-price="${d.price}" />
+          <button class="btn btn-outline-primary add-dish" data-id="${d._id}">Adicionar</button>
+        `;
+        container.appendChild(div);
+        div.querySelector('.add-dish').addEventListener('click', () => addDish(d._id));
+      });
+    }
+
+    function addDish(id) {
+      const input = document.querySelector(`.dish-qty[data-id='${id}']`);
+      const qty = parseInt(input.value);
+      if (qty > 0) {
+        const name = input.dataset.name;
+        const price = parseFloat(input.dataset.price);
+        selectedItems.push({ product: name, qty, price });
+        updateSelectedList();
+      }
+    }
+
+    function updateSelectedList() {
+      const ul = document.getElementById('selectedItemsList');
+      ul.innerHTML = '';
+      let total = 0;
+      selectedItems.forEach((it, idx) => {
+        total += it.qty * it.price;
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.textContent = `${it.product} x${it.qty}`;
+        const span = document.createElement('span');
+        span.textContent = `€${(it.qty*it.price).toFixed(2)}`;
+        li.appendChild(span);
+        ul.appendChild(li);
+      });
+      document.getElementById('totEncomenda').value = total.toFixed(2);
+    }
+
+    // Ajusta o campo de morada conforme tipo
+    document.getElementById('orderType').addEventListener('change', e => {
+      const addr = document.getElementById('addressOrder');
+      if (e.target.value === 'pickup') {
+        addr.value = restaurantAddress;
+        addr.readOnly = true;
+      } else {
+        addr.value = '';
+        addr.readOnly = false;
+      }
+    });
+
+    // Submit do formulário
+    document.getElementById('newOrderForm').addEventListener('submit', ev => {
+      ev.preventDefault();
+      document.getElementById('itensInput').value = JSON.stringify(selectedItems);
+      const data = {
+        client: ev.target.client.value,
+        addressOrder: ev.target.addressOrder.value,
+        itens: selectedItems,
+        totEncomenda: parseFloat(ev.target.totEncomenda.value)
+      };
+      fetch(`/restaurants/${restaurant}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(r => r.json())
+      .then(order => {
+        renderOrderRow(order);
+        ev.target.reset();
+        selectedItems = [];
+        updateSelectedList();
+      })
+      .catch(err => alert('Erro: ' + err.message));
+    });
+
+    // Função que cria e anexa a linha (permanece igual)
+    function renderOrderRow(order) {
+      const tbody = document.getElementById('tbody-' + order.status);
+      const tr = document.createElement('tr');
+      tr.dataset.id = order._id;
+      tr.innerHTML = `
+        <td>${order._id}</td>
+        <td>${order.totEncomenda.toFixed(2)} €</td>
+        <td>
+          <select class="form-select form-select-sm status-select">
+            <option${order.status === 'Pendente' ? ' selected' : ''}>Pendente</option>
+            <option${order.status === 'Expedida' ? ' selected' : ''}>Expedida</option>
+            <option${order.status === 'Entregue' ? ' selected' : ''}>Entregue</option>
+          </select>
+        </td>`;
+      tr.querySelector('.status-select').addEventListener('change', e => {
+        const novo = e.target.value;
+        fetch(`/restaurants/${restaurant}/orders/${order._id}/status`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: novo })
+        })
+        .then(r => r.json())
+        .then(updated => {
+          tr.remove();
+          document.getElementById('tbody-' + updated.status).appendChild(tr);
+        });
+      });
+      tbody.appendChild(tr);
+    }
+  </script>
+  -->
+</div>

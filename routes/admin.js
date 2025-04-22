@@ -36,16 +36,16 @@ router.post("/changePassword/:accountId", passwordController.updatePassword);
 //Route para eliminar o admin
 router.post("/deleteAccount/:adminId", adminController.deleteAdm);
 
-/*Routers para os restaurantes */
+/* Routers para os restaurantes */
 router.use("/listRestaurants", restaurantRouter);
 
-/*Routers para os users */
+/* Routers para os users */
 router.use("/listUsers", userRouter);
 
-/*Routers para as categorias */
+/* Routers para as categorias */
 router.use("/listCategories", categoriesRouter);
 
-/**Router para as porçoes */
+/** Router para as porçoes */
 router.use("/listPortions", portionsRouter);
 
 module.exports = router;

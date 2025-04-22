@@ -36,6 +36,30 @@
 
             <!-- Varias Orders-->
             <div class="row justify-content-center align-items-center mb-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Order: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h5>
+                            <p class="card-text">Cliente: xxxxxx xxxxxxxx</p>
+                            <p class="card-text">Numero Telefoncio: xxxxxxxxxxxxxxxxxxxxxxx</p>
+                            <p class="card-text">Morada: xxxxxxxxxxxxxxx</p>
+                            <p class="card-text">Preço: xxxxxxxxxxxxxxxxxxxxxxx</p>
+                            <p class="card-text">xxxxxxx Itens</p>
+                            <div class="col-md-6">
+                                <label for="estado" class="form-label">Estado:</label>
+                                <select name="" id="" class="form-select" required>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Expedida">Expedida</option>                        
+                                    <option value="Entregue">Entregue</option>
+                                </select> 
+                            </div>
+
+                            <!-- Falta meter o id da order-->
+                            <a href="/restaurants/<%= restaurant.name %>/orders/orderManagement/cancelOrder" class="btn btn-sm">Apgar Order</a>
+                        </div>
+                    </div>
+                </div>
+
                 
             </div>
         </div>
