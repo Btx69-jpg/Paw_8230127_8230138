@@ -12,6 +12,7 @@ require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o 
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
 require('dotenv').config();
+const axios = require('axios');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 

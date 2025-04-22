@@ -1,6 +1,8 @@
 var mongoose = require("mongoose");
 const multer = require('multer');
 const fs = require('fs'); 
+const axios = require('axios');
+
 
 //Models
 const Restaurant = require("../../Models/Perfils/Restaurant");
@@ -403,5 +405,39 @@ menuController.deleteMenu = async function(req, res) {
         res.render("errors/error", {numError: 500, error: err});
     }
 };
+
+async function fetchNutritionalInfoByName(query) {
+  // 1️⃣ Pesquisa por nome de produto (API Read/Search) :contentReference[oaicite:2]{index=2}
+  const searchRes = await axios.get('https://world.openfoodfacts.org/cgi/search.pl', {
+    params: {
+      search_terms: query,
+      search_simple: 1,
+      action: 'process',
+      json: 1
+    }
+  });
+  const product = searchRes.data.products?.[0];
+  if (!product || !product.code) {
+    throw new Error(`Produto "${query}" não encontrado`); 
+  }
+
+  // 2️⃣ Obter detalhes do produto (API Read/Product) para extrair nutriments :contentReference[oaicite:3]{index=3}
+  const prodRes = await axios.get(`https://world.openfoodfacts.org/api/v2/product/${product.code}`, {
+    params: { fields: 'product_name,nutriments' }
+  });
+  const nutriments = prodRes.data.product.nutriments || {};
+
+  // 3️⃣ Mapear nutriments para o seu formato de NutrientSchema :contentReference[oaicite:4]{index=4}
+  return [
+    { name: 'calories',     per100g: { calories: nutriments['energy-kcal_100g'] || 0 } },
+    { name: 'protein',      per100g: { protein: nutriments.proteins_100g     || 0 } },
+    { name: 'fat',          per100g: { fat: nutriments.fat_100g             || 0 } },
+    { name: 'carbohydrates',per100g: { carbohydrates: nutriments.carbohydrates_100g || 0 } },
+    { name: 'sugars',       per100g: { sugars: nutriments.sugars_100g       || 0 } }
+  ];
+}
+
+module.exports = { fetchNutritionalInfoByName };
+
 
 module.exports = menuController;
