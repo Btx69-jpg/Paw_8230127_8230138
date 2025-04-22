@@ -23,59 +23,22 @@
       <div class="d-flex justify-content-center mb-4">
         <a href="/perfil/admin/listRestaurants/createRestaurant" class="btn btn-success">Adicionar Restaurante</a>
       </div>
-      <% if (restaurants.length > 0) { %>
-        <div class="row justify-content-center">
-
-          <% if(desaprove === true) { %>
-            <div class="d-flex justify-content-center mb-4">
-              <form action="/perfil/admin/listRestaurants/aproves" method="GET">
-                <a href="/perfil/admin/listRestaurants/aproves" class="btn btn-success">Aprovar Restaurantes</a>
-              </form>
-            </div>
-          <% } %>
-
-          <!-- Filtro -->
-          <%- include('../../../../restaurants/filterRestaurants', {
-            action: "/perfil/admin/listRestaurants/search",
-            clear: "/perfil/admin/listRestaurants/"
-          }) %>
-<!--           <div class="row justify-content-center align-items-center mb-4">
-            <form action="/perfil/admin/listRestaurants/search" method="GET" class="col-md-8 col-lg-6">
-              
-              <div class="row g-2">
-                
-                <div class="col-sm-6">
-                  <label for="name" class="form-label">Nome restaurante:</label>
-                  <input type="text" 
-                        name="name" 
-                        id="name"
-                        placeholder="Introduza o nome do restaurante"
-                        class="form-control form-control-sm" 
-                        maxlength="100" 
-                        pattern="^(?!.*[\\/]).+$"
-                        title="O nome não pode conter os caracteres '/' ou '\'"
-                        >
-                </div>
-    
-                <div class="col-sm-6">
-                  <label for="city" class="form-label">Cidade:</label>
-                  <input type="text" 
-                          name="city" 
-                          id="city" 
-                          class="form-control form-control-sm" 
-                          placeholder="Introduza o nome da sua cidade"
-                          maxlength="100" 
-                          pattern="^[A-Za-zÀ-ÿ\s]+$"
-                          title="Apenas letras e espaços">
-                </div>
-              </div>
-              
-              <div class="mt-3 d-flex justify-content-center gap-2">
-                <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                <a href="/perfil/admin/listRestaurants/" class="btn btn-secondary btn-sm">Clear</a>
-              </div>
+      
+      <div class="row justify-content-center">
+        <% if(desaprove === true) { %>
+          <div class="d-flex justify-content-center mb-4">
+            <form action="/perfil/admin/listRestaurants/aproves" method="GET">
+              <a href="/perfil/admin/listRestaurants/aproves" class="btn btn-success">Aprovar Restaurantes</a>
             </form>
-          </div>-->
+          </div>
+        <% } %>
+
+        <!-- Filtro -->
+        <%- include('../../../../restaurants/filterRestaurants', {
+          action: "/perfil/admin/listRestaurants/search",
+          clear: "/perfil/admin/listRestaurants/" }) %>
+
+        <% if (restaurants.length > 0) { %>
 
           <% for(let i = 0; i < restaurants.length; i++) { %>
             <div class="col-md-4 mb-4">
@@ -99,10 +62,10 @@
               </div>
             </div>
           <% } %>
-        </div>
-      <% } else { %>
-        <p class="text-center">Ainda sem restaurantes</p>
-      <% } %>
+        <% } else { %>
+          <p class="text-center">Ainda sem restaurantes</p>
+        <% } %>
+      </div>
     </div>
 
     <!-- Bootstrap JS -->

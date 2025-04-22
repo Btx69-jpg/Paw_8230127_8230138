@@ -9,19 +9,41 @@ var orderController = {};
 
 
 // GET /restaurants/:restaurant/orderManagement
-orderController.orderManagement = async function(req, res) {
-    const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
-      .populate('orders.client orders.addressOrder')
-      .exec();
+orderController.addOrder = function(req, res) {
+    Restaurant.findOne({ name: req.params.restaurant }).exec()
+        .then(restaurant => {
+            if(restaurant) {
+                res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant});
+            } else {
+                console.log("O restaurante não existe");
+                res.render(res.locals.previousPage);
+            }
+        })
+        .catch(error => {
+            res.status(500).render("errors/error", {numError: 500, error: error});
+        })
+};
+
+orderController.orderManagment = function(req, res) {
+    Restaurant.findOne({ name: req.params.restaurant }).exec()
+        .then(restaurant => {
+            if(restaurant) {
+                res.render("restaurants/restaurant/Order/orderManagement", { restaurant: restaurant, filters: {}});
+            } else {
+                console.log("O restaurante não existe");
+                res.render(res.locals.previousPage);
+            }
+        })
+        .catch(error => {
+            res.status(500).render("errors/error", {numError: 500, error: error});
+        })
   
     // Separa por status
+    /*
     const pendentes = restaurant.orders.filter(o => o.status === 'Pendente');
     const expedidas = restaurant.orders.filter(o => o.status === 'Expedida');
     const entregues = restaurant.orders.filter(o => o.status === 'Entregue');
-  
-    res.render("restaurants/restaurant/Order/orderManagement", {
-      restaurant, pendentes, expedidas, entregues
-    });
+    */
 };
 
 orderController.historicOrder = async function(req, res) {

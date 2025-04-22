@@ -169,7 +169,7 @@ menuController.searchMenu = async function (req, res) {
         const portions = await carregarPortions();
         res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion }, menu: menu, categories: categories, portions: portions });
     } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -189,7 +189,7 @@ menuController.getMenus = async function(req, res) {
 
         res.json(menus);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
   
@@ -202,7 +202,7 @@ menuController.createMenu = async function (req, res) {
 
         res.render("restaurants/restaurant/Menu/createMenu", { restaurant: restaurant, categories: categories, portions: portions });
     } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -313,7 +313,7 @@ menuController.saveMenu = async function(req, res) {
         res.redirect("/restaurants/" + restaurant.name);
     } catch (err) {
         console.error(err);
-        res.render("errors/error", {numError: 500, error: err.message});
+        res.status(500).render("errors/error", {numError: 500, error: err.message});
     }
 };
 
@@ -336,7 +336,7 @@ menuController.editMenu = async function(req, res) {
             portions: portions,
         });
     } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -432,7 +432,8 @@ menuController.saveEditMenu = async function(req, res) {
                 const file = newDishesFiles[index];
 
                 if (!file) {
-                    return res.status(400).render("errors/error400", {
+                    return res.status(500).render("errors/error", { 
+                        numError: 500,
                         error: `Imagem obrigatória para o novo prato ${parseInt(index) + 1}`
                     });
                 }
@@ -466,7 +467,7 @@ menuController.saveEditMenu = async function(req, res) {
         await restaurant.save();
         res.redirect(`/restaurants/${restaurant.name}/showMenu/${menu._id}`);
     } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -497,7 +498,7 @@ menuController.deleteMenu = async function(req, res) {
 
         res.redirect(`/restaurants/${restaurant.name}`);
     } catch (err) {
-        res.render("errors/error", {numError: 500, error: err});
+        res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 

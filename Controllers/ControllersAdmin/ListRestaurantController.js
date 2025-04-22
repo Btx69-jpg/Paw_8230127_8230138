@@ -22,12 +22,12 @@ listRestaurantController.homePage = function(req, res) {
                     res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, filters: {}, desaprove: desaprove});
                 }).catch(err => {
                     console.log("Error", err);
-                    res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
+                    res.status(500).render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
                 }); 
             
         }).catch(function(err) {
             console.log("Error", err);
-            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
+            res.status(500).render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
         });   
 };
 
@@ -42,7 +42,7 @@ listRestaurantController.aprovePage = async function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
+            res.status(500).render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
         });   
 };
 

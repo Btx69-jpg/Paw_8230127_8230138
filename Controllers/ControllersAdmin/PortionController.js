@@ -12,7 +12,7 @@ portionsController.homePage = function(req, res) {
         })
         .catch(function(err) {
             console.log("Error", err);
-            res.status(500).send("Problema a procurar pelos Restaurantes");
+            res.status(500).render("errors/error", {numError: 500, error: err});
         });  
 };
 
@@ -60,7 +60,7 @@ portionsController.savePortion = async function(req, res) {
     try {
         const validation = await validationPortion(req.body.portion);
         if(validation !== "") {
-            return res.render("errors/error", {numError: 500, error: validation});
+            return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
         const newPortion = new Portion(req.body)
@@ -92,13 +92,13 @@ portionsController.updatPortion = async function(req, res) {
         let portion = await Portion.findOne({_id: req.params.portionId}).exec();
 
         if(!portion) {
-            return res.render("errors/error", {numError: 500, error: "A Porção não existe"});
+            return res.status(500).render("errors/error", {numError: 500, error: "A Porção não existe"});
         }
 
         const validation = await validationPortion(req.body.portion);
         
         if(validation !== "") {
-            return res.render("errors/error", {numError: 500, error: validation});
+            return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
         portion.portion = req.body.portion;
@@ -119,7 +119,7 @@ portionsController.deletePortion = async function(req, res) {
         res.redirect("/perfil/admin/listPortions");
     } catch (error) {
         console.log("Error", error);
-        res.status(500).send("Problema a apagar o restaurante");
+        res.status(500).render("errors/error", {numError: 500, error: error});
     }
 }
 

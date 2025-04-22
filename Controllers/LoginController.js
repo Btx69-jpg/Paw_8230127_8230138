@@ -74,7 +74,7 @@ loginController.logout = function(req, res) {
     req.logout((err) => {
         if (err) {
             console.error("Logout error:", err);
-            return res.render("errors/error", {numError: 500, error: "Erro ao fazer logout."});
+            return res.status(500).render("errors/error", {numError: 500, error: "Erro ao fazer logout."});
         }
 
         res.clearCookie('auth_token');

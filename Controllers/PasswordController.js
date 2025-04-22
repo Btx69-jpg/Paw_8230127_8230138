@@ -59,7 +59,7 @@ passwordController.updatePassword = async (req, res) => {
         let validation = await validateNewPassowrd(req.body, account.perfil.password);
 
         if (validation !== "") {
-            return res.render("errors/error", {numError: 500, error: validation});
+            return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
         const salt = await bcrypt.genSalt(10);

@@ -16,7 +16,7 @@ async function renderCreateDish(res) {
     if(categories != null) {
         res.render("restaurants/restaurant/Dishs/createDish", {categories: categorie, portions: portions});
     } else {
-        res.render("errors/error", {numError: 500, error: "Problema a procurar as categorias dos pratos"});
+        res.status(500).render("errors/error", {numError: 500, error: "Problema a procurar as categorias dos pratos"});
     }
 }
 
@@ -27,7 +27,7 @@ async function renderEditDish(res, dish) {
     if(categories != null) {
         res.render("restaurants/restaurant/Dishs/editDish", {dish: dish}, {categories: categories});
     } else {
-        res.render("errors/error", {numError: 500, error: "Problema a procurar os pratos"});
+        res.status(500).render("errors/error", {numError: 500, error: "Problema a procurar os pratos"});
     }
 }
 

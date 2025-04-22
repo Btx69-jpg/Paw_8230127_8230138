@@ -13,13 +13,15 @@ const {isDonoOrRestaurant} = require("../../Middleware/TypeUserMiddleware.js");
 //Rota que aplica a verificação de token e validação de user às restantes
 router.use(authenticateToken, isDonoOrRestaurant);
 
-router.get('/', order.orderManagement);
+router.get('/', order.addOrder);
 
 router.get('/createOrder', order.createOrder);
 
-router.get("/historic", order.historicOrder);
+router.get('/orderManagement', order.orderManagment);
 
-router.get("/historic/:orderId", order.showOrder);
+router.get('/historic', order.historicOrder);
+
+router.get('historic/:orderId', order.showOrder);
 //router.post('/saveOrder', order.)
 
 //router.post('/getOrders', order.createOrder);

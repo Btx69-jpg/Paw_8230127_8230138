@@ -15,7 +15,7 @@ restaurantController.homePage = async function(req, res) {
     const categories = await carregarCategoriesMenus(menus);
     res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {}, categories: categories });
   } catch (err) {
-      res.render("errors/error", {numError: 500, error: err});
+      res.status(500).render("errors/error", {numError: 500, error: err});
   }
 };
 
@@ -63,7 +63,7 @@ restaurantController.searchMenu = async function(req, res) {
     console.log("Restaurante: ");
     res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {name, numDish, type}, categories: categories });
   } catch (err) {
-      res.render("errors/error", {numError: 500, error: err});
+      res.status(500).render("errors/error", {numError: 500, error: err});
   }
 };
 

@@ -11,8 +11,7 @@ categoriesController.homePage = function(req, res) {
             res.render("perfil/admin/PagesAdmin/Categories/listCategories", {categories: categories});
         })
         .catch(function(err) {
-            console.log("Error", err);
-            res.render("errors/error", {numError: 500, error: "Problema a procurar pelos Restaurantes"});
+            res.status(500).render("errors/error", {numError: 500, error: err});
         });  
 };
 
@@ -60,7 +59,7 @@ categoriesController.saveCategory = async function(req, res) {
     try {
         const validation = await validationCategory(req.body.category);
         if(validation !== "") {
-            return res.render("errors/error", {numError: 500, error: validation});
+            return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
         //Posso decalara assim
@@ -93,13 +92,13 @@ categoriesController.updatCategory = async function(req, res) {
         let category = await Category.findOne({_id: req.params.categoryId}).exec();
 
         if(!category) {
-            return res.render("errors/error", {numError: 500, error: "A categoria não existe"});;
+            return res.status(500).render("errors/error", {numError: 500, error: "A categoria não existe"});;
         }
 
         const validation = await validationCategory(req.body.category);
         
         if(validation !== "") {
-            return res.render("errors/error", {numError: 500, error: validation});
+            return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
         //Atualizo a categoria, sem a necessidade de dar outro update
@@ -120,8 +119,7 @@ categoriesController.deleteCategory = async function(req, res) {
         console.log("Categoria eliminada!");
         res.redirect("/perfil/admin/listCategories");
     } catch (error) {
-        console.log("Error", error);
-        res.status(500).send("Problema a apagar o restaurante");
+        res.status(500).render("errors/error", {numError: 500, error: error})
     }
 }
 
