@@ -31,10 +31,19 @@ var PerfilSchema = new mongoose.Schema({
         enum: ['Cliente', 'Admin', 'Restaurant', 'Dono', 'Funcionario'],
         required: true,
     },
-    restaurantIds: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Restaurant'
-    }],
+    restaurantIds: {
+        type: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'Restaurant',
+            },
+        ],
+        default: undefined,
+        //Função que mete como required caso o tipo seja dono. Se não, não é obrigatorio
+        required: function() {
+            return this.priority === 'Dono';
+        },
+    },
     banned: {
         type: Boolean,
         default: false,

@@ -79,17 +79,9 @@ userController.findOneRestaurante = async function(name) {
     }
 }
 
-async function validateNewUser(email, phoneNumber, priority, restaurantName) {
-    if (priority === "Dono") {
-        if (restaurant === "") {
-            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
-        } 
-        
-        const existingRestaurant = await userController.findOneRestaurante(restaurantName);
-
-        if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse nome!"
-        }
+async function validateNewUser(email, phoneNumber, priority, restaurant) {
+    if (priority === "Dono" && !restaurant) {
+        return "Não existe nenhum restaurante com esse nome!"
     }
 
     const existingUser = await User.findOne({
@@ -106,8 +98,16 @@ async function validateNewUser(email, phoneNumber, priority, restaurantName) {
         ]
     }).exec();
 
-    if (existingUser || existingEmailRestaurant && priority !== "Dono") {
-        if (existingUser.perfil.email === email || existingEmailRestaurant.perfil.email === email) {
+    if (existingUser) {
+        if (existingUser.perfil.email === email) {
+            return "Já existe uma conta com este email!";
+        } else {
+            return "Já existe uma conta com esse numero telefonico!";
+        }
+    } 
+    
+    if(existingEmailRestaurant && priority !== "Dono") {
+        if (existingEmailRestaurant.perfil.email === email) {
             return "Já existe uma conta com este email!";
         } else {
             return "Já existe uma conta com esse numero telefonico!";
@@ -117,19 +117,56 @@ async function validateNewUser(email, phoneNumber, priority, restaurantName) {
     return "";
 }
 
+function validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant) {
+    let errors = [];
+
+    if (!firstName || !lastName || !email || !phoneNumber || !password || !confirmPassword) {
+        errors.push({ texto: "Todos os campos são obrigatórios!" });
+    }
+
+    if(priority === "Admin" && !restaurant) {
+        errors.push({ texto: "Quando a prioridade é admin, o campo restaurante é de preenchimento obrigatório"})
+    }
+
+    if (password.length < 8 || confirmPassword.length < 8) {
+        errors.push({ texto: "A senha deve ter pelo menos 8 caracteres!" });
+    }
+
+    if (password !== confirmPassword) {
+        errors.push({ texto: "As senhas não coincidem!" });
+    }
+    return errors;
+}
 /**
  * Metodo para criar um novo utilizador
+ * 
+ * Só não está a dar o countDonos, mas não é critico pois vai ser alterado pelo o ID do user
  */
 userController.saveUser = async function(req, res) {
     try {
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log("--------------------------");
         const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
-        const errors = signUpController.validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword);
+        const errors = validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant);
 
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
         }
 
-        const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurant);
+        let restaurantFound = await Restaurant.findOne({ name: restaurant}).exec();
+        const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurantFound);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -142,16 +179,17 @@ userController.saveUser = async function(req, res) {
         
         let perfil;
 
-        if (restaurant !== undefined) {
-            const foundRestaurant = await Restaurant.findOne( {name: restaurant}).exec();
-
+        if (restaurant) {
             perfil = new Perfil({
                 phoneNumber: phoneNumber,
                 email: email,
                 password: hashedPassword,
                 priority: priority,
-                restaurantId: foundRestaurant._id,
+                restaurantIds: restaurantFound._id,
             });
+
+            restaurantFound.countDono++;
+            await restaurantFound.save();
         } else {
             perfil = new Perfil({
                 phoneNumber: phoneNumber,
@@ -170,9 +208,6 @@ userController.saveUser = async function(req, res) {
 
         await newUser.save();
         
-        //const userPath = "public/images/Users/" + newUser._id;
-        
-        //createPackage(userPath);
         req.flash("success_msg", "Registo realizado com sucesso!");
         res.redirect("/perfil/admin/listUsers");
     } catch (err) {
@@ -207,17 +242,9 @@ userController.editPage = function(req, res) {
         });
 }
 
-async function validateUpdateUser(user, email, priority, restaurant) {
-    if (priority === "Dono") {
-        if (restaurant === "") {
-            return "Para user de prioridade dono, o campo nome do restaurante é de preenchimento obrigatorio"
-        } 
-        
-        const existingRestaurant = await userController.findOneRestaurante(restaurant);
-        console.log(restaurant);
-        if (!existingRestaurant) {
-            return "Não existe nenhum restaurante com esse nome!"
-        }
+async function validateUpdateUser(user, email, phoneNumber, priority, restaurant) {
+    if (priority === "Dono" && !restaurant) {
+        return "Não existe nenhum restaurante com esse nome!"
     }
 
     const existingUser = await User.findOne({
@@ -246,24 +273,52 @@ async function validateUpdateUser(user, email, priority, restaurant) {
     return "";
 }
 
+function validationUpdate(firstName, lastName, email, phoneNumber, priority, restaurant) {
+    let errors = [];
+
+    if (!firstName || !lastName || !email || !phoneNumber) {
+        errors.push({ texto: "Todos os campos são obrigatórios!" });
+    }
+
+    if(priority === "Admin" && !restaurant) {
+        errors.push({ texto: "Quando a prioridade é admin, o campo restaurante é de preenchimento obrigatório"})
+    }
+
+    return errors;
+}
 /**
  * Metodo para atualizar um user existente
  */
 userController.updateUser =  async function(req, res) {
     try {
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log("------------------------------");
         const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  
 
         //Validações aos campos
-        let errors = await signUpController.validationUpdate(firstName, lastName, email, phoneNumber);
+        let errors = await validationUpdate(firstName, lastName, email, phoneNumber, priority, restaurant);
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
     
-        //Encontrar o user a atualizar
+        let restaurantFound = await Restaurant.findOne({ name: restaurant}).exec();
         let user = await User.findOne({ _id: req.params.userId }).exec();
-        console.log(user);
+ 
         //Está aqui um problema
-        let errorValidate = await validateUpdateUser(user, email, priority, restaurant);
+        let errorValidate = await validateUpdateUser(user, email, phoneNumber, priority, restaurantFound);
     
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
@@ -271,9 +326,37 @@ userController.updateUser =  async function(req, res) {
             return res.redirect(res.locals.previousPage);
         }
 
-        if(user.perfil.restaurantId && user.perfil.priority === "Dono" && priority !== "Dono") {
-            delete user.perfil.restaurantId;
+        if (restaurant) {
+            let updateCountRest = false;
+            if (user.perfil.priority !== "Dono" && priority === "Dono") {
+                user.perfil.restaurantIds = [];
+                updateCountRest= true;
+            } else if (user.perfil.priority === "Dono" && priority === "Dono" && 
+                    !user.perfil.restaurantIds.includes(restaurantFound._id)) {
+                    updateCountRest = true;
+            }
+
+            //Atualizo o count do restaurante
+            if (updateCountRest) {
+                user.perfil.restaurantIds.push(restaurantFound._id);
+
+                await Restaurant.updateOne(
+                    { _id: restaurantFound._id},
+                    { $inc: { countDonos: +1 } }
+                )
+            }
         }
+
+        if (user.perfil.priority === "Dono" && priority !== "Dono") {
+            console.log("A prioridade foi alterada de dono para cliente")
+            await Restaurant.updateMany(
+                { _id: { $in: user.perfil.restaurantIds } },
+                { $inc: { countDonos: -1 } }
+            ).exec();
+
+            //Forma que encontrei para dar delete no campo
+            user.perfil.restaurantIds = undefined;
+        }  
         
         //update
         user.firstName = firstName;

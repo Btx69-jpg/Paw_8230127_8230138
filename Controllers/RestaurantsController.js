@@ -10,7 +10,7 @@ var restaurantsController = {};
 
 //Metodos
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
-const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
+const { deleteImage, updateImage } = require("./Functions/crudImagesRest");
 const { existsRestaurantsDesaprove } = require("./ControllersAdmin/ListRestaurantController");
 
 //Constantes
@@ -96,11 +96,45 @@ async function validationEditRestaurant(body, restaurant) {
 //Preciso de no render mandar também os employees
 restaurantsController.restaurantsPage = function(req, res) {
     Restaurant.find({ aprove: true}).exec()
-        .then(function(restaurants) {
-            res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}});
+        .then(restaurants => {
+            let autRemoveEdit = false;
+
+            if(req.cookies && req.cookies.priority) {
+                switch(req.cookies.priority) {
+                    case "Admin": {
+                        autRemoveEdit = true;
+                        break;
+                    } case "Dono": {
+                        const user = res.locals.user;
+                        let i = 0;
+                        let found = false;
+
+                        while (i < user.perfil.restaurantIds && !found) {
+                            let y = 0;
+
+                            while (y < restaurants.length && !found) {
+                                if(user.perfil.restaurantIds[i] === restaurants[y]) {
+                                    found = true;
+                                } 
+                                y++
+                            }
+                        }
+
+                        if(found) {
+                            autRemoveEdit = true;
+                        }
+
+                        break;
+                    } default: {
+                        autRemoveEdit = false;
+                        break;
+                    }
+                }
+            }
+            res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit});
         })
-        .catch(function(err) {
-            res.status(500).render("errors/error", {numError: 500, error: err});
+        .catch(error => {
+            res.status(500).render("errors/error", {numError: 500, error: error});
         });
 };
 

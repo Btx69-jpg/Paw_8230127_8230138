@@ -43,7 +43,7 @@
           <% for(let i = 0; i < restaurants.length; i++) { %>
             <div class="col-md-4 mb-4">
               <div class="restaurant-card text-center border rounded p-3 shadow-sm">
-                <img src="<%=restaurants[i].perfil.perfilPhoto%>" alt="Logo do restaurante" class="img-fluid mb-3 rounded">
+                <img src="<%=restaurants[i].perfil.perfilPhoto%>" alt="Logo do restaurante" class="img-fluid mb-3 rounded" style="width: 200px; height: 200px; object-fit: cover;">
                 <h5 class="mb-3"><%= restaurants[i].name %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
