@@ -1,23 +1,33 @@
 const express = require("express");
 const router = express.Router();
 
-const authTokenMiddleware = require("../../Middleware/AuthTokenMiddleware.js");
-const typeUserMiddleware = require("../../Middleware/TypeUserMiddleware.js");
+//Middlewares
+const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
+const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
+
+//Controllers
 const portionsController = require("../../Controllers/ControllersAdmin/PortionController.js");
-//Meter como na admin
 
-/*Routers para as categorias */
-router.get("/", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.homePage);
+router.use(authenticateToken, isAdmin);
 
-router.get("/createPortion", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.createPortion);
+/**
+ * Rota que renderiza pagina com a lista das porções existentes 
+ * */
+router.get("/", portionsController.homePage);
 
-router.post("/savePortion", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.savePortion);
+/**
+ * Rota que que permite filtrar e ordernar dados na pagina das categorias
+ */
+router.get("/search", portionsController.search);
 
-router.get("/editPortion/:portionId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.editPortion);
+router.get("/createPortion", portionsController.createPortion);
 
-router.post("/updatPortion/:portionId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.updatPortion);
+router.post("/savePortion", portionsController.savePortion);
 
-//Posso depois alterar para um delete
-router.post("/deletetPortion/:portionId", authTokenMiddleware.authenticateToken, typeUserMiddleware.isAdmin, portionsController.deletePortion);
+router.get("/editPortion/:portionId", portionsController.editPortion);
+
+router.post("/updatPortion/:portionId", portionsController.updatPortion);
+
+router.post("/deletetPortion/:portionId", portionsController.deletePortion);
 
 module.exports = router;

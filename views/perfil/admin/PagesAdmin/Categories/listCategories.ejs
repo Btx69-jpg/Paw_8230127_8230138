@@ -24,25 +24,66 @@
         <a href="/perfil/admin/listCategories/createCategory" class="btn btn-success">Adicionar Categoria</a>
       </div>
 
+      <!-- Seção de filtro e pesquisa -->
+      <div class="row justify-content-center align-items-center mb-4">
+        <form action="/perfil/admin/listCategories/search" method="GET">
+          <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+                <label for="category">Categoria: </label>
+                <input 
+                    type="text" 
+                    name="category" 
+                    id="category" 
+                    class="form-control" 
+                    placeholder="Introduza o name da categoria" 
+                    pattern="^[A-Za-zÀ-ÿ\s]+$"
+                    value="<%= filters.category %>"
+                    oninvalid="handleInvalidInput(this)"
+                    oninput="this.setCustomValidity('')"/>
+                <div class="invalid-feedback">
+                    O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <label for="order" class="form-label">Ordenação:</label>
+                <select name="order" id="order" class="form-select form-select-sm">
+                    <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
+                    <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
+                    <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-center gap-2 mt-3">
+              <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+              <a href="/perfil/admin/listCategories" class="btn btn-secondary btn-sm">Clear</a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Espaçamento adicional antes da lista -->
+      <div class="my-4"></div>
+
       <% if (categories.length > 0) { %>
         <div class="row justify-content-center">
-          <% for(let i = 0; i < categories.length; i++) { %>
+          <% categories.forEach((cat) => { %>
             <div class="col-md-4 mb-4">
               <div class="restaurant-card text-center border rounded p-3 shadow-sm">
-                <h5 class="mb-3"><%= categories[i].category %></h5>
+                <h5 class="mb-3"><%= cat.category %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/perfil/admin/listCategories/deletetCategory/<%= categories[i]._id %>" method="POST"
-                    onsubmit="return confirm('Tem certeza que deseja remover a categoria <%= categories[i].category %>?');">
+                  <form action="/perfil/admin/listCategories/deletetCategory/<%= cat._id %>" method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja remover a categoria <%= cat.category %>?');">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
-                  <form action="/perfil/admin/listCategories/editCategory/<%= categories[i]._id %>" method="GET">
+                  <form action="/perfil/admin/listCategories/editCategory/<%= cat._id %>" method="GET">
                     <button type="submit" class="btn btn-primary">Editar</button>
                   </form>
                 </div>
               </div>
             </div>
-          <% } %>
+          <% }) %>
         </div>
       <% } else { %>
         <p class="text-center">Ainda sem Categorias</p>

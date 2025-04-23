@@ -19,6 +19,11 @@ router.use(authenticateToken, isAdmin);
 router.get("/", categoriesController.homePage);
 
 /**
+ * Rota que que permite filtrar e ordernar dados na pagina das categorias
+ */
+router.get("/search", categoriesController.search);
+
+/**
  * Rota que carrega a pagina para criar uma categoria
  */
 router.get("/createCategory", categoriesController.createCategory);

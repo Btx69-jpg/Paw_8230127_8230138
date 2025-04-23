@@ -24,6 +24,43 @@
         <a href="/perfil/admin/listPortions/createPortion" class="btn btn-success">Adicionar Porção</a>
       </div>
 
+      <div class="row justify-content-center align-items-center mb-4">
+        <form action="/perfil/admin/listPortions/search" method="GET">
+          <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+                <label for="portion">Categoria: </label>
+                <input 
+                    type="text" 
+                    name="portion" 
+                    id="portion" 
+                    class="form-control" 
+                    placeholder="Introduza o nome da porção" 
+                    pattern="^[A-Za-zÀ-ÿ\s]+$"
+                    value="<%= filters.portion %>"
+                    oninvalid="handleInvalidInput(this)"
+                    oninput="this.setCustomValidity('')"/>
+                <div class="invalid-feedback">
+                    O nome deve conter apenas letras e espaços, e não pode estar vazio.
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <label for="order" class="form-label">Ordenação:</label>
+                <select name="order" id="order" class="form-select form-select-sm">
+                    <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
+                    <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
+                    <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-center gap-2 mt-3">
+              <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+              <a href="/perfil/admin/listPortions" class="btn btn-secondary btn-sm">Clear</a>
+            </div>
+          </div>
+        </form>
+      </div>
+
       <% if (portions.length > 0) { %>
         <div class="row justify-content-center">
           <% for(let i = 0; i < portions.length; i++) { %>

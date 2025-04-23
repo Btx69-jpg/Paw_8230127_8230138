@@ -8,11 +8,46 @@ const maxCategories = 15
 categoriesController.homePage = function(req, res) {
     Category.find({}).exec()
         .then(function(categories) {
-            res.render("perfil/admin/PagesAdmin/Categories/listCategories", {categories: categories});
+            res.render("perfil/admin/PagesAdmin/Categories/listCategories", {categories: categories, filters: {}});
         })
         .catch(function(err) {
             res.status(500).render("errors/error", {numError: 500, error: err});
         });  
+};
+
+categoriesController.search = async function(req, res) {
+    try {
+        let query = {};
+        const { category = '', order = 'no'} = req.query;
+        
+        if (category) {
+            query.category = { "$regex": category, "$options": "i" };
+        }
+        
+        let sortObj = null;
+        switch (order) {
+            case 'nameAsc': {
+                sortObj = { category: 1 };
+                break;
+            } case 'nameDesc': {
+                sortObj = { category: -1 };
+                break;
+            } default: {
+                break;
+            }
+        }
+        
+        let categories = null;    
+        if (sortObj) {
+            categories = await Category.find(query).sort(sortObj).exec(); 
+        } else {
+            categories = await Category.find(query).exec()
+        }
+        
+        res.render("perfil/admin/PagesAdmin/Categories/listCategories", {categories: categories, filters: {category, order}});
+    } catch(error) {
+        res.status(500).render("errors/error", {numError: 500, error: error});
+    } 
 };
 
 categoriesController.createCategory = function(req, res) {

@@ -8,7 +8,7 @@ const maxPortions = 15
 portionsController.homePage = function(req, res) {
     Portion.find({}).exec()
         .then(function(portions) {
-            res.render("perfil/admin/PagesAdmin/Portions/listPortions", {portions: portions});
+            res.render("perfil/admin/PagesAdmin/Portions/listPortions", {portions: portions, filters: {}});
         })
         .catch(function(err) {
             console.log("Error", err);
@@ -16,6 +16,40 @@ portionsController.homePage = function(req, res) {
         });  
 };
 
+portionsController.search = async function(req, res) {
+    try {
+        let query = {};
+        const { portion = '', order = 'no'} = req.query;
+        
+        if (portion) {
+            query.portion = { "$regex": portion, "$options": "i" };
+        }
+        
+        let sortObj = null;
+        switch (order) {
+            case 'nameAsc': {
+                sortObj = { portion: 1 };
+                break;
+            } case 'nameDesc': {
+                sortObj = { portion: -1 };
+                break;
+            } default: {
+                break;
+            }
+        }
+        
+        let portions = null;    
+        if (sortObj) {
+            portions = await Portion.find(query).sort(sortObj).exec(); 
+        } else {
+            portions = await Portion.find(query).exec()
+        }
+        
+        res.render("perfil/admin/PagesAdmin/Portions/listPortions", {portions: portions, filters: {portion, order}});
+    } catch(error) {
+        res.status(500).render("errors/error", {numError: 500, error: error});
+    } 
+};
 portionsController.createPortion = function(req, res) {
     res.render('perfil/admin/PagesAdmin/Portions/createPortions');
 }
