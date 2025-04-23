@@ -33,15 +33,15 @@
         <label for="order" class="form-label">Ordenação:</label>
         <select name="order" id="order" class="form-select form-select-sm">
           <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
-          <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome asc</option>
-          <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome desc</option>
+          <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
+          <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
         </select>
       </div>
 
       <!-- botões continuam ocupando toda a largura -->
       <div class="col-12 d-flex justify-content-center gap-2 mt-3">
         <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-        <a href="<%= clear %>"       class="btn btn-secondary btn-sm">Clear</a>
+        <a href="<%= clear %>" class="btn btn-secondary btn-sm">Clear</a>
       </div>
 
     </div>

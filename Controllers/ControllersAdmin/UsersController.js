@@ -31,44 +31,76 @@ userController.createUser = async function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
 }
 
-userController.search = function(req, res) {
-    let query = {};
-    const firstName = req.query.firstName;
-    const lastName = req.query.lastName;
-    const priority = req.query.priority;
-    const banned = req.query.banned;
+userController.search = async function(req, res) {
+    try {
+        let query = {};
+        const firstName = req.query.firstName;
+        const lastName = req.query.lastName;
+        const priority = req.query.priority;
+        const banned = req.query.banned;
+        const order = req.query.order;
 
-    if (firstName) {
-        query.firstName = { "$regex": firstName, "$options": "i" };
-    }
+        if (firstName) {
+            query.firstName = { "$regex": firstName, "$options": "i" };
+        }
+        
+        if (lastName) {
+            query.lastName = { "$regex": lastName, "$options": "i" };
+        }
     
-    if (lastName) {
-        query.lastName = { "$regex": lastName, "$options": "i" };
-    }
-
-    if(priority !== "all") {
-        query["perfil.priority"] = priority;
-    } else {
-        query["perfil.priority"] = { $ne: "Admin" };
-    }
-    console.log(banned);
-
-    if (banned === "Sim") {
-        query["perfil.banned"] = true;
-    } else if (banned === "false") {
-        query["perfil.banned"] = false;
-    }
-
-    console.log(query)
+        if(priority !== "all") {
+            query["perfil.priority"] = priority;
+        } else {
+            query["perfil.priority"] = { $ne: "Admin" };
+        }
     
-    User.find(query).exec()
-        .then(function (users) {
-            res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users, filters: {firstName, lastName, priority, banned}});
-        })
-        .catch(function(err) {
-            console.error("Erro ao filtrar pelos restuarantes: ", err);
-            res.status(500).render("errors/error", {numError: 500, error: err});
-        }); 
+        if (banned === "Sim") {
+            query["perfil.banned"] = true;
+        } else if (banned === "false") {
+            query["perfil.banned"] = false;
+        }
+    
+        let sortObj = null;
+        switch (order) {
+            case 'nameAsc': {
+                sortObj = { firstName: 1, lastName: 1 };
+                break;
+            } case 'nameDesc': {
+                sortObj = { firstName: -1, lastName: -1 };
+                break;
+            } case 'prioridadeAsc': {
+                sortObj = { 'perfil.priority': 1 };
+                break;
+            } case 'prioridadeDesc': {
+                sortObj = { 'perfil.priority': -1 };
+                break;
+            } case 'desbannedDesc': {
+                sortObj = { 'perfil.banned': 1 };
+                break;
+            } case 'bannedAsc': {
+                sortObj = { 'perfil.banned': -1 };
+                break;
+            } default: {
+                break;
+            }
+        }
+        
+        let users = null;    
+        if (sortObj) {
+            users = await User.find(query).sort(sortObj).exec(); 
+        } else {
+            users = await User.find(query).exec();
+        }
+        
+        if(!users) {
+            res.status(400).render("errors/error400");
+        }
+
+        res.render("perfil/admin/PagesAdmin/Users/listUsers", {users: users, filters: {firstName, lastName, priority, banned, order}});
+    } catch(error) {
+        console.error("Erro ao filtrar pelos restuarantes: ", error);
+        res.status(500).render("errors/error", {numError: 500, error: error});
+    }
 };
 
 userController.findOneRestaurante = async function(name) {
