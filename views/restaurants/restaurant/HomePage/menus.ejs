@@ -37,6 +37,17 @@
                     </select>
                 </div>
             <% } %>
+
+            <div class="col-md-4">
+                <label for="order" class="form-label">Ordenação:</label>
+                <select name="order" id="order" class="form-select">
+                    <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
+                    <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
+                    <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
+                    <option value="typeAsc" <%= filters.order === "typeAsc" ? 'selected' : '' %>>Tipo de Menu (A-Z)</option>
+                    <option value="typeDesc" <%= filters.order === "typeDesc" ? 'selected' : '' %>>Tipo de Menu (Z-A)</option>  
+                </select>
+              </div>
     
             <div class="col-12 d-flex justify-content-end">
                 <a href="/restaurants/<%= restaurant.name %>" class="btn btn-secondary me-2">Clear</a>

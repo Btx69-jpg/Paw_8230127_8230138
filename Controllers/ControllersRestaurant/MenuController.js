@@ -84,7 +84,7 @@ menuController.searchMenu = async function (req, res) {
         const category = req.query.category;
         const price = req.query.price;
         const portion = req.query.portion; 
-
+        
         if(portion) {
             if(portion === "all") {
                 //Pesquisar pela portion com menor preco e associar o preço
