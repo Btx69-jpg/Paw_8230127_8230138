@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var AddressOrder = require("../Reusable/AddressOrder");
-var Perfil = require("../Reusable/Perfil");
+var Perfil = require("./Perfil");
 const Order = require('../Orders/Order');
 
 // Faz com que os schemas destes documentos fique embutido no documento. 

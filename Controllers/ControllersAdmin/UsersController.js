@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 //Models
 const User = require("../../Models/Perfils/User");
-const Perfil = require("../../Models/Reusable/Perfil");
+const Perfil = require("../../Models/Perfils/Perfil");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Constrollers
