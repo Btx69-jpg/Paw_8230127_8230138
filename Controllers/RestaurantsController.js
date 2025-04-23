@@ -134,36 +134,60 @@ restaurantsController.createRestaurant = function(req, res) {
 };
 
 //Filtra por restaurantes (Reutilizar codigo também no admin)
-restaurantsController.search = function(req, res) {
-    let query = {};
-    const { name = '', city = ''} = req.query;
-    query.aprove = true;
-    
-    if (name) {
-      query.name = { "$regex": name, "$options": "i" };
-    }
-  
-    if (city) {
-        query["address.city"] = { "$regex": city, "$options": "i" };
-    }
-    
-    Restaurant.find(query).exec()
-      .then(function (restaurants) {
-        let paginaAtual = res.locals.currentPage;
+restaurantsController.search = async function(req, res) {
+    try {
+        let query = {};
+        const { name = '', city = '', order = 'no'} = req.query;
+        query.aprove = true;
         
-        if (paginaAtual === "/restaurants/search") {
-            res.render("restaurants/restaurants", {restaurants: restaurants, filters: {name, city} });
-        } else if(paginaAtual === "/perfil/admin/listRestaurants/search") {
-            existsRestaurantsDesaprove()
-                .then(exists => {
-                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, filters: {name, city}, desaprove: exists});
-                });
+        if (name) {
+          query.name = { "$regex": name, "$options": "i" };
         }
-      })
-      .catch(function(err) {
-        res.status(500).render("errors/error", {numError: 500, error: err});
-      }); 
-  };
+      
+        if (city) {
+            query["address.city"] = { "$regex": city, "$options": "i" };
+        }
+
+        let sortObj = null;
+        switch (order) {
+            case 'nameAsc': {
+                sortObj = { name: 1 };
+                break;
+            } case 'nameDesc': {
+                sortObj = { name: -1 };
+                break;
+            } default: {
+                break;
+            }
+        }
+        
+        let restaurants = null;    
+        if (sortObj) {
+            restaurants = await Restaurant.find(query).sort(sortObj).exec(); 
+        } else {
+            restaurants = await Restaurant.find(query).exec()
+        }
+        
+        const paginaAtual = res.locals.currentPage;
+        switch(paginaAtual) {
+            case "/restaurants/search": {
+                res.render("restaurants/restaurants", {restaurants: restaurants, filters: {name, city, order} });
+                break;
+            } case "/perfil/admin/listRestaurants/search": {
+                existsRestaurantsDesaprove()
+                .then(exists => {
+                    res.render("perfil/admin/PagesAdmin/Restaurant/listRestaurants", {restaurants: restaurants, filters: {name, city, order}, desaprove: exists});
+                });
+                break;
+            } default: {
+                console.log("Pagina inválida")
+                break;
+            }
+        }
+    } catch(error) {
+        res.status(500).render("errors/error", {numError: 500, error: error});
+    } 
+};
 
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
@@ -388,6 +412,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 break;
             } default: {
                 console.log("URL Inválida");
+                break;
             }
         }
     } catch (error) {
@@ -402,6 +427,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 break;
             } default: {
                 console.log("URL Inválida");
+                break;
             }
         }
     }
