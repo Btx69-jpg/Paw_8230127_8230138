@@ -4,6 +4,7 @@ const pathR = require('path');
 
 //Models
 var Restaurant = require("../Models/Perfils/Restaurant");
+var User = require("../Models/Perfils/User"); 
 var Address = require("../Models/Address/Address");
 var Perfil = require("../Models/Perfils/Perfil");
 var restaurantsController = {};
@@ -261,7 +262,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
             password: hashedPassword,
             phoneNumber: phoneNumber,
             priority: "Restaurant",
-            
+            ownersIds: [],
         });
 
         const address = new Address({
@@ -281,7 +282,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         });
 
         if(cookie === "Cliente" || cookie === "Dono") {
-            restaurant.tempUserId= req.user.userId;
+            restaurant.tempUserId = req.user.userId;
         } 
         // Guarda o restaurante a bd
         await restaurant.save();
@@ -460,8 +461,35 @@ restaurantsController.updatRestaurant = async (req, res) => {
 /* Metodo para remover um restaurant */
 restaurantsController.removeRestaurant = async (req, res) => {
     try {
-        await Restaurant.deleteOne({ name: req.params.restaurant });
+        let restaurant = await Restaurant.findOne({ name: req.params.restaurant });
+
+        if(!restaurant) {
+            console.log("O restaurante a eliminar não existe!");
+            return res.status(404).redirect(res.locals.previousPage);
+        }
+
+        //Remoção dos Ids do restaurante
+        await User.updateMany(
+            { _id: { $in: restaurant.perfil.ownersIds } },
+            { 
+                $pull: { 'perfil.restaurantIds': restaurant._id }
+            }
+        );
+        
+        //Para os que ficaram com o array vazio, transformamolos em clientes
+        await User.updateMany(
+            { 
+                _id: { $in: restaurant.perfil.ownersIds },
+                'perfil.restaurantIds': { $size: 0 } 
+            },
+            { 
+                $set: { 'perfil.priority': 'Cliente' },
+                $unset: { 'perfil.restaurantIds': "" } 
+            }
+        );
+
         deletePackage(`public/images/Restaurants/${req.params.restaurant}/`);
+        await restaurant.deleteOne();
         console.log("Restaurante eliminado!");
         res.redirect(res.locals.previousPage);
     } catch (error) {
