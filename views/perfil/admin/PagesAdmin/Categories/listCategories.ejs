@@ -32,7 +32,8 @@
                 <h5 class="mb-3"><%= categories[i].category %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/perfil/admin/listCategories/deletetCategory/<%= categories[i]._id %>" method="POST">
+                  <form action="/perfil/admin/listCategories/deletetCategory/<%= categories[i]._id %>" method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja remover a categoria <%= categories[i].category %>?');">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
                   <form action="/perfil/admin/listCategories/editCategory/<%= categories[i]._id %>" method="GET">
@@ -44,7 +45,7 @@
           <% } %>
         </div>
       <% } else { %>
-        <p class="text-center">Ainda sem restaurantes</p>
+        <p class="text-center">Ainda sem Categorias</p>
       <% } %>
     </div>
 

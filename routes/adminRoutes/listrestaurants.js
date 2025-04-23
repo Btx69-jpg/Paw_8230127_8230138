@@ -1,43 +1,47 @@
-/**
- * ! Falta meter o search a ser reaproveitado, pelo o do restaurantsController, e modificar o mesmo, claro
- */
 const express = require("express");
 const router = express.Router();
 
+//Middlewares
 const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
-const {isAdmin, isDonoRestaurantOrAdmin} = require("../../Middleware/TypeUserMiddleware.js");
+const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
+
+//Controllers
+const restaurantsController = require("../../Controllers/RestaurantsController.js");
 const listrestaurantController = require("../../Controllers/ControllersAdmin/ListRestaurantController.js")
 
-const restaurantsController = require("../../Controllers/RestaurantsController.js");
+/**
+ * Rota que aplica as restantes a autentificação/validação do token
+ */
+router.use(authenticateToken, isAdmin);
 
 /*Routers para os restaurantes */
-router.get("/", authenticateToken, isAdmin, listrestaurantController.homePage);
+router.get('/', listrestaurantController.homePage);
 
 /* Router para o filtrar os restaurantes */
-router.get("/search", authenticateToken, isAdmin, restaurantsController.search);
+router.get('/search', restaurantsController.search);
 
 /* Rota para renderizar a pagina para criar restaurante */
-router.get("/createRestaurant", authenticateToken, isAdmin, restaurantsController.createRestaurant)
+router.get('/createRestaurant', restaurantsController.createRestaurant)
 
 /* Rota para guardar novos Restaurantes */
-router.get("/saveRestaurant", authenticateToken, isAdmin, restaurantsController.saveRestaurant)
+router.post('/saveRestaurant', restaurantsController.saveRestaurant)
 
 /* Rota para renderizar a pagina para editar restaurante */
-router.get("/editRestaurant/:restaurantId", authenticateToken, isAdmin, restaurantsController.editRestaurant)
+router.get('/editRestaurant/:restaurantId', restaurantsController.editRestaurant)
 
 /* Guarda as alterações feitas a um restaurante */
-router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoRestaurantOrAdmin, restaurantsController.updatRestaurant);
+router.post('/updatRestaurant/:restaurantId', restaurantsController.updatRestaurant);
 
 /* Rota para dar delete de um restaurante */
-router.post('/deleteRestaurant/:restaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurantsController.removeRestaurant);
+router.post('/deleteRestaurant/:restaurant', restaurantsController.removeRestaurant);
 
 /*Pagina para aprovar ou rejeitar restaurantes */
-router.get("/aproves", authenticateToken, isAdmin, listrestaurantController.aprovePage);
+router.get('/aproves', listrestaurantController.aprovePage);
 
 /* Aprova um restaurante metendo-o como aprove */
-router.post("/aproves/:restaurantId", authenticateToken, isAdmin, listrestaurantController.aproveRestaurant);
+router.post('/aproves/:restaurantId', listrestaurantController.aproveRestaurant);
 
 /* Rejeita o restaurante apagando-o da BD */
-router.post("/aproves/reject/:restaurantId", authenticateToken, isAdmin, listrestaurantController.rejectRestaurant);
+router.post('/aproves/reject/:restaurantId', listrestaurantController.rejectRestaurant);
 
 module.exports = router;

@@ -106,25 +106,31 @@ restaurantsController.restaurantsPage = function(req, res) {
 
 restaurantsController.createRestaurant = function(req, res) {
     let action = "";
+    let voltar = "";
 
     switch (res.locals.currentPage) {
-        case "/restaurants": {
+        case "/restaurants/createRestaurant": {
             action = "/restaurants/saveRestaurant";
+            voltar = "/restaurants/"
             break;
-        } case "/perfil/admin/listRestaurants": {
+        } case "/perfil/admin/listRestaurants/createRestaurant": {
             action = "/perfil/admin/listRestaurants/saveRestaurant";
+            voltar = "/perfil/admin/listRestaurants";
             break;
         } case "/registRestaurant": {
-            action = "/registRestaurant/saveRestaurant"
+            action = "/registRestaurant/saveRestaurant";
+            voltar = "/";
             break;
         } default: {
             action = "";
+            voltar = "";
             break;
         }
     }
 
-    console.log("Ação:", action);
-    res.render('restaurants/crudRestaurantes/addRestaurant', {action: action});
+    console.log("Ação: ", action);
+    console.log("Voltar: ", voltar);
+    res.render('restaurants/crudRestaurantes/addRestaurant', {action: action, voltar: voltar});
 };
 
 //Filtra por restaurantes (Reutilizar codigo também no admin)
@@ -162,8 +168,6 @@ restaurantsController.search = function(req, res) {
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
     try { 
-        await saveImage(req, res);
-        
         //Realização das verificações
         let validation = await validationRestaurant(req.body);
         
@@ -234,7 +238,6 @@ restaurantsController.saveRestaurant = async function(req, res) {
         // Guarda o restaurante a bd
         await restaurant.save();
 
-        console.log("Restaurante: ", restaurant)
         switch (res.locals.currentPage) {
             case "/restaurants/saveRestaurant": {
                 res.redirect("/restaurants");
@@ -258,9 +261,46 @@ restaurantsController.saveRestaurant = async function(req, res) {
 
 //Carrega a pagina para editar um restaurante (finalizado) 
 restaurantsController.editRestaurant = (req, res) => {
-    Restaurant.findOne({ _id: req.params.restaurantId }).exec()
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("------------------------------");
+    const restaurantId= req.params.restaurantId;
+    Restaurant.findOne({ _id: restaurantId }).exec()
         .then(restaurant => {
-            res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant, priority: req.cookies.priority });
+            let action = "";
+            let voltar = "";
+        
+            switch (res.locals.currentPage) {
+                case `/restaurants/editRestaurant/${restaurantId}`: {
+                    action = `/restaurants/updatRestaurant/${restaurantId}`;
+                    voltar = "/restaurants/"
+                    break;
+                } case `/perfil/admin/listRestaurants/editRestaurant/${restaurantId}`: {
+                    action = `/perfil/admin/listRestaurants/updatRestaurant/${restaurantId}`;
+                    voltar = "/perfil/admin/listRestaurants";
+                    break;
+                } default: {
+                    action = "";
+                    voltar = "";
+                    break;
+                }
+            }
+
+            console.log("Ação: ", action);
+            console.log("Voltar: ", voltar);
+            res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant, priority: req.cookies.priority, action: action, voltar: voltar });
         })
         .catch(error => {
             console.log("Error", error);
@@ -268,12 +308,9 @@ restaurantsController.editRestaurant = (req, res) => {
         });
 };
 
-/*
-Para alem de alterar o restaurant, também tenho de alterar o nome da pasta se necessário
-E alterar o caminho da imagem, da logo, se necessario
-
-Quando altero o nome do restaurante, já é alterado no mongoDb o caminho no não é alterado o nome da pasta
-*/
+/**
+ * Metodo para atualizar os dados de um restaurante
+ */
 restaurantsController.updatRestaurant = async (req, res) => {
     const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
     try {
@@ -341,18 +378,31 @@ restaurantsController.updatRestaurant = async (req, res) => {
         }, { new: true });
         
         console.log("Restaurante atualizado com sucesso");
-        if(res.locals.currentPage === `/restaurants/updatRestaurant/${req.params.restaurantId}`) {
-            res.redirect("/restaurants");
-        } else if(res.locals.currentPage === `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`) {
-            res.redirect("/perfil/admin/listRestaurants");
+
+        switch(res.locals.currentPage) {
+            case `/restaurants/updatRestaurant/${req.params.restaurantId}`: {
+                res.redirect("/restaurants");
+                break;
+            } case `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`: {
+                res.redirect("/perfil/admin/listRestaurants");
+                break;
+            } default: {
+                console.log("URL Inválida");
+            }
         }
     } catch (error) {
         console.log("Error", error);
 
-        if (res.locals.currentPage === `/restaurants/updatRestaurant/${req.params.restaurantId}`) {
-            res.redirect(`/restaurants/updatRestaurant/${req.params.restaurantId}`);
-        } else if (res.locals.currentPage === `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`) {
-            res.redirect(`/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`);
+        switch(res.locals.currentPage) {
+            case `/restaurants/updatRestaurant/${req.params.restaurantId}`: {
+                res.redirect(`/restaurants/updatRestaurant/${req.params.restaurantId}`);
+                break;
+            } case `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`: {
+                res.redirect(`/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`);
+                break;
+            } default: {
+                console.log("URL Inválida");
+            }
         }
     }
 };

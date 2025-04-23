@@ -32,7 +32,8 @@
                 <h5 class="mb-3"><%= portions[i].portion %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/perfil/admin/listPortions/deletetPortion/<%= portions[i]._id %>" method="POST">
+                  <form action="/perfil/admin/listPortions/deletetPortion/<%= portions[i]._id %>" method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja remover a porção <%= portions[i].portion %>?');">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
                   <form action="/perfil/admin/listPortions/editPortion/<%= portions[i]._id %>" method="GET">

@@ -5,8 +5,8 @@ const router = express.Router();
 const categoriesController = require("../../Controllers/ControllersAdmin/CategoriesController.js");
 
 //Autentificação de token e de tipo de utilizador
-const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
+const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
+const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
 
 /**
 * Rota utilizada para aplicar os seguintes middleware as restantes rotas

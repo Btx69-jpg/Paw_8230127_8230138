@@ -47,7 +47,8 @@
                 <h5 class="mb-3"><%= restaurants[i].name %></h5>
 
                 <div class="btn-group d-flex justify-content-center">
-                  <form action="/perfil/admin/listRestaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST">
+                  <form action="/perfil/admin/listRestaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja remover o restaurante <%= restaurants[i].name %>?');">
                     <button type="submit" class="btn btn-danger">Remover</button>
                   </form>
                   

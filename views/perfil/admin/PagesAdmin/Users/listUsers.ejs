@@ -99,7 +99,8 @@
                         <p class="mb-3">Telefone: <%= users[i].perfil.phoneNumber %></p>
                         <div class="btn-group d-flex justify-content-center">
                         
-                            <form action="/perfil/admin/listUsers/delete/<%= users[i]._id %>" method="POST">
+                            <form action="/perfil/admin/listUsers/delete/<%= users[i]._id %>" method="POST"
+                                onsubmit="return confirm('Tem certeza que deseja remover o user <%= users[i].firstName %> <%= users[i].lastName%>?');">
                                 <button type="submit" class="btn btn-danger">Remover</button>
                             </form>
                             
