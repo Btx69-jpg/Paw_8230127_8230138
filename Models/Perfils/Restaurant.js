@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Address = require("../Reusable/Address");
+var Address = require("../Address/Address");
 var Perfil = require("./Perfil");
 var Comment = require("../Comments/Comment");
 var Menu = require("../Menus/Menu");

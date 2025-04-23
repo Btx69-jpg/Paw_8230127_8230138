@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var Portion = require("../../Models/Reusable/Portion");
+var Portion = require("../../Models/Portion");
 var portionsController = {};
 
 const maxPortions = 15

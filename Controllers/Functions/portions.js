@@ -1,5 +1,5 @@
 //Controllers
-const Portion = require("../../Models/Reusable/Portion");
+const Portion = require("../../Models/Portion");
 
 //Criar uma para ver pelo menu e pelos menus como a categories
 async function carregarPortions() {

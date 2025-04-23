@@ -1,4 +1,4 @@
-const Category = require("../../Models/Reusable/Category");
+const Category = require("../../Models/Category");
 
 async function carregarCategories() {
     let categories = []

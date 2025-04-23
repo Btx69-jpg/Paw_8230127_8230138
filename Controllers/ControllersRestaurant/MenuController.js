@@ -6,7 +6,7 @@ const fs = require('fs');
 const Restaurant = require("../../Models/Perfils/Restaurant");
 const Menu = require("../../Models/Menus/Menu");
 const Dish = require("../../Models/Menus/Dish");
-const Portion = require("../../Models/Reusable/Portion");
+const Portion = require("../../Models/Portion");
 
 //Controllers
 var menuController = {};

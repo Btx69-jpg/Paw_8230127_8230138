@@ -4,7 +4,7 @@ const pathR = require('path');
 
 //Models
 var Restaurant = require("../Models/Perfils/Restaurant");
-var Address = require("../Models/Reusable/Address");
+var Address = require("../Models/Address/Address");
 var Perfil = require("../Models/Perfils/Perfil");
 var restaurantsController = {};
 

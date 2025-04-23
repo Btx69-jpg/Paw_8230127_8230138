@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var Category = require("../../Models/Reusable/Category");
+var Category = require("../../Models/Category");
 var categoriesController = {};
 
 const maxCategories = 15

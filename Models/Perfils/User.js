@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var AddressOrder = require("../Reusable/AddressOrder");
+var AddressOrder = require("../Address/AddressOrder");
 var Perfil = require("./Perfil");
 const Order = require('../Orders/Order');
 
