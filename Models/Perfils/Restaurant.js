@@ -51,6 +51,7 @@ var RestaurantSchema = new mongoose.Schema({
         default: [], //Inicializa com o array vazio
         required: true,
     },
+    //Apagar
     countDonos: {
         type: Number,
         default: 0,

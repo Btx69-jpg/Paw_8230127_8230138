@@ -17,27 +17,28 @@ async function saveImage(req, res) {
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {
                 const path = "public/images/Restaurants/" + req.body.name + "/";
-                
-                try {
-                    fs.mkdirSync(path, { recursive: true });
-                    console.log('Pasta criada com sucesso!');
-                } catch (err) {
-                    console.error('Erro ao criar a pasta:', err);
-                }
+    
+                fs.mkdir(path, { recursive: true }, error => {
+                    if (error) {
+                        return cb(err);
+                    }
+                    cb(null, path);
+                });          
+
                 cb(null, path);
             },
             filename: function (req, file, cb) {
                 cb(null, file.originalname);
             }
         });
-          
+            
         const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
         
-        // Executa o middleware do multer e aguarda sua finalização
-        uploadLogo(req, res, function(err) {
-            if (err) {
-                return reject(err);
+        uploadLogo(req, res, function(error) {
+            if (error) {
+                return reject(error);
             }
+
             resolve();
         });
     }); 

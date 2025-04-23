@@ -44,6 +44,19 @@ var PerfilSchema = new mongoose.Schema({
             return this.priority === 'Dono';
         },
     },
+    ownersIds: {
+        type: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'User',
+            },
+        ],
+        default: undefined,
+        //Função que mete como required caso o tipo seja restaurant. Se não, não é obrigatorio
+        required: function() {
+            return this.priority === 'Restaurant';
+        },
+    },
     banned: {
         type: Boolean,
         default: false,

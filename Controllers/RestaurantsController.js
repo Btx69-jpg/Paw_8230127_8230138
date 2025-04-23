@@ -10,27 +10,29 @@ var restaurantsController = {};
 
 //Metodos
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
-const { deleteImage, updateImage } = require("./Functions/crudImagesRest");
+const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
 const { existsRestaurantsDesaprove } = require("./ControllersAdmin/ListRestaurantController");
 
 //Constantes
 const totRestaurant = 15; 
 
-async function validationRestaurant(body) {
+async function validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
+    street, postal_code, city) {
+    
     const restaurants = await Restaurant.find({}).exec();
     // Verifica se o limite de restaurantes foi atingido
     if (restaurants.length >= totRestaurant) {
         return "Não é possivel criar mais restaurantes";
     }
 
-    if (body.name === undefined || body.nif === undefined || body.phoneNumber === undefined ||
-        body.email === undefined || body.password === undefined || 
-        body.confirmPassword === undefined || body.street === undefined ||
-        body.postal_code === undefined || body.city === undefined) {
+    if (name === undefined || nif === undefined || phoneNumber === undefined ||
+        email === undefined || password === undefined || 
+        confirmPassword === undefined || street === undefined ||
+        postal_code === undefined || city === undefined) {
         return "Alguns dos campos obrigatórios não está preenchido";
     }
 
-    if (body.password !== body.confirmPassword) { 
+    if (password !== confirmPassword) { 
         return "As passwords não coincidem";
     }
 
@@ -40,16 +42,16 @@ async function validationRestaurant(body) {
 
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
     while (i < restaurants.length && !find) {
-        if (restaurants[i].name === body.name) {
+        if (restaurants[i].name === name) {
             problem = "Já existe um restaurante com esse nome";
             find = true;
-        } else if (restaurants[i].nif === body.nif) {
+        } else if (restaurants[i].nif === nif) {
             problem = "Já existe um restaurante com esse NIF";
             find = true;
-        } else if (restaurants[i].perfil.email === body.email) {
+        } else if (restaurants[i].perfil.email === email) {
             problem = "Já existe um restaurante com esse email";
             find = true;
-        } else if (restaurants[i].perfil.phoneNumber === body.phoneNumber) {
+        } else if (restaurants[i].perfil.phoneNumber === phoneNumber) {
             problem = "Já existe um restaurante com esse numero telefonico";
             find = true;
         }
@@ -226,8 +228,14 @@ restaurantsController.search = async function(req, res) {
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
     try { 
+        await saveImage(req, res);
+        
         //Realização das verificações
-        let validation = await validationRestaurant(req.body);
+        const {name, sigla, nif, phoneNumber, email, password, confirmPassword, street, postal_code,
+            city, description} = req.body;
+
+        let validation = await validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
+            street, postal_code, city);
         
         if (validation !== "") {
             return res.status(500).render("errors/error", {numError: 500, error: validation});
@@ -245,54 +253,36 @@ restaurantsController.saveRestaurant = async function(req, res) {
         
         if (cookie === "Admin") {
             aproved = true;
-        } 
-
-        // Cria um novo restaurante com os dados fornecidos
-        let restaurant = null;
-
-        if(cookie === "Cliente") {
-            console.log("Id do user: ", req.user.userId);
-            restaurant = new Restaurant({
-                name: req.body.name,
-                perfil: new Perfil({
-                    perfilPhoto: caminhoCorrigido,
-                    email: req.body.email,
-                    password: hashedPassword,
-                    phoneNumber: req.body.phoneNumber,
-                    priority: "Restaurant",
-                }),
-                sigla: req.body.sigla,
-                nif: req.body.nif, 
-                address: new Address({
-                    street: req.body.street,
-                    postal_code: req.body.postal_code,
-                    city: req.body.city
-                }),
-                description: req.body.description,
-                aprove: aproved,
-                tempUserId: req.user.userId,
-            });
-        } else {
-            restaurant = new Restaurant({
-                name: req.body.name,
-                perfil: new Perfil({
-                    perfilPhoto: caminhoCorrigido,
-                    email: req.body.email,
-                    password: hashedPassword,
-                    phoneNumber: req.body.phoneNumber,
-                    priority: "Restaurant",
-                }),
-                sigla: req.body.sigla,
-                nif: req.body.nif, 
-                address: new Address({
-                    street: req.body.street,
-                    postal_code: req.body.postal_code,
-                    city: req.body.city
-                }),
-                description: req.body.description,
-                aprove: aproved,
-            });
         }
+
+        const perfil = new Perfil({
+            perfilPhoto: caminhoCorrigido,
+            email: email,
+            password: hashedPassword,
+            phoneNumber: phoneNumber,
+            priority: "Restaurant",
+            
+        });
+
+        const address = new Address({
+            street: street,
+            postal_code: postal_code,
+            city: city
+        });
+
+        let restaurant = new Restaurant({
+            name: name,
+            perfil: perfil,
+            sigla: sigla,
+            nif: nif, 
+            address: address,
+            description: description,
+            aprove: aproved,
+        });
+
+        if(cookie === "Cliente" || cookie === "Dono") {
+            restaurant.tempUserId= req.user.userId;
+        } 
         // Guarda o restaurante a bd
         await restaurant.save();
 
@@ -313,7 +303,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         }
     } catch (error) {
         console.log("Error", error);
-        res.render(res.locals.previousPage);
+        res.redirect(res.locals.previousPage);
     }
 };
 

@@ -63,6 +63,21 @@ function isRestaurant(req, res, next) {
     }
 }
 
+function isDonoOrCliente(req, res, next) {
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Cliente" || cokkie === "Dono") {
+            next();
+        } else {
+            res.render("errors/error", {numError: 403});
+        }
+    } else {
+        console.log("Não existe cookie para clientes");
+        res.render("errors/error", {numError: 403});
+    }
+}
+
 function isDonoOrRestaurant(req, res, next) {
     if (req.cookies && req.cookies.priority) {
         const cokkie = req.cookies.priority;
@@ -115,6 +130,7 @@ module.exports = {
     isCliente,
     isDono,
     isRestaurant,
+    isDonoOrCliente,
     isDonoOrRestaurant,
     isDonoOrAdmin, 
     isDonoRestaurantOrAdmin,

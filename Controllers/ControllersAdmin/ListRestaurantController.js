@@ -66,6 +66,7 @@ listRestaurantController.existsRestaurantsDesaprove = existsRestaurantsDesaprove
 
 function existRestaurant(restaurant) {
     let problem = "";
+
     if (!restaurant) {
         problem= "O restaurante não existe";
     } else if (!restaurant.tempUserId) {
@@ -78,15 +79,16 @@ function existRestaurant(restaurant) {
 //Admin aprovar um restaurante (Testar outra vez)
 listRestaurantController.aproveRestaurant = async function(req, res) {
     try {
-        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId});
+        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId}).exec();
 
         let problemRest = existRestaurant(restaurant);
         if (problemRest !== "") {
             return res.redirect("/perfil/admin/listRestaurants");
         }
   
+        const tempUserId = restaurant.tempUserId;
         //Se o restaurante tem um user associado vamos procura-lo 
-        let user = await User.findOne({ _id: restaurant.tempUserId});
+        let user = await User.findOne({ _id: tempUserId}).exec();
 
         if (!user) {
             console.log("O user associado ao restaurante não existe");
@@ -96,6 +98,7 @@ listRestaurantController.aproveRestaurant = async function(req, res) {
         //Se esse user existe então vamos atualiza-lo para dono
         if (user.perfil.priority !== "Dono") {
             user.perfil.priority = "Dono";
+            user.perfil.restaurantIds = [];
         }
 
         user.perfil.restaurantIds.push(restaurant._id);
@@ -104,8 +107,8 @@ listRestaurantController.aproveRestaurant = async function(req, res) {
         console.log("Estatutos do user atualizados com sucesso");
         
         //A seguir de atualizar o user atualizamos o restaurante
-        await delete restaurant.tempUserId;
-        restaurant.countDonos++;
+        restaurant.perfil.ownersIds.push(tempUserId);
+        restaurant.tempUserId = undefined;
         restaurant.aprove = true;
 
         await restaurant.save();
