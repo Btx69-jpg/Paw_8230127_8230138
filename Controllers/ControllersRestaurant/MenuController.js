@@ -80,20 +80,27 @@ menuController.showMenu = async function (req, res) {
 //Filtro dos pratos
 menuController.searchMenu = async function (req, res) {
     try {
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log();
+        console.log("-----------------------------------------------------------------");
         const dishName = req.query.dishName;
         const category = req.query.category;
         const price = req.query.price;
         const portion = req.query.portion; 
-        
-        if(portion) {
-            if(portion === "all") {
-                //Pesquisar pela portion com menor preco e associar o preço
+        const order = req.query.order;
 
-            } else {
-                //Pesquisar pela portion especifica com menor preço e ver se ele tem essa portion
-            }
-        }
-    
         const restaurant = await Restaurant.findOne({ name: req.params.restaurant })
             .populate({
                 path: "menus.dishes.portions.portion",
@@ -108,54 +115,51 @@ menuController.searchMenu = async function (req, res) {
             .render("errors/error404", { error: "Menu não encontrado" });
         }
 
-        menu.dishes = await menu.dishes.filter(dish => {
-            // 1) Filtro para o nome
+        menu.dishes = menu.dishes.filter(dish => {
             if (dishName && dish.name !== dishName) {
                 return false;
             }
           
-            // 2) Filtro por tipo
             if (category && category !== 'all' && dish.category !== category) {
                 return false;
             }
           
-            // 3) Seleção da porção a usar no filtro de preço
+            //Seleção da porção a usar no filtro de preço
             let candidatePortion = null;
-          
             if (portion === 'all') {
-                // a) encontrar a porção de menor preço
+                //encontrar a porção de menor preço
                 if (dish.portions.length === 0) {
-                    return false; // sem porções, descartamos o prato
+                    return false; 
                 }
                 
                 candidatePortion = dish.portions[0];
                 
                 for (let i = 1; i < dish.portions.length; i++) {
-                    const p = dish.portions[i];
+                    const portionDish = dish.portions[i];
                 
-                    if (p.price < candidatePortion.price) {
-                        candidatePortion = p;
+                    if (portionDish.price < candidatePortion.price) {
+                        candidatePortion = portionDish;
                     }
                 }
             } else {
-                // b) procurar a porção específica pelo nome (ou _id)
-                candidatePortion = dish.portions.find(p => {
+                //procurar a porção específica pelo nome (ou _id)
+                candidatePortion = dish.portions.find(dish => {
                     // se fizeste populate, p.portion.portion é o nome
                     
-                    if (p.portion.portion && p.portion.portion === portion) {
+                    if (dish.portion.portion && dish.portion.portion === portion) {
                         return true;
                     }
                     
                     // senão compara o ObjectId
-                    return p.portion.toString() === portion;
+                    return dish.portion.toString() === portion;
                 });
+
                 // se não encontrou, descartamos o prato
                 if (!candidatePortion) {
                     return false;
                 }
             }
 
-            // 4) Filtro de preço (se for um número válido)
             if (price && price > 0 && candidatePortion.price < price) {
                 return false;
             }
@@ -163,11 +167,51 @@ menuController.searchMenu = async function (req, res) {
             // passou em todos os filtros
             return true;
         });
+
+        if (order) {
+            switch (order) {
+                case 'nameAsc': {
+                    menu.dishes.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    );
+                    break;
+                } case 'nameDesc': {
+                    menu.dishes.sort((a, b) =>
+                        b.name.localeCompare(a.name)
+                    );
+                    break;
+                } case 'typeAsc': {
+                    menu.dishes.sort((a, b) =>
+                        a.category.localeCompare(b.category)
+                    );
+                    break;
+                } case 'typeDesc': {
+                    menu.dishes.sort((a, b) =>
+                        b.category.localeCompare(a.category)
+                    );
+                    break;
+                } case 'priceAsc': {
+                    menu.dishes.sort(
+                        (a, b) =>
+                        Math.min(...a.portions.map(p => p.price)) -
+                        Math.min(...b.portions.map(p => p.price))
+                    );
+                    break;   
+                } case 'priceDesc': {
+                    menu.dishes.sort(
+                        (a, b) =>
+                        Math.min(...b.portions.map(p => p.price)) -
+                        Math.min(...a.portions.map(p => p.price))
+                    );
+                    break;
+                }
+            }
+        }
     
         console.log("Dishes: ", menu.dishes);
         const categories = await carregarCategoriesMenu(menu);
         const portions = await carregarPortions();
-        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion }, menu: menu, categories: categories, portions: portions });
+        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion, order }, menu: menu, categories: categories, portions: portions });
     } catch (err) {
         res.status(500).render("errors/error", {numError: 500, error: err});
     }
