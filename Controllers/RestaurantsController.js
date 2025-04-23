@@ -62,10 +62,10 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
     return problem;
 }
 
-async function validationEditRestaurant(body, restaurant) {
-    if (body.name === undefined || body.nif === undefined || body.phoneNumber === undefined ||
-        body.email === undefined || body.street === undefined || body.postal_code === undefined || 
-        body.city === undefined) {
+async function validationEditRestaurant(name, nif, phoneNumber, email, street, postal_code, city, restaurant) {
+    if (name === undefined || nif === undefined || phoneNumber === undefined ||
+        email === undefined || street === undefined || postal_code === undefined || 
+        city === undefined) {
         return "Alguns dos campos obrigatórios não está preenchido";
     }
 
@@ -76,16 +76,16 @@ async function validationEditRestaurant(body, restaurant) {
 
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
     while (i < restaurants.length && !find) {
-        if (restaurant.name !== body.name && restaurants[i].name === body.name) {
+        if (restaurant.name !== name && restaurants[i].name === name) {
             problem = "Já existe um restaurante com esse nome";
             find = true;
-        } else if (restaurant.nif !== body.nif && restaurants[i].nif === body.nif) {
+        } else if (restaurant.nif !== nif && restaurants[i].nif === nif) {
             problem = "Já existe um restaurante com esse NIF";
             find = true;
-        } else if (restaurant.perfil.email !== body.email && restaurants[i].perfil.email === body.email) {
+        } else if (restaurant.perfil.email !== email && restaurants[i].perfil.email === email) {
             problem = "Já existe um restaurante com esse email";
             find = true;
-        } else if (restaurant.perfil.phoneNumber !== body.phoneNumber && restaurants[i].perfil.phoneNumber === body.phoneNumber) {
+        } else if (restaurant.perfil.phoneNumber !== phoneNumber && restaurants[i].perfil.phoneNumber === phoneNumber) {
             problem = "Já existe um restaurante com esse numero telefonico";
             find = true;
         }
@@ -165,8 +165,6 @@ restaurantsController.createRestaurant = function(req, res) {
         }
     }
 
-    console.log("Ação: ", action);
-    console.log("Voltar: ", voltar);
     res.render('restaurants/crudRestaurantes/addRestaurant', {action: action, voltar: voltar});
 };
 
@@ -310,21 +308,6 @@ restaurantsController.saveRestaurant = async function(req, res) {
 
 //Carrega a pagina para editar um restaurante (finalizado) 
 restaurantsController.editRestaurant = (req, res) => {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("------------------------------");
     const restaurantId= req.params.restaurantId;
     Restaurant.findOne({ _id: restaurantId }).exec()
         .then(restaurant => {
@@ -347,8 +330,6 @@ restaurantsController.editRestaurant = (req, res) => {
                 }
             }
 
-            console.log("Ação: ", action);
-            console.log("Voltar: ", voltar);
             res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant, priority: req.cookies.priority, action: action, voltar: voltar });
         })
         .catch(error => {
@@ -361,13 +342,21 @@ restaurantsController.editRestaurant = (req, res) => {
  * Metodo para atualizar os dados de um restaurante
  */
 restaurantsController.updatRestaurant = async (req, res) => {
-    const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
     try {
         //Upload da nova imagem se necessário
+        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
+
+        if (!restaurant) {
+            return res.status(404).render('errors/error', { numError: 404});
+        }
+
         await updateImage(req, res, restaurant);
-        
+
+        const {name, sigla, nif, phoneNumber, email, street, postal_code, city, description} = req.body;
         //Validações
-        let validation = await validationEditRestaurant(req.body, restaurant);
+        let validation = await validationEditRestaurant(name, nif, phoneNumber, email, street, postal_code, 
+            city, restaurant);
+
         if (validation !== "") {
             return res.status(500).render("errors/error", {numError: 500, error: validation});
         } 
@@ -377,7 +366,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
         let caminhoCorrigido = restaurant.perfil.perfilPhoto;
         let pathNewImg = req.file?.path || '';
 
-        if (restaurant.name !== req.body.name || pathNewImg !== '') {
+        if (restaurant.name !== name || pathNewImg !== '') {
             let newImage = '';
 
             if (pathNewImg !== '') {
@@ -393,39 +382,36 @@ restaurantsController.updatRestaurant = async (req, res) => {
             O 1º if acontece quando não se altera a imagem 
             O 2º if, quando se altera a imagem 
             */
-            if (pathNewImg === '' && restaurant.name !== req.body.name) {
-                newFile = "public/images/Restaurants/" + req.body.named;
+            if (pathNewImg === '' && restaurant.name !== name) {
+                newFile = "public/images/Restaurants/" + name;
                 let pathPerfilPhoto = "public/images/Restaurants/" + restaurant.name;
                 await updatePackage(pathPerfilPhoto, newFile);
                 newFile = newFile + "/" + perfilPhoto;
                 caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
             } else if (perfilPhoto !== newImage) {
-                if (restaurant.name !== req.body.name) {
-                    newFile = "public/images/Restaurants/" + req.body.name + "/" + newImage;
+                if (restaurant.name !== name) {
+                    newFile = "public/images/Restaurants/" + name + "/" + newImage;
                 } else {
                     newFile = "public/images/Restaurants/" + restaurant.name + "/" + newImage;
                 }
     
-                deleteImage(`public/images/Restaurants/${req.body.name}/${perfilPhoto}`);
+                deleteImage(`public/images/Restaurants/${name}/${perfilPhoto}`);
                 caminhoCorrigido = "/" + newFile.replace(/^public[\\/]/, "");
             }
         }
-
-        await Restaurant.findByIdAndUpdate(req.params.restaurantId, { 
-            $set: {
-                name: req.body.name,
-                'perfil.email': req.body.email,
-                'perfil.phoneNumber': req.body.phoneNumber,
-                'perfil.perfilPhoto': caminhoCorrigido,
-                sigla: req.body.sigla,
-                nif: req.body.nif, 
-                'address.street': req.body.street,
-                'address.postal_code': req.body.postal_code,
-                'address.city': req.body.city,
-                description: req.body.description 
-            },
-        }, { new: true });
         
+        restaurant.name = name;
+        restaurant.perfil.email = email;
+        restaurant.perfil.phoneNumber = phoneNumber;
+        restaurant.perfil.perfilPhoto = caminhoCorrigido;
+        restaurant.sigla = sigla;
+        restaurant.nif = nif, 
+        restaurant.address.street = street,
+        restaurant.address.postal_code = postal_code,
+        restaurant.address.city = city;
+        restaurant.description = description; 
+
+        await restaurant.save();
         console.log("Restaurante atualizado com sucesso");
 
         switch(res.locals.currentPage) {
@@ -436,6 +422,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 res.redirect("/perfil/admin/listRestaurants");
                 break;
             } default: {
+                res.redirect(res.locals.previousPage);
                 console.log("URL Inválida");
                 break;
             }
@@ -451,6 +438,7 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 res.redirect(`/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`);
                 break;
             } default: {
+                res.redirect(res.locals.previousPage);
                 console.log("URL Inválida");
                 break;
             }

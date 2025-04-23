@@ -8,6 +8,7 @@ const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Constrollers
 const signUpController = require("../SignUpController");
+const { restaurantsPage } = require("../RestaurantsController");
 
 var userController = {};
 
@@ -158,6 +159,7 @@ userController.saveUser = async function(req, res) {
         console.log();
         console.log();
         console.log("--------------------------");
+
         const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
         const errors = validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant);
 
@@ -187,9 +189,6 @@ userController.saveUser = async function(req, res) {
                 priority: priority,
                 restaurantIds: restaurantFound._id,
             });
-
-            restaurantFound.countDono++;
-            await restaurantFound.save();
         } else {
             perfil = new Perfil({
                 phoneNumber: phoneNumber,
@@ -208,6 +207,11 @@ userController.saveUser = async function(req, res) {
 
         await newUser.save();
         
+        if(restaurant) {
+            restaurantFound.countDono++;
+            restaurantFound.perfil.ownersIds.push(newUser._id);
+            await restaurantFound.save();
+        }
         req.flash("success_msg", "Registo realizado com sucesso!");
         res.redirect("/perfil/admin/listUsers");
     } catch (err) {
