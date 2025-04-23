@@ -222,23 +222,41 @@ userController.saveUser = async function(req, res) {
 }
 
 userController.editPage = function(req, res) {    
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("-----------------------------------------------------------------------------------");
+
     User.findOne({ _id: req.params.userId }).exec()
         .then(user => {     
-            console.log("User encontrado", user);
+            if(user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
+                Restaurant.find( {_id: { $in: user.perfil.restaurantIds }} ).exec()
+                    .then(restaurants => {
 
-            if(user.perfil.priority === "Dono" && user.perfil.restaurantId) {
-                Restaurant.findOne().exec()
-                    .then(restaurant => {
-                        res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: restaurant.name});
-                    })
+                        if(restaurants && restaurants.length > 0) {
+                            res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurants: restaurants});    
+                        } else{
+                            res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurants: []});    
+                        }
+                     })
                     .catch(error => {
                         console.log("Erro: ", error);
                         res.redirect("perfil/admin/listUsers");
                     });
             } else {
-                res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurant: ""});
+                res.render("perfil/admin/PagesAdmin/Users/editUser", {userD: user, restaurants: []});
             }
-
         })
         .catch(error => {
             console.log("Erro: ", error);
@@ -259,20 +277,33 @@ async function validateUpdateUser(user, email, phoneNumber, priority, restaurant
         ]
     }).exec();
 
+    /**
     const existingEmailRestaurant = await Restaurant.findOne({
+        name: { $ne: restaurant },
         $or: [
             { 'perfil.email': email },
             { 'perfil.phoneNumber': phoneNumber }
         ]
     }).exec();
+     */
 
-    if (existingUser || existingEmailRestaurant) {
-        if (existingUser.perfil.email === email || existingEmailRestaurant.perfil.email === email) {
-            return "Já existe uma conta com este email!";
+    if (existingUser) {
+        if (existingUser.perfil.email === email) {
+            return "Já existe um utilizador com esse email!";
         } else {
-            return "Já existe uma conta com esse numero telefonico!";
+            return "Já existe um utilizador com esse numero telefonico!";
         }
     }
+
+    /*
+    if (existingEmailRestaurant) {
+        if (existingEmailRestaurant.perfil.email === email) {
+            return "Já existe um restaurante com este email!";
+        } else {
+            return "Já existe um restaurante com esse numero telefonico!";
+        }
+    }
+    */
 
     return "";
 }
@@ -309,7 +340,8 @@ userController.updateUser =  async function(req, res) {
         console.log();
         console.log();
         console.log();
-        console.log("------------------------------");
+        console.log("-----------------------------------------------------------------------------------");
+        console.log("Update");
         const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  
 
         //Validações aos campos
@@ -332,6 +364,7 @@ userController.updateUser =  async function(req, res) {
 
         if (restaurant) {
             let updateCountRest = false;
+
             if (user.perfil.priority !== "Dono" && priority === "Dono") {
                 user.perfil.restaurantIds = [];
                 updateCountRest= true;
@@ -344,10 +377,8 @@ userController.updateUser =  async function(req, res) {
             if (updateCountRest) {
                 user.perfil.restaurantIds.push(restaurantFound._id);
 
-                await Restaurant.updateOne(
-                    { _id: restaurantFound._id},
-                    { $inc: { countDonos: +1 } }
-                )
+                restaurantFound.perfil.ownersIds.push(user._id);
+                await restaurantFound.save();
             }
         }
 
@@ -355,7 +386,7 @@ userController.updateUser =  async function(req, res) {
             console.log("A prioridade foi alterada de dono para cliente")
             await Restaurant.updateMany(
                 { _id: { $in: user.perfil.restaurantIds } },
-                { $inc: { countDonos: -1 } }
+                { $pull: { 'perfil.ownersIds': user._id } }
             ).exec();
 
             //Forma que encontrei para dar delete no campo

@@ -157,22 +157,25 @@
             </select>
           </div>
 
-          <% if(restaurant !== "" && restaurant !== null) { %>
+          <% if(restaurants && restaurants.length > 0 && userD.perfil.priority === "Dono") { %>
             <!-- Crio já o div do restaurante com dados-->
-            <div class="form-group" id="divRestaurant">
-                <label for="restaurant">Nome do restaurant:</label>
-                <input type="text"
-                id="restaurant"
-                class="form-control"
-                name="restaurant"
-                placeholder = "Introduza o nome do restaurante"
-                maxLength= "100"
-                pattern= "^(?!.*[\\/]).+$"
-                title= "O nome não pode conter os caracteres '/' ou '\'"
-                value= "<%= restaurant %>"
-                required>
-            </div>
-          <% }%>
+             <!-- Ver como o wilkie fez para os pratos-->
+            <% for(let i = 0; i < restaurants.length; i++) { %>
+              <div class="form-group" id="divRestaurant">
+                  <label for="restaurant">Nome do restaurant:</label>
+                  <input type="text"
+                  id="restaurant"
+                  class="form-control"
+                  name="restaurant"
+                  placeholder = "Introduza o nome do restaurante"
+                  maxLength= "100"
+                  pattern= "^(?!.*[\\/]).+$"
+                  title= "O nome não pode conter os caracteres '/' ou '\'"
+                  value= "<%= restaurants[i].name %>"
+                  required>
+              </div>
+            <% } %>
+          <% } %>
 
           <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
           <button type="submit">Alterar</button>
@@ -186,7 +189,8 @@
     </main>
     <script>
       //Se o restaurante não exisitir sera mandado para o req.body.restaurant, o valor nulo
-      function inputDono() {
+      /*
+            function inputDono() {
         console.log("Estou aqui no inputDono");
         const valueSelectBox = document.getElementById("priority").value;
         let divRestaurant = document.getElementById("divRestaurant");
@@ -208,7 +212,8 @@
             inputRest.maxLength= "100";
             inputRest.pattern= "^(?!.*[\\/]).+$";
             inputRest.title= "O nome não pode conter os caracteres '/' ou '\\'"
-            inputRest.value= "<%= restaurant %>"
+            //inputRest.value= " restaurants[i].name "
+            input.value="";
             inputRest.required= true;
 
             //Cria o div do restaurante
@@ -225,7 +230,47 @@
             divRestaurant.remove();
             console.log("O campo do dono foi omitido com sucesso!");
           }
+        }*/
+
+      function inputDono() {
+      console.log("Estou aqui no inputDono");
+      const valueSelectBox = document.getElementById("priority").value;
+      let divRestaurant = document.getElementById("divRestaurant");
+      console.log(valueSelectBox);
+      console.log(divRestaurant);
+      if (divRestaurant === null && valueSelectBox === "Dono") {
+          //Crio a label do restaurante
+          let labelRest = document.createElement("label");
+          labelRest.htmlFor = "restaurant";
+          labelRest.textContent = 'Nome do restaurante:';
+
+          //Cria o input do restaurante
+          let inputRest = document.createElement("input");
+          inputRest.type = "text";
+          inputRest.name = "restaurant";
+          inputRest.id = "restaurant";
+          inputRest.className  = "form-control";
+          inputRest.placeholder = "Introduza o nome do restaurante";
+          inputRest.maxLength= "100";
+          inputRest.pattern= "^(?!.*[\\/]).+$";
+          inputRest.title="O nome não pode conter os caracteres '/' ou '\'"
+          inputRest.required= true;
+
+          //Cria o div do restaurante
+          let newDivRestaurant = document.createElement("div");
+          newDivRestaurant.id = "divRestaurant";
+          newDivRestaurant.className  = "form-group";
+          newDivRestaurant.appendChild(labelRest);
+          newDivRestaurant.appendChild(inputRest);
+          //Insiro o novo div, 
+          let divPrioridade = document.getElementById("divPrioridade");
+          divPrioridade.insertAdjacentElement('afterend', newDivRestaurant);
+        } else if (divRestaurant && valueSelectBox !== "Dono") {
+          //Apagar o divRestaurant
+          divRestaurant.remove();
+          console.log("O campo do dono foi omitido com sucesso!");
         }
+      }
     </script>
     <!-- Bootstrap JS Bundle (opcional para funcionalidades JS do Bootstrap) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
