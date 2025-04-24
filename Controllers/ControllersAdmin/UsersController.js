@@ -135,7 +135,7 @@ userController.findOneRestaurante = async function(name) {
 
 async function validateNewUser(email, phoneNumber, priority, restaurant) {
     if (priority === "Dono" && !restaurant) {
-        return "Não existe nenhum restaurante com esse nome!"
+        return "Não existe nenhum restaurante(s) com esse(s) nome(s)!"
     }
 
     const existingUser = await User.findOne({
@@ -178,8 +178,8 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
         errors.push({ texto: "Todos os campos são obrigatórios!" });
     }
 
-    if(priority === "Admin" && !restaurant) {
-        errors.push({ texto: "Quando a prioridade é admin, o campo restaurante é de preenchimento obrigatório"})
+    if(priority === "Dono" && !restaurant) {
+        errors.push({ texto: "Quando a prioridade é dono, o campo restaurante é de preenchimento obrigatório"})
     }
 
     if (password.length < 8 || confirmPassword.length < 8) {
@@ -194,7 +194,8 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
 /**
  * Metodo para criar um novo utilizador
  * 
- * Só não está a dar o countDonos, mas não é critico pois vai ser alterado pelo o ID do user
+ * Alterar para agora procurar pelos restuarantes que estão num array
+ * 
  */
 userController.saveUser = async function(req, res) {
     try {
@@ -212,21 +213,48 @@ userController.saveUser = async function(req, res) {
         console.log();
         console.log();
         console.log("--------------------------");
-
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant} = req.body;  
-        const errors = validationSave(firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurant);
-
-        if (errors.length > 0) {
-            return res.render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, lastName, email });
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
+        
+        let restaurants = req.body.restaurant;
+        if (priority ==="Dono" && !Array.isArray(restaurants)) {
+            restaurants = [restaurants];
         }
 
-        let restaurantFound = await Restaurant.findOne({ name: restaurant}).exec();
+        //Remove os duplicados do array
+        for (let i = 0; i < restaurants.length; i++) {
+            if(restaurants[i]) {
+                for (let y = restaurants.length - 1; y > i; y--) {
+                    if (restaurants[i].name === restaurants[y].name) {
+                        restaurants.splice(y, 1);
+                    }
+                }
+            }
+        }
+        
+        //Transformamos o array restaurantes, de um array de objetos para um array só com os nomes
+        let namesRestaurants = [];
+        for (let i = 0; i < restaurants.length; i++) {
+            namesRestaurants[i] = restaurants[i].name;
+        }
+
+        console.log("Restaurants: ", restaurants);
+        const errors = validationSave(firstName, lastName, email, phoneNumber, password, 
+            confirmPassword, priority, namesRestaurants);
+
+        if (errors.length > 0) {
+            return res.status(404).render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, 
+                lastName, email });
+        }
+
+        let restaurantFound = await Restaurant.find({ name: {$in: namesRestaurants}}).exec();
+        console.log("Restaurants: ", restaurantFound);
+        
         const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurantFound);
         
         if(errorValidate !== "") {
             req.flash("error_msg", errorValidate);
             return res.redirect(res.locals.previousPage);
-        }
+        } 
 
         // Encriptação da password
         const salt = await bcrypt.genSalt(10);
@@ -234,13 +262,19 @@ userController.saveUser = async function(req, res) {
         
         let perfil;
 
-        if (restaurant) {
+        if (namesRestaurants) {
+            let restaurantsIds = []; 
+
+            for(let i = 0; i < restaurantFound.length; i++) {
+                restaurantsIds[i] = restaurantFound[i]._id;
+            }
+            
             perfil = new Perfil({
                 phoneNumber: phoneNumber,
                 email: email,
                 password: hashedPassword,
                 priority: priority,
-                restaurantIds: restaurantFound._id,
+                restaurantIds: restaurantsIds,
             });
         } else {
             perfil = new Perfil({
@@ -260,10 +294,11 @@ userController.saveUser = async function(req, res) {
 
         await newUser.save();
         
-        if(restaurant) {
-            restaurantFound.countDono++;
-            restaurantFound.perfil.ownersIds.push(newUser._id);
-            await restaurantFound.save();
+        if(namesRestaurants) {
+            for(let i = 0; i < restaurantFound.length; i++) {
+                restaurantFound[i].perfil.ownersIds.push(newUser._id);
+                await restaurantFound[i].save();
+            }
         }
         req.flash("success_msg", "Registo realizado com sucesso!");
         res.redirect("/perfil/admin/listUsers");
