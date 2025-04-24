@@ -1,14 +1,104 @@
-<div class="container">
-    <h3>Avisos de Dados Nutricionais</h3>
-    <ul>
-      <% warnings.forEach(warning => { %>
-        <li class="text-warning"><%= warning %></li>
-      <% }); %>
-    </ul>
-    
-    <form action="/continue-save" method="post">
-      <input type="hidden" name="confirm" value="true">
-      <button type="submit" class="btn btn-primary">Continuar e Salvar</button>
-      <button type="button" class="btn btn-secondary" onclick="history.back()">Corrigir Ingredientes</button>
-    </form>
-  </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmar Dados Nutricionais</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Validação de Ingredientes</h2>
+        <form action="/restaurants/<%= validationErrors[0].restaurant %>/saveMenuFinal" method="post">
+            <input type="hidden" name="sessionId" value="<%= sessionId %>">
+            
+            <% dishes.forEach((dish, dishIndex) => { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Prato: <%= dish.name %></h5>
+                    </div>
+                    <div class="card-body">
+                        <% dish.ingredients.forEach((ingredient, ingredientIndex) => { %>
+                            <div class="mb-3">
+                                <% const error = validationErrors.find(e => e.dishIndex === dishIndex && e.ingredientIndex === ingredientIndex) %>
+                                <% if (error) { %>
+                                    <div class="alert alert-warning">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <select name="corrections[<%= dishIndex %>][<%= ingredientIndex %>][type]" class="form-select">
+                                                    <option value="name" <%= error.searchType === 'name' ? 'selected' : '' %>>Por Nome</option>
+                                                    <option value="barcode" <%= error.searchType === 'barcode' ? 'selected' : '' %>>Por Código</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text" 
+                                                       name="corrections[<%= dishIndex %>][<%= ingredientIndex %>][value]" 
+                                                       class="form-control" 
+                                                       value="<%= error.originalValue %>">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" 
+                                                        class="btn btn-outline-primary verify-correction"
+                                                        data-dish="<%= dishIndex %>"
+                                                        data-ingredient="<%= ingredientIndex %>">
+                                                    Verificar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label>
+                                                <input type="checkbox" 
+                                                       name="corrections[<%= dishIndex %>][<%= ingredientIndex %>][skip]">
+                                                Prosseguir sem este ingrediente
+                                            </label>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <input type="hidden" 
+                                           name="dishes[<%= dishIndex %>][ingredients][]" 
+                                           value="<%= ingredient %>">
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            <% }) %>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Continuar</button>
+                <a href="/restaurants/<%= validationErrors[0].restaurant %>/createMenu" class="btn btn-secondary">Corrigir Mais Tarde</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('.verify-correction').forEach(button => {
+            button.addEventListener('click', async function() {
+                const dishIndex = this.dataset.dish;
+                const ingredientIndex = this.dataset.ingredient;
+                const type = document.querySelector(`[name="corrections[${dishIndex}][${ingredientIndex}][type]"]`).value;
+                const value = document.querySelector(`[name="corrections[${dishIndex}][${ingredientIndex}][value]"]`).value;
+
+                try {
+                    const response = await fetch(`/restaurants/${'<%= validationErrors[0].restaurant %>'}/validateIngredient`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ type, value })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.valid) {
+                        alert('Ingrediente válido!');
+                    } else {
+                        alert('Ingrediente não encontrado. Por favor verifique os dados.');
+                    }
+                } catch (error) {
+                    console.error('Erro na validação:', error);
+                    alert('Erro na validação');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

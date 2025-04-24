@@ -181,13 +181,16 @@
 
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
-        <button type="button" class="btn btn-danger btn-lg" onclick="confirmDelete()">Apagar Menu Completo</button>
+        <button type="button" class="btn btn-danger btn-lg" id="delete" onclick="confirmDelete()">Apagar Menu Completo</button>
         <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" class="btn btn-outline-secondary">
           Cancelar
         </a>
       </div>
     </form>
   </div>
+
+  <%- include('../../../loading.ejs') %>
+
 
   <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
   <script>
@@ -318,6 +321,7 @@
     // Função para confirmar a exclusão do menu
     function confirmDelete() {
       if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
         fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
           method: 'POST',
           headers: {

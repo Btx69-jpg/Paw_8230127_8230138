@@ -52,7 +52,7 @@
     <!-- Formulário do Menu -->
     <div class="container my-5">
       <form
-        action="/restaurants/<%= restaurant.name %>/saveMenu"
+        action="/restaurants/<%= restaurant.name %>/confirmNutrition"
         method="post"
         enctype="multipart/form-data"
       >
@@ -283,6 +283,8 @@
         </div>
       </form>
     </div>
+
+    <%- include('../../../loading.ejs') %>
 
     <!-- Script para adição e remoção dinâmica dos formulários de prato -->
     <script>
@@ -565,6 +567,18 @@
             e.target.closest(".ingredient-item").remove();
           }
         }
+      });
+
+      // Validação de código de barras
+      document.querySelectorAll(".ingredient-input").forEach((input) => {
+        input.addEventListener("blur", function () {
+          if (this.closest(".search-type").value === "barcode") {
+            if (!/^\d{8,13}$/.test(this.value)) {
+              alert("Código de barras inválido! Deve conter 8-13 dígitos");
+              this.focus();
+            }
+          }
+        });
       });
     </script>
   </body>

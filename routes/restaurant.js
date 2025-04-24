@@ -39,21 +39,9 @@ router.use(authenticateToken, isDonoOrAdmin);
 /* Rota que carrega a pagina para criar um menu  */
 router.get('/createMenu', menu.createMenu);
 
-async function confirmNutritionalData(req, res, next) {
-    if (req.body.warnings && req.body.warnings.length > 0) {
-      req.session.tempDishData = req.body;
-      return res.render('confirm-nutrition', {
-        warnings: req.body.warnings,
-        dishData: req.body
-      });
-    }
-    next();
-  }
-  
-  // Use o middleware na rota de salvamento
-  router.post('/saveMenu', menu.saveMenu);
+
 /* Rota para dar save de menu */
-//router.post('/saveMenu', menu.saveMenu);
+router.post('/saveMenu', menu.saveMenu);
 
 /*Rota que renderiza a pagina para editar um menu */
 router.get('/editMenu/:menuId', menu.editMenu);
@@ -63,5 +51,10 @@ router.post('/updateMenu/:menuId', menu.saveEditMenu);
 
 /* Rota que dá delete a um menu */
 router.post('/deleteMenu/:menuId', menu.deleteMenu);
+
+// Nova rota para validação nutricional
+router.post('/confirmNutrition', menu.validateNutrition);
+router.post('/saveMenuFinal', menu.saveMenuFinal);
+router.post('/validateIngredient', menu.validateIngredient);
 
 module.exports = router;
