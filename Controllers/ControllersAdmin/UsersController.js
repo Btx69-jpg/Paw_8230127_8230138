@@ -191,6 +191,30 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
     }
     return errors;
 }
+async function restaurantsSemDuplciacoes(restaurants) {
+    if (priority ==="Dono" && !Array.isArray(restaurants)) {
+        restaurants = [restaurants];
+    }
+
+    //Remove os duplicados do array
+    for (let i = 0; i < restaurants.length; i++) {
+        if(restaurants[i]) {
+            for (let y = restaurants.length - 1; y > i; y--) {
+                if (restaurants[i].name === restaurants[y].name) {
+                    restaurants.splice(y, 1);
+                }
+            }
+        }
+    }
+    
+    //Transformamos o array restaurantes, de um array de objetos para um array só com os nomes
+    let namesRestaurants = [];
+    for (let i = 0; i < restaurants.length; i++) {
+        namesRestaurants[i] = restaurants[i].name;
+    }
+
+    return namesRestaurants;
+}
 /**
  * Metodo para criar um novo utilizador
  * 
@@ -199,40 +223,18 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
  */
 userController.saveUser = async function(req, res) {
     try {
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
-        
-        let restaurants = req.body.restaurant;
-        if (priority ==="Dono" && !Array.isArray(restaurants)) {
-            restaurants = [restaurants];
-        }
-
-        //Remove os duplicados do array
-        for (let i = 0; i < restaurants.length; i++) {
-            if(restaurants[i]) {
-                for (let y = restaurants.length - 1; y > i; y--) {
-                    if (restaurants[i].name === restaurants[y].name) {
-                        restaurants.splice(y, 1);
-                    }
-                }
-            }
-        }
-        
-        //Transformamos o array restaurantes, de um array de objetos para um array só com os nomes
-        let namesRestaurants = [];
-        for (let i = 0; i < restaurants.length; i++) {
-            namesRestaurants[i] = restaurants[i].name;
-        }
-
-        console.log("Restaurants: ", restaurants);
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurantsNames} = req.body;  
+               
         const errors = validationSave(firstName, lastName, email, phoneNumber, password, 
-            confirmPassword, priority, namesRestaurants);
+            confirmPassword, priority, restaurantsNames);
 
         if (errors.length > 0) {
             return res.status(404).render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, 
                 lastName, email });
         }
 
-        let restaurantFound = await Restaurant.find({ name: {$in: namesRestaurants}}).exec();
+        let restaurants = restaurantsSemDuplciacoes(restaurantsNames);
+        let restaurantFound = await Restaurant.find({ name: {$in: restaurants}}).exec();
         console.log("Restaurants: ", restaurantFound);
         
         const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurantFound);
@@ -248,7 +250,7 @@ userController.saveUser = async function(req, res) {
         
         let perfil;
 
-        if (namesRestaurants) {
+        if (restaurants) {
             let restaurantsIds = []; 
 
             for(let i = 0; i < restaurantFound.length; i++) {
@@ -280,7 +282,7 @@ userController.saveUser = async function(req, res) {
 
         await newUser.save();
         
-        if(namesRestaurants) {
+        if(restaurants) {
             for(let i = 0; i < restaurantFound.length; i++) {
                 restaurantFound[i].perfil.ownersIds.push(newUser._id);
                 await restaurantFound[i].save();
@@ -397,6 +399,9 @@ function validationUpdate(firstName, lastName, email, phoneNumber, priority, res
 }
 /**
  * Metodo para atualizar um user existente
+ * Falta meter a funcionar com multiplos users.
+ * Faltam meter para quando apagar um restaurante, retira-lo do array de restaurantsIds 
+ * e ir ao restaurante e remover o user de ownersIds
  */
 userController.updateUser =  async function(req, res) {
     try {
@@ -503,23 +508,34 @@ function deleteImg(imagePath) {
         console.log('Imagem apagada com sucesso');
     });
 }
-//Falta caso o user tenha uma imagem dar delete dela
+
+/**
+ * Metodo delte User
+ * Falta caso seja dono, retirar do array de owners dos restaurantes o id dele
+ */
 userController.deleteUser = async function(req, res) {
     try {
         const user = await User.findOne({ _id: req.params.userId }).exec();
 
-        if(user) {
+        if (user) {
             let imagePath = user.perfil.perfilPhoto;
             
+            if (user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
+                await Restaurant.updateMany(
+                    { _id: { $in: user.perfil.restaurantIds } },
+                    { $pull: { 'perfil.ownersIds': user._id } }
+                ).exec();
+            }
+
             await user.deleteOne();
             console.log("User eliminado com sucesso!");
 
-            if(imagePath !== "") {
+            if (imagePath !== "") {
                 deleteImg(imagePath);
             }
+            
             res.redirect("/perfil/admin/listUsers");
         }
-
       } catch (error) {
         console.log("Erro ao eliminar o user: ", error);
         res.redirect("/perfil/admin/listUsers");
