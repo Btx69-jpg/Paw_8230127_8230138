@@ -199,20 +199,6 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
  */
 userController.saveUser = async function(req, res) {
     try {
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log("--------------------------");
         const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
         
         let restaurants = req.body.restaurant;
