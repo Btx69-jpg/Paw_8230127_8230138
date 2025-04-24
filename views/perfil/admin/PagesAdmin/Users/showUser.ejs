@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Visualizar Perfil</title>
+
+        <!-- Icon do site -->
+        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
+        
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="/stylesheets/Perfils/Admin/PagesAdmin/showUser.css">
+    </head>
+    <body>
+        <main>
+            <div class="view-container">
+                <h1>Visualizar Perfil</h1>
+
+                <div class="form-group">
+                    <label for="firstName">First name</label>
+                    <input type="text" 
+                            id="firstName" 
+                            class="form-control" 
+                            value="<%= userD.firstName %>" 
+                            readonly 
+                            required />
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last name</label>
+                    <input type="text" 
+                            id="lastName" 
+                            class="form-control" 
+                            value="<%= userD.lastName %>" 
+                            readonly 
+                            required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" 
+                            id="email" 
+                            class="form-control" 
+                            value="<%= userD.perfil.email %>" 
+                            readonly 
+                            required />
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">Telefone</label>
+                    <input type="tel" 
+                            id="phoneNumber" 
+                            class="form-control" 
+                            value="<%= userD.perfil.phoneNumber %>" 
+                            readonly 
+                            required />
+                </div>
+
+                <% if (userD.perfil.priority === "Dono" && restaurants.length > 0) { %>
+                    <h2>Restaurantes do utilizador</h2>
+                    <p>Total de restaurantes: <%= restaurants.length %></p>
+                    <% restaurants.forEach(restaurant => { %>
+                        <h3 class="mt-4"><%= restaurant.name %></h3>
+
+                        <% if(restaurant.sigla) { %>
+                            <div class="form-group">
+                                <label for="sigla">Sigla</label>
+                                <input type="email" 
+                                        class="form-control"
+                                        id="sigla"
+                                        name="sigla" 
+                                        value="<%= restaurant.sigla %>" 
+                                        readonly 
+                                        required />
+                            </div>
+                        <% } %>
+
+                        <div class="form-group">
+                            <label for="emailRest">Email</label>
+                            <input type="email" 
+                                    class="form-control"
+                                    id="emailRest"
+                                    name="emailRest" 
+                                    value="<%= restaurant.perfil.email %>" 
+                                    readonly 
+                                    required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneRest">Telefone</label>
+                            <input type="tel" 
+                                    class="form-control" 
+                                    id="phoneRest"
+                                    name="phoneRest"
+                                    value="<%= restaurant.perfil.phoneNumber %>" 
+                                    readonly 
+                                    required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moradaRest">Morada</label>
+                            <input type="text" 
+                                    class="form-control" 
+                                    name="moradaRest"
+                                    value="<%= restaurant.address.street %>, <%= restaurant.address.postal_code %>, <%= restaurant.address.city %>" 
+                                    readonly 
+                                    required />
+                        </div>
+
+                        <% if(restaurant.description) { %>
+                            <div class="form-group">
+                                <label for="description">Descrição</label>
+                                <textarea name="description" 
+                                        id="description"
+                                        class="form-control" 
+                                        readonly 
+                                        required><%= restaurant.description %></textarea>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+
+                <div class="d-grid gap-2">
+                    <a href="/perfil/admin/listUsers" class="btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

@@ -31,6 +31,27 @@ listRestaurantController.homePage = function(req, res) {
         });   
 };
 
+listRestaurantController.showRestaurant = async function(req, res) {
+    try {
+        const restaurant = await Restaurant.findById(req.params.restaurantId).exec();
+        if (restaurant) {
+            let owners = []
+
+            if(restaurant.perfil.ownersIds) {
+                owners = await User.find( {_id: {$in: restaurant.perfil.ownersIds } }).exec()
+            }
+
+            res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners});
+        } else {
+            console.log("O restaurant não existe não existe")
+            res.status(404).render(res.locals.previousPage);
+        }
+    } catch(error) {
+        console.log("Error: ", error)
+        res.status(404).render(res.locals.previousPage);
+    }
+}
+
 listRestaurantController.aprovePage = async function(req, res) {
     Restaurant.find({ aprove: false}).exec()
         .then(function(restaurants) {

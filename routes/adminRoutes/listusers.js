@@ -10,8 +10,15 @@ router.use(authenticateToken, isAdmin);
 /*Routers para os users */
 router.get("/", userController.homePage);
 
-/* Route para realizar filtros aos dados */
+/**
+ * Route para realizar filtros aos utilizadores do site
+ */
 router.get("/search", userController.search);
+
+/**
+ * Rota que carrega a pagina, que mostra toda a informação de um utilizador.
+ */
+router.get("/showUser/:userId", userController.showUser);
 
 /* Carrega a pagina de criação do utilizador */
 router.get("/createUser", userController.createUser);

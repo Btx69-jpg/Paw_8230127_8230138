@@ -14,8 +14,15 @@ const listrestaurantController = require("../../Controllers/ControllersAdmin/Lis
  */
 router.use(authenticateToken, isAdmin);
 
-/*Routers para os restaurantes */
+/** 
+ * Routers para os restaurantes 
+ * */
 router.get('/', listrestaurantController.homePage);
+
+/** 
+ * Routers para visualizar os dados de um restaurante especifico 
+ * */
+router.get('/showRest/:restaurantId', listrestaurantController.showRestaurant);
 
 /* Router para o filtrar os restaurantes */
 router.get('/search', restaurantsController.search);

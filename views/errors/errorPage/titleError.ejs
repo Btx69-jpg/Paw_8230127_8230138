@@ -1,15 +1,18 @@
-<% 
-  switch (numError) {
-    case 403: {
-      %> <title>403 | Forbidden</title> <%
+<% switch (numError) {
+    case 403: { %>
+      <title>403 | Forbidden</title><%
       break;
     }
-    case 500: {
-      %><title>500 | Internal Server Error</title><%
+    case 404: { %>
+      <title>404 | Not Found</title><%
       break;
     }
-    default: {
-      %><title><%= numError %> | Erro Desconhecido</title><%
+    case 500: { %>
+      <title>500 | Internal Server Error</title><%
+      break;
+    }
+    default: { %>
+      <title><%= numError %> | Erro Desconhecido</title><%
     }
   }
 %>

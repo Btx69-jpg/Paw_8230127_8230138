@@ -1,21 +1,31 @@
 <% switch (numError) {
-    case 403: { %>
-        <h2>403</h2>
-        <h1>Forbidden.</h1>
-        <p>Você não tem permissão para aceder a estes recursos.</p><%
-        break;
-    } case 500: { %>
-        <h2>500</h2>
-        <h1>Internal Server Error.</h1>
-        <p>Algo deu errado. A nossa equipe técnica foi notificada sobre o problema e está a corrigi-lo. Tente novamente em breve...</p>
-        
-        <% if (error !== "") { %>
-          <p>Erro: <%= error %></p><%
-        }
-        
-        break;
-    } default: { %>
-      <p>Tipo de erro inexistente</p> <%
-    }
-  }
-%>
+  case 403: { %>
+      <h2>403</h2>
+      <h1>Forbidden.</h1>
+      <% if (error !== "") { %>
+          <p>Erro: <%= error %></p>
+      <% } else { %>
+          <p>Você não tem permissão para aceder a estes recursos.</p>
+      <% } %>
+      <% break; %>
+  <% } case 404: { %>
+      <h2>404</h2>
+      <h1>Not Found.</h1>
+      <% if (error !== "") { %>
+          <p>Erro: <%= error %></p>
+      <% } else { %>
+          <p>Esta Página não existe.</p>
+      <% } %>
+      <% break; %>
+  <% } case 500: { %>
+      <h2>500</h2>
+      <h1>Internal Server Error.</h1>
+      <p>Algo deu errado. A nossa equipe técnica foi notificada sobre o problema e está a corrigi-lo. Tente novamente em breve...</p>
+      <% if (error !== "") { %>
+          <p>Erro: <%= error %></p>
+      <% } %>
+      <% break; %>
+  <% } default: { %>
+      <p>Tipo de erro inexistente</p>
+  <% } 
+} %>

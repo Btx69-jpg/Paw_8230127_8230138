@@ -27,8 +27,29 @@ userController.homePage = async function(req, res) {
         });
 };
 
-userController.createUser = async function(req, res) {
+userController.createUser = function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
+}
+
+userController.showUser = async function(req, res) {
+    try {
+        const userD = await User.findById(req.params.userId).exec();
+        if (userD) {
+            let restaurants = [];
+
+            if(userD.perfil.priority === "Dono") {
+                restaurants = await Restaurant.find( {_id: {$in: userD.perfil.restaurantIds } }).exec()
+            }
+
+            res.render("perfil/admin/PagesAdmin/Users/showUser", {userD: userD, restaurants: restaurants});
+        } else {
+            console.log("O utilizador não existe")
+            res.status(404).render(res.locals.previousPage);
+        }
+    } catch(error) {
+        console.log("Error: ", error)
+        res.status(404).render(res.locals.previousPage);
+    }
 }
 
 userController.search = async function(req, res) {
