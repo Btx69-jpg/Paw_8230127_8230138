@@ -2,12 +2,14 @@ var express = require('express');
 var router = express.Router();
 
 const signUpController = require("../Controllers/SignUpController.js");
-const blockSignUp = require("../Middleware/ValidateLoginMiddleware.js");
+const {possibleBlockLogin} = require("../Middleware/ValidateLoginMiddleware.js");
+
+router.use(possibleBlockLogin)
 
 // Página de registo
-router.get("/", blockSignUp.possibleBlockLogin, signUpController.signup);
+router.get("/", signUpController.signup);
 
 // Registo de utilizador
-router.post("/", blockSignUp.possibleBlockLogin, signUpController.save);
+router.post("/", signUpController.save);
 
 module.exports = router;

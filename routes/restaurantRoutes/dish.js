@@ -12,7 +12,11 @@ const {isDonoOrAdmin} = require("../../Middleware/TypeUserMiddleware.js");
 /*Rota para dar view numa dish */
 router.get('/showDish/:id', dish.showDish);
 
-router.use(authenticateToken, isDonoOrAdmin); //Aplica a autentificação de token e se é admin or dono a todas as rotas abaixo, sem ter de inserir na mesma
+/**
+ * Rota que aplica a autentificação de token e se é admin or dono a todas as rotas abaixo,
+ * sem ter de inserir na mesma
+ */
+router.use(authenticateToken, isDonoOrAdmin); 
 
 /*Depois trocar para /:createDish */
 router.get('/createDish', dish.createDish);
