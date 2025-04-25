@@ -4,6 +4,7 @@ const router = express.Router();
 //Models
 const categoriesController = require("../../Controllers/ControllersAdmin/CategoriesController.js");
 
+//Middlewares
 //Autentificação de token e de tipo de utilizador
 const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
 const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
