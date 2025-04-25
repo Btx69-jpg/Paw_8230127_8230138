@@ -30,7 +30,6 @@ var usersRouter = require('./routes/users');
 var login = require('./routes/login'); 
 var signUp = require('./routes/signup'); 
 var restaurants = require('./routes/restaurants'); // Aqui carrego o controller que quero usar
-var restaurant = require('./routes/restaurant');
 var registRestaurant = require('./routes/registRestaurant');
 var admin = require('./routes/admin')
 var checkOut = require('./routes/checkOut'); // Aqui carrego o controller que quero usar
