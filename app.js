@@ -95,7 +95,6 @@ app.use('/users', usersRouter); //Aqui é quando é localhost:3000/users
 app.use('/login', login); 
 app.use('/signUp', signUp); 
 app.use('/restaurants', restaurants); //Aparece a pagina noraml dos restaurantes
-//app.use('/restaurants', restaurant); //Aqui tenho de meter o /restaurants, porque o proximo é um id que pode ter qualquer valor. (Ou seja não existe o /, no route)
 app.use('/registRestaurant', registRestaurant);
 app.use('/perfil', perfil); //Pagina para renderizar o perfil
 app.use('/perfil/admin', admin); //Paginas de perfil do admin
@@ -116,13 +115,6 @@ app.use((req, res, next) => {
     user: req.user || null
   });
 });
-
-// catch 404 and forward to error handler
-/*
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-*/
 
 // error handler
 app.use(function(err, req, res, next) {
