@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-
 //Controllers
 const loginController = require("../Controllers/LoginController.js");
 const {possibleBlockLogin} = require("../Middleware/ValidateLoginMiddleware.js");

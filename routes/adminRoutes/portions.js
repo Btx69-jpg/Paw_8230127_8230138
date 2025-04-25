@@ -1,14 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-//Middlewares
-const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
-
 //Controllers
 const portionsController = require("../../Controllers/ControllersAdmin/PortionController.js");
-
-router.use(authenticateToken, isAdmin);
 
 /**
  * Rota que renderiza pagina com a lista das porções existentes 
