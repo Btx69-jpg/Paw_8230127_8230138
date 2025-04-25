@@ -19,12 +19,20 @@ var menuController = {};
 const { carregarCategories } = require("../Functions/categories.js");
 const { carregarPortions } = require("../Functions/portions.js");
 
+// Utility to remove directory recursively
+function cleanupUploadDir(dir) {
+  if (dir && fs.existsSync(dir)) {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 async function saveImage(req, res) {
   return new Promise((resolve, reject) => {
     const storageLogo = multer.diskStorage({
       destination: function (req, file, cb) {
         const menuName = req.body.name.replace(/[^a-zA-Z0-9]/g, "_");
         const pathFolder = `public/images/Restaurants/${req.params.restaurant}/Menus/${menuName}/`;
+        req.uploadDir = pathFolder;
         fs.mkdirSync(pathFolder, { recursive: true });
         cb(null, pathFolder);
       },
@@ -47,6 +55,7 @@ async function saveImage(req, res) {
     uploadLogo(req, res, function (err) {
       if (err) {
         console.error("Erro no upload:", err);
+        cleanupUploadDir(uploadDir);
         return reject(err);
       }
       resolve();
@@ -131,7 +140,13 @@ menuController.createMenu = async function (req, res) {
 
 // Save menu: reuse nutritional data from session
 menuController.saveMenu = async function (req, res, restaurant) {
+  try {
   const temp = req.session.tempData || {};
+  if (!restaurant) {
+    console.log("\n\n\n\n\n\nRestaurant not found in session data.\n\n\n\n\n\n");
+    restaurant = temp.restaurant;
+  }
+  console.log("Restaurant:", restaurant.name, "\n\n\n\n\n\n\n");
   const dishes = [].concat(temp.formData?.dishes || []).filter(Boolean);
   const files = temp.files || [];
 
@@ -164,6 +179,12 @@ menuController.saveMenu = async function (req, res, restaurant) {
   delete req.session.tempData;
   //testar com o render
   res.redirect(`/restaurants/${restaurant.name}`);
+  }
+  catch (err) {
+    console.error("Erro ao salvar o menu:", err);
+    cleanupUploadDir(req.uploadDir);
+    res.render("errors/error", { numError: 500, error: err });
+  }
 };
 
 // Renderiza a página de edição do menu
@@ -380,7 +401,7 @@ async function fetchNutritionalData(ingredient, type) {
   if (type === "barcode") {
     const response = await axios.get(
       `https://world.openfoodfacts.org/api/v0/product/${ingredient}.json`,
-      { timeout: 10000 }
+      { timeout: 120000 }
     );
     product = response.data.product;
   } else {
@@ -388,7 +409,7 @@ async function fetchNutritionalData(ingredient, type) {
       "https://world.openfoodfacts.org/cgi/search.pl",
       {
         params: { search_terms: ingredient, page_size: 1, json: 1 },
-        timeout: 10000
+        timeout: 120000
       }
     );
     product = response.data.products?.[0];
@@ -471,15 +492,20 @@ function applyCorrections(currentBody, tempData) {
 
 // Validate ingredients and fetch nutritional data (once)
 menuController.validateNutrition = async function (req, res) {
+  try {
   await saveImage(req, res);
 
   const dishes = [].concat(req.body.dishes || []).filter(Boolean);
+  const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+  if (!restaurant) {
+    cleanupUploadDir(req.uploadDir);
+    return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
+  }
   // Skip if no ingredients present
   const hasIngredient = dishes.some(d =>
     [].concat(d.ingredients || []).some(i => (i || "").trim())
   );
   if (!hasIngredient) {
-    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     return menuController.saveMenu(req, res, restaurant);
   }
 
@@ -497,7 +523,7 @@ menuController.validateNutrition = async function (req, res) {
     formData: req.body,
     files: req.files,
     perDish,
-    restaurant: req.params.restaurant
+    restaurant: restaurant
   };
 
   // Render confirmation page with perDish data
@@ -506,6 +532,15 @@ menuController.validateNutrition = async function (req, res) {
     perDish,
     sessionData: req.session.tempData
   });
+  }
+  catch (error) {
+    cleanupUploadDir(req.uploadDir);
+    console.error("Erro ao validar ingredientes:", error);
+    res.status(500).render("errors/error", {
+      numError: 500,
+      error: "Erro ao validar ingredientes",
+    });
+  }
 };
 
 menuController.validateIngredient = async function (req, res) {
@@ -522,29 +557,6 @@ menuController.validateIngredient = async function (req, res) {
   }
 };
 
-menuController.saveMenuFinal = async function (req, res) {
-  try {
-    const tempData = req.session.tempData;
+menuController.saveMenuFinal = (req, res) => menuController.saveMenu(req, res, req.session.tempData.restaurant);
 
-    if (!tempData) {
-      throw new Error("Dados temporários não encontrados na sessão");
-    }
-
-    // Restaurar dados originais da sessão
-    req.body = tempData.formData;
-    req.files = tempData.files;
-
-    // Limpar sessão
-    delete req.session.tempData;
-
-    // Chamar o método original de salvamento
-    return menuController.saveMenu(req, res, tempData.restaurant);
-  } catch (error) {
-    console.error("Erro no salvamento final:", error);
-    res.render("errors/error", {
-      numError: 500,
-      error: "Erro no processo de salvamento",
-    });
-  }
-};
 module.exports = menuController;

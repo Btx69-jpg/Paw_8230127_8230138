@@ -7,7 +7,7 @@
 <body>
     <div class="container mt-5">
         <h2>Confirme os Dados Nutricionais</h2>
-        <form action="/restaurants/<%= sessionData.restaurant %>/saveMenuFinal" method="post">
+        <form action="/restaurants/<%= sessionData.restaurant.name %>/saveMenuFinal" method="post">
             <!-- manter sessionId se necessário -->
             <% dishes.forEach((dish, dishIdx) => { %>
                 <div class="card mb-4">
