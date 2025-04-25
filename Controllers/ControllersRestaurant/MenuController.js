@@ -129,146 +129,41 @@ menuController.createMenu = async function (req, res) {
   }
 };
 
+// Save menu: reuse nutritional data from session
 menuController.saveMenu = async function (req, res, restaurant) {
-  try {
-    //await saveImage(req, res);
+  const temp = req.session.tempData || {};
+  const dishes = [].concat(temp.formData?.dishes || []).filter(Boolean);
+  const files = temp.files || [];
 
-    if (req.session.tempData) {
-      // Aplicar correções
-      req.body = applyCorrections(req.body, req.session.tempData);
-    }
-
-    // Obter a foto do menu
-    const menuPhotoFile = req.files.find(
-      (file) => file.fieldname === "menuPhoto"
-    );
-    const menuPhotoPath = menuPhotoFile
-      ? "/" + menuPhotoFile.path.replace(/^public[\\/]/, "")
-      : null;
-
-    // Mapeia os arquivos pelos índices dos pratos
-    const fileMap = {};
-    req.files.forEach((file) => {
-      const match = file.fieldname.match(/dishes\[(\d+)\]\[photo\]/);
-      if (match) {
-        const index = parseInt(match[1], 10);
-        fileMap[index] = file;
-      }
+  const dishObjects = dishes.map((dish, idx) => {
+    const file = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
+    const photo = file ? "/" + file.path.replace(/^public\//, "") : null;
+    const { infos } = temp.perDish?.[idx] || { infos: [] };
+    return new Dish({
+      name: dish.name,
+      description: dish.description,
+      category: dish.category,
+      price: dish.price,
+      portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
+      photo,
+      nutritionalInfo: infos
     });
+  });
 
-    let dishes = req.body.dishes;
-    if (!dishes) {
-      return res.status(400).send("Nenhum prato foi enviado");
-    }
+  const menu = new Menu({
+    name: temp.formData?.name || req.body.name,
+    type: temp.formData?.type || req.body.type,
+    dishes: dishObjects,
+    photo: null
+  });
 
-    if (!Array.isArray(dishes)) {
-      dishes = [dishes];
-    }
 
-    let dishObjects = [];
-    for (let i = 0; i < dishes.length; i++) {
-      const dishData = dishes[i];
-      const file = fileMap[i];
+  restaurant.menus.push(menu);
+  await restaurant.save();
 
-      // Validação de porções
-      const portions = [];
-
-      if (dishData.portions.length === 0) {
-        return res
-          .status(400)
-          .render("restaurants/restaurant/Menu/createMenu", {
-            restaurant,
-            categories: await carregarCategories(),
-            portions: await carregarPortions(),
-            error: `Pelo menos uma porção é obrigatória para o prato ${i + 1}`,
-          });
-      }
-
-      const ingredients = Array.isArray(dishData.ingredients)
-        ? dishData.ingredients
-        : [dishData.ingredients];
-      const searchTypes = req.body.searchTypes?.[i] || [];
-
-      const { nutritionalInfo, warnings } = await processIngredients(
-        ingredients,
-        searchTypes
-      );
-
-      if (warnings.length > 0) {
-        req.flash("warning_msg", warnings.join(", "));
-      }
-
-      if (dishData.portions) {
-        const portionPrices = Array.isArray(dishData.portionPrices)
-          ? dishData.portionPrices
-          : [dishData.portionPrices];
-
-        dishData.portions.forEach((portionId, idx) => {
-          if (!portionPrices[idx] || isNaN(portionPrices[idx])) {
-            throw new Error(
-              `Preço obrigatório para a porção selecionada no prato ${i + 1}`
-            );
-          }
-          portions.push({
-            portion: portionId,
-            price: parseFloat(portionPrices[idx]),
-          });
-        });
-      }
-
-      if (!file) {
-        return res
-          .status(400)
-          .render("restaurants/restaurant/Menu/createMenu", {
-            restaurant,
-            categories: await carregarCategories(),
-            error: `Imagem não encontrada para o prato ${i + 1}.`,
-          });
-      }
-
-      // Verifica duplicatas
-      for (let j = i + 1; j < dishes.length; j++) {
-        if (dishData.name === dishes[j].name) {
-          return res
-            .status(400)
-            .render("restaurants/restaurant/Menu/createMenu", {
-              restaurant,
-              categories: await carregarCategories(),
-              error: "Nomes duplicados não são permitidos.",
-            });
-        }
-      }
-
-      const caminhoCorrigido = "/" + file.path.replace(/^public[\\/]/, "");
-
-      dishObjects.push(
-        new Dish({
-          name: dishData.name,
-          description: dishData.description,
-          category: dishData.category,
-          price: dishData.price,
-          portions: portions,
-          photo: caminhoCorrigido,
-          nutritionalInfo: nutritionalInfo,
-        })
-      );
-    }
-
-    const menu = new Menu({
-      name: req.body.name,
-      type: req.body.type,
-      dishes: dishObjects,
-      photo: menuPhotoPath,
-    });
-
-    restaurant.menus.push(menu);
-    await restaurant.save();
-
-    res.redirect("/restaurants/" + restaurant.name);
-  } catch (err) {
-    console.error(err);
-    res.render("errors/error", { numError: 500, error: err.message });
-  }
+  delete req.session.tempData;
+  //testar com o render
+  res.redirect(`/restaurants/${restaurant.name}`);
 };
 
 // Renderiza a página de edição do menu
@@ -475,101 +370,71 @@ menuController.deleteMenu = async function (req, res) {
   }
 };
 
+// Fetch nutritional data from OpenFoodFacts with caching
 async function fetchNutritionalData(ingredient, type) {
-  try {
-    const cacheKey = `${type}:${ingredient}`;
-    const cached = nutritionCache.get(cacheKey);
-    if (cached) {
-      return {
-        name: cached.name,
-        per100g: cached.per100g,
-      };
-    }
+  const cacheKey = `${type}:${ingredient}`;
+  const cached = nutritionCache.get(cacheKey);
+  if (cached) return cached;
 
-    let product;
-    if (type === "barcode") {
-      const response = await axios.get(
-        `https://world.openfoodfacts.org/api/v0/product/${ingredient}.json`
-      );
-      product = response.data.product;
-    } else {
-      const searchResponse = await axios.get(
-        "https://world.openfoodfacts.org/cgi/search.pl",
-        {
-          params: {
-            search_terms: ingredient,
-            page_size: 1,
-            json: 1,
-          },
-        }
-      );
-      product = searchResponse.data.products?.[0];
-    }
-
-    if (!product || !product.nutriments) {
-      return null;
-    }
-
-    const result = {
-      name: product.product_name || ingredient,
-      per100g: {
-        calories: product.nutriments["energy-kcal_100g"] || 0,
-        protein: product.nutriments.proteins_100g || 0,
-        fat: product.nutriments.fat_100g || 0,
-        carbohydrates: product.nutriments.carbohydrates_100g || 0,
-        sugars: product.nutriments.sugars_100g || 0,
-      },
-    };
-
-    nutritionCache.set(cacheKey, result);
-    return result;
-  } catch (error) {
-    console.error(`Erro na busca por ${type}:`, error);
-    return null;
-  }
-}
-
-async function processIngredients(ingredients, searchTypes) {
-  try {
-    const requests = ingredients.map(async (ingredient, index) => {
-      const type = searchTypes[index];
-      return fetchNutritionalData(ingredient.trim(), type);
-    });
-
-    const results = (await Promise.all(requests)).filter(Boolean); // Filtrar resultados nulos
-
-    if (results.length === 0) return { nutritionalInfo: [], warnings: [] };
-
-    const aggregated = results.reduce(
-      (acc, curr) => ({
-        calories: acc.calories + (curr.per100g?.calories || 0),
-        protein: acc.protein + (curr.per100g?.protein || 0),
-        fat: acc.fat + (curr.per100g?.fat || 0),
-        carbohydrates: acc.carbohydrates + (curr.per100g?.carbohydrates || 0),
-        sugars: acc.sugars + (curr.per100g?.sugars || 0),
-      }),
+  let product;
+  if (type === "barcode") {
+    const response = await axios.get(
+      `https://world.openfoodfacts.org/api/v0/product/${ingredient}.json`,
+      { timeout: 10000 }
+    );
+    product = response.data.product;
+  } else {
+    const response = await axios.get(
+      "https://world.openfoodfacts.org/cgi/search.pl",
       {
-        calories: 0,
-        protein: 0,
-        fat: 0,
-        carbohydrates: 0,
-        sugars: 0,
+        params: { search_terms: ingredient, page_size: 1, json: 1 },
+        timeout: 10000
       }
     );
-
-    return {
-      nutritionalInfo: [
-        {
-          name: "informação_nutricional",
-          per100g: aggregated,
-        },
-      ],
-      warnings: [],
-    };
-  } catch (error) {
-    console.error("Erro no processamento de ingredientes:", error);
-    return { nutritionalInfo: [], warnings: [error.message] };
+    product = response.data.products?.[0];
   }
+
+  if (!product || !product.nutriments) return null;
+
+  const result = {
+    name: product.product_name || ingredient,
+    per100g: {
+      calories: product.nutriments["energy-kcal_100g"] || 0,
+      protein: product.nutriments.proteins_100g || 0,
+      fat: product.nutriments.fat_100g || 0,
+      carbohydrates: product.nutriments.carbohydrates_100g || 0,
+      sugars: product.nutriments.sugars_100g || 0
+    }
+  };
+
+  nutritionCache.set(cacheKey, result);
+  return result;
+}
+
+// Process ingredients: fetch and aggregate nutritional info
+async function processIngredients(ingredients, searchTypes) {
+  const tasks = ingredients.map((ing, idx) =>
+    fetchNutritionalData(ing.trim(), searchTypes[idx] || 'name')
+  );
+  const results = (await Promise.all(tasks)).filter(Boolean);
+  if (results.length === 0) return { infos: [], warnings: [] };
+
+  const aggregated = results.reduce(
+    (acc, curr) => ({
+      calories: acc.calories + curr.per100g.calories,
+      protein: acc.protein + curr.per100g.protein,
+      fat: acc.fat + curr.per100g.fat,
+      carbohydrates: acc.carbohydrates + curr.per100g.carbohydrates,
+      sugars: acc.sugars + curr.per100g.sugars
+    }),
+    { calories: 0, protein: 0, fat: 0, carbohydrates: 0, sugars: 0 }
+  );
+
+  // Return both individual infos and aggregated warnings
+  return {
+    infos: results.map(r => ({ name: r.name, per100g: r.per100g })),
+    warnings: []
+  };
 }
 
 function applyCorrections(currentBody, tempData) {
@@ -604,140 +469,43 @@ function applyCorrections(currentBody, tempData) {
   return tempData.formData;
 }
 
+// Validate ingredients and fetch nutritional data (once)
 menuController.validateNutrition = async function (req, res) {
-  try {
-    await saveImage(req, res);
-    
-    
-    if (!req.body.dishes) {
-      console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ERRO 400 \n\n\n\n\n\n\n\n\n\n")
+  await saveImage(req, res);
 
-      return res.status(404).render("errors/error", {
-        numError: 404,
-        error: "Dados de pratos ausentes",
-      });
-    }
-
-    const restaurant = await Restaurant.findOne({
-      name: req.params.restaurant,
-    }).exec();
-    if (!restaurant) {
-      return res.status(404).send("Restaurante não encontrado");
-    }
-    
-    const tempData = {
-      restaurant: restaurant,
-      formData: req.body,
-      files: req.files,
-      validationErrors: [],
-      timestamp: Date.now(),
-    };
-    
-
-    const dishes = [].concat(req.body.dishes).filter(Boolean);
-
-    console.log("\n\n\n\n\n\n\n\n\n\n" + "\n\n\n\n\n\n\n\n\n\n")
-    console.log(dishes)
-    console.log("\n\n\n\n\n\n\n\n\n\n" + "\n\n\n\n\n\n\n\n\n\n")
-
-
-    const hasAnyIngredient = dishes.some(dish =>
-      Array.isArray(dish.ingredients)
-        ? dish.ingredients.filter(ingredient => (ingredient||"").trim() !== "").length > 0
-        : (dish.ingredients || "").trim() !== ""
-    );
-    
-    if (!hasAnyIngredient) {
-      // Nenhum prato tem ingredientes: pula validação e salva diretamente
-      console.log("\n\n\n\n\n\n\n\n\n\n ENTREI NO SAVE MENU DIRETO")
-      return menuController.saveMenu(req, res, restaurant);
-    }
-
-    // Processamento paralelo com segurança
-    const validationResults = await Promise.all(dishes.map(async (dish, dishIndex) => {
-      // Verificar estrutura do prato
-      if (!dish || typeof dish !== 'object') {
-        console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ESTRUTURA DO PRATO \n\n\n\n\n\n\n\n\n\n")
-        return [{
-          dishIndex,
-          error: "Estrutura do prato inválida"
-        }];
-      }
-
-      // Acessar ingredientes com fallback
-      const ingredients = [].concat(dish?.ingredients || []).filter(Boolean);
-      const searchTypes = [].concat(req.body?.searchTypes?.[dishIndex] || []);
-
-        // Processar ingredientes em paralelo
-        const ingredientResults = await Promise.all(
-          ingredients.map(async (ingredient, ingredientIndex) => {
-            const type = searchTypes[ingredientIndex] || "name";
-            const value = ingredient.trim();
-
-            if (!value) return null;
-
-            try {
-              const result = await fetchNutritionalData(value, type);
-              return result
-                ? null
-                : {
-                    dishIndex,
-                    ingredientIndex,
-                    originalValue: value,
-                    searchType: type,
-                  };
-            } catch (error) {
-              console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ERRO ESTRANHO \n\n\n\n\n\n\n\n\n\n")
-              return {
-                dishIndex,
-                ingredientIndex,
-                originalValue: value,
-                searchType: type,
-                error: error.message,
-              };
-            }
-          })
-        );
-
-        return ingredientResults.filter(Boolean);
-      })
-    );
-
-    // Achatar os resultados
-    tempData.validationErrors = validationResults.flat();
-
-    if (tempData.validationErrors.length > 0) {
-      req.session.tempData = {
-        ...tempData,
-        restaurant: restaurant,
-        sessionId: req.sessionID,
-        attempts: {},
-      };
-      console.log("\n\n\n\n\n\n\n\n\n\n" + restaurant.name +"\n\n\n\n\n\n\n\n\n\n")
-      return res.render("restaurants/restaurant/Menu/confirmNutriData", {
-        validationErrors: tempData.validationErrors,
-        sessionData: tempData,
-        dishes: dishes.map((dish, i) => ({
-          index: i,
-          name: dish.name,
-          ingredients: Array.isArray(dish.ingredients)
-            ? dish.ingredients
-            : [dish.ingredients],
-        })),
-      });
-    }
-    
-    // 4) Se não houver erros, chama diretamente o saveMenu original:
+  const dishes = [].concat(req.body.dishes || []).filter(Boolean);
+  // Skip if no ingredients present
+  const hasIngredient = dishes.some(d =>
+    [].concat(d.ingredients || []).some(i => (i || "").trim())
+  );
+  if (!hasIngredient) {
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     return menuController.saveMenu(req, res, restaurant);
-  } catch (error) {
-    console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ERRO 500 \n\n\n\n\n\n\n\n\n\n")
-
-    console.error("Erro na validação nutricional:", error);
-    res.render("errors/error", {
-      numError: 500,
-      error: "Erro no processo de validação",
-    });
   }
+
+  // Fetch nutritional data per dish
+  const perDish = await Promise.all(
+    dishes.map(async (dish, idx) => {
+      const ingredients = [].concat(dish.ingredients || []).filter(Boolean);
+      const types = [].concat(req.body.searchTypes?.[idx] || []);
+      return processIngredients(ingredients, types);
+    })
+  );
+
+  // Store temp data in session for confirmation and reuse
+  req.session.tempData = {
+    formData: req.body,
+    files: req.files,
+    perDish,
+    restaurant: req.params.restaurant
+  };
+
+  // Render confirmation page with perDish data
+  res.render("restaurants/restaurant/Menu/confirmNutriData", {
+    dishes,
+    perDish,
+    sessionData: req.session.tempData
+  });
 };
 
 menuController.validateIngredient = async function (req, res) {
