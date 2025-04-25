@@ -97,10 +97,10 @@ menuController.getMenus = async function (req, res) {
     const menus = restaurant.menus.map((menu) => ({
       _id: menu._id,
       name: menu.name,
-      dishes: menu.dishes.map((d) => ({
-        _id: d._id,
-        name: d.name,
-        price: d.price,
+      dishes: menu.dishes.map((dish) => ({
+        _id: dish._id,
+        name: dish.name,
+        price: dish.price,
       })),
     }));
 
@@ -129,20 +129,13 @@ menuController.createMenu = async function (req, res) {
   }
 };
 
-menuController.saveMenu = async function (req, res) {
+menuController.saveMenu = async function (req, res, restaurant) {
   try {
-    await saveImage(req, res);
+    //await saveImage(req, res);
 
     if (req.session.tempData) {
       // Aplicar correções
       req.body = applyCorrections(req.body, req.session.tempData);
-    }
-
-    const restaurant = await Restaurant.findOne({
-      name: req.params.restaurant,
-    }).exec();
-    if (!restaurant) {
-      return res.status(404).send("Restaurante não encontrado");
     }
 
     // Obter a foto do menu
@@ -613,7 +606,8 @@ function applyCorrections(currentBody, tempData) {
 
 menuController.validateNutrition = async function (req, res) {
   try {
-    console.log("\n\n\n\n\n\n\n\n\n\n" + req.body.dishes + "\n\n\n\n\n\n\n\n\n\n")
+    await saveImage(req, res);
+    
     
     if (!req.body.dishes) {
       console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ERRO 400 \n\n\n\n\n\n\n\n\n\n")
@@ -623,9 +617,16 @@ menuController.validateNutrition = async function (req, res) {
         error: "Dados de pratos ausentes",
       });
     }
+
+    const restaurant = await Restaurant.findOne({
+      name: req.params.restaurant,
+    }).exec();
+    if (!restaurant) {
+      return res.status(404).send("Restaurante não encontrado");
+    }
     
     const tempData = {
-      restaurant: req.params.restaurant,
+      restaurant: restaurant,
       formData: req.body,
       files: req.files,
       validationErrors: [],
@@ -634,6 +635,23 @@ menuController.validateNutrition = async function (req, res) {
     
 
     const dishes = [].concat(req.body.dishes).filter(Boolean);
+
+    console.log("\n\n\n\n\n\n\n\n\n\n" + "\n\n\n\n\n\n\n\n\n\n")
+    console.log(dishes)
+    console.log("\n\n\n\n\n\n\n\n\n\n" + "\n\n\n\n\n\n\n\n\n\n")
+
+
+    const hasAnyIngredient = dishes.some(dish =>
+      Array.isArray(dish.ingredients)
+        ? dish.ingredients.filter(ingredient => (ingredient||"").trim() !== "").length > 0
+        : (dish.ingredients || "").trim() !== ""
+    );
+    
+    if (!hasAnyIngredient) {
+      // Nenhum prato tem ingredientes: pula validação e salva diretamente
+      console.log("\n\n\n\n\n\n\n\n\n\n ENTREI NO SAVE MENU DIRETO")
+      return menuController.saveMenu(req, res, restaurant);
+    }
 
     // Processamento paralelo com segurança
     const validationResults = await Promise.all(dishes.map(async (dish, dishIndex) => {
@@ -691,24 +709,26 @@ menuController.validateNutrition = async function (req, res) {
     if (tempData.validationErrors.length > 0) {
       req.session.tempData = {
         ...tempData,
+        restaurant: restaurant,
         sessionId: req.sessionID,
         attempts: {},
       };
-      return res.render("restaurants/restaurant/Menu/confirmNutrition", {
+      console.log("\n\n\n\n\n\n\n\n\n\n" + restaurant.name +"\n\n\n\n\n\n\n\n\n\n")
+      return res.render("restaurants/restaurant/Menu/confirmNutriData", {
         validationErrors: tempData.validationErrors,
         sessionData: tempData,
-        dishes: dishes.map((d, i) => ({
+        dishes: dishes.map((dish, i) => ({
           index: i,
-          name: d.name,
-          ingredients: Array.isArray(d.ingredients)
-            ? d.ingredients
-            : [d.ingredients],
+          name: dish.name,
+          ingredients: Array.isArray(dish.ingredients)
+            ? dish.ingredients
+            : [dish.ingredients],
         })),
       });
     }
     
     // 4) Se não houver erros, chama diretamente o saveMenu original:
-    return menuController.saveMenu(req, res);
+    return menuController.saveMenu(req, res, restaurant);
   } catch (error) {
     console.log("\n\n\n\n\n\n\n\n\n\n DEU MERDA ERRO 500 \n\n\n\n\n\n\n\n\n\n")
 
@@ -738,6 +758,10 @@ menuController.saveMenuFinal = async function (req, res) {
   try {
     const tempData = req.session.tempData;
 
+    if (!tempData) {
+      throw new Error("Dados temporários não encontrados na sessão");
+    }
+
     // Restaurar dados originais da sessão
     req.body = tempData.formData;
     req.files = tempData.files;
@@ -746,7 +770,7 @@ menuController.saveMenuFinal = async function (req, res) {
     delete req.session.tempData;
 
     // Chamar o método original de salvamento
-    return menuController.saveMenu(req, res);
+    return menuController.saveMenu(req, res, tempData.restaurant);
   } catch (error) {
     console.error("Erro no salvamento final:", error);
     res.render("errors/error", {

@@ -7,9 +7,9 @@
 <body>
     <div class="container mt-5">
         <h2>Validação de Ingredientes</h2>
-        <form action="/restaurants/<%= validationErrors[0].restaurant %>/saveMenuFinal" method="post">
-            <input type="hidden" name="sessionId" value="<%= sessionId %>">
-            
+        <form action="/restaurants/<%= sessionData.restaurant.name %>/saveMenuFinal" method="post">
+            <input type="hidden" name="sessionId" value="<%= sessionData.sessionId %>">
+                        
             <% dishes.forEach((dish, dishIndex) => { %>
                 <div class="card mb-4">
                     <div class="card-header">
