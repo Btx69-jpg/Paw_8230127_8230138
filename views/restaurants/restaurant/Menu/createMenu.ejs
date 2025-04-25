@@ -43,8 +43,8 @@
     <div class="container my-5">
       <!-- Altere a action para a rota que processa o salvamento do Menu, incluindo os pratos -->
       <form
-        action="/restaurants/<%= restaurant.name %>/menu/saveMenu"
-        method="post"
+        action="/restaurants/<%= restaurant.name %>/saveMenu"
+        method="POST"
         enctype="multipart/form-data"
       >
         <!-- Dados do Menu -->
@@ -114,7 +114,6 @@
                 required
                 maxlength="50"
                 pattern="^[A-Za-zÀ-ÿ\s]+$"
-                oninvalid="this.setCustomValidity('Informe somente letras e espaços, máximo 50 caracteres.')"
               />
             </div>
             <div class="mb-3">
