@@ -146,6 +146,7 @@ menuController.saveMenu = async function (req, res, restaurant) {
     console.log("\n\n\n\n\n\nRestaurant not found in session data.\n\n\n\n\n\n");
     restaurant = temp.restaurant;
   }
+  restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
   console.log("Restaurant:", restaurant.name, "\n\n\n\n\n\n\n");
   const dishes = [].concat(temp.formData?.dishes || []).filter(Boolean);
   const files = temp.files || [];
