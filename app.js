@@ -26,13 +26,11 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/Trab
 São os js que criei na pasta Route
 */
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var login = require('./routes/login'); 
 var signUp = require('./routes/signup'); 
-var restaurants = require('./routes/restaurants'); // Aqui carrego o controller que quero usar
+var restaurants = require('./routes/restaurants');
 var registRestaurant = require('./routes/registRestaurant');
-var admin = require('./routes/admin')
-var checkOut = require('./routes/checkOut'); // Aqui carrego o controller que quero usar
+var checkOut = require('./routes/checkOut');
 var perfil = require('./routes/perfil');
 // Configuração da sessão (ajuste conforme necessário)
 
@@ -90,17 +88,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Importante ter em consideração a autentificação e a autorização
 //Caminho até ao browser
 app.use('/', indexRouter); //Aqui é quando meto apenas o localhost:3000
-app.use('/users', usersRouter); //Aqui é quando é localhost:3000/users 
 app.use('/login', login); 
 app.use('/signUp', signUp); 
 app.use('/restaurants', restaurants); //Aparece a pagina noraml dos restaurantes
 app.use('/registRestaurant', registRestaurant);
 app.use('/perfil', perfil); //Pagina para renderizar o perfil
-app.use('/perfil/admin', admin); //Paginas de perfil do admin
 app.use('/checkOut', checkOut); //Aqui carrego o controller que quero usar
 
 
-//Middleware que mostra a pagina 404 personalizada
+//* Middleware que mostra a pagina 404 personalizada
 app.use((req, res, next) => {
   const isStatic = req.path.match(/\.(jpg|jpeg|png|gif|css|js|svg|ico|webp|woff2?|ttf)$/i);
   
@@ -108,7 +104,6 @@ app.use((req, res, next) => {
     return res.sendStatus(404); 
   }
 
-  // Se for uma página, mostra a tua 404 customizada
   res.status(404).render('errors/error404', {
     currentPage: req.path,
     user: req.user || null

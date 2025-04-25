@@ -1,44 +1,71 @@
 const express = require("express");
 const router = express.Router();
 
-const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
+//Controller
 const userController = require("../../Controllers/ControllersAdmin/UsersController.js");
 
-router.use(authenticateToken, isAdmin);
-
-/*Routers para os users */
+/**
+ * * Rota que carrega a pagina, com a lista de todos os utilizadores do site.
+ * */
 router.get("/", userController.homePage);
 
 /**
- * Route para realizar filtros aos utilizadores do site
- */
+ * * Rota para filtrar pelos utilizadores, e definir o criterio de ordenação
+ * */
 router.get("/search", userController.search);
 
 /**
- * Rota que carrega a pagina, que mostra toda a informação de um utilizador.
- */
+ * * Rota que carrega a pagina para visualizar os dados de um utilizador especifico 
+ * 
+ * * userId --> id do utilizador a ser consultado.
+ * */
 router.get("/showUser/:userId", userController.showUser);
 
-/* Carrega a pagina de criação do utilizador */
+/**
+ * * Rota que carrega a pagina para a criação de um novo utilizador
+ * */
 router.get("/createUser", userController.createUser);
 
-/* Guarda um novo utilizador na BD */
+/**
+ * * Rota que guarda o novo utilizador, criado na página "/createUser"
+ * */
 router.post("/saveUser", userController.saveUser);
 
-/* Carrega a pagina de criação do utilizador */
+/**
+ * * Rota que carrega a pagina para edição dos dados de um utilizador
+ * 
+ * * userId --> id do user a ser editado
+ * */
 router.get("/editUser/:userId", userController.editPage);
 
-/* Edita os dados do utilizador */
-router.post("/editUser/:userId", userController.updateUser);
+/**
+ * * Rota que guarda as alterações realizadas a um utilizador, já existente.
+ * * Alterações essas, realizadas na rota "/editUser/:userId"
+ * 
+ * * userId --> id do user que foi editado.
+ * */
+router.post("/updateUser/:userId", userController.updateUser);
 
-/* Permite apagar um user */
+/**
+ * * Rota que permite eliminar um utilizador da BD
+ * 
+ * * userId --> id do user eliminado.
+ * */
 router.post("/delete/:userId", userController.deleteUser);
 
-/*Desbanir um user manualmente */
-router.post("/desban/:userId", userController.desban);
-
-/* Banir um utilizador */
+/**
+ * * Rota que permite banir um utilizador do site. 
+ * * O tempo de banimento do user, por enquanto, é até algum admin o desbanir.
+ * 
+ * * userId --> id do utilizador a ser banido
+ * */
 router.post("/ban/:userId", userController.ban);
+
+/**
+ * * Rota que permite desbanir um utilizador, que esteja banido no site. 
+ * 
+ * * userId --> id do utilizador a ser desbanido
+ * */
+router.post("/desban/:userId", userController.desban);
 
 module.exports = router;

@@ -17,10 +17,6 @@ const comments = require("./restaurantRoutes/comments.js");
 /* Rota que renderiza a home page de um restaurante */
 router.get('/', restaurant.homePage);
 
-//Carregamento das restantes rotas
-/* Redireciona para o route das orders */
-router.use('/orders', order);
-
 /* Redireciona para o route dos comentarios */
 router.use('/comments', comments);
 
@@ -37,8 +33,13 @@ router.get('/search', restaurant.searchMenu);
 router.get('/showMenu/:menu/search', menu.searchMenu);
 
 /*Rota para utilizar os middlewares nas routas abaixo */
-router.use(authenticateToken, isDonoOrAdmin);
+router.use(authenticateToken);
 
+//Carregamento das restantes rotas
+/* Redireciona para o route das orders */
+router.use('/orders', order);
+
+router.use(isDonoOrAdmin);
 /* Rota que carrega a pagina para criar um menu  */
 router.get('/createMenu', menu.createMenu);
 

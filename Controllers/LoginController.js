@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
-const User = require("../Models/Perfils/User");
-const Restaurant = require("../Models/Perfils/Restaurant");
 const loginController = {};
 
 // Renderiza página de login
@@ -22,6 +20,7 @@ loginController.loginToken = (req, res, next) => {
       req.flash('error', info.message);
       return res.redirect('/login');
     }
+
     if (!user) {
       // Mensagem de erro vinda do Strategy
       req.flash('error', info.message);
@@ -37,9 +36,9 @@ loginController.loginToken = (req, res, next) => {
       }
 
       // 3) Só após login bem‑sucedido é que geramos o token
-      const payload   = { userId: user._id };
-      const token     = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
-      const remember  = req.body.rememberMe;
+      const payload = { userId: user._id };
+      const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
+      const remember = req.body.rememberMe;
 
       // 4) Define cookies
       if (remember) {

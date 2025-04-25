@@ -14,7 +14,7 @@
     <main>
       <div class="signup-container">
         <h1>Editar conta</h1>
-        <form action="/perfil/admin/listUsers/editUser/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
+        <form action="/perfil/admin/listUsers/updateUser/<%= userD._id %>" method="POST" id="signupForm" class="needs-validation" novalidate>
           <%- include('../../../../login/editUserCampos') %>
           <div class="form-group" id="divPrioridade">
             <label for="priority">Prioridade</label>

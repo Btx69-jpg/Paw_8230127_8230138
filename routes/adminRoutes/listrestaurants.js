@@ -3,39 +3,35 @@ const router = express.Router();
 
 //Controllers
 const restaurantsController = require("../../Controllers/RestaurantsController.js");
-const listrestaurantController = require("../../Controllers/ControllersAdmin/ListRestaurantController.js")
+const listrestaurantController = require("../../Controllers/ControllersAdmin/ListRestaurantController.js");
 
-//Middlewares
-const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
-
-/**
- * * Rota que aplica as restantes a autentificação/validação do token
- */
-router.use(authenticateToken, isAdmin);
+//Routers
+const aprovesRouter = require("./listaproves.js");
 
 /** 
- * * Routers para os restaurantes 
+ * * Rota que carrega a pagina com a lista de todos os restuarantes 
  * */
 router.get('/', listrestaurantController.homePage);
 
 /** 
- * * Routers para visualizar os dados de um restaurante especifico 
+ * * Rota que carrega a pagina para visualizar os dados de um restaurante especifico 
+ * 
+ * * restaurantId --> id do restaurante a ser visualizado
  * */
 router.get('/showRest/:restaurantId', listrestaurantController.showRestaurant);
 
 /**
- * * Router para o filtrar os restaurantes 
+ * * Rota para puder filtar por restaurantes, e definir um criterio de ordenação 
  * */
 router.get('/search', restaurantsController.search);
 
 /**
- * * Rota para renderizar a pagina para criar restaurante 
+ * * Rota para renderizar a pagina para criar um restaurante 
  * */
 router.get('/createRestaurant', restaurantsController.createRestaurant)
 
 /**
- * * Rota para guardar novos Restaurantes
+ * * Rota que guarda um restarante criado na pagina "createRestaurant"
  * */
 router.post('/saveRestaurant', restaurantsController.saveRestaurant)
 
@@ -54,30 +50,16 @@ router.get('/editRestaurant/:restaurantId', restaurantsController.editRestaurant
 router.post('/updatRestaurant/:restaurantId', restaurantsController.updatRestaurant);
 
 /**
- * * Rota para dar delete de um restaurante
+ * * Rota que elimina um restaurante
  * 
  * * restaurant --> Id do restuarante que vai ser removido
  * */
 router.post('/deleteRestaurant/:restaurant', restaurantsController.removeRestaurant);
 
 /**
- * * Rota que carrega a página para aprovar ou rejeitar restaurantes 
+ * * Importação do router com as rotas que permitem ao admin ver os restaurantes que precisam
+ * * de aprovação e aprovar ou rejeitar 
  * */
-router.get('/aproves', listrestaurantController.aprovePage);
-
-/**
- * * Rota para aprovar um restaurante, atualizando o seu estado como aprovo, permitinfo com que o mesmo
- * * possa ser visualizado pelos os utilizadores
- * 
- * * restaurantId --> Id do restuarante que vai ser aprovado
- */
-router.post('/aproves/:restaurantId', listrestaurantController.aproveRestaurant);
-
-/**
- * * Rota que rejeita um rejeita um restaurante, removendo-o da DB
- * 
- * * restaurantId --> Id do restuarante que vai ser desaprovado
- */
-router.post('/aproves/reject/:restaurantId', listrestaurantController.rejectRestaurant);
+router.use('/aproves', aprovesRouter);
 
 module.exports = router;

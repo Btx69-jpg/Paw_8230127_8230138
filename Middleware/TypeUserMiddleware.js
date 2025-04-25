@@ -125,6 +125,36 @@ function isDonoRestaurantOrAdmin(req, res, next) {
     }
 }
 
+function isDonoClienteOrAdmin(req, res, next) {
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Cliente") {
+            next();
+        } else {
+            res.render("errors/error", {numError: 403});
+        }
+    } else {
+        console.log("Não existe cookie para donos ou restaurantes ou admin");
+        res.render("errors/error", {numError: 403});
+    }
+}
+
+function isDonoClienteRestaurantOrAdmin(req, res, next) {
+    if (req.cookies && req.cookies.priority) {
+        const cokkie = req.cookies.priority;
+        
+        if (cokkie === "Admin" || cokkie === "Dono" || cokkie === "Cliente" || cokkie === "Restaurant") {
+            next();
+        } else {
+            res.render("errors/error", {numError: 403});
+        }
+    } else {
+        console.log("Não existe cookie para donos ou restaurantes ou admin");
+        res.render("errors/error", {numError: 403});
+    }
+}
+
 module.exports = {
     isAdmin,
     isCliente,
@@ -134,4 +164,6 @@ module.exports = {
     isDonoOrRestaurant,
     isDonoOrAdmin, 
     isDonoRestaurantOrAdmin,
+    isDonoClienteOrAdmin,
+    isDonoClienteRestaurantOrAdmin
 };

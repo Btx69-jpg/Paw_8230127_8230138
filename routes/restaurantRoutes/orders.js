@@ -1,34 +1,57 @@
 var express = require('express');
-var router = express.Router({ mergeParams: true }); //Penso ser necessario, se der sem retirar
+var router = express.Router({ mergeParams: true }); 
 const mongoose = require('mongoose');
 
 //Controllers 
 const order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
-const menu = require("../../Controllers/ControllersRestaurant/MenuController.js")
-//rota para gestão de pedidos para o restaurante
 
-const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
+//Middlewares
 const {isDonoOrRestaurant} = require("../../Middleware/TypeUserMiddleware.js");
 
-//Rota que aplica a verificação de token e validação de user às restantes
-router.use(authenticateToken, isDonoOrRestaurant);
+/**
+ * * Rota que aplicar a todas as rotas deste js os suguintes middlewares
+ * 
+ * * isDonoOrRestaurant --> verifica se o utilizador é um dono ou restaurante
+ * */
+router.use(isDonoOrRestaurant);
 
+/**
+ * * Rota que carrega a pagina para gestão das encomendas do restaurante
+ * */
 router.get('/', order.addOrder);
 
+/**
+ * * Rota que carrega a pagina para o restaurante poder criar uma encomenda
+ * */
 router.get('/createOrder', order.createOrder);
 
+/**
+ * * Rota que carrega a pagina para o restaurante gerir as encomendas que estão em andamento
+ * */
 router.get('/orderManagement', order.orderManagment);
 
+/**
+ * * Rota que carrega a pagina, com o historico de encomendas do restaurante
+ */
 router.get('/historic', order.historicOrder);
 
+/**
+ * * Rota que carrega a pagina, com informação de uma encomenda especifica
+ */
 router.get('historic/:orderId', order.showOrder);
-//router.post('/saveOrder', order.)
 
-//router.post('/getOrders', order.createOrder);
-
-router.put('/:orderId/status', order.updateOrderStatus);
- 
-/* Rota que lista menus e pratos */
-router.get('/getMenus', menu.getMenus);
+/**
+ * * Rota que altera o estado de uma encomenda
+ */
+router.post('/:orderId/status', order.updateOrderStatus);
 
 module.exports = router;
+
+
+/* 
+Rotas 
+router.get('/getMenus', menu.getMenus);
+*/
+
+
+

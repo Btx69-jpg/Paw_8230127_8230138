@@ -8,44 +8,79 @@ const adminController = require("../Controllers/AdminController.js");
 const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
 const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
 
-//routes
+//Routers
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
 const userRouter = require("./adminRoutes/listusers.js");
 const categoriesRouter = require("./adminRoutes/categories.js");
 const passwordController = require("../Controllers/PasswordController.js");
 const portionsRouter = require("./adminRoutes/portions.js");
 
-//Rota que atribui as restantes a validação do token e verficia se o user é Admin
+/**
+ * * Rota que aplicar a todas as rotas deste js os suguintes middlewares
+ * 
+ * * authenticateToken --> valida se o token do utilizador é valido.
+ * * isAdmin --> verifica se o utilizador autenticado é um Admin
+ * */
 router.use(authenticateToken, isAdmin);
 
-//Pagina do admin
+/**
+ * * Rota que carrega a pagina inicial de um admin
+ * */
 router.get("/", adminController.homePage);
 
-//Renderiza a pagina de edit do admin
+/**
+ * * Rota que renderiza a página de edição dos dados do admin
+ * 
+ * * adminId --> id do admin, cujo os dados vão ser editados.
+ * */
 router.get("/editDados/:adminId", adminController.editPage);
 
-//Atualizar dados
+/**
+ * * Rota que atualiza os dados de um admin
+ * 
+ * * accountId --> id do admin, cujo os dados serão atualizados
+ * */
 router.post("/updateAdmin/:accountId", adminController.updateAdmin);
 
-//Renderizar pagina para alterar a password
+/**
+ * * Rota que renderiza a página, de alteração da password, da conta do admin
+ * 
+ * * accountId --> id do admin, cujo os dados serão atualizados
+ * */
 router.get("/editPassword/:accountId", passwordController.editPassword);
 
-//Atualiza a password do admin
+/**
+ * * Rota que guarda a nova password do perfil do admin
+ * 
+ * * accountId --> id do admin, que a password foi atualizada
+ * */
 router.post("/changePassword/:accountId", passwordController.updatePassword);
 
-//Route para eliminar o admin
+/**
+ * * Rota que permite dar delete há conta do admin
+ * 
+ * * adminId --> id do admin, que a conta foi eliminada
+ */
 router.post("/deleteAccount/:adminId", adminController.deleteAdm);
 
-/* Routers para os restaurantes */
+/**
+ * * Importação do router com as rotas que permitem ao admin realizar o CRUD dos restaurantes 
+ * */
 router.use("/listRestaurants", restaurantRouter);
 
-/* Routers para os users */
+/**
+ * * Importação do router com as rotas que permitem ao admin realizar o CRUD dos utilizadores do site 
+ * */
 router.use("/listUsers", userRouter);
 
-/* Routers para as categorias */
+/**
+ * * Importação do router com as rotas que permitem ao admin realizar o CRUD das categorias 
+ * */
 router.use("/listCategories", categoriesRouter);
 
-/** Router para as porçoes */
+/**
+ * * Importação do router com as rotas que permitem ao admin realizar o CRUD das porções 
+ * */
 router.use("/listPortions", portionsRouter);
 
 module.exports = router;

@@ -9,7 +9,7 @@
     <body>
         <div class="container">
             
-            <% if(error !== "") { %>
+            <% if(error) { %>
                 <%- include('errorPage/bodyError', {numError: numError, error: error}) %>
             <% } else { %>
                 <%- include('errorPage/bodyError', {numError: numError}) %>

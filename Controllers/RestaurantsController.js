@@ -12,7 +12,7 @@ var restaurantsController = {};
 //Metodos
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
 const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
-const { existsRestaurantsDesaprove } = require("./ControllersAdmin/ListRestaurantController");
+const { existsRestaurantsDesaprove } = require("./ControllersAdmin/AprovacaoRestController");
 
 //Constantes
 const totRestaurant = 15; 
