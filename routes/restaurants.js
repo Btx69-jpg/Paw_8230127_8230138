@@ -17,26 +17,27 @@ Reaproveitar também no restaurant do admin
 */
 router.get('/search', restaurants.search);
 
+router.use(authenticateToken);
 /* Renderiza a página para criar um novo restaurante */
-router.get('/createRestaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.createRestaurant);
+router.get('/createRestaurant', isDonoRestaurantOrAdmin, restaurants.createRestaurant);
 
 /* Guarda um novo restaurante */
-router.post('/saveRestaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.saveRestaurant);
+router.post('/saveRestaurant', isDonoRestaurantOrAdmin, restaurants.saveRestaurant);
 
 /* Renderiza a pagina para editar um restaurante */
-router.get('/editRestaurant/:restaurantId', authenticateToken, isDonoRestaurantOrAdmin, restaurants.editRestaurant);
+router.get('/editRestaurant/:restaurantId', isDonoRestaurantOrAdmin, restaurants.editRestaurant);
 
 /* Guarda as alterações feitas a um restaurante */
-router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoRestaurantOrAdmin, restaurants.updatRestaurant);
+router.post('/updatRestaurant/:restaurantId', isDonoRestaurantOrAdmin, restaurants.updatRestaurant);
 
 /* Renderiza a pagina para editar a password */
-router.get('/editRestaurant/editPassword/:accountId', authenticateToken, isDonoOrRestaurant, passwordController.editPassword);
+router.get('/editRestaurant/editPassword/:accountId', isDonoOrRestaurant, passwordController.editPassword);
 
 /* Atualiza a password do utilizador */
-router.post('/editRestaurant/changePassword/:accountId', authenticateToken, isDonoOrRestaurant, passwordController.updatePassword);
+router.post('/editRestaurant/changePassword/:accountId', isDonoOrRestaurant, passwordController.updatePassword);
 
 /* Dá delete a um restaurante */
-router.post('/deleteRestaurant/:restaurant', authenticateToken, isDonoRestaurantOrAdmin, restaurants.removeRestaurant);
+router.post('/deleteRestaurant/:restaurant', isDonoRestaurantOrAdmin, restaurants.removeRestaurant);
 
 /* Leva para a route de um restaurante (especifico) */
 router.use('/:restaurant', routeRestaurant);

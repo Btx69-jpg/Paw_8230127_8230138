@@ -451,8 +451,6 @@ userController.updateUser =  async function(req, res) {
                     { $addToSet: { 'perfil.ownersIds': user._id } }
                 ).exec();
             } else if (user.perfil.priority === "Dono" && priority === "Dono") {
-                //Isto está mal implementado (Depois do 1º update ele ficou com Ids duplicados)
-                //Falta atualizar depois os restaurantes, novos
 
                 console.log("Já sou Dono");
 
@@ -478,10 +476,9 @@ userController.updateUser =  async function(req, res) {
                         removeIds.push(rest._id)
                     }
                 }
-                //Atualizamos o array de IDs
+
                 user.perfil.restaurantIds = restIds;
                 await user.save();
-                console.log("Novo: ", user.perfil.restaurantIds);
                 if(newRestIds.length > 0) {
                     //Adicionamos os novos donos aos restaurantes
                     await Restaurant.updateMany(
@@ -489,8 +486,8 @@ userController.updateUser =  async function(req, res) {
                         { $addToSet: { 'perfil.ownersIds': user._id } }
                     )
                 }
-                //Novo array de restaurants
                 
+                //Novo array de restaurants
                 if(removeIds.length > 0) {
                     //Removemos os id do ownersIds dos que foram removidos
                     await Restaurant.updateMany(
