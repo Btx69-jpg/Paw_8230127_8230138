@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         input.name = `restaurant[${idx}][name]`;
         input.placeholder = 'Introduza o nome do restaurante';
         input.maxLength = 100;
-        input.pattern   = '^(?!.*[\\/]).+$';
-        input.title     = "O nome não pode conter '/' ou '\\'";
-        input.required  = true;
+        input.pattern = '^(?!.*[\\/]).+$';
+        input.title = "O nome não pode conter '/' ou '\\'";
+        input.required = true;
         flex.appendChild(input);
 
         const btn = document.createElement('button');

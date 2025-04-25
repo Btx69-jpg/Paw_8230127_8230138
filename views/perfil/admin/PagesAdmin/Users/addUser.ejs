@@ -17,12 +17,7 @@
       <div class="signup-container">
         <h1>Criar conta</h1>
         <form
-          action="/perfil/admin/listUsers/createUser"
-          method="POST"
-          id="signupForm"
-          class="needs-validation"
-          novalidate
-        >
+          action="/perfil/admin/listUsers/saveUser" method="POST" id="signupForm" class="needs-validation" novalidate>
           <%- include('../../../../login/signUpCampos') %>
 
           <!-- Select de prioridade -->

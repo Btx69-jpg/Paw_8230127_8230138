@@ -24,7 +24,7 @@ router.get("/showUser/:userId", userController.showUser);
 router.get("/createUser", userController.createUser);
 
 /* Guarda um novo utilizador na BD */
-router.post("/createUser", userController.saveUser);
+router.post("/saveUser", userController.saveUser);
 
 /* Carrega a pagina de criação do utilizador */
 router.get("/editUser/:userId", userController.editPage);

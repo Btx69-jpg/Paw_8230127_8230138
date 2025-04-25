@@ -191,23 +191,32 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
     }
     return errors;
 }
-async function restaurantsSemDuplciacoes(restaurants) {
+async function restaurantsSemDuplciacoes(restaurants, priority) {
     if (priority ==="Dono" && !Array.isArray(restaurants)) {
         restaurants = [restaurants];
     }
 
+    let error = false;
+    let i = 0;
     //Remove os duplicados do array
-    for (let i = 0; i < restaurants.length; i++) {
+    while(i < restaurants.length && !error) {
         if(restaurants[i]) {
             for (let y = restaurants.length - 1; y > i; y--) {
                 if (restaurants[i].name === restaurants[y].name) {
                     restaurants.splice(y, 1);
                 }
             }
+        } else {
+            error = true;
         }
+        i++;
     }
     
+    if(error) {
+        throw new Error("Existe algum campo de restaurante por preencher!");
+    }
     //Transformamos o array restaurantes, de um array de objetos para um array só com os nomes
+    console.log("Restaurantes: ", restaurants)
     let namesRestaurants = [];
     for (let i = 0; i < restaurants.length; i++) {
         namesRestaurants[i] = restaurants[i].name;
@@ -222,20 +231,27 @@ async function restaurantsSemDuplciacoes(restaurants) {
  * 
  */
 userController.saveUser = async function(req, res) {
-    try {
-        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority, restaurantsNames} = req.body;  
-               
+    try {    
+        const { firstName, lastName, email, phoneNumber, password, confirmPassword, priority} = req.body;  
+        const restaurantsNames = req.body.restaurant;
+        
+        let restaurants;
+        try {
+            restaurants = await restaurantsSemDuplciacoes(restaurantsNames, priority);
+        } catch (err) {
+            console.error("Existe um restaurante que não foi preenchido:", err.message);
+            return res.status(404).render(res.locals.previousPage);
+        }
+        
         const errors = validationSave(firstName, lastName, email, phoneNumber, password, 
-            confirmPassword, priority, restaurantsNames);
+            confirmPassword, priority, restaurants);
 
         if (errors.length > 0) {
-            return res.status(404).render("perfil/admin/pagesAdmin/Users/addPage", { errors, firstName, 
+            return res.status(404).render("perfil/admin/pagesAdmin/Users/addUser", { errors, firstName, 
                 lastName, email });
         }
 
-        let restaurants = restaurantsSemDuplciacoes(restaurantsNames);
         let restaurantFound = await Restaurant.find({ name: {$in: restaurants}}).exec();
-        console.log("Restaurants: ", restaurantFound);
         
         const errorValidate = await validateNewUser(email, phoneNumber, priority, restaurantFound);
         
@@ -298,22 +314,6 @@ userController.saveUser = async function(req, res) {
 }
 
 userController.editPage = function(req, res) {    
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("-----------------------------------------------------------------------------------");
-
     User.findOne({ _id: req.params.userId }).exec()
         .then(user => {     
             if(user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
@@ -398,38 +398,30 @@ function validationUpdate(firstName, lastName, email, phoneNumber, priority, res
     return errors;
 }
 /**
- * Metodo para atualizar um user existente
- * Falta meter a funcionar com multiplos users.
- * Faltam meter para quando apagar um restaurante, retira-lo do array de restaurantsIds 
- * e ir ao restaurante e remover o user de ownersIds
+ * Metodo que atualiza os dados do utilizador
  */
 userController.updateUser =  async function(req, res) {
     try {
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log();
-        console.log("-----------------------------------------------------------------------------------");
-        console.log("Update");
-        const { firstName, lastName, email, phoneNumber, priority, restaurant} = req.body;  
+        const { firstName, lastName, email, phoneNumber, priority} = req.body;  
 
+        const restaurantsNames = req.body.restaurant;
+        //Retiramos os restaurants duplicados
+        let restaurants;
+        try {
+            restaurants = await restaurantsSemDuplciacoes(restaurantsNames, priority);
+        } catch (err) {
+            console.error("Existe um restaurante que não foi preenchido:", err.message);
+            return res.status(404).render(res.locals.previousPage);
+        }
+    
         //Validações aos campos
-        let errors = await validationUpdate(firstName, lastName, email, phoneNumber, priority, restaurant);
+        let errors = await validationUpdate(firstName, lastName, email, phoneNumber, priority, restaurants);
         if (errors.length > 0) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
     
-        let restaurantFound = await Restaurant.findOne({ name: restaurant}).exec();
+        let restaurantFound = await Restaurant.find({ name: { $in: restaurants}}).exec();
+        console.log("Restaurantes encontrados: ", restaurantFound);
         let user = await User.findOne({ _id: req.params.userId }).exec();
  
         //Está aqui um problema
@@ -441,28 +433,79 @@ userController.updateUser =  async function(req, res) {
             return res.redirect(res.locals.previousPage);
         }
 
-        if (restaurant) {
-            let updateCountRest = false;
+        if (restaurants && restaurants.length > 0) {
+            let foundIds = [];
+            let restIds = [];
 
-            if (user.perfil.priority !== "Dono" && priority === "Dono") {
-                user.perfil.restaurantIds = [];
-                updateCountRest= true;
-            } else if (user.perfil.priority === "Dono" && priority === "Dono" && 
-                    !user.perfil.restaurantIds.includes(restaurantFound._id)) {
-                    updateCountRest = true;
+            for (let i = 0; i < restaurantFound.length; i++) {
+                restIds.push(restaurantFound[i]._id);
+                foundIds.push(restaurantFound[i]._id.toString());
             }
 
-            //Atualizo o count do restaurante
-            if (updateCountRest) {
-                user.perfil.restaurantIds.push(restaurantFound._id);
+            if (user.perfil.priority !== "Dono" && priority === "Dono") {
+                user.perfil.restaurantIds = restIds;
 
-                restaurantFound.perfil.ownersIds.push(user._id);
-                await restaurantFound.save();
+                // Adiciona dono nos restaurantes
+                await Restaurant.updateMany(
+                    { _id: { $in: user.perfil.restaurantIds } },
+                    { $addToSet: { 'perfil.ownersIds': user._id } }
+                ).exec();
+            } else if (user.perfil.priority === "Dono" && priority === "Dono") {
+                //Isto está mal implementado (Depois do 1º update ele ficou com Ids duplicados)
+                //Falta atualizar depois os restaurantes, novos
+
+                console.log("Já sou Dono");
+
+                //Procuramos por novos restaurantes
+                let oldIds = [];
+                for(const rest of user.perfil.restaurantIds) {
+                    oldIds.push(rest._id.toString());
+                }
+                console.log("Old Ids: ", oldIds);
+                
+                let newRestIds = []; 
+                for(const rest of restaurantFound) {
+                    const id = rest._id.toString();
+                    if(!oldIds.includes(id)) {
+                        newRestIds.push(rest._id)
+                    }
+                }
+
+                let removeIds = []
+                for(const rest of user.perfil.restaurantIds) {
+                    const id = rest._id.toString();
+                    if(!foundIds.includes(id)) {
+                        removeIds.push(rest._id)
+                    }
+                }
+                //Atualizamos o array de IDs
+                user.perfil.restaurantIds = restIds;
+                await user.save();
+                console.log("Novo: ", user.perfil.restaurantIds);
+                if(newRestIds.length > 0) {
+                    //Adicionamos os novos donos aos restaurantes
+                    await Restaurant.updateMany(
+                        { _id: {$in: newRestIds}},
+                        { $addToSet: { 'perfil.ownersIds': user._id } }
+                    )
+                }
+                //Novo array de restaurants
+                
+                if(removeIds.length > 0) {
+                    //Removemos os id do ownersIds dos que foram removidos
+                    await Restaurant.updateMany(
+                        { _id: { $in: removeIds} },
+                        { $pull: { 'perfil.ownersIds': user._id } }
+                    ).exec();
+                }
+
             }
         }
 
+        //Caso o user fosse dono e agora deixou de ser.
         if (user.perfil.priority === "Dono" && priority !== "Dono") {
             console.log("A prioridade foi alterada de dono para cliente")
+            
             await Restaurant.updateMany(
                 { _id: { $in: user.perfil.restaurantIds } },
                 { $pull: { 'perfil.ownersIds': user._id } }
@@ -470,6 +513,7 @@ userController.updateUser =  async function(req, res) {
 
             //Forma que encontrei para dar delete no campo
             user.perfil.restaurantIds = undefined;
+            await user.save();
         }  
         
         //update
@@ -480,15 +524,8 @@ userController.updateUser =  async function(req, res) {
         user.perfil.priority = priority;
         
         //guardar as alterações
-        user.save()
-            .then(() => {
-                console.log("User atualizado com sucesso!");
-                res.redirect("/perfil/admin/listUsers");
-            })
-            .catch(error => {
-                console.log("Erro:", error);
-                res.redirect(`/perfil/admin/listUsers/editUser/${req.params.userId}`);
-            })
+        await user.save()
+        res.redirect("/perfil/admin/listUsers");
     } catch(err) {
         console.log(err);
         res.redirect(res.locals.previousPage);
@@ -533,7 +570,7 @@ userController.deleteUser = async function(req, res) {
             if (imagePath !== "") {
                 deleteImg(imagePath);
             }
-            
+
             res.redirect("/perfil/admin/listUsers");
         }
       } catch (error) {
