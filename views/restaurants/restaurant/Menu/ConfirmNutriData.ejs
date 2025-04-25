@@ -1,89 +1,198 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Confirmar Dados Nutricionais</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container mt-5">
-        <h2>Confirme os Dados Nutricionais</h2>
-        <form action="/restaurants/<%= sessionData.restaurant.name %>/saveMenuFinal" method="post">
-            <!-- manter sessionId se necessário -->
-            <% dishes.forEach((dish, dishIdx) => { %>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5><%= dish.name %></h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Mostrar sugestão de produto e dados retornados -->
-                        <% const { infos, warnings } = perDish[dishIdx]; %>
-                        <% if (infos.length) { %>
-                            <p><strong>Produto sugerido pela API:</strong> <%= infos[0].name %></p>
-                            <table class="table table-sm mb-3">
-                                <thead>
-                                    <tr>
-                                        <th>Nutriente</th>
-                                        <th>Per 100g</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>Calorias</td><td><%= infos[0].per100g.calories %></td></tr>
-                                    <tr><td>Proteína (g)</td><td><%= infos[0].per100g.protein %></td></tr>
-                                    <tr><td>Gordura (g)</td><td><%= infos[0].per100g.fat %></td></tr>
-                                    <tr><td>Carboidratos (g)</td><td><%= infos[0].per100g.carbohydrates %></td></tr>
-                                    <tr><td>Açúcares (g)</td><td><%= infos[0].per100g.sugars %></td></tr>
-                                </tbody>
-                            </table>
-                        <% } else { %>
-                            <p class="text-warning">Nenhum dado nutricional retornado para este prato.</p>
-                        <% } %>
+      <h2>Confirme os Dados Nutricionais</h2>
+      <form
+        action="/restaurants/<%= sessionData.restaurant.name %>/saveMenuFinal"
+        method="post"
+      >
+        <!-- manter sessionId se necessário -->
+        <% dishes.forEach((dish, dishIdx) => { %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5><%= dish.name %></h5>
+          </div>
+          <div class="card-body">
+            <% dish.ingredients.forEach((ing, ingIdx) => { const { infos,
+            warnings } = perDish[dishIdx]; const nutr = infos[ingIdx]?.per100g
+            || {}; %>
+            <!-- Se houve falha naquele ingrediente -->
+            <% if (warnings[ingIdx]) { %>
+            <div class="mb-2">
+              <p>
+                Ingrediente: <%= ing %> (<%= warnings[ingIdx].searchType %> não
+                encontrado)
+              </p>
 
-                        <!-- Opções de ação -->
-                        <div class="btn-group mb-3" role="group">
-                            <button type="submit" name="action" value="confirm" class="btn btn-success">Confirmar e Continuar</button>
-                            <button type="button" class="btn btn-primary" onclick="showRetry(<%= dishIdx %>)">Re-pesquisar</button>
-                            <button type="button" class="btn btn-secondary" onclick="showManual(<%= dishIdx %>)">Editar Manualmente</button>
-                        </div>
-
-                        <!-- Seção de re-pesquisa -->
-                        <div id="retry-<%= dishIdx %>" class="mb-3" style="display:none;">
-                            <label>Novo termo para pesquisa:</label>
-                            <input type="text" name="retryTerm[<%= dishIdx %>]" class="form-control mb-2" placeholder="Digite novo nome de ingrediente">
-                            <button type="submit" name="action" value="retry-<%= dishIdx %>" class="btn btn-outline-primary">Re-pesquisar</button>
-                        </div>
-
-                        <!-- Seção de edição manual -->
-                        <div id="manual-<%= dishIdx %>" class="mb-3" style="display:none;">
-                            <label>Calorias:</label>
-                            <input type="number" step="any" name="manual[<%= dishIdx %>][calories]" value="<%= infos[0]?.per100g.calories || '' %>" class="form-control mb-2">
-                            <label>Proteína (g):</label>
-                            <input type="number" step="any" name="manual[<%= dishIdx %>][protein]" value="<%= infos[0]?.per100g.protein || '' %>" class="form-control mb-2">
-                            <label>Gordura (g):</label>
-                            <input type="number" step="any" name="manual[<%= dishIdx %>][fat]" value="<%= infos[0]?.per100g.fat || '' %>" class="form-control mb-2">
-                            <label>Carboidratos (g):</label>
-                            <input type="number" step="any" name="manual[<%= dishIdx %>][carbohydrates]" value="<%= infos[0]?.per100g.carbohydrates || '' %>" class="form-control mb-2">
-                            <label>Açúcares (g):</label>
-                            <input type="number" step="any" name="manual[<%= dishIdx %>][sugars]" value="<%= infos[0]?.per100g.sugars || '' %>" class="form-control mb-2">
-                        </div>
-                    </div>
-                </div>
-            <% }); %>
-
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Salvar Menu</button>
+              <!-- Botão para re-pesquisar só este ingrediente -->
+              <input
+                type="text"
+                name="retryTerm[<%= dishIdx %>][<%= ingIdx %>]"
+                placeholder="Novo termo para `<%= ing %>`"
+                class="form-control mb-1"
+              />
+              <button
+                type="submit"
+                name="action"
+                value="retry-<%= dishIdx %>-<%= ingIdx %>"
+                class="btn btn-outline-primary btn-sm"
+              >
+                Re-pesquisar
+              </button>
+              <p class="text-warning">
+                Nenhum dado nutricional retornado para este prato.
+              </p>
             </div>
-        </form>
+            <% } else { %>
+            <p>
+              <strong>Produto sugerido pela API:</strong> <%= infos[0].name %>
+            </p>
+            <table class="table table-sm mb-3">
+              <thead>
+                <tr>
+                  <th>Nutriente</th>
+                  <th>Per 100g</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Calorias</td>
+                  <td><%= infos[0].per100g.calories %></td>
+                </tr>
+                <tr>
+                  <td>Proteína (g)</td>
+                  <td><%= infos[0].per100g.protein %></td>
+                </tr>
+                <tr>
+                  <td>Gordura (g)</td>
+                  <td><%= infos[0].per100g.fat %></td>
+                </tr>
+                <tr>
+                  <td>Carboidratos (g)</td>
+                  <td><%= infos[0].per100g.carbohydrates %></td>
+                </tr>
+                <tr>
+                  <td>Açúcares (g)</td>
+                  <td><%= infos[0].per100g.sugars %></td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Opções de ação -->
+            <div class="btn-group mb-3" role="group">
+              <button
+                type="submit"
+                name="action"
+                value="confirm"
+                class="btn btn-success"
+              >
+                Confirmar e Continuar
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="showRetry('<%= dishIdx %>','<%= ingIdx %>')"
+              >
+                Re-pesquisar
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="showManual('<%= dishIdx %>','<%= ingIdx %>')"
+              >
+                Editar Manualmente
+              </button>
+            </div>
+
+            <!-- Seção de re-pesquisa -->
+            <div id="retry-<%= dishIdx %>-<%= ingIdx>" class="mb-3" style="display: none">
+              <label>Novo termo para pesquisa:</label>
+              <input
+                type="text"
+                name="retryTerm[<%= dishIdx %>][<%= ingIdx>]"
+                class="form-control mb-2"
+                placeholder="Digite novo nome de ingrediente"
+              />
+              <button
+                type="submit"
+                name="action"
+                value="retry-<%= dishIdx %>-<%= ingIdx>"
+                class="btn btn-outline-primary"
+              >
+                Re-pesquisar
+              </button>
+            </div>
+
+            <!-- Seção de edição manual -->
+            <div id="manual-<%= dishIdx %>-<%= ingIdx %>" class="mb-3" style="display: none">
+              <label>Calorias:</label>
+              <input
+                type="number"
+                step="any"
+                name="manual[<%= dishIdx %>][calories]"
+                value="<%= infos[0]?.per100g.calories || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Proteína (g):</label>
+              <input
+                type="number"
+                step="any"
+                name="manual[<%= dishIdx %>][protein]"
+                value="<%= infos[0]?.per100g.protein || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Gordura (g):</label>
+              <input
+                type="number"
+                step="any"
+                name="manual[<%= dishIdx %>][fat]"
+                value="<%= infos[0]?.per100g.fat || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Carboidratos (g):</label>
+              <input
+                type="number"
+                step="any"
+                name="manual[<%= dishIdx %>][carbohydrates]"
+                value="<%= infos[0]?.per100g.carbohydrates || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Açúcares (g):</label>
+              <input
+                type="number"
+                step="any"
+                name="manual[<%= dishIdx %>][sugars]"
+                value="<%= infos[0]?.per100g.sugars || '' %>"
+                class="form-control mb-2"
+              />
+            </div>
+          </div>
+        </div>
+        <% } %> <% }) %> <% }); %>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-success">Salvar Menu</button>
+        </div>
+      </form>
     </div>
 
     <script>
-        function showRetry(idx) {
-            document.getElementById('retry-' + idx).style.display = 'block';
-            document.getElementById('manual-' + idx).style.display = 'none';
-        }
-        function showManual(idx) {
-            document.getElementById('manual-' + idx).style.display = 'block';
-            document.getElementById('retry-' + idx).style.display = 'none';
-        }
+      //const {fetchNutritionalData} = require("../Middleware/fetchNutritionalDataMD.js");
+      function showRetry(idx,ingIdx) {
+        document.getElementById("retry-" + idx+ "-" +ingIdx).style.display = "block";
+        document.getElementById("manual-" + idx+ "-" +ingIdx).style.display = "none";
+      }
+      function showManual(idx,ingIdx) {
+        document.getElementById("manual-" + idx + "-" +ingIdx).style.display = "block";
+        document.getElementById("retry-" + idx + "-" +ingIdx).style.display = "none";
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -217,7 +217,7 @@
                 Adicionar Ingrediente
               </button>
               <small class="text-muted"
-                >Use vírgulas para múltiplos itens ou códigos de barras</small
+                >Apenas um ingrediente por caixa</small
               >
             </div>
 
@@ -366,14 +366,13 @@
                 data-index="${dishIndex}"
                 onchange="addPortion(this)"
               >
-                <option value="">Selecione uma porção...</option>
-                ${portionsData
-                  .map(
-                    (portion) =>
-                      `<option value="${portion._id}">${portion.portion}</option>`
-                  )
-                  .join("")}
-              </select>
+<option value="">Selecione uma porção...</option>
+                  <% portions.forEach(function(portion) { %>
+                  <option value="<%= portion._id %>">
+                    <%= portion.portion %>
+                  </option>
+                  <% }); %>
+                </select>
               <button 
                 type="button" 
                 class="btn btn-outline-secondary" 

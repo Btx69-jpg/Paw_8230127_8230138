@@ -299,8 +299,12 @@
           <div id="portionsContainer-new-${newDishIndex}" class="portions-container mb-3" data-index="new-${newDishIndex}"></div>
           <div class="input-group">
             <select id="portionSelect-new-${newDishIndex}" class="form-select portion-select" data-index="new-${newDishIndex}" onchange="addPortion(this)">
-              <option value="">Selecione uma porção...</option>
-              ${portionsData.map(portion => `<option value="${portion._id}">${portion.portion}</option>`).join('')}
+<option value="">Selecione uma porção...</option>
+                  <% portions.forEach(function(portion) { %>
+                  <option value="<%= portion._id %>">
+                    <%= portion.portion %>
+                  </option>
+                  <% }); %>
             </select>
             <button type="button" class="btn btn-outline-secondary" onclick="addPortion(document.getElementById('portionSelect-new-${newDishIndex}'))">
               Adicionar

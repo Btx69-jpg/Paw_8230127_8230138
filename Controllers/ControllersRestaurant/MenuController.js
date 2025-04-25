@@ -143,20 +143,45 @@ menuController.createMenu = async function (req, res) {
 // Save menu: reuse nutritional data from session
 menuController.saveMenu = async function (req, res, restaurant) {
   try {
-  const temp = req.session.tempData || {};
+  const temp = req.session.tempData;
+  const formData = temp?.formData || req.body;
+  const files = temp?.files || req.files;
+  const manual   = req.body.manual || {};
+
+  
   if (!restaurant) {
-    console.log("\n\n\n\n\n\nRestaurant not found in session data.\n\n\n\n\n\n");
     restaurant = temp.restaurant;
   }
   restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
   console.log("Restaurant:", restaurant.name, "\n\n\n\n\n\n\n");
-  const dishes = [].concat(temp.formData?.dishes || []).filter(Boolean);
-  const files = temp.files || [];
+  const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
   const dishObjects = dishes.map((dish, idx) => {
-    const file = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
-    const photo = file ? "/" + file.path.replace(/^public\//, "") : null;
-    const { infos } = temp.perDish?.[idx] || { infos: [] };
+    const fileInfo = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
+    const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
+    let nutritionalInfo;
+    if (manual[idx]) {
+      // validação mínima
+      ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
+        if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
+          throw new Error(`Valor manual para prato ${idx+1}, ${n} inválido`);
+      });
+      nutritionalInfo = [{
+        name: 'manual',
+        per100g: {
+          calories:      Number(manual[idx].calories),
+          protein:       Number(manual[idx].protein),
+          fat:           Number(manual[idx].fat),
+          carbohydrates: Number(manual[idx].carbohydrates),
+          sugars:        Number(manual[idx].sugars)
+        }
+      }];
+    } else {
+      // usa dados da API armazenados em temp.perDish
+      const infos = temp.perDish?.[idx]?.infos || [];
+      nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
+    }
+    //const { infos } = temp?.perDish?.[idx] || { infos: [] };
     return new Dish({
       name: dish.name,
       description: dish.description,
@@ -164,15 +189,17 @@ menuController.saveMenu = async function (req, res, restaurant) {
       price: dish.price,
       portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
       photo: photo,
-      nutritionalInfo: infos
+      nutritionalInfo: nutritionalInfo
     });
   });
 
+    const menuFile = files.find(f => f.fieldname === 'menuPhoto');
+    const menuPhoto = menuFile ? '/' + menuFile.path.replace(/^public[\\/]/, '') : null;
   const menu = new Menu({
-    name: temp.formData?.name || req.body.name,
-    type: temp.formData?.type || req.body.type,
+    name: formData?.name || req.body.name,
+    type: formData?.type || req.body.type,
     dishes: dishObjects,
-    photo: null
+    photo: menuPhoto
   });
 
 
@@ -371,18 +398,10 @@ menuController.deleteMenu = async function (req, res) {
         .status(404)
         .render("errors/error404", { error: "Menu não encontrado" });
     }
-
-    // Apagar foto do menu
-    if (menu.photo && fs.existsSync("public" + menu.photo)) {
-      fs.unlinkSync("public" + menu.photo);
-    }
-
-    // Apagar fotos dos pratos
-    menu.dishes.forEach((dish) => {
-      if (dish.photo && fs.existsSync("public" + dish.photo)) {
-        fs.unlinkSync("public" + dish.photo);
-      }
-    });
+    const menuName = menu.name.replace(/[^a-zA-Z0-9]/g, '_');
+    const pathFolder = `public/images/Restaurants/${restaurant.name}/Menus/${menuName}/`;
+    cleanupUploadDir(pathFolder)
+    
 
     // Remover menu do array
     restaurant.menus.pull(menu);
@@ -437,10 +456,10 @@ async function fetchNutritionalData(ingredient, type) {
 
 // Process ingredients: fetch and aggregate nutritional info
 async function processIngredients(ingredients, searchTypes) {
-  const tasks = ingredients.map((ing, idx) =>
+  const pedidosAPI = ingredients.map((ing, idx) =>
     fetchNutritionalData(ing.trim(), searchTypes[idx] || 'name')
   );
-  const results = (await Promise.all(tasks)).filter(Boolean);
+  const results = (await Promise.all(pedidosAPI)).filter(Boolean);
   if (results.length === 0) return { infos: [], warnings: [] };
 
   const aggregated = results.reduce(
@@ -461,38 +480,6 @@ async function processIngredients(ingredients, searchTypes) {
   };
 }
 
-function applyCorrections(currentBody, tempData) {
-  const corrections = currentBody.corrections || [];
-
-  // Processar correções em paralelo
-  const updates = corrections.map(async (dishCorrections, dishIndex) => {
-    const dish = tempData.formData.dishes[dishIndex];
-
-    const ingredientUpdates = dishCorrections.map(
-      async (correction, ingredientIndex) => {
-        if (correction.skip) {
-          dish.ingredients.splice(ingredientIndex, 1);
-          if (tempData.formData.searchTypes[dishIndex]) {
-            tempData.formData.searchTypes[dishIndex].splice(ingredientIndex, 1);
-          }
-        } else {
-          dish.ingredients[ingredientIndex] = correction.value;
-          if (tempData.formData.searchTypes[dishIndex]) {
-            tempData.formData.searchTypes[dishIndex][ingredientIndex] =
-              correction.type;
-          }
-        }
-      }
-    );
-
-    await Promise.all(ingredientUpdates);
-  });
-
-  Promise.all(updates);
-
-  return tempData.formData;
-}
-
 // Validate ingredients and fetch nutritional data (once)
 menuController.validateNutrition = async function (req, res) {
   try {
@@ -505,16 +492,23 @@ menuController.validateNutrition = async function (req, res) {
     return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
   }
   // Skip if no ingredients present
-  const hasIngredient = dishes.some(d =>
+  let hasIngredient = dishes.some(d =>
     [].concat(d.ingredients || []).some(i => (i || "").trim())
   );
   if (!hasIngredient) {
+    console.log("\n\n\n\n\n\n REQ");
+    console.log(req.body);
+    console.log("\n\n\n\n\n\n");
     return menuController.saveMenu(req, res, restaurant);
   }
+  const retryTerms = req.body.retryTerm || {};
 
   // Fetch nutritional data per dish
   const perDish = await Promise.all(
     dishes.map(async (dish, idx) => {
+      if (retryTerms !={} && retryTerms[idx] && retryTerms[idx].length > 0) {
+        dish.ingredients = retryTerms[idx].map((term, i) => term || dish.ingredients[i]);
+      }
       const ingredients = [].concat(dish.ingredients || []).filter(Boolean);
       const types = [].concat(req.body.searchTypes?.[idx] || []);
       return processIngredients(ingredients, types);
@@ -524,7 +518,7 @@ menuController.validateNutrition = async function (req, res) {
   // Store temp data in session for confirmation and reuse
   req.session.tempData = {
     formData: req.body,
-    files: req.files,
+    files: req.files.map(f => ({ fieldname: f.fieldname, path: f.path })),
     perDish,
     restaurant: restaurant
   };

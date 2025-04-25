@@ -41,7 +41,7 @@ router.get('/createMenu', menu.createMenu);
 
 
 /* Rota para dar save de menu */
-router.post('/saveMenu', menu.saveMenu);
+//router.post('/saveMenu', menu.saveMenu);
 
 /*Rota que renderiza a pagina para editar um menu */
 router.get('/editMenu/:menuId', menu.editMenu);
