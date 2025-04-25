@@ -28,40 +28,42 @@ function cleanupUploadDir(dir) {
 
 async function saveImage(req, res) {
   return new Promise((resolve, reject) => {
-    const storageLogo = multer.diskStorage({
-      destination: function (req, file, cb) {
-        const menuName = req.body.name.replace(/[^a-zA-Z0-9]/g, "_");
-        const pathFolder = `public/images/Restaurants/${req.params.restaurant}/Menus/${menuName}/`;
-        req.uploadDir = pathFolder;
-        fs.mkdirSync(pathFolder, { recursive: true });
-        cb(null, pathFolder);
-      },
-      filename: function (req, file, cb) {
-        cb(null, file.originalname);
-      },
-    });
+      const storageLogo = multer.diskStorage({
+          destination: function (req, file, cb) {
+              const menuName = req.body.name.replace(/[^a-zA-Z0-9]/g, '_');
+              const pathFolder = `public/images/Restaurants/${req.params.restaurant}/Menus/${menuName}/`;
+              req.uploadDir = pathFolder;
+              fs.mkdirSync(pathFolder, { recursive: true });
+              cb(null, pathFolder);
+          },
+          filename: function (req, file, cb) {
+              cb(null, file.originalname);
+          }
+      });
 
-    const uploadLogo = multer({
-      storage: storageLogo,
-      fileFilter: function (req, file, cb) {
-        if (file.mimetype.startsWith("image/")) {
-          cb(null, true);
-        } else {
-          cb(new Error("Apenas imagens são permitidas!"), false);
-        }
-      },
-    }).any(); // Processa todos os arquivos
+      const uploadLogo = multer({ 
+          storage: storageLogo,
+          fileFilter: function (req, file, cb) {
+              if (file.mimetype.startsWith('image/')) {
+                  cb(null, true);
+              } else {
+                  cb(new Error('Apenas imagens são permitidas!'), false);
+              }
+          }
+      }).any(); // Processa todos os arquivos
 
-    uploadLogo(req, res, function (err) {
-      if (err) {
-        console.error("Erro no upload:", err);
-        cleanupUploadDir(uploadDir);
-        return reject(err);
-      }
-      resolve();
-    });
-  });
+      uploadLogo(req, res, function(err) {
+          if (err) {
+              console.error('Erro no upload:', err);
+              cleanupUploadDir(req.uploadDir);
+              return reject(err);
+          }
+          resolve();
+      });
+  }); 
 }
+
+
 
 // Permite visualizar um menu específico de um restaurante
 menuController.showMenu = async function (req, res) {
@@ -161,7 +163,7 @@ menuController.saveMenu = async function (req, res, restaurant) {
       category: dish.category,
       price: dish.price,
       portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
-      photo,
+      photo: photo,
       nutritionalInfo: infos
     });
   });
