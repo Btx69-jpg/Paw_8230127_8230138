@@ -157,4 +157,22 @@ listRestaurantController.rejectRestaurant = function(req, res) {
         });
 };
 
+/**
+ * Retorna de 1 a 3 restaurantes aleatórios, de acordo com o que existir na base.
+ */
+async function getRecommendedRestaurants() {
+    const total = await Restaurant.countDocuments();  
+    if (total === 0) return [];
+  
+    const size = Math.min(total, 3);
+  
+    const restaurants = await Restaurant.aggregate([
+      { $sample: { size } }
+    ]);
+  
+    return restaurants;
+  }
+  
+module.exports = { getRecommendedRestaurants };
+
 module.exports = listRestaurantController;

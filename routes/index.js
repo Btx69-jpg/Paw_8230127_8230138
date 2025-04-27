@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
 const auth = require('../Middleware/AutoLoginMiddleware');
+const { getRecommendedRestaurants } = require('../controllers/ControllersAdmin/ListRestaurantController');
 
-router.get('/', (req, res) => {
-  auth.autoLoginMiddleware;
-  res.render('index');
-});
 
-/*
-app.get('/outraPagina', (req, res) => {
-  const user = req.session.user; // ou como você estiver armazenando o usuário
-  const currentPage = 'outraPagina';
-  const previousPage = req.headers.referer || '/';
-  
-  res.render('outraPagina', { user, currentPage, previousPage });
+router.get('/', async (req, res) => {
+  try {
+    const restaurantes = await getRecommendedRestaurants();
+    auth.autoLoginMiddleware;
+    res.render('index', { restaurantes });
+  } catch (_) {
+    auth.autoLoginMiddleware;
+    res.render('index');
+  }
 });
-*/
 
 module.exports = router;
