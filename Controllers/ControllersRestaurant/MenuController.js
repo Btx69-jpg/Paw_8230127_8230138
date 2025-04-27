@@ -90,11 +90,6 @@ menuController.showMenu = async function (req, res) {
       console.error(err);
       res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });
     }
-
-    res.render("restaurants/restaurant/Menu/menu", {
-      restaurant: restaurant,
-      menu: menu,
-    });
   }
 
 //Filtro dos pratos
