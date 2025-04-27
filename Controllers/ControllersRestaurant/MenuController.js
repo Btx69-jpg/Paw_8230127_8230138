@@ -4,7 +4,6 @@ const fs = require("fs");
 const axios = require("axios");
 const NodeCache = require("node-cache");
 const nutritionCache = new NodeCache({ stdTTL: 3600 });
-//const { v4: uuidv4 } = require('uuid');
 
 //Models
 const Restaurant = require("../../Models/Perfils/Restaurant");
@@ -19,13 +18,14 @@ var menuController = {};
 const { carregarCategories, carregarCategoriesMenu } = require("../Functions/categories.js");
 const { carregarPortions } = require("../Functions/portions.js");
 
-// Utility to remove directory recursively
+// Função para remover um diretorio recursivamente
 function cleanupUploadDir(dir) {
   if (dir && fs.existsSync(dir)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 }
 
+// Função para salvar a imagem do menu e pratos
 async function saveImage(req, res) {
   return new Promise((resolve, reject) => {
       const storageLogo = multer.diskStorage({
@@ -301,7 +301,6 @@ menuController.saveMenu = async function (req, res, restaurant) {
       const infos = temp.perDish?.[idx]?.infos || [];
       nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
     }
-    //const { infos } = temp?.perDish?.[idx] || { infos: [] };
     return new Dish({
       name: dish.name,
       description: dish.description,
@@ -534,7 +533,8 @@ menuController.deleteMenu = async function (req, res) {
   }
 };
 
-// Fetch nutritional data from OpenFoodFacts with caching
+// Fetch dados nutricionais da api OpenFoodFacts
+// Se o ingrediente já estiver na cache, retorna os dados armazenados
 async function fetchNutritionalData(ingredient, type) {
   const cacheKey = `${type}:${ingredient}`;
   const cached = nutritionCache.get(cacheKey);
@@ -575,7 +575,7 @@ async function fetchNutritionalData(ingredient, type) {
   return result;
 }
 
-// Process ingredients: fetch and aggregate nutritional info
+// processa os ingredientes, fetch e agrega as informações nutricionais
 async function processIngredients(ingredients, searchTypes) {
   const pedidosAPI = ingredients.map((ing, idx) =>
     fetchNutritionalData(ing.trim(), searchTypes[idx] || 'name')
@@ -594,14 +594,12 @@ async function processIngredients(ingredients, searchTypes) {
     { calories: 0, protein: 0, fat: 0, carbohydrates: 0, sugars: 0 }
   );
 
-  // Return both individual infos and aggregated warnings
   return {
     infos: results.map(r => ({ name: r.name, per100g: r.per100g })),
     warnings: []
   };
 }
 
-// Validate ingredients and fetch nutritional data (once)
 menuController.validateNutrition = async function (req, res) {
   try {
   await saveImage(req, res);
@@ -612,7 +610,7 @@ menuController.validateNutrition = async function (req, res) {
     cleanupUploadDir(req.uploadDir);
     return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
   }
-  // Skip if no ingredients present
+
   let hasIngredient = dishes.some(d =>
     [].concat(d.ingredients || []).some(i => (i || "").trim())
   );
@@ -624,7 +622,6 @@ menuController.validateNutrition = async function (req, res) {
   }
   const retryTerms = req.body.retryTerm || {};
 
-  // Fetch nutritional data per dish
   const perDish = await Promise.all(
     dishes.map(async (dish, idx) => {
       if (retryTerms !={} && retryTerms[idx] && retryTerms[idx].length > 0) {
@@ -636,7 +633,6 @@ menuController.validateNutrition = async function (req, res) {
     })
   );
 
-  // Store temp data in session for confirmation and reuse
   req.session.tempData = {
     formData: req.body,
     files: req.files.map(f => ({ fieldname: f.fieldname, path: f.path })),
@@ -644,7 +640,7 @@ menuController.validateNutrition = async function (req, res) {
     restaurant: restaurant
   };
 
-  // Render confirmation page with perDish data
+  // renderza a página de confirmação com os dados nutricionais
   res.render("restaurants/restaurant/Menu/confirmNutriData", {
     dishes,
     perDish,

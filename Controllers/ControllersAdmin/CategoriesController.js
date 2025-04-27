@@ -5,6 +5,7 @@ var categoriesController = {};
 
 const maxCategories = 15
 
+//metodo para renderizar a pagina de categorias	
 categoriesController.homePage = function(req, res) {
     Category.find({}).exec()
         .then(function(categories) {
@@ -14,6 +15,7 @@ categoriesController.homePage = function(req, res) {
             res.status(500).render("errors/error", {numError: 500, error: err});
         });  
 };
+
 
 categoriesController.search = async function(req, res) {
     try {
@@ -50,10 +52,13 @@ categoriesController.search = async function(req, res) {
     } 
 };
 
+//metodo para renderizar a pagina de criar categorias
 categoriesController.createCategory = function(req, res) {
     res.render('perfil/admin/PagesAdmin/Categories/createCategories');
 }
 
+//Função para validar se a categoria existe
+//Verifica se a categoria já existe, se não existe, devolve erro
 function validationCategory(category) {
     return new Promise((resolve, reject) => {
         
@@ -90,6 +95,8 @@ function validationCategory(category) {
     });
 }
 
+//Função para salvar uma nova categoria
+//Verifica se a categoria já existe, se não existe, guarda-a na base de dados
 categoriesController.saveCategory = async function(req, res) {
     try {
         const validation = await validationCategory(req.body.category);
@@ -97,7 +104,6 @@ categoriesController.saveCategory = async function(req, res) {
             return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
-        //Posso decalara assim
         const newCategory = new Category(req.body)
 
         await newCategory.save();
@@ -110,6 +116,9 @@ categoriesController.saveCategory = async function(req, res) {
     }
 }
 
+//Função para editar uma categoria
+//Verifica se a categoria existe, se não existe, devolve erro
+//Caso exista, devolve a categoria para o front-end
 categoriesController.editCategory = async function(req, res) {
     try {
         const category = await Category.findOne({_id: req.params.categoryId}).exec();
@@ -121,6 +130,9 @@ categoriesController.editCategory = async function(req, res) {
     }
 }
 
+//funcao para atualizar uma categoria
+//Verifica se a categoria existe, se não existe, devolve erro
+//Caso exista, atualiza a categoria na base de dados
 categoriesController.updatCategory = async function(req, res) {
     try {    
         console.log("Estou no update");
@@ -148,6 +160,8 @@ categoriesController.updatCategory = async function(req, res) {
     }
 }
 
+//Função para eliminar uma categoria
+//Verifica se a categoria existe, se não existe, devolve erro
 categoriesController.deleteCategory = async function(req, res) {
     try {
         await Category.deleteOne({ _id: req.params.categoryId });

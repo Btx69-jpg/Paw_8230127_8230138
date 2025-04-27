@@ -27,9 +27,11 @@ userController.homePage = async function(req, res) {
         });
 };
 
+//função para renderizar a pagina de criar utilizadores
 userController.createUser = function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/addUser");
 }
+
 
 userController.showUser = async function(req, res) {
     try {
@@ -124,6 +126,7 @@ userController.search = async function(req, res) {
     }
 };
 
+//Função para encontrar um restaurante pelo nome na base de dados
 userController.findOneRestaurante = async function(name) {
     try {
         return await Restaurant.findOne( {name: name});
@@ -133,6 +136,7 @@ userController.findOneRestaurante = async function(name) {
     }
 }
 
+//Função para validar se o utilizador existe
 async function validateNewUser(email, phoneNumber, priority, restaurant) {
     if (priority === "Dono" && !restaurant) {
         return "Não existe nenhum restaurante(s) com esse(s) nome(s)!"
@@ -191,6 +195,8 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
     }
     return errors;
 }
+
+//Função para validar se o restaurante existe
 async function restaurantsSemDuplciacoes(restaurants, priority) {
     if (priority ==="Dono" && !Array.isArray(restaurants)) {
         restaurants = [restaurants];
@@ -353,16 +359,6 @@ async function validateUpdateUser(user, email, phoneNumber, priority, restaurant
         ]
     }).exec();
 
-    /**
-    const existingEmailRestaurant = await Restaurant.findOne({
-        name: { $ne: restaurant },
-        $or: [
-            { 'perfil.email': email },
-            { 'perfil.phoneNumber': phoneNumber }
-        ]
-    }).exec();
-     */
-
     if (existingUser) {
         if (existingUser.perfil.email === email) {
             return "Já existe um utilizador com esse email!";
@@ -370,16 +366,6 @@ async function validateUpdateUser(user, email, phoneNumber, priority, restaurant
             return "Já existe um utilizador com esse numero telefonico!";
         }
     }
-
-    /*
-    if (existingEmailRestaurant) {
-        if (existingEmailRestaurant.perfil.email === email) {
-            return "Já existe um restaurante com este email!";
-        } else {
-            return "Já existe um restaurante com esse numero telefonico!";
-        }
-    }
-    */
 
     return "";
 }
@@ -529,6 +515,7 @@ userController.updateUser =  async function(req, res) {
     }    
 }
 
+//Função para apagar a imagem do utilizador
 function deleteImg(imagePath) {
     imagePath = "public/" + imagePath;
 
@@ -576,6 +563,7 @@ userController.deleteUser = async function(req, res) {
       }
 }
 
+//Função para remover o banimento de um user
 userController.desban = function(req, res) {
     User.findOneAndUpdate( { _id: req.params.userId },
         {
@@ -593,6 +581,7 @@ userController.desban = function(req, res) {
         });
 }
 
+//Função para banir um user
 userController.ban = function(req, res) {
     User.findOneAndUpdate( { _id: req.params.userId },
         {

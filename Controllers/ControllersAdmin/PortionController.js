@@ -5,6 +5,7 @@ var portionsController = {};
 
 const maxPortions = 15
 
+//metodo para renderizar a pagina de categorias
 portionsController.homePage = function(req, res) {
     Portion.find({}).exec()
         .then(function(portions) {
@@ -50,10 +51,13 @@ portionsController.search = async function(req, res) {
         res.status(500).render("errors/error", {numError: 500, error: error});
     } 
 };
+
+//Função para renderizar a pagina de criar categorias
 portionsController.createPortion = function(req, res) {
     res.render('perfil/admin/PagesAdmin/Portions/createPortions');
 }
 
+//Função para validar se a categoria existe
 function validationPortion(portion) {
     return new Promise((resolve, reject) => {
         
@@ -90,6 +94,7 @@ function validationPortion(portion) {
     });
 }
 
+//Função para validar se a porção existe
 portionsController.savePortion = async function(req, res) {
     try {
         const validation = await validationPortion(req.body.portion);
@@ -109,6 +114,7 @@ portionsController.savePortion = async function(req, res) {
     }
 }
 
+//Função para renderizar a pagina de editar porções
 portionsController.editPortion = async function(req, res) {
     try {
         const portion = await Portion.findOne({_id: req.params.portionId}).exec();
@@ -120,6 +126,7 @@ portionsController.editPortion = async function(req, res) {
     }
 }
 
+//Função para atualizar uma porção
 portionsController.updatPortion = async function(req, res) {
     try {    
         console.log("Estou no update");
@@ -146,6 +153,7 @@ portionsController.updatPortion = async function(req, res) {
     }
 }
 
+//Função para eliminar uma porção
 portionsController.deletePortion = async function(req, res) {
     try {
         await Portion.deleteOne({ _id: req.params.portionId });

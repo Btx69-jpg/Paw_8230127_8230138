@@ -22,7 +22,8 @@ aprovacaoRestController.aprovePage = async function(req, res) {
         });   
 };
 
-//Retornar uma p
+//Função que verifica se existem restaurantes para aprovar
+//Se existir devolve true, se não existir devolve false
 function existsRestaurantsDesaprove() {
     return Restaurant.findOne({ aprove: false }).exec()
         .then(rest => {
@@ -40,6 +41,7 @@ function existsRestaurantsDesaprove() {
 
 aprovacaoRestController.existsRestaurantsDesaprove = existsRestaurantsDesaprove;
 
+//Função que verifica se o restaurante existe e se tem um user associado
 function existRestaurant(restaurant) {
     let problem = "";
 
@@ -52,7 +54,7 @@ function existRestaurant(restaurant) {
     return problem;
 }
 
-//Admin aprovar um restaurante (Testar outra vez)
+//Admin aprovar um restaurante
 aprovacaoRestController.aproveRestaurant = async function(req, res) {
     try {
         let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId}).exec();
@@ -63,7 +65,7 @@ aprovacaoRestController.aproveRestaurant = async function(req, res) {
         }
   
         const tempUserId = restaurant.tempUserId;
-        //Se o restaurante tem um user associado vamos procura-lo 
+
         let user = await User.findOne({ _id: tempUserId}).exec();
 
         if (!user) {
@@ -71,7 +73,7 @@ aprovacaoRestController.aproveRestaurant = async function(req, res) {
             return res.redirect("/perfil/admin/listRestaurants");
         }
 
-        //Se esse user existe então vamos atualiza-lo para dono
+        //Se esse user existe, atualizar a prioridade para dono e adicionar o id do restaurante ao array de restaurantes
         if (user.perfil.priority !== "Dono") {
             user.perfil.priority = "Dono";
             user.perfil.restaurantIds = [];

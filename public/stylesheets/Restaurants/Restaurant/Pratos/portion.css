@@ -1,17 +1,30 @@
 .portion-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .portion-content {
-    flex: 1;
-    display: flex;
-    gap: 10px;
+  flex: 1;
+  display: flex;
+  gap: 10px;
 }
 
 .remove-portion {
-    color: #dc3545;
-    cursor: pointer;
+  color: #dc3545;
+  cursor: pointer;
+}
+
+.dish-card {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #f8f9fa;
+}
+.image-preview {
+  max-width: 150px;
+  height: auto;
+  margin-bottom: 1rem;
 }
