@@ -11,7 +11,9 @@ const listrestaurantController = require("../../Controllers/ControllersAdmin/Lis
 router.get('/', aprovacaoRestController.aprovePage);
 
 /**
- * * Rota que carrega a página para aprovar ou rejeitar restaurantes 
+ * * Rota que carrega a com a informação de um restaurante especifico
+ * 
+ * * restaurantId --> Id do restuarante, do restaurante a ser consultado
  * */
 router.get('/showRestaurant/:restaurantId', listrestaurantController.showRestaurant);
 

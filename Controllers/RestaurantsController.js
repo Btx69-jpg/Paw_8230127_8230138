@@ -142,6 +142,15 @@ restaurantsController.restaurantsPage = function(req, res) {
 };
 
 restaurantsController.createRestaurant = function(req, res) {
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("------------------------------");
+    console.log("Entrei????????????");
     let action = "";
     let voltar = "";
 
