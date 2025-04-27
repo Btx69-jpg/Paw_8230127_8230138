@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    const cart = res.locals.user.cart || { items: [] }; // Garante que cart tem a estrutura esperada
-    res.render('checkOut', { cart: cart });
-  });
+//Controllers
+const carrinhoController = require("../Controllers/CarrinhoController");
+
+/**
+ * * Rota que carrega a pagina do carrinho de compras do utilizador
+ * */
+router.get('/', carrinhoController.carrinhoPage);
   
 module.exports = router;
