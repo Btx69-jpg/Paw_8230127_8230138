@@ -13,7 +13,24 @@ restaurantController.homePage = async function(req, res) {
     const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     const menus = restaurant.menus;
     const categories = await carregarCategoriesMenus(menus);
-    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {}, categories: categories });
+    let aut = false;
+    
+    if(req.cookies && req.cookies.priority) {
+      const priority = req.cookies.priority;
+      if(priority === "Admin") {
+        aut = true;
+      } else if(priority === "Dono") {
+        const restDono = await Restaurant.findOne({
+          name: req.params.restaurant,
+          _id: { $in: res.locals.user.perfil.restaurantIds }
+        }).exec();    
+
+        if(restDono) {
+          aut = true;
+        }
+      }
+    }
+    res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus, filters: {}, categories: categories, aut: aut });
   } catch (err) {
       res.status(500).render("errors/error", {numError: 500, error: err});
   }

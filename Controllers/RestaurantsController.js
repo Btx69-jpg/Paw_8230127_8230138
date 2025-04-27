@@ -100,40 +100,19 @@ async function validationEditRestaurant(name, nif, phoneNumber, email, street, p
 restaurantsController.restaurantsPage = function(req, res) {
     Restaurant.find({ aprove: true}).exec()
         .then(restaurants => {
-            let autRemoveEdit = false;
+            let autRemoveEdit = [];
 
-            if(req.cookies && req.cookies.priority) {
-                switch(req.cookies.priority) {
-                    case "Admin": {
-                        autRemoveEdit = true;
-                        break;
-                    } case "Dono": {
-                        const user = res.locals.user;
-                        let i = 0;
-                        let found = false;
-
-                        while (i < user.perfil.restaurantIds && !found) {
-                            let y = 0;
-
-                            while (y < restaurants.length && !found) {
-                                if(user.perfil.restaurantIds[i] === restaurants[y]) {
-                                    found = true;
-                                } 
-                                y++
-                            }
-                        }
-
-                        if(found) {
-                            autRemoveEdit = true;
-                        }
-
-                        break;
-                    } default: {
-                        autRemoveEdit = false;
-                        break;
-                    }
+            if (req.cookies && req.cookies.priority && req.cookies.priority === "Dono") {
+                const user = res.locals.user;
+                const ids = user.perfil.restaurantIds.map(_id => _id.toString());
+            
+                for (let j = 0; j < restaurants.length; j++) {
+                    const rId = restaurants[j]._id.toString();
+                    autRemoveEdit[j] = ids.includes(rId);
                 }
             }
+                
+            console.log(autRemoveEdit);
             res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit});
         })
         .catch(error => {
@@ -308,7 +287,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
 
 //Carrega a pagina para editar um restaurante (finalizado) 
 restaurantsController.editRestaurant = (req, res) => {
-    const restaurantId= req.params.restaurantId;
+    const restaurantId = req.params.restaurantId;
     Restaurant.findOne({ _id: restaurantId }).exec()
         .then(restaurant => {
             let action = "";
@@ -323,7 +302,11 @@ restaurantsController.editRestaurant = (req, res) => {
                     action = `/perfil/admin/listRestaurants/updatRestaurant/${restaurantId}`;
                     voltar = "/perfil/admin/listRestaurants";
                     break;
-                } default: {
+                } case `/restaurants/${req.params.restaurant}/editDados/${restaurantId}`: {
+                    action = `/restaurants/${req.params.restaurant}/updateDados/${restaurantId}`;
+                    voltar = `/restaurants/${req.params.restaurant}`;
+                    break;
+                }default: {
                     action = "";
                     voltar = "";
                     break;
@@ -420,6 +403,9 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 break;
             } case `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`: {
                 res.redirect("/perfil/admin/listRestaurants");
+                break;
+            } case `/restaurants/${req.params.restaurant}/updateDados/${req.params.restaurantId}`: {
+                res.redirect(`/restaurants/${req.params.restaurant}`);
                 break;
             } default: {
                 res.redirect(res.locals.previousPage);

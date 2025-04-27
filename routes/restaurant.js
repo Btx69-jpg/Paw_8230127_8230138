@@ -4,10 +4,10 @@ var router = express.Router({ mergeParams: true });
 //Controller
 var restaurant = require("../Controllers/RestaurantController.js");
 var menu = require("../Controllers/ControllersRestaurant/MenuController.js");
-
+const { editRestaurant, updatRestaurant } = require("../Controllers/RestaurantsController.js");
 //Middlewares
-const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
-const {isDonoOrAdmin} = require("../Middleware/TypeUserMiddleware.js");
+const { authenticateToken } = require("../Middleware/AuthTokenMiddleware.js");
+const { isDonoOrAdmin } = require("../Middleware/TypeUserMiddleware.js");
 
 //Rotas
 const order = require("./restaurantRoutes/orders.js");
@@ -62,6 +62,10 @@ router.use('/orders', order);
  * * isDonoOrAdmin --> verfica se o utilizador é um dono ou Admin.
  * */
 router.use(isDonoOrAdmin);
+
+router.get('/editDados/:restaurantId', editRestaurant);
+
+router.post('/updateDados/:restaurantId', updatRestaurant);
 
 /**
  * * Rota que carrega a pagina para criar um menu
