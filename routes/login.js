@@ -3,17 +3,30 @@ const router = express.Router();
 
 //Controllers
 const loginController = require("../Controllers/LoginController.js");
+
+//Middlewares
 const {possibleBlockLogin} = require("../Middleware/ValidateLoginMiddleware.js");
 
-//Dá logout no user
+/**
+ * * Rota que permite ao utilizador fazer logout da sua sessão
+ * */
 router.get("/logOut", loginController.logout);
 
+/**
+ * * Aquila o middleware para block, nas rotas abaixo
+ * 
+ * * possibleBlockLogin --> caso o utilizador já esteja autenticado, impedio de aceder as rotas de login
+ * */
 router.use(possibleBlockLogin);
 
-// Página de login
+/**
+ * * Rota que carrega a página de login
+ * */
 router.get("/", loginController.login);
 
-// Autenticação de utilizador
+/**
+ * * Rota que realiza o login do utilizador e atribui-lhe um token de autentificação
+ * */
 router.post("/", loginController.loginToken);
 
 module.exports = router;

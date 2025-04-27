@@ -1,7 +1,7 @@
 body {
     background-color: #f0f2f5;
 }
-
+  
 .login-container {
     max-width: 400px;
     margin: 50px auto;
@@ -10,7 +10,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
-
+  
 .divider {
     position: relative;
     text-align: center;
