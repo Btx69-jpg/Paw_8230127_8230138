@@ -21,7 +21,25 @@ indexController.search = function(req, res) {
             const menus = restaurant.menus;
             const categories = await carregarCategoriesMenus(menus);
         
-            return res.render("restaurants/restaurant/homepage",{ restaurant, menus, filters: {}, categories });
+            let aut = false;
+                
+            if(req.cookies && req.cookies.priority) {
+                const priority = req.cookies.priority;
+                if(priority === "Admin") {
+                    aut = true;
+                } else if(priority === "Dono") {
+                    const restDono = await Restaurant.findOne({
+                        name: req.params.restaurant,
+                        _id: { $in: res.locals.user.perfil.restaurantIds }
+                    }).exec();    
+            
+                    if(restDono) {
+                        aut = true;
+                    }
+                }
+            }
+            
+            return res.render("restaurants/restaurant/homepage",{ restaurant, menus, filters: {}, categories, aut: aut });
         })
         .catch(error => {
             console.error(error);

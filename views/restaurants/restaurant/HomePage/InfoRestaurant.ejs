@@ -2,6 +2,19 @@
     <div class="col-12 text-center">
       <h1 class="section-title mb-3"><%= restaurant.name %></h1>
     </div>
+
+
+    <% if (aut) { %>
+      <div class="col-12 text-start my-2">
+        <a 
+          href="/restaurants/<%= restaurant.name %>/editDados/<%= restaurant._id %>" 
+          class="btn btn-primary btn-sm shadow py-2 px-3"
+          role="button"
+        >
+          Editar Dados
+        </a>
+      </div>
+    <% } %>
     <div class="col-12">
       <p><strong>Descrição:</strong> <%= restaurant.description %></p>
     </div>

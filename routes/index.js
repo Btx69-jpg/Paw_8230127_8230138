@@ -15,6 +15,9 @@ const autoLoginMiddleware = require('../Middleware/AutoLoginMiddleware');
  * */
 router.get('/', autoLoginMiddleware, indexController.indexPage);
 
+/**
+ * * Rota que permite ao utilizador pesquisar por um restaurante especifico
+ */
 router.get('/search', indexController.search);
 
 module.exports = router;
