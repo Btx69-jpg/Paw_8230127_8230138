@@ -28,7 +28,6 @@
             <a href="/login/logOut" class="nav-link text-white">Log Out</a>
         </li>
 
-        <!-- Meter a aparecer botão de confirmar-->
         <li class="nav-item">
             <form action="/perfil/admin/deleteAccount/<%= user._id%>" method="POST" onsubmit="return confirm('Tem a certeza que pretende apagar a conta?');">
                 <button type="submit" class="nav-link btn btn-link text-white">Apagar Conta</button>
