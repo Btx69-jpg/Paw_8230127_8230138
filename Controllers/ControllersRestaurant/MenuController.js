@@ -269,8 +269,8 @@ menuController.createMenu = async function (req, res) {
 // Save menu: reusa dados nutricionaiscda sessao (por a funcionar)
 menuController.saveMenu = async function (req, res, restaurant) {
   try {
-  const temp = req.session.tempData;
-  const formData = temp?.formData || req.body;
+    const temp = req.session.tempData || {};
+    const formData = temp?.formData || req.body;
   const files = temp?.files || req.files;
   const manual   = req.body.manual || {};
 
@@ -279,7 +279,6 @@ menuController.saveMenu = async function (req, res, restaurant) {
     restaurant = temp.restaurant;
   }
   restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
-  console.log("Restaurant:", restaurant.name, "\n\n\n\n\n\n\n");
   const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
   const dishObjects = dishes.map((dish, idx) => {
