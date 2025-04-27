@@ -14,45 +14,84 @@ const order = require("./restaurantRoutes/orders.js");
 const dish = require("./restaurantRoutes/dish.js");
 const comments = require("./restaurantRoutes/comments.js");
 
-/* Rota que renderiza a home page de um restaurante */
+/**
+ * * Rota que renderiza a home page de um restaurante
+ * */
 router.get('/', restaurant.homePage);
 
-/* Redireciona para o route dos comentarios */
+/**
+ * * Importação das rotas dos comentarios
+ * */
 router.use('/comments', comments);
 
-/* Redireciona para a route das dish */
+/**
+ * * Importação das rotas das dish (pratos)
+ * */
 router.use('/menu', dish);
 
-/* Carrega a pagina que mostra informação sobre o menu */
+/**
+ * * Rota para a pagina que mostra informação sobre o menu
+ * */
 router.get('/showMenu/:menu', menu.showMenu);
 
-/* Rota para filtrar os menus */
+/**
+ * * Rota que permite filtrar por menus, de um restaurante, e também ordenar os menus
+ * */
 router.get('/search', restaurant.searchMenu);
 
-/* Carrega a pagina que mostra informação sobre o menu */
+/**
+ * * Rota que permite filtrar pelos pratos, de um menu, e também ordenar os menus
+ * */
 router.get('/showMenu/:menu/search', menu.searchMenu);
 
-/*Rota para utilizar os middlewares nas routas abaixo */
+/**
+ * * Rota que aplicar as rotas abaixo o seguinte middleware
+ * 
+ * * authenticateToken --> valida se o token do utilizador é valido.
+ * */
 router.use(authenticateToken);
 
-//Carregamento das restantes rotas
-/* Redireciona para o route das orders */
+/**
+ * * Importação das rotas das encomendas
+ * */
 router.use('/orders', order);
 
+/**
+ * * Rota que aplicar as rotas abaixo o seguinte middleware
+ * 
+ * * isDonoOrAdmin --> verfica se o utilizador é um dono ou Admin.
+ * */
 router.use(isDonoOrAdmin);
-/* Rota que carrega a pagina para criar um menu  */
+
+/**
+ * * Rota que carrega a pagina para criar um menu
+ * */
 router.get('/createMenu', menu.createMenu);
 
-/* Rota para dar save de menu */
+/**
+ * * Rota que permite guardar um novo menu
+ * */
 router.post('/saveMenu', menu.saveMenu);
 
-/*Rota que renderiza a pagina para editar um menu */
+/**
+ * * Rota que carrega a pagina para editar um menu
+ * 
+ * * menuId --> id do menu a ser editado
+ * */
 router.get('/editMenu/:menuId', menu.editMenu);
 
-/* Rota que dá update a um menu */
+/**
+ * * Rota guardar as alterações realizadas num menu
+ * 
+ * * menuId --> id do menu a ser atualizado
+ * */
 router.post('/updateMenu/:menuId', menu.saveEditMenu);
 
-/* Rota que dá delete a um menu */
+/**
+ * * Rota que elimina um menu
+ * 
+ * * menuId --> id do menu a ser eliminado
+ * */
 router.post('/deleteMenu/:menuId', menu.deleteMenu);
 
 module.exports = router;
