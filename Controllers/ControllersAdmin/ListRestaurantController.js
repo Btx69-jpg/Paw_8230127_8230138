@@ -32,7 +32,8 @@ listRestaurantController.homePage = function(req, res) {
 
 listRestaurantController.showRestaurant = async function(req, res) {
     try {
-        const restaurant = await Restaurant.findById(req.params.restaurantId).exec();
+        const restaurantId = req.params.restaurantId
+        const restaurant = await Restaurant.findById(restaurantId).exec();
         if (restaurant) {
             let owners = []
 
@@ -40,7 +41,21 @@ listRestaurantController.showRestaurant = async function(req, res) {
                 owners = await User.find( {_id: {$in: restaurant.perfil.ownersIds } }).exec()
             }
 
-            res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners});
+            let voltar = "";
+            switch(res.locals.currentPage) {
+                case `/perfil/admin/listRestaurants/showRest/${restaurantId}`: {
+                    voltar = "/perfil/admin/listRestaurants";
+                    break;
+                } case `/perfil/admin/listRestaurants/aproves/showRestaurant/${restaurantId}`: {
+                    voltar = "/perfil/admin/listRestaurants/aproves";
+                    break;
+                } default: {
+                    console.log("URL não existente");
+                    return res.redirect(res.locals.previousPage);
+                }
+            }
+
+            res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners, voltar: voltar});
         } else {
             console.log("O restaurant não existe não existe")
             res.status(404).render(res.locals.previousPage);
