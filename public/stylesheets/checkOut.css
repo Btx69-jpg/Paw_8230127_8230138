@@ -1,0 +1,22 @@
+h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+    
+#OrangeButton {
+    background-color: #ff6347; /* Tomate */
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 0.5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
