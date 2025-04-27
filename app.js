@@ -12,10 +12,11 @@ require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o 
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
 require('dotenv').config();
+const axios = require('axios');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-//Conexão com o Atlas (Não sei se tenho de fazer /DB)
+//Conexão com o Atlas
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', {
   useNewUrlParser: true,
   })

@@ -181,7 +181,7 @@
 
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
-        <button type="button" class="btn btn-danger btn-lg" onclick="confirmDelete()">Apagar Menu Completo</button>
+        <button type="button" class="btn btn-danger btn-lg" id="delete" onclick="confirmDelete()">Apagar Menu Completo</button>
         <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" class="btn btn-outline-secondary">
           Cancelar
         </a>
@@ -189,11 +189,17 @@
     </form>
   </div>
 
+  <%- include('../../../loading.ejs') %>
+
+
   <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
   <script>
     var portionsData = JSON.stringify(portions);
   </script>
 
   <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js"></script>
+  <script>
+    
+  </script>
 </body>
 </html>

@@ -68,10 +68,9 @@ router.use(isDonoOrAdmin);
  * */
 router.get('/createMenu', menu.createMenu);
 
-/**
- * * Rota que permite guardar um novo menu
- * */
-router.post('/saveMenu', menu.saveMenu);
+
+/* Rota para dar save de menu */
+//router.post('/saveMenu', menu.saveMenu);
 
 /**
  * * Rota que carrega a pagina para editar um menu
@@ -93,5 +92,10 @@ router.post('/updateMenu/:menuId', menu.saveEditMenu);
  * * menuId --> id do menu a ser eliminado
  * */
 router.post('/deleteMenu/:menuId', menu.deleteMenu);
+
+// Nova rota para validação nutricional
+router.post('/confirmNutrition', menu.validateNutrition);
+router.post('/saveMenuFinal', menu.saveMenuFinal);
+router.post('/validateIngredient', menu.validateIngredient);
 
 module.exports = router;
