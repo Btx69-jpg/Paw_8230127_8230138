@@ -1,0 +1,39 @@
+body {
+    background-color: #f5f5f5;
+    font-family: Sans-Serif;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.order-container {
+    width: 90vw;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+}
+
+.order-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.form-control-plaintext {
+    padding-left: 0;
+    border: none;
+    background-color: transparent;
+}
