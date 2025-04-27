@@ -112,18 +112,18 @@
             </div>
 
             <!-- Seção de re-pesquisa -->
-            <div id="retry-<%= dishIdx %>-<%= ingIdx>" class="mb-3" style="display: none">
+            <div id="retry-<%= dishIdx %>-<%= ingIdx %>" class="mb-3" style="display: none">
               <label>Novo termo para pesquisa:</label>
               <input
                 type="text"
-                name="retryTerm[<%= dishIdx %>][<%= ingIdx>]"
+                name="retryTerm[<%= dishIdx %>][<%= ingIdx %>]"
                 class="form-control mb-2"
                 placeholder="Digite novo nome de ingrediente"
               />
               <button
                 type="submit"
                 name="action"
-                value="retry-<%= dishIdx %>-<%= ingIdx>"
+                value="retry-<%= dishIdx %>-<%= ingIdx %>"
                 class="btn btn-outline-primary"
               >
                 Re-pesquisar
@@ -175,7 +175,9 @@
             </div>
           </div>
         </div>
-        <% } %> <% }) %> <% }); %>
+        <% } %> 
+        <% }) %> 
+        <% }); %>
 
         <div class="text-end">
           <button type="submit" class="btn btn-success">Salvar Menu</button>
