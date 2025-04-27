@@ -15,4 +15,6 @@ const autoLoginMiddleware = require('../Middleware/AutoLoginMiddleware');
  * */
 router.get('/', autoLoginMiddleware, indexController.indexPage);
 
+router.get('/search', indexController.search);
+
 module.exports = router;

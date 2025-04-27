@@ -79,6 +79,7 @@ async function carregarCategoriesMenus(menus) {
     }
     return categoriesMenus;
 }
+
 module.exports = {
     carregarCategories,
     carregarCategoriesMenu,
