@@ -1,8 +1,8 @@
 var express = require('express');
-var router = express.Router({ mergeParams: true }); /*Permite desta forma com que o route receba o parametro /:restaurant da route restaurants */
+var router = express.Router({ mergeParams: true }); 
 
 //Controller
-var restaurant = require("../Controllers/RestaurantController.js"); // Aqui carrego o controller que quero usar
+var restaurant = require("../Controllers/RestaurantController.js");
 var menu = require("../Controllers/ControllersRestaurant/MenuController.js");
 
 //Middlewares
