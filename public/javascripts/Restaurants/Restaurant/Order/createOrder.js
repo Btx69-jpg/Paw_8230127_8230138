@@ -1,7 +1,9 @@
 function preencherPratos(menuName) {
     const pratosSelect = document.getElementById('pratos');
+    const porcaoSelect = document.getElementById('porcao');
     pratosSelect.innerHTML = '<option value="all">-- Escolha um prato --</option>'; //Apago os pratos antigos
-
+    porcaoSelect.innerHTML = '<option value="all">-- Escolha uma porção --</option>';
+    
     // recupera o array de menus do JSON
     const menus = JSON.parse(document.getElementById('menus-data').textContent);
     const escolhido = menus.find(m => m.name === menuName);
@@ -12,7 +14,7 @@ function preencherPratos(menuName) {
     }
 
     pratosSelect.disabled = false;
-    const optDefault = document.createElement('option');
+    porcaoSelect.disabled = false;
 
     escolhido.dishes.forEach(dish => {
         const opt = document.createElement('option');
@@ -61,6 +63,7 @@ function carregarPortions() {
     for (let j = 0; j < portionDish.length; j++) {
         let y = 0;
         let found = false;
+
         while(y < portions.length && !found) {
             if(portions[y]._id.toString() === portionDish[j].portion.toString()) {
                 found = true;
@@ -84,7 +87,7 @@ function carregarPortions() {
 function adicionarPrato() {
     const pratosSel = document.getElementById('pratos');
     const porcSel = document.getElementById('porcao');
-    const ul = document.getElementById('selectedItemsList');
+    const container = document.getElementById('selectedItemsList'); // Agora é um div
     const totOrderInp = document.getElementById('totEncomenda');
 
     if (pratosSel.value === 'all' || porcSel.value === 'all') {
@@ -95,36 +98,42 @@ function adicionarPrato() {
     const pratoNome = pratosSel.options[pratosSel.selectedIndex].textContent;
     const priceNum  = parseFloat(porcSel.options[porcSel.selectedIndex].dataset.price);
 
-    let existingLi = null;
-    const itens = ul.children;
+    let existingDiv = null;
+    const itens = container.children;
     let i = 0; 
     let found = false;
 
     while (i < itens.length && !found) {
         if (itens[i].dataset.prato === pratoNome) {
-            existingLi = itens[i];
+            existingDiv = itens[i];
             found = true;
         }
 
         i++;
     }
       
-    if (existingLi) {
-        const qtyInp = existingLi.querySelector('input.quantidade');
-        const priceInp = existingLi.querySelector('input.preco');
+    if (existingDiv) {
+        const qtyInp = existingDiv.querySelector('input.quantidade');
+        const priceInp = existingDiv.querySelector('input.preco');
 
         qtyInp.value = parseInt(qtyInp.value, 10) + 1;
         const newPrice = parseFloat(priceInp.value) + priceNum;
         priceInp.value = newPrice.toFixed(2);
     } else {
-        const li = document.createElement('li');
-        li.classList.add('list-group-item', 'd-flex', 'align-items-center');
-        li.dataset.prato = pratoNome; 
+        const div = document.createElement('div');
+        div.classList.add('list-group-item', 'd-flex', 'align-items-center', 'mb-2', 'gap-3');
+        div.dataset.prato = pratoNome; 
+        div.name="item"; //Meter Index;
 
-        const span = document.createElement('span');
-        span.textContent = pratoNome;
+        const inputItem = document.createElement('input');
+        inputItem.type="text";
+        inputItem.name="item[x][item]";
+        inputItem.value = pratoNome;
+        inputItem.disabled = true;
+        inputItem.classList.add('form-control', 'form-control-sm', 'ms-auto', 'preco');
 
         const priceInput = document.createElement('input');
+        inputItem.name="item[x][price]";
         priceInput.type = 'number';
         priceInput.step = '0.01';
         priceInput.disabled = true;
@@ -133,6 +142,7 @@ function adicionarPrato() {
         priceInput.value = priceNum.toFixed(2);
 
         const qtyInput = document.createElement('input');
+        inputItem.name="item[x][quantidade]";
         qtyInput.type = 'number';
         qtyInput.step = '1';
         qtyInput.min = 1;
@@ -143,12 +153,12 @@ function adicionarPrato() {
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+        btn.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'ms-2');
         btn.textContent = 'Remover';
         btn.addEventListener('click', () => removeItem(btn));
 
-        li.append(span, priceInput, qtyInput, btn);
-        ul.appendChild(li);
+        div.append(inputItem, priceInput, qtyInput, btn);
+        container.appendChild(div);
     }
 
     const currentTot = parseFloat(totOrderInp.value) || 0;
@@ -156,6 +166,7 @@ function adicionarPrato() {
 
     pratosSel.value = 'all';
     porcSel.value = 'all';
+    porcSel.disabled = true;
 }
 
 function removeItem(btn) {

@@ -28,6 +28,24 @@ orderController.addOrder = function(req, res) {
         })
 };
 
+orderController.saveOrder = async function(req, res) {
+    try {
+        let restaurant = Restaurant.findOne({ name: req.params.restaurant }).exec();
+
+        if(!restaurant) {
+            console.log("O restaurante não exsite");
+            res.status(404).redirect(res.locals.previousPage);
+        }
+
+        //Fazer para carregar cada item da lista de item como tem em outros ladaos
+        const {firstName, lastName, phoneNumber, email, street, postal_code, city, listaItenss, totEncomenda} = req.body;
+    } catch(error) {
+        console.log("error");
+        res.status(500).redirect(res.locals.previousPage);
+    }
+        
+};
+
 orderController.orderManagment = function(req, res) {
     Restaurant.findOne({ name: req.params.restaurant }).exec()
         .then(restaurant => {
