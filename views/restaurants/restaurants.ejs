@@ -36,7 +36,7 @@
               <div class="restaurant-card text-center p-3 border rounded shadow-sm">
                 <h5 class="mb-3"><%= restaurants[i].name %></h5>
                 <img src="<%= restaurants[i].perfil.perfilPhoto %>" alt="Logo do restaurante" class="img-fluid mb-3">
-                <% if (autRemoveEdit[i] === true || user.perfil.priority === "Admin") { %>
+                <% if (autRemoveEdit[i] === true || (user && user.perfil && user.perfil.priority === "Admin")) { %>
                   <div class="btn-group d-flex justify-content-center mb-2">
                     <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST" class="me-2">
                       <button type="submit" class="btn btn-danger btn-sm">Remover</button>
