@@ -5,15 +5,19 @@ const Restaurant = require("../../Models/Perfils/Restaurant");
 const User = require("../../Models/Perfils/User");
 const Order = require("../../Models/Orders/Order");
 
-var orderController = {};
+//Function
+const {carregarPortions} = require("../Functions/portions");
 
+var orderController = {};
 
 // GET /restaurants/:restaurant/orderManagement
 orderController.addOrder = function(req, res) {
     Restaurant.findOne({ name: req.params.restaurant }).exec()
-        .then(restaurant => {
+        .then(async restaurant => {
             if(restaurant) {
-                res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant});
+
+                const portions = await carregarPortions();
+                res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});
             } else {
                 console.log("O restaurante não existe");
                 res.render(res.locals.previousPage);

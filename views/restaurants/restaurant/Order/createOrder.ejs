@@ -86,7 +86,7 @@
               name="postal_code"
               id="postal_code"
               class="form-control"
-              value="<%= restaurant.address.postal_code %>"
+              placeholder="Introduza o código Postal"
               readonly
               required
             />
@@ -124,17 +124,31 @@
 
           <!-- Lista de Pratos do menu -->
           <div class="mb-3">
-            <div class="mb-3">
-              <label class="form-label">Pratos Disponíveis</label>
+            <label class="form-label">Pratos Disponíveis</label>
+            <div class="d-flex">
               <select id="pratos" 
-              name="pratos" 
-              class="form-select"
-              disabled 
-              required>
-                  <option value="all">-- Escolha um prato --</option>
+                      name="pratos" 
+                      class="form-select me-2"
+                      disabled 
+                      required
+                      onchange="carregarPortions()">
+                <option value="all">-- Escolha um prato --</option>
               </select>
+              <select id="porcao" 
+                      name="porcao" 
+                      class="form-select me-2"
+                      disabled 
+                      required>
+                <option value="all">-- Escolha uma porção --</option>
+              </select>
+              <button type="button" 
+                      id="btnAddPrato" 
+                      class="btn btn-primary"
+                      onclick="adicionarPrato()">
+                Adicionar
+              </button>
             </div>
-          </div>
+          </div>          
 
           <!-- Itens selecionados -->
           <div class="mb-3">
@@ -171,6 +185,11 @@
   
   <script type="application/json" id="menus-data">
     <%- JSON.stringify(menus) %>
+  </script>
+
+  <!-- Mandar as porções também que existem-->
+  <script type="application/json" id="portions-data">
+    <%- JSON.stringify(portions) %>
   </script>
 
   <script src="/javascripts/Restaurants/Restaurant/Order/createOrder.js"></script>
