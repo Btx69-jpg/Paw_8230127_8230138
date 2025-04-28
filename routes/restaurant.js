@@ -11,7 +11,6 @@ const { isDonoOrAdmin } = require("../Middleware/TypeUserMiddleware.js");
 
 //Rotas
 const order = require("./restaurantRoutes/orders.js");
-const dish = require("./restaurantRoutes/dish.js");
 const comments = require("./restaurantRoutes/comments.js");
 
 /**
@@ -23,11 +22,6 @@ router.get('/', restaurant.homePage);
  * * Importação das rotas dos comentarios
  * */
 router.use('/comments', comments);
-
-/**
- * * Importação das rotas das dish (pratos)
- * */
-router.use('/menu', dish);
 
 /**
  * * Rota para a pagina que mostra informação sobre o menu
