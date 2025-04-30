@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyInput.value = '1';
             qtyInput.classList.add('form-control','form-control-sm','ms-auto','quantity');
             qtyInput.style.width = '60px';
-            qtyInput.addEventListener('change', () => changeQuantity(qtyInput));
+            qtyInput.addEventListener('input', () => changeQuantity(qtyInput));
 
             const btn = document.createElement('button');
             btn.type = 'button';
@@ -200,8 +200,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const quantidade = parseInt(qtyInput.value, 10);
-        if(quantidade <= 0 || quantidade > 10){
-            alert('A quantidade não pode ser negativa ou 0, nem ser superior a 10');
+        if(quantidade <= 0) {
+            qtyInput.value = '1';
+            alert = "A quantidade não pode ser negativa ou 0";
+            return;
+        } else if(quantidade > 10) {
+            qtyInput.value = '10';
+            alert = "A quantidade não pode ser superior a 10";
+            return;
+        } else if(!quantidade) {
+            qtyInput.value = '1';
+            alert('A quantidade tem de exisitir');
             return;
         }
 

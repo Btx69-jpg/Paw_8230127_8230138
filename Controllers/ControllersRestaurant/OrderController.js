@@ -61,33 +61,7 @@ async function validateCampo(firstName, lastName, phoneNumber, email, street, po
     return "";
 }
 
-/*
-// POST /:restaurant/orders
-orderController.createOrder = async function(req, res) {
-    try {
-        const { client, addressOrder, itens, totEncomenda } = req.body;
-        const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-
-        const newOrder = {
-            client,
-            addressOrder,
-            itens,       
-            totEncomenda,
-            status: 'Pendente'
-        };
-
-        restaurant.orders.push(newOrder);
-        await restaurant.save();
-        // devolve a encomenda com o _id atribuído pelo Mongo
-        const created = restaurant.orders[ restaurant.orders.length - 1 ];
-        return res.status(201).json(created);
-    } catch (err) {
-        return res.status(400).json({ error: err.message });
-    }
-};
-*/
-
-//Por acabar falta criar a encomenda e associar ao restuarante e ao utilizador, caso ele exista
+//Falta apenas validar se a order já não existe, em nenhum dos array, da do restaurante nem do cliente
 orderController.saveOrder = async function(req, res) {
     try {
         console.log();
@@ -104,7 +78,7 @@ orderController.saveOrder = async function(req, res) {
         console.log();
         console.log();
         console.log("-------------------------------");
-        console.log("Save Order")
+        console.log("Save Order");
 
         const nameRest = req.params.restaurant;
         let restaurant = await Restaurant.findOne({ name: nameRest }).exec();
@@ -221,25 +195,26 @@ orderController.saveOrder = async function(req, res) {
 };
 
 orderController.orderManagment = function(req, res) {
-    Restaurant.findOne({ name: req.params.restaurant }).exec()
+    const nameRest = req.params.restaurant;
+    Restaurant.findOne({ name: nameRest }).exec()
         .then(restaurant => {
-            if(restaurant) {
-                res.render("restaurants/restaurant/Order/orderManagement", { restaurant: restaurant, filters: {}});
-            } else {
+            if (!restaurant) {
                 console.log("O restaurante não existe");
-                res.render(res.locals.previousPage);
+                return res.render(res.locals.previousPage);
+            } 
+            
+            if (!restaurant.perfil.orders) {
+                console.log("O restaurante não tem encomendas");
+                return res.render(res.locals.previousPage);
             }
+
+            const orders = restaurant.perfil.orders;
+            res.render("restaurants/restaurant/Order/orderManagement", { restaurant: restaurant, orders: orders, filters: {}});
+            
         })
         .catch(error => {
             res.status(500).render("errors/error", {numError: 500, error: error});
         })
-  
-    // Separa por status
-    /*
-    const pendentes = restaurant.orders.filter(o => o.status === 'Pendente');
-    const expedidas = restaurant.orders.filter(o => o.status === 'Expedida');
-    const entregues = restaurant.orders.filter(o => o.status === 'Entregue');
-    */
 };
 
 orderController.historicOrder = async function(req, res) {

@@ -34,34 +34,42 @@
                 </form>
             </div>
 
-            <!-- Varias Orders-->
-            <div class="row justify-content-center align-items-center mb-4">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Order: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h5>
-                            <p class="card-text">Cliente: xxxxxx xxxxxxxx</p>
-                            <p class="card-text">Numero Telefoncio: xxxxxxxxxxxxxxxxxxxxxxx</p>
-                            <p class="card-text">Morada: xxxxxxxxxxxxxxx</p>
-                            <p class="card-text">Preço: xxxxxxxxxxxxxxxxxxxxxxx</p>
-                            <p class="card-text">xxxxxxx Itens</p>
-                            <div class="col-md-6">
-                                <label for="estado" class="form-label">Estado:</label>
-                                <select name="" id="" class="form-select" required>
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="Expedida">Expedida</option>                        
-                                    <option value="Entregue">Entregue</option>
-                                </select> 
+            <% if (orders.length > 0) { %>
+                <div class="row">
+                    <% orders.forEach(function(order) { %>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Order: <%= order._id %></h5>
+                                    <p class="card-text">Cliente: <%= order.client.firstName %> <%= order.client.lastName %></p>
+                                    <p class="card-text">Número Telefónico: <%= order.client.phoneNumber %></p>
+                                    <% if (order.addressOrder.nif) { %>
+                                        <p class="card-text">NIF: <%= order.addressOrder.address.nif %></p>
+                                    <% } %>
+                                    <p class="card-text">Morada: <%= order.addressOrder.address.street %>, <%= order.addressOrder.address.postal_code %>, <%= order.addressOrder.address.city %></p>
+                                    <p class="card-text">Preço: <%= order.price.toFixed(2) %>€</p>
+                                    <p class="card-text"><%= order.itens.length %> Itens</p>
+                                    <div class="mb-2">
+                                        <label for="estado-<%= order._id %>" class="form-label">Estado:</label>
+                                        <select id="estado-<%= order._id %>" class="form-select form-select-sm" required>
+                                            <option value="Pendente" <%= order.status === "Pendente" ? 'selected' : '' %>>Pendente</option>
+                                            <option value="Expedida" <%= order.status === "Expedida" ? 'selected' : '' %>>Expedida</option>
+                                            <option value="Entregue" <%= order.status === "Entregue" ? 'selected' : '' %>>Entregue</option>
+                                        </select>
+                                    </div>
+                                    <a href="/restaurants/<%= restaurant.name %>/orders/orderManagement/cancelOrder/<%= order._id %>" class="btn btn-sm btn-outline-danger">Apagar Order</a>
+                                </div>
                             </div>
-
-                            <!-- Falta meter o id da order-->
-                            <a href="/restaurants/<%= restaurant.name %>/orders/orderManagement/cancelOrder" class="btn btn-sm">Apgar Order</a>
                         </div>
-                    </div>
+                    <% }) %>
                 </div>
-            </div>
-        </div>
-
-        <!-- Depois meter um if-->        
+              <% } else { %>
+                <div class="col-12">
+                  <p class="text-center">Ainda não existem encomendas.</p>
+                </div>
+              <% } %>
+              
+                   
+        </div>    
     </body>
 </html>
