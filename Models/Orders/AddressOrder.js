@@ -1,13 +1,7 @@
 var mongoose = require('mongoose');
-var Address = require("./Address");
+var Address = require("../Address");
 
 var AddressOrderSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        maxlength: [50, 'O nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
-        required: true,
-    },
     address: {
         type: Address.schema,
         required: true,

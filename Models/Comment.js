@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var Order = require('../Orders/Order'); //Carrinho de compras
+var Order = require('./Orders/Order'); //Carrinho de compras
 
 var CommentSchema = new mongoose.Schema({
     title: {

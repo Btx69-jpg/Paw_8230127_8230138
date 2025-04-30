@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let y = 0;
             let found = false;
 
-            while(y < portionsData.length && !found) {
+            while (y < portionsData.length && !found) {
                 if(portionsData[y]._id.toString() === portionDish[j].portion.toString()) {
                     found = true;
                 } else {
@@ -121,14 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             inputItem.type = 'text';
             inputItem.name = `item[${idx}][item]`;
             inputItem.value = pratoNome;
-            inputItem.disabled = true;
+            inputItem.readonly = true;
             inputItem.classList.add('form-control','form-control-sm','ms-auto');
     
             const inputPorcao = document.createElement('input');
             inputPorcao.type = 'text';
-            inputPorcao.name = `item[${idx}][porcao]`;
+            inputPorcao.name = `item[${idx}][portion]`;
             inputPorcao.value = porcao;
-            inputPorcao.disabled = true;
+            inputPorcao.readonly = true;
             inputPorcao.classList.add('form-control','form-control-sm','ms-auto');
     
             const priceInput = document.createElement('input');
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             priceInput.step = '0.01';
             priceInput.name = `item[${idx}][price]`;
             priceInput.value = priceNum.toFixed(2);
-            priceInput.disabled = true;
+            priceInput.readonly = true;
             priceInput.classList.add('form-control','form-control-sm','ms-auto','preco');
             priceInput.style.width = '80px';
     
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyInput.step = '1';
             qtyInput.min = '1';
             qtyInput.max = '10';
-            qtyInput.name = `item[${idx}][quantidade]`;
+            qtyInput.name = `item[${idx}][quantity]`;
             qtyInput.value = '1';
             qtyInput.classList.add('form-control','form-control-sm','ms-auto','quantidade');
             qtyInput.style.width = '60px';
@@ -175,6 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = parseFloat(priceInp.value);
         totOrderInp.value = Math.max(0, (parseFloat(totOrderInp.value) || 0) - price).toFixed(2);
         itemDiv.remove();
+    }
+
+    /*
+    Meter para quando diminuir ou aumentar alterar os valores
+    Verificar se caso tente meter para cima de 10 ou diminuir para 0, para não deixar
+    */
+    function changeQuantity() {
+
     }
 
     window.preencherPratos = preencherPratos;

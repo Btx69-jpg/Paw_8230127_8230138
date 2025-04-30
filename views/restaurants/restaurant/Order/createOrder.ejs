@@ -1,11 +1,11 @@
 <div class="container">
-  <form id="newOrderForm" class="row g-3 mb-5">
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Criar encomenda</h5>
-      </div>
-      <div class="card-body">
-
+  
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Criar encomenda</h5>
+    </div>
+    <div class="card-body">
+      <form id="newOrderForm" class="row g-3 mb-5" action="/restaurants/<%= restaurant.name %>/orders/saveOrder" method="POST">
         <!-- Tipo de entrega -->
         <div class="mb-3">
           <label class="form-label">Tipo de entrega</label>
@@ -54,6 +54,18 @@
         </div>
 
         <div class="mb-3">
+            <label for="nif" class="form-label">NIF:</label>
+            <input type="tel" 
+            name="nif" 
+            id="nif" 
+            class="form-control" 
+            placeholder="Introduza o NIF" 
+            pattern="[0-9]{9}" 
+            title="O NIF deve ter 9 dígitos">
+        </div>
+
+
+        <div class="mb-3">
           <label for="email" class="form-label">Email:</label>
           <input type="email" 
             name="email" 
@@ -87,7 +99,6 @@
               id="postal_code"
               class="form-control"
               placeholder="Introduza o código Postal"
-              readonly
               required
             />
           </div>
@@ -179,9 +190,10 @@
         <div class="mb-3">
           <button class="btn btn-success">Criar Encomenda</button>
         </div>
-      </div>
+      </form>
     </div>
-  </form>
+  </div>
+
   
   <script type="application/json" id="menus-data">
     <%- JSON.stringify(menus) %>

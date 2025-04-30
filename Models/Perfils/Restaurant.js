@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var Address = require("../Address/Address");
+var Address = require("../Address");
 var Perfil = require("./Perfil");
-var Comment = require("../Comments/Comment");
+var Comment = require("../Comment");
 var Menu = require("../Menus/Menu");
 var Order = require("../Orders/Order");
 

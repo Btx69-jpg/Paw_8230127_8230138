@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router({ mergeParams: true }); 
+const app = express();
 const mongoose = require('mongoose');
 
 //Controllers 
@@ -23,7 +24,7 @@ router.get('/', order.addOrder);
 /**
  * * Rota que carrega a pagina para o restaurante poder criar uma encomenda
  * */
-router.get('/createOrder', order.createOrder);
+router.post('/saveOrder', order.saveOrder);
 
 /**
  * * Rota que carrega a pagina para o restaurante gerir as encomendas que estão em andamento

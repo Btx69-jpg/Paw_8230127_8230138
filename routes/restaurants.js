@@ -23,24 +23,6 @@ router.get('/', restaurants.restaurantsPage);
 router.get('/search', restaurants.search);
 
 /**
- * * Rota que renderiza a página de criação de um restaurante, caso o utilizador seja admin ou
- * * a página de pedido de criação de um restaurante caso o utilizador seja um dono ou cliente
- * 
- * * isDonoClienteOrAdmin --> verifica se o user é um dono, cliente ou admin
- * * authenticateToken --> valida se o token do utilizador é valido.
- * */
-router.get('/createRestaurant', authenticateToken, isAdmin, restaurants.createRestaurant);
-
-/**
- * * Rota que guarda um novo restaurante, caso o utilizador seja admin ou guarda um pedido de 
- * * criação de um restaurante caso o utilizador seja um dono ou cliente
- * 
- * * isDonoClienteOrAdmin --> verifica se o user é um dono, cliente ou admin
- * * authenticateToken --> valida se o token do utilizador é valido.
- * */
-router.post('/saveRestaurant', authenticateToken, isDonoClienteOrAdmin, restaurants.saveRestaurant);
-
-/**
  * * Rota que carrega o router com as rotas padrão para a pagina de cada restaurante
  */
 router.use('/:restaurant', routeRestaurant);
@@ -51,6 +33,24 @@ router.use('/:restaurant', routeRestaurant);
  * * authenticateToken --> valida se o token do utilizador é valido.
  * */
 router.use(authenticateToken);
+
+/**
+ * * Rota que renderiza a página de criação de um restaurante, caso o utilizador seja admin ou
+ * * a página de pedido de criação de um restaurante caso o utilizador seja um dono ou cliente
+ * 
+ * * isDonoClienteOrAdmin --> verifica se o user é um dono, cliente ou admin
+ * * authenticateToken --> valida se o token do utilizador é valido.
+ * */
+router.get('/createRestaurant', isAdmin, restaurants.createRestaurant);
+
+/**
+ * * Rota que guarda um novo restaurante, caso o utilizador seja admin ou guarda um pedido de 
+ * * criação de um restaurante caso o utilizador seja um dono ou cliente
+ * 
+ * * isDonoClienteOrAdmin --> verifica se o user é um dono, cliente ou admin
+ * * authenticateToken --> valida se o token do utilizador é valido.
+ * */
+router.post('/saveRestaurant', isDonoClienteOrAdmin, restaurants.saveRestaurant);
 
 /**
  * * Rota que renderiza a pagina de edição dos caso o utilizar seja o dono do próprio restaurante
