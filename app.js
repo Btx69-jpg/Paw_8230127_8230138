@@ -1,3 +1,5 @@
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./swagger/swagger.json');
 var createError = require('http-errors');
 var express = require('express');
 var session = require('express-session');
@@ -23,6 +25,14 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/Trab
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
 
+// Configuração do Swagger
+var options = {
+  swaggerOptions: {
+      url: "/api-docs/swagger.json",
+  },
+}
+app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
+app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
 /*
 São os js que criei na pasta Route
 */

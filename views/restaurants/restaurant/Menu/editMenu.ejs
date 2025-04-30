@@ -178,13 +178,7 @@
   <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
   <script>
     var portionsData = JSON.stringify(portions);
-    const RESTAURANT_NAME = restaurant.name;
-    const MENU_ID = menu._id;
-  </script>
-
-  <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js">
-    // Função para confirmar a exclusão do menu
-function confirmDelete() {
+    function confirmDelete() {
   console.log("\n\n\n\n\n\n\n\nNO CONFIRM DELET FORA DO IF...\n\n\n\n\n\n");
   if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
     document.getElementById('loadingOverlay').style.display = 'flex';
@@ -209,6 +203,8 @@ function confirmDelete() {
   }
 }
   </script>
+
+  <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js"></script>
 
 </body>
 </html>

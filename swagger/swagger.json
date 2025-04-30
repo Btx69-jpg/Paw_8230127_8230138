@@ -1,0 +1,49 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "description": "Swagger para o trabalho pratico de paw.",
+    "version": "1.0.0",
+    "title": "Swagger Restaurant API",
+    "contact": {
+      "email": "8230127@estg.ipp.pt and 8230138@estg.ipp.pt"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api-docs/swagger.json",
+  "tags": [
+    {
+      "name": "Restaurant",
+      "description": "Representação de um restaurante"
+    },
+    {
+      "name": "Dish",
+      "description": "Representação de um prato"
+    },
+    {
+      "name": "Order",
+      "description": "Representação de uma encomenda"
+    },
+    {
+      "name": "Restaurants",
+      "description": "Operações sobre restaurantes"
+    },
+    {
+      "name": "User",
+      "description": "Operações sobre user"
+    }
+  ],
+  "schemes": ["http"],
+
+  "paths": {
+    "/restaurants": {
+      "get": {
+        "summary": "Listar restaurantes",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
