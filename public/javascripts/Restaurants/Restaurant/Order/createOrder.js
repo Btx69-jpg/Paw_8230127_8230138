@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         if (existingDiv) {
-            const qtyInp = existingDiv.querySelector('input.quantidade');
-            const priceInp = existingDiv.querySelector('input.preco');
+            const qtyInp = existingDiv.querySelector('input.quantity');
+            const priceInp = existingDiv.querySelector('input.price');
             qtyInp.value = parseInt(qtyInp.value, 10) + 1;
             priceInp.value = (parseFloat(priceInp.value) + priceNum).toFixed(2);
         } else {
@@ -121,23 +121,31 @@ document.addEventListener('DOMContentLoaded', () => {
             inputItem.type = 'text';
             inputItem.name = `item[${idx}][item]`;
             inputItem.value = pratoNome;
-            inputItem.readonly = true;
-            inputItem.classList.add('form-control','form-control-sm','ms-auto');
+            inputItem.readOnly = true;
+            inputItem.classList.add('form-control','form-control-sm','ms-auto', 'item');
     
             const inputPorcao = document.createElement('input');
             inputPorcao.type = 'text';
             inputPorcao.name = `item[${idx}][portion]`;
             inputPorcao.value = porcao;
-            inputPorcao.readonly = true;
+            inputPorcao.readOnly = true;
             inputPorcao.classList.add('form-control','form-control-sm','ms-auto');
     
+            const priceBaseInput = document.createElement('input');
+            priceBaseInput.type = 'number';
+            priceBaseInput.step = '0.01';
+            priceBaseInput.name = `item[${idx}][priceBase]`;
+            priceBaseInput.value = priceNum.toFixed(2);
+            priceBaseInput.disabled = true;
+            priceBaseInput.classList.add('form-control','form-control-sm','ms-auto','precoBase'); 
+
             const priceInput = document.createElement('input');
             priceInput.type = 'number';
             priceInput.step = '0.01';
             priceInput.name = `item[${idx}][price]`;
             priceInput.value = priceNum.toFixed(2);
-            priceInput.readonly = true;
-            priceInput.classList.add('form-control','form-control-sm','ms-auto','preco');
+            priceInput.readOnly = true;
+            priceInput.classList.add('form-control','form-control-sm','ms-auto','price');
             priceInput.style.width = '80px';
     
             const qtyInput = document.createElement('input');
@@ -147,16 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyInput.max = '10';
             qtyInput.name = `item[${idx}][quantity]`;
             qtyInput.value = '1';
-            qtyInput.classList.add('form-control','form-control-sm','ms-auto','quantidade');
+            qtyInput.classList.add('form-control','form-control-sm','ms-auto','quantity');
             qtyInput.style.width = '60px';
-    
+            qtyInput.addEventListener('change', () => changeQuantity(qtyInput));
+
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.classList.add('btn','btn-outline-danger','btn-sm','ms-2');
             btn.textContent = 'Remover';
             btn.addEventListener('click', () => removeItem(btn));
     
-            div.append(inputItem, inputPorcao, priceInput, qtyInput, btn);
+            div.append(inputItem, inputPorcao, priceBaseInput, priceInput, qtyInput, btn);
             container.appendChild(div);
         }
   
@@ -168,10 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
     function removeItem(btn) {
         const itemDiv = btn.closest('div');
+        
         if (!itemDiv) { 
             return;
         }
-        const priceInp = itemDiv.querySelector('input.preco');
+
+        const priceInp = itemDiv.querySelector('input.price');
         const price = parseFloat(priceInp.value);
         totOrderInp.value = Math.max(0, (parseFloat(totOrderInp.value) || 0) - price).toFixed(2);
         itemDiv.remove();
@@ -180,14 +191,38 @@ document.addEventListener('DOMContentLoaded', () => {
     /*
     Meter para quando diminuir ou aumentar alterar os valores
     Verificar se caso tente meter para cima de 10 ou diminuir para 0, para não deixar
+    Devo ter que criar um campo que guarde o preço base daquela porção, para facilitar aqui o diminuir ou aumentar preços
     */
-    function changeQuantity() {
+    function changeQuantity(qtyInput) {
+        const itemDiv = qtyInput.closest('div');
+        if (!itemDiv) {
+            return;
+        }
 
+        const quantidade = parseInt(qtyInput.value, 10);
+        if(quantidade <= 0 || quantidade > 10){
+            alert('A quantidade não pode ser negativa ou 0, nem ser superior a 10');
+            return;
+        }
+
+        const priceInp = itemDiv.querySelector('input.price');
+        const baseInp = itemDiv.querySelector('input.precoBase');
+        const totOrderInp = document.getElementById('totEncomenda');
+
+        const precoBase = parseFloat(baseInp.value);
+        const prevPreco = parseFloat(priceInp.value);
+        const novoPreco = precoBase * quantidade;
+
+        priceInp.value = novoPreco.toFixed(2);
+        const totAntigo = parseFloat(totOrderInp.value) || 0;
+        const totNovo = totAntigo - prevPreco + novoPreco;
+        totOrderInp.value = totNovo.toFixed(2);
     }
 
     window.preencherPratos = preencherPratos;
     window.carregarPortions = carregarPortions;
     window.adicionarPrato = adicionarPrato;
+    window.changeQuantity = changeQuantity;
 
     const menuSelect = document.getElementById('menuSelect');
     if (menuSelect) { 
