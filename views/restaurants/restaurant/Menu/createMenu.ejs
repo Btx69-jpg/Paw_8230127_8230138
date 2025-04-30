@@ -167,20 +167,6 @@
               />
             </div>
             <% } %>
-            <div class="mb-3">
-              <label for="dishPrice0" class="form-label">Preço:</label>
-              <input
-                type="number"
-                name="dishes[0][price]"
-                id="dishPrice0"
-                class="form-control"
-                placeholder="Preço do prato"
-                required
-                min="0"
-                step="0.01"
-                oninvalid="this.setCustomValidity('Informe um preço válido.')"
-              />
-            </div>
 
             <div class="mb-3">
               <label class="form-label">Ingredientes:</label>
@@ -283,7 +269,7 @@
       </form>
     </div>
 
-    <%- include('../../../loading.ejs') %>
+    <%- include('../../../loading.ejs', {message: "Salvando menu"}) %>
 
     <!-- Script para adição e remoção dinâmica dos formulários de prato -->
     <script src="/javascripts/Restaurants/Restaurant/Menus/createMenus.js"></script>

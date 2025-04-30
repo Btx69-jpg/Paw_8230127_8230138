@@ -305,7 +305,6 @@ menuController.saveMenu = async function (req, res, restaurant) {
       name: dish.name,
       description: dish.description,
       category: dish.category,
-      price: dish.price,
       portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
       photo: photo,
       nutritionalInfo: nutritionalInfo
@@ -408,7 +407,6 @@ menuController.saveEditMenu = async function (req, res) {
             existingDish.name = dishData.name;
             existingDish.description = dishData.description;
             existingDish.category = dishData.category;
-            existingDish.price = dishData.price;
 
             const portionsData = [];
             if (dishData.portions) {
@@ -475,7 +473,6 @@ menuController.saveEditMenu = async function (req, res) {
             name: newDish.name,
             description: newDish.description,
             category: newDish.category,
-            price: newDish.price,
             photo: "/" + file.path.replace(/^public[\\/]/, ""),
           })
         );
@@ -508,6 +505,7 @@ menuController.saveEditMenu = async function (req, res) {
 
 menuController.deleteMenu = async function (req, res) {
   try {
+    console.log("\n\n\n\n\n\n\n\nDeleting menu...\n\n\n\n\n\n");
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,
     }).exec();

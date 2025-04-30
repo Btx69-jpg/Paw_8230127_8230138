@@ -96,13 +96,10 @@
                     <% }); %>
                   </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Preço:</label>
-                  <input type="number" name="dishes[<%= index %>][price]" class="form-control" step="0.01" value="<%= dish.price %>" required>
-                </div>
+
               </div>
 
-              <!-- Seção de Porções (dinâmica) -->
+              <!-- Seção de Porções -->
               <div class="mb-3">
                 <label class="form-label">Porções:</label>
                 <div id="portionsContainer-<%= index %>" class="portions-container mb-3" data-index="<%= index %>">
@@ -167,7 +164,7 @@
 
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-primary btn-lg">Salvar Alterações</button>
-        <button type="button" class="btn btn-danger btn-lg" id="delete" onclick="confirmDelete()">Apagar Menu Completo</button>
+        <button type="button" class="btn btn-danger btn-lg" id="delete"  data-restaurant="<%= restaurant.name %>" data-menuid="<%= menu._id %>" onclick="confirmDelete()">Apagar Menu Completo</button>
         <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menu._id %>" class="btn btn-outline-secondary">
           Cancelar
         </a>
@@ -175,17 +172,43 @@
     </form>
   </div>
 
-  <%- include('../../../loading.ejs') %>
+  <%- include('../../../loading.ejs', {message: "Salvando menu"}) %>
 
 
   <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
   <script>
     var portionsData = JSON.stringify(portions);
+    const RESTAURANT_NAME = restaurant.name;
+    const MENU_ID = menu._id;
   </script>
 
-  <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js"></script>
-  <script>
-    
+  <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js">
+    // Função para confirmar a exclusão do menu
+function confirmDelete() {
+  console.log("\n\n\n\n\n\n\n\nNO CONFIRM DELET FORA DO IF...\n\n\n\n\n\n");
+  if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    console.log("\n\n\n\n\n\n\n\nNO CONFIRM DELET...\n\n\n\n\n\n");
+
+    fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
+      
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      console.log("RESPONSE: ", response);
+      if (response.ok) {
+        window.location.href = `/restaurants/<%= restaurant.name %>`;
+      } else {
+        console.log("RESPONSE: ", response);
+        alert('Erro ao apagar o menu: ' + response.statusText);
+      }
+    });
+  }
+}
   </script>
+
 </body>
 </html>
