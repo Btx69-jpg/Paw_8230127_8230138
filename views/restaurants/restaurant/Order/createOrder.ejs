@@ -1,11 +1,11 @@
 <div class="container">
-  <form id="newOrderForm" class="row g-3 mb-5">
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Criar encomenda</h5>
-      </div>
-      <div class="card-body">
-
+  
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Criar encomenda</h5>
+    </div>
+    <div class="card-body">
+      <form id="newOrderForm" class="row g-3 mb-5" action="/restaurants/<%= restaurant.name %>/orders/saveOrder" method="POST">
         <!-- Tipo de entrega -->
         <div class="mb-3">
           <label class="form-label">Tipo de entrega</label>
@@ -54,6 +54,18 @@
         </div>
 
         <div class="mb-3">
+            <label for="nif" class="form-label">NIF:</label>
+            <input type="tel" 
+            name="nif" 
+            id="nif" 
+            class="form-control" 
+            placeholder="Introduza o NIF" 
+            pattern="[0-9]{9}" 
+            title="O NIF deve ter 9 dígitos">
+        </div>
+
+
+        <div class="mb-3">
           <label for="email" class="form-label">Email:</label>
           <input type="email" 
             name="email" 
@@ -86,8 +98,7 @@
               name="postal_code"
               id="postal_code"
               class="form-control"
-              value="<%= restaurant.address.postal_code %>"
-              readonly
+              placeholder="Introduza o código Postal"
               required
             />
           </div>
@@ -124,22 +135,36 @@
 
           <!-- Lista de Pratos do menu -->
           <div class="mb-3">
-            <div class="mb-3">
-              <label class="form-label">Pratos Disponíveis</label>
+            <label class="form-label">Pratos Disponíveis</label>
+            <div class="d-flex">
               <select id="pratos" 
-              name="pratos" 
-              class="form-select"
-              disabled 
-              required>
-                  <option value="all">-- Escolha um prato --</option>
+                      name="pratos" 
+                      class="form-select me-2"
+                      disabled 
+                      required
+                      onchange="carregarPortions()">
+                <option value="all">-- Escolha um prato --</option>
               </select>
+              <select id="porcao" 
+                      name="porcao" 
+                      class="form-select me-2"
+                      disabled 
+                      required>
+                <option value="all">-- Escolha uma porção --</option>
+              </select>
+              <button type="button" 
+                      id="btnAddPrato" 
+                      class="btn btn-primary"
+                      onclick="adicionarPrato()">
+                Adicionar
+              </button>
             </div>
-          </div>
+          </div>          
 
           <!-- Itens selecionados -->
           <div class="mb-3">
             <label class="form-label">Itens selecionados</label>
-            <ul id="selectedItemsList" class="list-group"></ul>
+            <div id="selectedItemsList" name="listaItenss" class="list-group"></div> 
           </div>
 
         <% } %>
@@ -165,12 +190,18 @@
         <div class="mb-3">
           <button class="btn btn-success">Criar Encomenda</button>
         </div>
-      </div>
+      </form>
     </div>
-  </form>
+  </div>
+
   
   <script type="application/json" id="menus-data">
     <%- JSON.stringify(menus) %>
+  </script>
+
+  <!-- Mandar as porções também que existem-->
+  <script type="application/json" id="portions-data">
+    <%- JSON.stringify(portions) %>
   </script>
 
   <script src="/javascripts/Restaurants/Restaurant/Order/createOrder.js"></script>

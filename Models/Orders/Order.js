@@ -4,12 +4,13 @@ var mongoose = require('mongoose');
 var Item = require('./Item'); 
 var FaturaRestaurant = require("./FaturaRestaurant");
 var FaturaUser = require("./FaturaCliente");
+var AddressOrder = require("./AddressOrder");
 
 var OrderSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
-        min: [Date.now, 'A data não pode ser no passado'],
+        required: true,
     },
     client: {
         type: FaturaUser.schema,
@@ -20,8 +21,7 @@ var OrderSchema = new mongoose.Schema({
         required: true,  
     },
     addressOrder: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AddressOrder',
+        type: AddressOrder.schema,
         required: true,
     },
     itens: {
@@ -37,7 +37,13 @@ var OrderSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['Pendente', 'Expedida', 'Entregue'],
-        default: 'Expedida',
+        default: 'Pendente',
+        required: true,
+    },
+    type: {
+        type: String,
+        enum: ['delivery', 'pickup'],
+        required: true,
     },
     updated_at: { type: Date, default: Date.now },
 });

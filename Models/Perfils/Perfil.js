@@ -22,6 +22,10 @@ var PerfilSchema = new mongoose.Schema({
         minlength: [8, 'A password deve ter no mínimo 8 caracteres'],
         required: true,
     },
+    orders: {
+        type: [Order.schema],
+        default: [], 
+    },
     historicOrders: {
         type: [Order.schema],
         default: [], 

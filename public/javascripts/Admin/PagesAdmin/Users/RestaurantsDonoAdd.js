@@ -1,5 +1,3 @@
-// /javascripts/Admin/PagesAdmin/Users/addRestaurantDono.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const prioritySelect = document.getElementById('priority');
     const wrapper = document.getElementById('restaurantsWrapper');
@@ -92,9 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
   
-    // Inicializa
     handlePriorityChange();
-    // Quando muda o select
+
     prioritySelect.addEventListener('change', handlePriorityChange);
 });
   

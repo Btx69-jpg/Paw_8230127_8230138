@@ -1,25 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let nextIndex = 0;
+  
     const menusData = JSON.parse(document.getElementById('menus-data').textContent);
     const portionsData = JSON.parse(document.getElementById('portions-data').textContent);
     const pratosSelect = document.getElementById('pratos');
     const porcaoSelect = document.getElementById('porcao');
-    const container = document.getElementById('selectedItemsList');
-    const totOrderInp = document.getElementById('totEncomenda');
-    let nextIndex = 0;
+    const container = document.getElementById('selectedItemsList'); // <div id="selectedItemsList">
+    const totOrderInp = document.getElementById('totEncomenda');     // <input id="totEncomenda">
   
     function preencherPratos(menuName) {
-        pratosSelect.innerHTML = `<option value="all">-- Escolha um prato --</option>`;
-        porcaoSelect.innerHTML = `<option value="all">-- Escolha uma porção --</option>`;
+        pratosSelect.innerHTML = '<option value="all">-- Escolha um prato --</option>';
+        porcaoSelect.innerHTML = '<option value="all">-- Escolha uma porção --</option>';
         porcaoSelect.disabled = true;
     
-        const menu = menusData.find(m => m.name === menuName);
-        if (!menu) {
+        const escolhido = menusData.find(m => m.name === menuName);
+        if (!escolhido) {
             pratosSelect.disabled = true;
             return;
         }
     
         pratosSelect.disabled = false;
-        menu.dishes.forEach(dish => {
+        escolhido.dishes.forEach(dish => {
             const opt = document.createElement('option');
             opt.value = dish.name;
             opt.textContent = dish.name;
@@ -34,14 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     
-        const allDishes = menusData.flatMap(menu => menu.dishes);
+        const allDishes = menus.flatMap(menu => menu.dishes);
 
         let portionDish = [];
         let i = 0;
         let found = false;
     
         while(i < allDishes.length && !found) {
-            if(pratosSelect.value === allDishes[i].name) {
+            if(prato.value === allDishes[i].name) {
                 found = true;
                 portionDish = allDishes[i].portions;
             } 
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Prato não existe ou não possui porções.');
             return; 
         }
-  
+    
         porcaoSelect.innerHTML = '<option value="all">-- Escolha uma porção --</option>';
         porcaoSelect.disabled = false;
     
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let y = 0;
             let found = false;
 
-            while (y < portionsData.length && !found) {
+            while(y < portionsData.length && !found) {
                 if(portionsData[y]._id.toString() === portionDish[j].portion.toString()) {
                     found = true;
                 } else {
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             option.textContent = `${portionsData[y].portion} — €${portionDish[j].price.toFixed(2)}`;
             option.dataset.price = portionDish[j].price;
             option.dataset.portion = portionDish[j].portion;
-            porcaoSelect.appendChild(option);
+            portionSelect.appendChild(option);
         }
     }
   
@@ -87,9 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         const pratoNome = pratosSelect.selectedOptions[0].textContent;
-        const priceNum = parseFloat(porcaoSelect.selectedOptions[0].dataset.price);
+        const priceNum  = parseFloat(porcaoSelect.selectedOptions[0].dataset.price);
         const porcao = porcaoSelect.selectedOptions[0].value;
     
+        //Verificar também pela porção
         let existingDiv = null;
         const itens = container.children;
         let i = 0; 
@@ -103,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             i++;
         }
-  
+    
         if (existingDiv) {
             const qtyInp = existingDiv.querySelector('input.quantidade');
             const priceInp = existingDiv.querySelector('input.preco');
@@ -114,21 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.classList.add('list-group-item','d-flex','align-items-center','mb-2','gap-3');
             div.dataset.prato = pratoNome;
-            div.dataset.porcao = porcao;
             div.dataset.index = idx;
     
             const inputItem = document.createElement('input');
             inputItem.type = 'text';
             inputItem.name = `item[${idx}][item]`;
             inputItem.value = pratoNome;
-            inputItem.readonly = true;
+            inputItem.disabled  = true;
             inputItem.classList.add('form-control','form-control-sm','ms-auto');
     
             const inputPorcao = document.createElement('input');
             inputPorcao.type = 'text';
-            inputPorcao.name = `item[${idx}][portion]`;
-            inputPorcao.value = porcao;
-            inputPorcao.readonly = true;
+            inputPorcao.name = `item[${idx}][porcao]`;
+            inputPorcao.value = pratoNome;
+            inputPorcao.disabled  = true;
             inputPorcao.classList.add('form-control','form-control-sm','ms-auto');
     
             const priceInput = document.createElement('input');
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             priceInput.step = '0.01';
             priceInput.name = `item[${idx}][price]`;
             priceInput.value = priceNum.toFixed(2);
-            priceInput.readonly = true;
+            priceInput.disabled = true;
             priceInput.classList.add('form-control','form-control-sm','ms-auto','preco');
             priceInput.style.width = '80px';
     
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyInput.step = '1';
             qtyInput.min = '1';
             qtyInput.max = '10';
-            qtyInput.name = `item[${idx}][quantity]`;
+            qtyInput.name = `item[${idx}][quantidade]`;
             qtyInput.value = '1';
             qtyInput.classList.add('form-control','form-control-sm','ms-auto','quantidade');
             qtyInput.style.width = '60px';
@@ -160,39 +161,22 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(div);
         }
   
-        totOrderInp.value = ((parseFloat(totOrderInp.value) || 0) + priceNum).toFixed(2);
-        pratosSelect.value = 'all';
-        porcaoSelect.value = 'all';
-        porcaoSelect.disabled = true;
+      totOrderInp.value = ( (parseFloat(totOrderInp.value) || 0) + priceNum ).toFixed(2);
+      pratosSelect.value = 'all';
+      porcaoSelect.value = 'all';
+      porcaoSelect.disabled = true;
     }
   
     function removeItem(btn) {
         const itemDiv = btn.closest('div');
-        if (!itemDiv) { 
+        
+        if (!itemDiv) {
             return;
         }
+
         const priceInp = itemDiv.querySelector('input.preco');
         const price = parseFloat(priceInp.value);
         totOrderInp.value = Math.max(0, (parseFloat(totOrderInp.value) || 0) - price).toFixed(2);
         itemDiv.remove();
     }
-
-    /*
-    Meter para quando diminuir ou aumentar alterar os valores
-    Verificar se caso tente meter para cima de 10 ou diminuir para 0, para não deixar
-    */
-    function changeQuantity() {
-
-    }
-
-    window.preencherPratos = preencherPratos;
-    window.carregarPortions = carregarPortions;
-    window.adicionarPrato = adicionarPrato;
-
-    const menuSelect = document.getElementById('menuSelect');
-    if (menuSelect) { 
-        menuSelect.addEventListener('change', e => preencherPratos(e.target.value));
-    }
-
-    pratosSelect.addEventListener('change', carregarPortions);
 });

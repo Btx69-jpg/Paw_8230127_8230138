@@ -391,6 +391,7 @@ userController.updateUser =  async function(req, res) {
         const { firstName, lastName, email, phoneNumber, priority} = req.body;  
 
         const restaurantsNames = req.body.restaurant;
+        
         //Retiramos os restaurants duplicados
         let restaurants;
         try {

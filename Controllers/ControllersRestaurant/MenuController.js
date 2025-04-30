@@ -95,7 +95,6 @@ menuController.showMenu = async function (req, res) {
 //Filtro dos pratos
 menuController.searchMenu = async function (req, res) {
     try {
-
         const dishName = req.query.dishName;
         const category = req.query.category;
         const price = req.query.price;
@@ -266,70 +265,69 @@ menuController.saveMenu = async function (req, res, restaurant) {
   try {
     const temp = req.session.tempData || {};
     const formData = temp?.formData || req.body;
-  const files = temp?.files || req.files;
-  const manual   = req.body.manual || {};
+    const files = temp?.files || req.files;
+    const manual = req.body.manual || {};
 
-  
-  if (!restaurant) {
-    restaurant = temp.restaurant;
-  }
-  restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
-  const dishes = [].concat(formData?.dishes || []).filter(Boolean);
-
-  const dishObjects = dishes.map((dish, idx) => {
-    const fileInfo = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
-    const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
-    let nutritionalInfo;
-    if (manual[idx]) {
-      // validação mínima
-      ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
-        if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
-          throw new Error(`Valor manual para prato ${idx+1}, ${n} inválido`);
-      });
-      nutritionalInfo = [{
-        name: 'manual',
-        per100g: {
-          calories:      Number(manual[idx].calories),
-          protein:       Number(manual[idx].protein),
-          fat:           Number(manual[idx].fat),
-          carbohydrates: Number(manual[idx].carbohydrates),
-          sugars:        Number(manual[idx].sugars)
-        }
-      }];
-    } else {
-      // usa dados da API armazenados em temp.perDish
-      const infos = temp.perDish?.[idx]?.infos || [];
-      nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
+    if (!restaurant) {
+      restaurant = temp.restaurant;
     }
-    return new Dish({
-      name: dish.name,
-      description: dish.description,
-      category: dish.category,
-      price: dish.price,
-      portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
-      photo: photo,
-      nutritionalInfo: nutritionalInfo
+
+    restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
+    const dishes = [].concat(formData?.dishes || []).filter(Boolean);
+
+    const dishObjects = dishes.map((dish, idx) => {
+      const fileInfo = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
+      const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
+      let nutritionalInfo;
+      if (manual[idx]) {
+        // validação mínima
+        ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
+          if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
+            throw new Error(`Valor manual para prato ${idx+1}, ${n} inválido`);
+        });
+        nutritionalInfo = [{
+          name: 'manual',
+          per100g: {
+            calories: Number(manual[idx].calories),
+            protein: Number(manual[idx].protein),
+            fat: Number(manual[idx].fat),
+            carbohydrates: Number(manual[idx].carbohydrates),
+            sugars: Number(manual[idx].sugars)
+          }
+        }];
+      } else {
+        // usa dados da API armazenados em temp.perDish
+        const infos = temp.perDish?.[idx]?.infos || [];
+        nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
+      }
+      return new Dish({
+        name: dish.name,
+        description: dish.description,
+        category: dish.category,
+        price: dish.price,
+        portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
+        photo: photo,
+        nutritionalInfo: nutritionalInfo
+      });
     });
-  });
 
     const menuFile = files.find(f => f.fieldname === 'menuPhoto');
     const menuPhoto = menuFile ? '/' + menuFile.path.replace(/^public[\\/]/, '') : null;
-  const menu = new Menu({
-    name: formData?.name || req.body.name,
-    type: formData?.type || req.body.type,
-    dishes: dishObjects,
-    photo: menuPhoto
-  });
+    const menu = new Menu({
+      name: formData?.name || req.body.name,
+      type: formData?.type || req.body.type,
+      dishes: dishObjects,
+      photo: menuPhoto
+    });
 
 
-  restaurant.menus.push(menu);
-  await restaurant.save();
+    restaurant.menus.push(menu);
+    await restaurant.save();
 
-  delete req.session.tempData;
-  //testar com o render
-  res.redirect(`/restaurants/${restaurant.name}`);
-  }
-  catch (err) {
+    delete req.session.tempData;
+    //testar com o render
+    res.redirect(`/restaurants/${restaurant.name}`);
+  } catch (err) {
     console.error("Erro ao salvar o menu:", err);
     cleanupUploadDir(req.uploadDir);
     res.render("errors/error", { numError: 500, error: err });
@@ -380,6 +378,7 @@ menuController.saveEditMenu = async function (req, res) {
     const menuPhotoFile = req.files.find(
       (file) => file.fieldname === "menuPhoto"
     );
+
     if (menuPhotoFile) {
       // Apagar imagem antiga se existir
       if (menu.photo && fs.existsSync("public" + menu.photo)) {
