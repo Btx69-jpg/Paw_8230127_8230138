@@ -29,4 +29,8 @@ router.get("/", loginController.login);
  * */
 router.post("/", loginController.loginToken);
 
+/**
+ * * Rota que realiza o login do utilizador pela google e atribui-lhe um token de autentificação
+ * */
+router.post("/auth/Google", loginController.loginToken);
 module.exports = router;
