@@ -21,33 +21,63 @@ indexController.search = function(req, res) {
 
     Restaurant.find(query).exec()
         .then(async restaurants => {
-            if (!restaurants) {
+            if (!restaurants || restaurants.length === 0) {
                 console.log("Não existem restaurantes com esse nome");
                 return res.status(404).render("index");
             }
-        
-            const menus = restaurant.menus;
-            const categories = await carregarCategoriesMenus(menus);
-        
-            let aut = false;
+
+            console.log("Restaurantes encontrados: ", restaurants.length);
+
+            if (restaurants.length > 1) {
+                let autRemoveEdit = [];
+
+                if (req.cookies && req.cookies.priority && req.cookies.priority === "Dono") {
+                    const user = res.locals.user;
+                    const ids = user.perfil.restaurantIds.map(_id => _id.toString());
                 
-            if(req.cookies && req.cookies.priority) {
-                const priority = req.cookies.priority;
-                if(priority === "Admin") {
-                    aut = true;
-                } else if(priority === "Dono") {
-                    const restDono = await Restaurant.findOne({
-                        name: req.params.restaurant,
-                        _id: { $in: res.locals.user.perfil.restaurantIds }
-                    }).exec();    
-            
-                    if(restDono) {
-                        aut = true;
+                    for (let j = 0; j < restaurants.length; j++) {
+                        const rId = restaurants[j]._id.toString();
+                        autRemoveEdit[j] = ids.includes(rId);
                     }
                 }
-            }
+                
+                res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit}); 
+            } else {
+                const restaurant = restaurants[0];
+                const menus = restaurant.menus;
+                const categories = await carregarCategoriesMenus(menus);
+                let autEdit = false;
+                let autGest = false;
             
-            return res.render("restaurants/restaurant/homepage",{ restaurant, menus, filters: {}, categories, aut: aut });
+                if (req.cookies && req.cookies.priority) {
+                    const priority = req.cookies.priority;
+                
+                    if (priority === "Admin") {
+                        autEdit = true;
+                    } else if (priority === "Dono") {
+                        let found = false;
+                        let i = 0;
+                        let restIds = res.locals.user.perfil.restaurantIds;
+                        while (i < restIds.length && !found) {
+                                if(restIds[i].toString() === restaurant._id.toString()) {
+                                    found = true;
+                                }
+                                i++;
+                            }
+                    
+                        if (found) {
+                            autEdit = true;
+                            autGest = true;
+                        }
+                    } else if (priority === "Restaurant" && restaurant._id.toString() === res.locals.user._id.toString()) {
+                        autGest = true;
+                    }
+                }
+
+                res.render("restaurants/restaurant/homepage", { restaurant: restaurant, menus: menus,
+                    filters: {}, categories: categories, autEdit: autEdit, autGest: autGest});
+            }
+        
         })
         .catch(error => {
             console.error(error);

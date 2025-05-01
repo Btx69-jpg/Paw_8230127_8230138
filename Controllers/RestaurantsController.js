@@ -112,7 +112,6 @@ restaurantsController.restaurantsPage = function(req, res) {
                 }
             }
                 
-            console.log(autRemoveEdit);
             res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit});
         })
         .catch(error => {
