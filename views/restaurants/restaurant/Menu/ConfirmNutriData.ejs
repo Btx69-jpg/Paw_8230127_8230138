@@ -53,7 +53,7 @@
             </div>
             <% } else { %>
             <p>
-              <strong>Produto sugerido pela API:</strong> <%= infos[0].name %>
+              <strong>Produto sugerido pela API:</strong> <%= infos[ingIdx].name %>
             </p>
             <table class="table table-sm mb-3">
               <thead>
@@ -65,36 +65,26 @@
               <tbody>
                 <tr>
                   <td>Calorias</td>
-                  <td><%= infos[0].per100g.calories %></td>
+                  <td><%= infos[ingIdx].per100g.calories %></td>
                 </tr>
                 <tr>
                   <td>Proteína (g)</td>
-                  <td><%= infos[0].per100g.protein %></td>
+                  <td><%= infos[ingIdx].per100g.protein %></td>
                 </tr>
                 <tr>
                   <td>Gordura (g)</td>
-                  <td><%= infos[0].per100g.fat %></td>
+                  <td><%= infos[ingIdx].per100g.fat %></td>
                 </tr>
                 <tr>
                   <td>Carboidratos (g)</td>
-                  <td><%= infos[0].per100g.carbohydrates %></td>
+                  <td><%= infos[ingIdx].per100g.carbohydrates %></td>
                 </tr>
                 <tr>
                   <td>Açúcares (g)</td>
-                  <td><%= infos[0].per100g.sugars %></td>
+                  <td><%= infos[ingIdx].per100g.sugars %></td>
                 </tr>
               </tbody>
             </table>
-            <!-- Opções de ação -->
-            <div class="btn-group mb-3" role="group">
-              <button
-                type="submit"
-                name="action"
-                value="confirm"
-                class="btn btn-success"
-              >
-                Confirmar e Continuar
-              </button>
               <button
                 type="button"
                 class="btn btn-primary"
@@ -136,6 +126,7 @@
               <input
                 type="number"
                 step="any"
+                disabled
                 name="manual[<%= dishIdx %>][calories]"
                 value="<%= infos[0]?.per100g.calories || '' %>"
                 class="form-control mb-2"
@@ -144,6 +135,7 @@
               <input
                 type="number"
                 step="any"
+                disabled
                 name="manual[<%= dishIdx %>][protein]"
                 value="<%= infos[0]?.per100g.protein || '' %>"
                 class="form-control mb-2"
@@ -152,6 +144,7 @@
               <input
                 type="number"
                 step="any"
+                disabled
                 name="manual[<%= dishIdx %>][fat]"
                 value="<%= infos[0]?.per100g.fat || '' %>"
                 class="form-control mb-2"
@@ -160,6 +153,7 @@
               <input
                 type="number"
                 step="any"
+                disabled
                 name="manual[<%= dishIdx %>][carbohydrates]"
                 value="<%= infos[0]?.per100g.carbohydrates || '' %>"
                 class="form-control mb-2"
@@ -168,31 +162,37 @@
               <input
                 type="number"
                 step="any"
+                disabled
                 name="manual[<%= dishIdx %>][sugars]"
                 value="<%= infos[0]?.per100g.sugars || '' %>"
                 class="form-control mb-2"
               />
             </div>
-          </div>
-        </div>
+
         <% } %> 
         <% }) %> 
         <% }); %>
+      </div>
+    </div>
 
         <div class="text-end">
           <button type="submit" class="btn btn-success">Salvar Menu</button>
         </div>
       </form>
     </div>
-
+ 
     <script>
       //const {fetchNutritionalData} = require("../Middleware/fetchNutritionalDataMD.js");
       function showRetry(idx,ingIdx) {
         document.getElementById("retry-" + idx+ "-" +ingIdx).style.display = "block";
-        document.getElementById("manual-" + idx+ "-" +ingIdx).style.display = "none";
+        const section = document.getElementById(`manual-${idx}-${ingIdx}`);
+        section.style.display = "none";
+        section.querySelectorAll('input').forEach(i => i.disabled = true);
       }
       function showManual(idx,ingIdx) {
-        document.getElementById("manual-" + idx + "-" +ingIdx).style.display = "block";
+        const section = document.getElementById(`manual-${idx}-${ingIdx}`);
+        section.style.display = "block";
+        section.querySelectorAll('input').forEach(i => i.disabled = false);
         document.getElementById("retry-" + idx + "-" +ingIdx).style.display = "none";
       }
     </script>

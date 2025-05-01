@@ -270,8 +270,9 @@ menuController.saveMenu = async function (req, res, restaurant) {
   try {
     const temp = req.session.tempData || {};
     const formData = temp?.formData || req.body;
-  const files = temp?.files || req.files;
-  const manual   = req.body.manual || {};
+    const files = temp?.files || req.files;
+    const manual   = req.body.manual || {};
+
 
   
   if (!restaurant) {
@@ -281,14 +282,15 @@ menuController.saveMenu = async function (req, res, restaurant) {
   const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
   const dishObjects = dishes.map((dish, idx) => {
-    const fileInfo = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
+    const fileInfo = files.find(f => f.fieldname === "dishes[" +idx+ "][photo]");
     const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
     let nutritionalInfo;
-    if (manual[idx]) {
+    if (manual[idx] && manual[idx] != null && manual[idx] != undefined) {
       // validação mínima
+      console.log("\n\n\n\n\nManual: ", manual[idx], "\n\n\n\n\n\n");
       ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
         if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
-          throw new Error(`Valor manual para prato ${idx+1}, ${n} inválido`);
+          throw new Error("Valor manual para prato ", idx+1, " ", n ,"inválido");
       });
       nutritionalInfo = [{
         name: 'manual',
@@ -303,7 +305,7 @@ menuController.saveMenu = async function (req, res, restaurant) {
     } else {
       // usa dados da API armazenados em temp.perDish
       const infos = temp.perDish?.[idx]?.infos || [];
-      nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
+      nutritionalInfo = infos;
     }
     return new Dish({
       name: dish.name,
@@ -324,13 +326,13 @@ menuController.saveMenu = async function (req, res, restaurant) {
     photo: menuPhoto
   });
 
-
+  console.log("\n\n\n\n\n\n\n\nrestaur: ", restaurant, "\n\n\n\n\n\n");
   restaurant.menus.push(menu);
   await restaurant.save();
 
   delete req.session.tempData;
   //testar com o render
-  res.redirect(`/restaurants/${restaurant.name}`);
+  res.redirect('/restaurants/' + restaurant.name);
   }
   catch (err) {
     console.error("Erro ao salvar o menu:", err);
@@ -560,8 +562,6 @@ async function fetchNutritionalData(ingredient, type) {
     product = response.data.products?.[0];
   }
 
-  console.log("\n\n\n\n\n\n\n\n\nProduto: ", product, ingredient, "\n\n\n\n\n\n\n\n\n\n");
-
   if (!product || !product.nutriments) return null;
 
   const result = {
@@ -600,7 +600,8 @@ async function processIngredients(ingredients, searchTypes) {
 
   return {
     infos: results.map(r => ({ name: r.name, per100g: r.per100g })),
-    warnings: []
+    warnings: [],
+    aggregated: aggregated
   };
 }
 
