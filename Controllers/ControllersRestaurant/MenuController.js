@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 const multer = require("multer");
 const fs = require("fs");
 const axios = require("axios");
+const axiosRetry = require('axios-retry').default;
 const NodeCache = require("node-cache");
 const nutritionCache = new NodeCache({ stdTTL: 3600 });
 
@@ -10,6 +11,9 @@ const Restaurant = require("../../Models/Perfils/Restaurant");
 const Menu = require("../../Models/Menus/Menu");
 const Dish = require("../../Models/Menus/Dish");
 const Portion = require("../../Models/Portion");
+
+axiosRetry(axios, { retries: 3 });
+axiosRetry(axios, { retryDelay: axiosRetry.linearDelay() });
 
 //Controllers
 var menuController = {};
@@ -555,6 +559,8 @@ async function fetchNutritionalData(ingredient, type) {
     );
     product = response.data.products?.[0];
   }
+
+  console.log("\n\n\n\n\n\n\n\n\nProduto: ", product, ingredient, "\n\n\n\n\n\n\n\n\n\n");
 
   if (!product || !product.nutriments) return null;
 
