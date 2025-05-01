@@ -60,24 +60,36 @@
             <div class="col-12 col-md-10 col-lg-8 mx-auto">
                 <% if(historic.length > 0) { %>
                     <div class="row g-4 justify-content-center">
-                        <% for(let i = historic.length - 1; i > 0; i--) { %>
+                        <% for(let i = historic.length - 1; i >= 0; i--) { %>
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="card dish-card h-100">
-                                    <% if (account.perfil.perfilPhoto) { %>
-                                        <img src="<%= account.perfil.perfilPhoto %>" class="card-img-top dish-image" alt="Photo do restaurante" />
-                                    <% } else { %>
-                                        <div class="dish-image bg-secondary d-flex align-items-center justify-content-center">
-                                            <span class="text-white">Sem imagem</span>
-                                        </div>
+                                    <% if(account.perfil.priority !== "Restaurant") { %>
+                                        <% if (account.perfil.perfilPhoto) { %>
+                                            <img src="<%= account.perfil.perfilPhoto %>" class="card-img-top dish-image" alt="Photo do restaurante" />
+                                        <% } else { %>
+                                            <div class="dish-image bg-secondary d-flex align-items-center justify-content-center">
+                                                <span class="text-white">Sem imagem</span>
+                                            </div>
+                                        <% } %>
                                     <% } %>
 
-                                    <div class="card-body">
-                                        <h5 class="card-title">Nome do restaurante: <%= account.name %></h5>
-                                        <h6><%= historic[i].itens.length %> items</h6>
-                                        <h6><%= historic[i].date %></h6>
-                                        <h6><%= historic[i].status %></h6>
-                                        <a href="/restaurants/<%= restaurant.name %>/orders/historic/<%= historic[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
-                                    </div>
+                                    <% if(account.perfil.priority === "Restaurant") { %>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Nome do cliente: <%= historic[i].client.firstName %> <%= historic[i].client.lastName %></h5>
+                                            <h6><%= historic[i].itens.length %> items</h6>
+                                            <h6><%= historic[i].date %></h6>
+                                            <h6><%= historic[i].status %></h6>
+                                            <a href="/restaurants/<%= account.name %>/orders/historic/<%= historic[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
+                                        </div>
+                                    <% } else {%>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Nome do restaurante: <%= account.name %></h5>
+                                            <h6><%= historic[i].itens.length %> items</h6>
+                                            <h6><%= historic[i].date %></h6>
+                                            <h6><%= historic[i].status %></h6>
+                                            <a href="/restaurants/<%= account.name %>/orders/historic/<%= historic[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
+                                        </div>
+                                    <% } %>
                                 </div>
                             </div>
                         <% } %>

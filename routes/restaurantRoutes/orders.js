@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 //Controllers 
 const order = require("../../Controllers/ControllersRestaurant/OrderController.js"); 
 
+//Rotas
+const orderManagment = require("./orderManagment.js");
+
 //Middlewares
 const {isDonoOrRestaurant} = require("../../Middleware/TypeUserMiddleware.js");
 
@@ -27,9 +30,9 @@ router.get('/', order.addOrder);
 router.post('/saveOrder', order.saveOrder);
 
 /**
- * * Rota que carrega a pagina para o restaurante gerir as encomendas que estão em andamento
+ * * Importação das rotas de gestão de encomendas
  * */
-router.get('/orderManagement', order.orderManagment);
+router.use('/orderManagement', orderManagment);
 
 /**
  * * Rota que carrega a pagina, com o historico de encomendas do restaurante
@@ -39,20 +42,6 @@ router.get('/historic', order.historicOrder);
 /**
  * * Rota que carrega a pagina, com informação de uma encomenda especifica
  */
-router.get('historic/:orderId', order.showOrder);
-
-/**
- * * Rota que altera o estado de uma encomenda
- */
-router.post('/:orderId/status', order.updateOrderStatus);
+router.get('/historic/:orderId', order.showOrder);
 
 module.exports = router;
-
-
-/* 
-Rotas 
-router.get('/getMenus', menu.getMenus);
-*/
-
-
-

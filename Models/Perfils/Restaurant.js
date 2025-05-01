@@ -46,17 +46,6 @@ var RestaurantSchema = new mongoose.Schema({
         default: false,
         required: true,
     },
-    orders: {
-        type: [Order.schema],
-        default: [], //Inicializa com o array vazio
-        required: true,
-    },
-    //Apagar
-    countDonos: {
-        type: Number,
-        default: 0,
-        required: true,
-    },
     tempUserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

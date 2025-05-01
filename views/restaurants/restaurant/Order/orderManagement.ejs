@@ -49,15 +49,22 @@
                                     <p class="card-text">Morada: <%= order.addressOrder.address.street %>, <%= order.addressOrder.address.postal_code %>, <%= order.addressOrder.address.city %></p>
                                     <p class="card-text">Preço: <%= order.price.toFixed(2) %>€</p>
                                     <p class="card-text"><%= order.itens.length %> Itens</p>
-                                    <div class="mb-2">
-                                        <label for="estado-<%= order._id %>" class="form-label">Estado:</label>
-                                        <select id="estado-<%= order._id %>" class="form-select form-select-sm" required>
-                                            <option value="Pendente" <%= order.status === "Pendente" ? 'selected' : '' %>>Pendente</option>
-                                            <option value="Expedida" <%= order.status === "Expedida" ? 'selected' : '' %>>Expedida</option>
-                                            <option value="Entregue" <%= order.status === "Entregue" ? 'selected' : '' %>>Entregue</option>
-                                        </select>
-                                    </div>
-                                    <a href="/restaurants/<%= restaurant.name %>/orders/orderManagement/cancelOrder/<%= order._id %>" class="btn btn-sm btn-outline-danger">Apagar Order</a>
+                                    
+                                    <form action="/restaurants/<%= restaurant.name %>/orders/orderManagement/updateStatus/<%= order._id %>" method="POST">
+                                        <div class="mb-2">
+                                            <label for="estado-<%= order._id %>" class="form-label">Estado:</label>
+                                            <select name="status" id="estado-<%= order._id %>" class="form-select form-select-sm" required>
+                                                <option value="Pendente" <%= order.status === "Pendente" ? 'selected' : '' %>>Pendente</option>
+                                                <option value="Expedida" <%= order.status === "Expedida" ? 'selected' : '' %>>Expedida</option>
+                                                <option value="Entregue" <%= order.status === "Entregue" ? 'selected' : '' %>>Entregue</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm ">Atualizar Estado</button>
+                                    </form>
+
+                                    <form action="/restaurants/<%= restaurant.name %>/orders/orderManagement/cancelOrder/<%= order._id %>" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Apagar Order</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

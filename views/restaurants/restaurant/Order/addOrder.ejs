@@ -16,20 +16,26 @@
     <%- include('../navBarRest') %>
     <%- include('../../../hero', { title: 'Gestão de Pedidos', content: 'Aqui pode gerir os pedidos dos seus clientes.' }) %>
     
-    <div class="container my-4">
-      <div class="row">
-        <div class="col-auto me-3">
-          <form action="/restaurants/<%= restaurant.name %>/orders/historic" method="GET">
-            <button type="submit" class="custom-btn">Histórico de encomendas</button>
-          </form>
+    <% if(restaurant.perfil) { %>
+      <div class="container my-4">
+        <div class="row">
+          <% if(restaurant.perfil.historicOrders && restaurant.perfil.historicOrders.length > 0) { %>
+            <div class="col-auto me-3">
+              <form action="/restaurants/<%= restaurant.name %>/orders/historic" method="GET">
+                <button type="submit" class="custom-btn">Histórico de encomendas</button>
+              </form>
+            </div>
+          <% } %>
+          <% if(restaurant.perfil.orders && restaurant.perfil.orders.length > 0) { %>
+            <div class="col-auto">
+              <form action="/restaurants/<%= restaurant.name %>/orders/orderManagement" method="GET">
+                <button type="submit" class="custom-btn">Gerir encomendas</button>
+              </form>
+            </div>
+          <% } %>
         </div>
-        <div class="col-auto">
-          <form action="/restaurants/<%= restaurant.name %>/orders/orderManagement" method="GET">
-            <button type="submit" class="custom-btn">Gerir encomendas</button>
-          </form>
-        </div>
-      </div>
-    </div>    
+      </div>    
+    <% } %>
 
     <%- include('createOrder', {menus: restaurant.menus}) %>
 
