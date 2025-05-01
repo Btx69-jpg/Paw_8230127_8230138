@@ -28,6 +28,10 @@ signUpController.validationSave = function (firstName, lastName, email, phoneNum
         errors.push({ texto: "Todos os campos são obrigatórios!" });
     }
 
+    if (phoneNumber < 100000000 || phoneNumber > 999999999) {
+        errors.push({ texto: "O número de telefone deve ter 9 dígitos!" });
+    }
+
     if (password.length < 8 || confirmPassword.length < 8) {
         errors.push({ texto: "A senha deve ter pelo menos 8 caracteres!" });
     }

@@ -23,9 +23,11 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/Trab
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
 
-/*
-São os js que criei na pasta Route
-*/
+
+
+/**
+ * * Routes
+ */
 var indexRouter = require('./routes/index');
 var login = require('./routes/login'); 
 var signUp = require('./routes/signup'); 
@@ -49,11 +51,25 @@ app.use(passport.session());
 
 app.use(flash());
 
+/**
+ * * Middlewares
+ * */
+
+/**
+ * * Middleware que faz o login automático do utilizador 
+ * */
 const autoLoginMiddleware = require('./Middleware/AutoLoginMiddleware');
 app.use(autoLoginMiddleware);
 
+/**
+ * * Middleware para verificar quantos restaurantes estão pendentes de aprovação
+ * */
+const {notificationAproveRestaurante} = require('./Middleware/NavBarMiddleware');
+app.use(notificationAproveRestaurante);
 
-// Middleware para tornar mensagens disponíveis em `res.locals`
+/**
+ * * Middleware para tornar mensagens disponíveis em `res.locals`
+ */
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');

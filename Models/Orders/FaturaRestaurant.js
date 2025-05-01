@@ -8,7 +8,8 @@ var FaturaRestaurantSchema = new mongoose.Schema({
     },
     phoneNumber: {
         type: Number,
-        match: [/^[0-9]{9}$/],
+        min: [100000000, 'O telefone deve ter exatamente 9 dígitos'],
+        max: [999999999, 'O telefone deve ter exatamente 9 dígitos'],
         required: true,
     },
     email:{

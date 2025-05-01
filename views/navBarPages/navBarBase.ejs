@@ -27,38 +27,38 @@
             <% } %>
         <% } else { %>
             <% if (currentPage === 'homepage') { %>
-                
+                <%- include('notificacao') %>
+
                 <%- include('navBarPerfils') %>
+            
                 <li class="nav-item">  
                     <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/login/logOut">Log Out</a>
                 </li>
-                <% } else if (currentPage === '/checkOut') { %>
-
-                    <%- include('navBarPerfils') %>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login/logOut">Log Out</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%= previousPage %>">Voltar</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Main Page</a>
-                    </li>
-            
-                <% } else { %>
-                <!--
-                <li class="nav-item">
-                     <a class="nav-link" href="/perfil"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>                            
-                </li>
-                -->
+            <% } else if (currentPage === '/checkOut') { %>
+                <%- include('notificacao') %>
 
                 <%- include('navBarPerfils') %>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/login/logOut">Log Out</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<%= previousPage %>">Voltar</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Main Page</a>
+                </li>
+            
+            <% } else { %>
+                <%- include('notificacao') %>
+
+                <%- include('navBarPerfils') %>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="/checkOut"><img src="/images/Plataform/checkOut.png" alt="Carrinho" class="img-fluid" style="max-width: 25px;"> Carrinho</a>
                 </li>

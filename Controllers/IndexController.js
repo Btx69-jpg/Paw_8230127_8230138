@@ -7,7 +7,7 @@ const Restaurant = require("../Models/Perfils/Restaurant");
 //Metodos
 const {carregarCategoriesMenus} = require("./Functions/categories.js");
 
-indexController.indexPage = function(req, res) {
+indexController.indexPage = async function(req, res) {
     res.render('index');
 }
 

@@ -1,0 +1,14 @@
+<% if (pendingRestaurantsCount > 0) { %>
+    <li class="nav-item position-relative">
+        <a class="nav-link d-flex align-items-center gap-2" href="/perfil/admin/listRestaurants/aproves">
+            <i class="bi bi-bell fs-5"></i>
+            <span class="d-none d-md-inline">Restaurantes por aprovar</span>
+            
+            <!-- Badge de notificação -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+                <%= pendingRestaurantsCount > 99 ? '99+' : pendingRestaurantsCount %>
+                <span class="visually-hidden">Notificações pendentes</span>
+            </span>
+        </a>
+    </li>
+<% } %>

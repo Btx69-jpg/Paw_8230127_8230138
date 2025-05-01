@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-      <% if(restaurant.perfil.perfilPhoto != "") {%>
+      <% if(restaurant.perfil.perfilPhoto != "") { %>
         <img src="<%=restaurant.perfil.perfilPhoto%>" alt="Logo do restaurant" style="max-width: 50px;">  
         <a class="navbar-brand" href="/restaurants/<%= restaurant.name %>"><%= restaurant.name %></a>
-      <%} else {%> 
+      <% } else { %> 
         <img src="/images/Plataform/LogoSite/logo.png" alt="Logo do Site" style="max-width: 50px;"> 
         <a class="navbar-brand" href="/<%= restaurant.name %>">Click&Eat</a>
-      <%}%>
+      <% } %>
 
       <%- include('../../navBarPages/navBarBase') %>
   </div>
