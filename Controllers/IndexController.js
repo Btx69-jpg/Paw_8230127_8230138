@@ -12,9 +12,17 @@ indexController.indexPage = function(req, res) {
 }
 
 indexController.search = function(req, res) {
-    Restaurant.findOne({ name: req.query.restaurantName }).exec()
-        .then(async restaurant => {
-            if (!restaurant) {
+    query = {};
+    const nameRest = req.query.restaurantName;
+
+    if(nameRest) {
+        query.name = { $regex: nameRest, $options: 'i' };
+    }
+
+    Restaurant.find(query).exec()
+        .then(async restaurants => {
+            if (!restaurants) {
+                console.log("Não existem restaurantes com esse nome");
                 return res.status(404).render("index");
             }
         

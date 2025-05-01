@@ -199,32 +199,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const quantidade = parseInt(qtyInput.value, 10);
-        if(quantidade <= 0) {
+        let quantity = parseInt(qtyInput.value, 10);
+        if(!quantity) {
             qtyInput.value = '1';
-            alert = "A quantidade não pode ser negativa ou 0";
-            return;
-        } else if(quantidade > 10) {
+            quantity = 1;
+            //alert('A quantidade tem de exisitir');
+        } else if(quantity <= 0) {
+            qtyInput.value = '1';
+            quantity = 1;
+            //alert("A quantidade não pode ser negativa ou 0");
+        } else if(quantity > 10) {
             qtyInput.value = '10';
-            alert = "A quantidade não pode ser superior a 10";
-            return;
-        } else if(!quantidade) {
-            qtyInput.value = '1';
-            alert('A quantidade tem de exisitir');
-            return;
+            quantity = 10;
+            //alert("A quantidade não pode ser superior a 10");
         }
-
+        
         const priceInp = itemDiv.querySelector('input.price');
         const baseInp = itemDiv.querySelector('input.precoBase');
         const totOrderInp = document.getElementById('totEncomenda');
 
         const precoBase = parseFloat(baseInp.value);
         const prevPreco = parseFloat(priceInp.value);
-        const novoPreco = precoBase * quantidade;
+        const novoPreco = precoBase * quantity;
 
-        priceInp.value = novoPreco.toFixed(2);
         const totAntigo = parseFloat(totOrderInp.value) || 0;
         const totNovo = totAntigo - prevPreco + novoPreco;
+        priceInp.value = novoPreco.toFixed(2);
         totOrderInp.value = totNovo.toFixed(2);
     }
 

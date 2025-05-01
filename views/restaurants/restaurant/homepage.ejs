@@ -23,8 +23,7 @@
       <div class="mb-4" >
         <a href="/restaurants" class="btn btn-secondary">Voltar</a>
 
-        <% if(user !== null && user.perfil !== null && 
-          (user.perfil.priority === "Dono" || user.perfil.priority === "Restaurant")) { %>
+        <% if(autGest) { %>
             <a href="/restaurants/<%= restaurant.name %>/orders" class="btn btn-primary">Gestão de pedidos</a>  
         <% } %>    
       </div>
