@@ -9,8 +9,8 @@ const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
 const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
 
 //Routers 
-const adminRouter = require("../routes/admin.js") 
-
+const adminRouter = require("./perfilRoutes/admin.js") 
+const userRouter = require("./perfilRoutes/user.js")
 /**
  * * Rota que aplicar a todas as rotas deste js os suguintes middlewares
  * 
@@ -23,4 +23,5 @@ router.use(authenticateToken);
  * */
 router.use('/admin', isAdmin, adminRouter);
 
+router.use('/user', userRouter);
 module.exports = router;

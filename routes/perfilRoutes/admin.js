@@ -2,17 +2,17 @@ const express = require("express");
 const router = express.Router();
 
 //Controllers
-const adminController = require("../Controllers/AdminController.js");
+const adminController = require("../../Controllers/AdminController.js");
 
 //Middlewares
-const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
+const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
+const {isAdmin} = require("../../Middleware/TypeUserMiddleware.js");
 
 //Routers
 const restaurantRouter = require("./adminRoutes/listrestaurants.js");
 const userRouter = require("./adminRoutes/listusers.js");
 const categoriesRouter = require("./adminRoutes/categories.js");
-const passwordController = require("../Controllers/PasswordController.js");
+const passwordController = require("../../Controllers/PasswordController.js");
 const portionsRouter = require("./adminRoutes/portions.js");
 
 /**
