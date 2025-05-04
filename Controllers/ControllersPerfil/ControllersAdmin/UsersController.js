@@ -2,13 +2,13 @@ var mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 //Models
-const User = require("../../Models/Perfils/User");
-const Perfil = require("../../Models/Perfils/Perfil");
-const Restaurant = require("../../Models/Perfils/Restaurant");
+const User = require("../../../Models/Perfils/User");
+const Perfil = require("../../../Models/Perfils/Perfil");
+const Restaurant = require("../../../Models/Perfils/Restaurant");
 
 //Constrollers
-const signUpController = require("../SignUpController");
-const { restaurantsPage } = require("../RestaurantsController");
+const signUpController = require("../../SignUpController");
+const { restaurantsPage } = require("../../RestaurantsController");
 
 var userController = {};
 

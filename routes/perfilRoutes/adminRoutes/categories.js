@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //Models
-const categoriesController = require("../../../Controllers/ControllersAdmin/CategoriesController.js");
+const categoriesController = require("../../../Controllers/ControllersPerfil/ControllersAdmin/CategoriesController.js");
 
 /**
  * * Rota que carrega a pagina, com uma lista de todas as categorias

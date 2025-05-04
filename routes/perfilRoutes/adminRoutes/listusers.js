@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //Controller
-const userController = require("../../../Controllers/ControllersAdmin/UsersController.js");
+const userController = require("../../../Controllers/ControllersPerfil/ControllersAdmin/UsersController.js");
 
 /**
  * * Rota que carrega a pagina, com a lista de todos os utilizadores do site.

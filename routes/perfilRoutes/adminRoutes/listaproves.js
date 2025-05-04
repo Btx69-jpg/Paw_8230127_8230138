@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 //Controller
-const aprovacaoRestController = require("../../../Controllers/ControllersAdmin/AprovacaoRestController.js");
-const listrestaurantController = require("../../../Controllers/ControllersAdmin/ListRestaurantController.js");
+const aprovacaoRestController = require("../../../Controllers/ControllersPerfil/ControllersAdmin/AprovacaoRestController.js");
+const listrestaurantController = require("../../../Controllers/ControllersPerfil/ControllersAdmin/ListRestaurantController.js");
 
 /**
  * * Rota que carrega a página para aprovar ou rejeitar restaurantes 

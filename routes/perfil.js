@@ -6,7 +6,7 @@ var router = express.Router();
 
 //Middlewares
 const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
-const {isAdmin} = require("../Middleware/TypeUserMiddleware.js");
+const {isAdmin, isDonoOrCliente} = require("../Middleware/TypeUserMiddleware.js");
 
 //Routers 
 const adminRouter = require("./perfilRoutes/admin.js") 
@@ -23,5 +23,5 @@ router.use(authenticateToken);
  * */
 router.use('/admin', isAdmin, adminRouter);
 
-router.use('/user', userRouter);
+router.use('/user', isDonoOrCliente, userRouter);
 module.exports = router;

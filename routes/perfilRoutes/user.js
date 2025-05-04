@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //Controllers
-const userController = require("../../Controllers/UserContro.js");
+const userController = require("../../Controllers/UserController.js");
 
 //Middlewares
 const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
@@ -16,6 +16,8 @@ const {isDonoOrCliente} = require("../../Middleware/TypeUserMiddleware.js");
  * */
 router.use(authenticateToken, isDonoOrCliente);
 
-router.get("/getUser/:userId", userController.getUser);
+router.get("/:userId", userController.getUser);
+
+router.get("/:userId/historicOrder", userController.getUser);
 
 module.exports = router;

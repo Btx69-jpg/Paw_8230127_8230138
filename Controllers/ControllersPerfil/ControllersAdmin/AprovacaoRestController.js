@@ -1,10 +1,10 @@
 var mongoose = require("mongoose");
 
-var Restaurant = require("../../Models/Perfils/Restaurant");
+var Restaurant = require("../../../Models/Perfils/Restaurant");
 
 //Metodos
-const { deletePackage } = require('../Functions/crudPackage');
-const User = require("../../Models/Perfils/User");
+const { deletePackage } = require('../../Functions/crudPackage');
+const User = require("../../../Models/Perfils/User");
 var aprovacaoRestController = {};
 
 aprovacaoRestController.aprovePage = async function(req, res) {

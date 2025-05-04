@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //Controllers
-const portionsController = require("../../../Controllers/ControllersAdmin/PortionController.js");
+const portionsController = require("../../../Controllers/ControllersPerfil/ControllersAdmin/PortionController.js");
 
 /**
  * * Rota que renderiza pagina com a lista das porções existentes 

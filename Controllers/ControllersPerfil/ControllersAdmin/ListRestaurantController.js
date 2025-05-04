@@ -1,8 +1,8 @@
 var mongoose = require("mongoose");
 
 //Models
-const Restaurant = require("../../Models/Perfils/Restaurant");
-const User = require("../../Models/Perfils/User");
+const Restaurant = require("../../../Models/Perfils/Restaurant");
+const User = require("../../../Models/Perfils/User");
 
 var listRestaurantController = {};
 
