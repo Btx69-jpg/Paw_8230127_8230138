@@ -271,49 +271,50 @@ menuController.saveMenu = async function (req, res, restaurant) {
     const formData = temp?.formData || req.body;
     const files = temp?.files || req.files;
     const manual   = req.body.manual || {};
-
-
-  
-  if (!restaurant) {
-    restaurant = temp.restaurant;
-  }
-  restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
-  const dishes = [].concat(formData?.dishes || []).filter(Boolean);
-
-  const dishObjects = dishes.map((dish, idx) => {
-    const fileInfo = files.find(f => f.fieldname === "dishes[" +idx+ "][photo]");
-    const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
-    let nutritionalInfo;
-    if (manual[idx] && manual[idx] != null && manual[idx] != undefined) {
-      // validação mínima
-      console.log("\n\n\n\n\nManual: ", manual[idx], "\n\n\n\n\n\n");
-      ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
-        if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
-          throw new Error("Valor manual para prato ", idx+1, " ", n ,"inválido");
-      });
-      nutritionalInfo = [{
-        name: 'manual',
-        per100g: {
-          calories: Number(manual[idx].calories),
-          protein: Number(manual[idx].protein),
-          fat: Number(manual[idx].fat),
-          carbohydrates: Number(manual[idx].carbohydrates),
-          sugars: Number(manual[idx].sugars)
-        }
-      }];
-    } else {
-      // usa dados da API armazenados em temp.perDish
-      const infos = temp.perDish?.[idx]?.infos || [];
-      nutritionalInfo = infos;
+    
+    if (!restaurant) {
+      restaurant = temp.restaurant;
     }
-    return new Dish({
-      name: dish.name,
-      description: dish.description,
-      category: dish.category,
-      portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
-      photo: photo,
-      nutritionalInfo: nutritionalInfo
-    });
+    
+    restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
+    const dishes = [].concat(formData?.dishes || []).filter(Boolean);
+
+    const dishObjects = dishes.map((dish, idx) => {
+      const fileInfo = files.find(f => f.fieldname === "dishes[" +idx+ "][photo]");
+      const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
+      let nutritionalInfo;
+      if (manual[idx] && manual[idx] != null && manual[idx] != undefined) {
+        // validação mínima
+        console.log("\n\n\n\n\nManual: ", manual[idx], "\n\n\n\n\n\n");
+        ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
+          if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
+            throw new Error("Valor manual para prato ", idx+1, " ", n ,"inválido");
+        });
+        nutritionalInfo = [{
+          name: 'manual',
+          per100g: {
+            calories: Number(manual[idx].calories),
+            protein: Number(manual[idx].protein),
+            fat: Number(manual[idx].fat),
+            carbohydrates: Number(manual[idx].carbohydrates),
+            sugars: Number(manual[idx].sugars)
+          }
+        }];
+      } else {
+        // usa dados da API armazenados em temp.perDish
+        const infos = temp.perDish?.[idx]?.infos || [];
+        nutritionalInfo = infos;
+      }
+      
+      return new Dish({
+        name: dish.name,
+        description: dish.description,
+        category: dish.category,
+        portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
+        photo: photo,
+        nutritionalInfo: nutritionalInfo
+      });
+    }); 
 
     const menuFile = files.find(f => f.fieldname === 'menuPhoto');
     const menuPhoto = menuFile ? '/' + menuFile.path.replace(/^public[\\/]/, '') : null;
@@ -324,14 +325,14 @@ menuController.saveMenu = async function (req, res, restaurant) {
       photo: menuPhoto
     });
 
-  console.log("\n\n\n\n\n\n\n\nrestaur: ", restaurant, "\n\n\n\n\n\n");
-  restaurant.menus.push(menu);
-  await restaurant.save();
+    console.log("\n\n\n\n\n\n\n\nrestaur: ", restaurant, "\n\n\n\n\n\n");
+    restaurant.menus.push(menu);
+    await restaurant.save();
 
-  delete req.session.tempData;
-  //testar com o render
-  res.redirect('/restaurants/' + restaurant.name);
-  } catch (err) {
+    delete req.session.tempData;
+    //testar com o render
+    res.redirect('/restaurants/' + restaurant.name);
+  }catch (err) {
     console.error("Erro ao salvar o menu:", err);
     cleanupUploadDir(req.uploadDir);
     res.render("errors/error", { numError: 500, error: err });
