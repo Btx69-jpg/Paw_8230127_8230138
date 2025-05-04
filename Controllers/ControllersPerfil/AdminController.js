@@ -1,13 +1,13 @@
 var mongoose = require("mongoose");
 const multer = require('multer');
 //Models
-const User = require("../Models/Perfils/User");
-const Restaurant = require("../Models/Perfils/Restaurant");
+const User = require("../../Models/Perfils/User");
+const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Controllers
 
-const { deleteImage} = require("./Functions/crudImagesRest");
-const signUpController = require("./SignUpController");
+const { deleteImage} = require("../Functions/crudImagesRest");
+const signUpController = require("../SignUpController");
 var adminController = {};
 
 adminController.homePage = function(req, res) {
@@ -17,19 +17,6 @@ adminController.homePage = function(req, res) {
 
 adminController.editPage = function(req, res) {
     res.render("perfil/admin/PagesAdmin/Users/editAdmin", {userD: res.locals.user});
-};
-
-//Se calhar antes do delete se tudo estiver vem o melhor é dar o logout
-adminController.deleteAdm = async function(req, res) {
-    User.deleteOne( {_id: req.params.adminId}).exec()
-        .then(user => {
-            console.log("User eliminado com sucesso");
-            res.redirect("/");
-        }) 
-        .catch(error => {
-            console.log("Erro :", error);
-            res.redirect(res.locals.previousPage);
-        })
 };
 
 async function validateUser(user, email, phoneNumber) {

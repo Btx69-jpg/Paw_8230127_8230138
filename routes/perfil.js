@@ -23,5 +23,5 @@ router.use(authenticateToken);
  * */
 router.use('/admin', isAdmin, adminRouter);
 
-router.use('/user', isDonoOrCliente, userRouter);
+router.use('/user/:userId', isDonoOrCliente, userRouter);
 module.exports = router;

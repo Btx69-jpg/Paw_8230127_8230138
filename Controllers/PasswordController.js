@@ -7,17 +7,55 @@ var User = require("../Models/Perfils/User");
 var passwordController = {};
 
 passwordController.editPassword = async function (req, res) {
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log();
+  console.log("---------------------------------");
+  console.log("Edit Password");
   try {
     const priority = req.cookies.priority;
+    const accountId = req.params.accountId;
     let account = null;
 
     if (priority === "Restaurant") {
-      account = await Restaurant.findOne({ _id: req.params.accountId }).exec();
+      account = await Restaurant.findOne({ _id: accountId }).exec();
     } else {
-      account = await User.findOne({ _id: req.params.accountId }).exec();
+      account = await User.findOne({ _id: accountId }).exec();
     }
 
-    res.render("login/editPassword", { account: account, priority: priority });
+    if (priority === "Admin") {
+      
+    } else {
+      
+    }
+
+    let action = "";
+    console.log(res.locals.currentPage);
+    switch(res.locals.currentPage) {
+      case `/perfil/admin/editPassword/${accountId}`: {
+        action = `/perfil/admin/changePassword/${accountId}`;
+        voltar = `/perfil/admin`;
+        break;
+      } case `/restaurants/editRestaurant/editPassword/${accountId}`: {
+        action = `/restaurants/editRestaurant/changePassword/${accountId}`;
+        voltar = `/restaurants/editRestaurant/${accountId}`;
+        break;
+      } case `/perfil/user/editPassword/${accountId}`: {
+        action = `/perfil/user/changePassword/${accountId}`;
+        voltar = `perfil/user/${accountId}`
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
+    res.render("login/editPassword", { account: account, action: action });
   } catch (error) {
     console.log("Error", error);
     res.redirect(res.locals.previousPage);
@@ -42,6 +80,9 @@ async function validateNewPassowrd(body, userPassword) {
   return problem;
 }
 
+/*
+TODO: Alterar rotas
+*/
 passwordController.updatePassword = async (req, res) => {
   console.log("Update Password");
   const priority = req.cookies.priority;

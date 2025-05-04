@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 //Controllers
-const adminController = require("../../Controllers/AdminController.js");
+const adminController = require("../../Controllers/ControllersPerfil/AdminController.js");
+const perfilController = require("../../Controllers/PerfilController.js");
 
 //Middlewares
 const {authenticateToken} = require("../../Middleware/AuthTokenMiddleware.js");
@@ -61,7 +62,7 @@ router.post("/changePassword/:accountId", passwordController.updatePassword);
  * 
  * * adminId --> id do admin, que a conta foi eliminada
  */
-router.post("/deleteAccount/:adminId", adminController.deleteAdm);
+router.post("/deleteAccount/:adminId", perfilController.deleteAccount);
 
 /**
  * * Importação do router com as rotas que permitem ao admin realizar o CRUD dos restaurantes 
