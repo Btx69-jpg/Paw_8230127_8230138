@@ -2,10 +2,9 @@ var mongoose = require("mongoose");
 const multer = require('multer');
 //Models
 const User = require("../Models/Perfils/User");
-const Restaurant = require("../Models/Perfils/Restaurant");
 
 //Controllers
-var perfilController = {};
+var userController = {};
 
 //Se calhar antes do delete se tudo estiver vem o melhor é dar o logout
 /**
@@ -49,4 +48,4 @@ userController.updateAddress = function(req, res) {}
 /* Controller que elimina a morada */
 userController.deleteAddress = function(req, res) {}
 
-module.exports = perfilController;
+module.exports = userController;
