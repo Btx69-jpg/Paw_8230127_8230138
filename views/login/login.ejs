@@ -74,7 +74,7 @@
         
         <!-- Login social -->
         <div class="d-flex justify-content-center gap-2 mb-4">
-          <a class="g-signin2" data-onsuccess="onSignIn" class="btn btn-outline-secondary">
+          <a class="g-signin2" data-onsuccess="onSignIn" class="btn btn-outline-secondary" href="/auth/google" >
             <img src="/images/Plataform/LogosLogin/google.png" alt="Google" style="width: 20px; height: 20px;">
           </a>
         </div>
@@ -83,6 +83,8 @@
         <p class="text-center">Não tem conta? <a href="/signUp" class="text-decoration-none">Registre-se</a></p>
       </div>
     </div>
+
+    <%- include('../loading.ejs',{message: " "}) %>
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <!-- Bootstrap JS Bundle (opcional para funcionalidades JS do Bootstrap) -->

@@ -37,10 +37,6 @@ let dishIndex = 1; // O primeiro formulário já está indexado como 0
               <input type="text" name="dishes[${dishIndex}][category]" id="dishCategory${dishIndex}" class="form-control" required>
             </div>
           <% } %>
-          <div class="mb-3">
-            <label for="dishPrice${dishIndex}" class="form-label">Preço:</label>
-            <input type="number" name="dishes[${dishIndex}][price]" id="dishPrice${dishIndex}" class="form-control" placeholder="Preço do prato" required min="0" step="0.01">
-          </div>
 
           <div class="mb-3">
   <label class="form-label">Ingredientes:</label>

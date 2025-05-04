@@ -21,12 +21,6 @@ var DishSchema = new mongoose.Schema({
         default: "",
         required: true,
     },
-    price: {
-        type: Number,
-        default: 0,
-        min: [0, 'O preço mínimo é 0'],
-        required: true,
-    },
     portions: [{
         portion: { type: mongoose.Schema.Types.ObjectId, ref: 'Portion' },
         price: {
@@ -39,6 +33,10 @@ var DishSchema = new mongoose.Schema({
         default: "",
     },
     nutritionalInfo: [ NutrientSchema.schema ],
+    totalNutritionalInfo: {
+        type: NutrientSchema.schema,
+        default: {}
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

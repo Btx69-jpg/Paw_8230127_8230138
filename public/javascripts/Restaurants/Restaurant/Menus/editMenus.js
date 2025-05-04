@@ -88,10 +88,6 @@ function addNewDishField() {
           <% }); %>
         </select>
       </div>
-      <div class="col-md-6 mb-3">
-        <label class="form-label">Preço:</label>
-        <input type="number" name="newDishes[${newDishIndex}][price]" class="form-control" step="0.01" required>
-      </div>
     </div>
     <!-- Seção de Porções para o novo prato -->
     <div class="mb-3">
@@ -122,22 +118,3 @@ function addNewDishField() {
   newDishIndex++;
 }
 
-// Função para confirmar a exclusão do menu
-function confirmDelete() {
-  if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-        window.location.href = `/restaurants/<%= restaurant.name %>`;
-      } else {
-        alert('Erro ao apagar o menu');
-      }
-    });
-  }
-}

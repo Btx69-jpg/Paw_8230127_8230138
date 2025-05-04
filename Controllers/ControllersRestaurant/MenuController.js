@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 const multer = require("multer");
 const fs = require("fs");
 const axios = require("axios");
+const axiosRetry = require('axios-retry').default;
 const NodeCache = require("node-cache");
 const nutritionCache = new NodeCache({ stdTTL: 3600 });
 
@@ -10,6 +11,9 @@ const Restaurant = require("../../Models/Perfils/Restaurant");
 const Menu = require("../../Models/Menus/Menu");
 const Dish = require("../../Models/Menus/Dish");
 const Portion = require("../../Models/Portion");
+
+axiosRetry(axios, { retries: 3 });
+axiosRetry(axios, { retryDelay: axiosRetry.linearDelay() });
 
 //Controllers
 var menuController = {};
@@ -266,49 +270,49 @@ menuController.saveMenu = async function (req, res, restaurant) {
     const temp = req.session.tempData || {};
     const formData = temp?.formData || req.body;
     const files = temp?.files || req.files;
-    const manual = req.body.manual || {};
+    const manual   = req.body.manual || {};
 
-    if (!restaurant) {
-      restaurant = temp.restaurant;
-    }
 
-    restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
-    const dishes = [].concat(formData?.dishes || []).filter(Boolean);
+  
+  if (!restaurant) {
+    restaurant = temp.restaurant;
+  }
+  restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
+  const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
-    const dishObjects = dishes.map((dish, idx) => {
-      const fileInfo = files.find(f => f.fieldname === `dishes[${idx}][photo]`);
-      const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
-      let nutritionalInfo;
-      if (manual[idx]) {
-        // validação mínima
-        ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
-          if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
-            throw new Error(`Valor manual para prato ${idx+1}, ${n} inválido`);
-        });
-        nutritionalInfo = [{
-          name: 'manual',
-          per100g: {
-            calories: Number(manual[idx].calories),
-            protein: Number(manual[idx].protein),
-            fat: Number(manual[idx].fat),
-            carbohydrates: Number(manual[idx].carbohydrates),
-            sugars: Number(manual[idx].sugars)
-          }
-        }];
-      } else {
-        // usa dados da API armazenados em temp.perDish
-        const infos = temp.perDish?.[idx]?.infos || [];
-        nutritionalInfo = infos.map(i => ({ name: i.name, per100g: i.per100g }));
-      }
-      return new Dish({
-        name: dish.name,
-        description: dish.description,
-        category: dish.category,
-        price: dish.price,
-        portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
-        photo: photo,
-        nutritionalInfo: nutritionalInfo
+  const dishObjects = dishes.map((dish, idx) => {
+    const fileInfo = files.find(f => f.fieldname === "dishes[" +idx+ "][photo]");
+    const photo = fileInfo ? '/' + fileInfo.path.replace(/^public[\\/]/, '') : null;
+    let nutritionalInfo;
+    if (manual[idx] && manual[idx] != null && manual[idx] != undefined) {
+      // validação mínima
+      console.log("\n\n\n\n\nManual: ", manual[idx], "\n\n\n\n\n\n");
+      ['calories','protein','fat','carbohydrates','sugars'].forEach(n => {
+        if (manual[idx][n] == null || isNaN(manual[idx][n]) || Number(manual[idx][n]) < 0)
+          throw new Error("Valor manual para prato ", idx+1, " ", n ,"inválido");
       });
+      nutritionalInfo = [{
+        name: 'manual',
+        per100g: {
+          calories: Number(manual[idx].calories),
+          protein: Number(manual[idx].protein),
+          fat: Number(manual[idx].fat),
+          carbohydrates: Number(manual[idx].carbohydrates),
+          sugars: Number(manual[idx].sugars)
+        }
+      }];
+    } else {
+      // usa dados da API armazenados em temp.perDish
+      const infos = temp.perDish?.[idx]?.infos || [];
+      nutritionalInfo = infos;
+    }
+    return new Dish({
+      name: dish.name,
+      description: dish.description,
+      category: dish.category,
+      portions: (dish.portions || []).map((p, i) => ({ portion: p, price: parseFloat(dish.portionPrices[i]) })),
+      photo: photo,
+      nutritionalInfo: nutritionalInfo
     });
 
     const menuFile = files.find(f => f.fieldname === 'menuPhoto');
@@ -320,13 +324,13 @@ menuController.saveMenu = async function (req, res, restaurant) {
       photo: menuPhoto
     });
 
+  console.log("\n\n\n\n\n\n\n\nrestaur: ", restaurant, "\n\n\n\n\n\n");
+  restaurant.menus.push(menu);
+  await restaurant.save();
 
-    restaurant.menus.push(menu);
-    await restaurant.save();
-
-    delete req.session.tempData;
-    //testar com o render
-    res.redirect(`/restaurants/${restaurant.name}`);
+  delete req.session.tempData;
+  //testar com o render
+  res.redirect('/restaurants/' + restaurant.name);
   } catch (err) {
     console.error("Erro ao salvar o menu:", err);
     cleanupUploadDir(req.uploadDir);
@@ -407,7 +411,6 @@ menuController.saveEditMenu = async function (req, res) {
             existingDish.name = dishData.name;
             existingDish.description = dishData.description;
             existingDish.category = dishData.category;
-            existingDish.price = dishData.price;
 
             const portionsData = [];
             if (dishData.portions) {
@@ -474,7 +477,6 @@ menuController.saveEditMenu = async function (req, res) {
             name: newDish.name,
             description: newDish.description,
             category: newDish.category,
-            price: newDish.price,
             photo: "/" + file.path.replace(/^public[\\/]/, ""),
           })
         );
@@ -507,6 +509,7 @@ menuController.saveEditMenu = async function (req, res) {
 
 menuController.deleteMenu = async function (req, res) {
   try {
+    console.log("\n\n\n\n\n\n\n\nDeleting menu...\n\n\n\n\n\n");
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,
     }).exec();
@@ -595,7 +598,8 @@ async function processIngredients(ingredients, searchTypes) {
 
   return {
     infos: results.map(r => ({ name: r.name, per100g: r.per100g })),
-    warnings: []
+    warnings: [],
+    aggregated: aggregated
   };
 }
 
