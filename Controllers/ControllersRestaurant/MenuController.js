@@ -305,7 +305,7 @@ menuController.saveMenu = async function (req, res, restaurant) {
         const infos = temp.perDish?.[idx]?.infos || [];
         nutritionalInfo = infos;
       }
-      
+
       return new Dish({
         name: dish.name,
         description: dish.description,
@@ -332,7 +332,7 @@ menuController.saveMenu = async function (req, res, restaurant) {
     delete req.session.tempData;
     //testar com o render
     res.redirect('/restaurants/' + restaurant.name);
-  }catch (err) {
+  } catch (err) {
     console.error("Erro ao salvar o menu:", err);
     cleanupUploadDir(req.uploadDir);
     res.render("errors/error", { numError: 500, error: err });
