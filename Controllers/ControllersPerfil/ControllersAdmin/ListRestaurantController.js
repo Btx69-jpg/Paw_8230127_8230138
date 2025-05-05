@@ -33,33 +33,35 @@ listRestaurantController.homePage = function(req, res) {
 listRestaurantController.showRestaurant = async function(req, res) {
     try {
         const restaurantId = req.params.restaurantId
-        const restaurant = await Restaurant.findById(restaurantId).exec();
-        if (restaurant) {
-            let owners = []
-
-            if(restaurant.perfil.ownersIds) {
-                owners = await User.find( {_id: {$in: restaurant.perfil.ownersIds } }).exec()
-            }
-
-            let voltar = "";
-            switch(res.locals.currentPage) {
-                case `/perfil/admin/listRestaurants/showRest/${restaurantId}`: {
-                    voltar = "/perfil/admin/listRestaurants";
-                    break;
-                } case `/perfil/admin/listRestaurants/aproves/showRestaurant/${restaurantId}`: {
-                    voltar = "/perfil/admin/listRestaurants/aproves";
-                    break;
-                } default: {
-                    console.log("URL não existente");
-                    return res.redirect(res.locals.previousPage);
-                }
-            }
-
-            res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners, voltar: voltar});
-        } else {
+        const restaurant = await Restaurant.findOne({_id: restaurantId, aprove: false}).exec();
+        
+        if (!restaurant) {
             console.log("O restaurant não existe não existe")
             res.status(404).render(res.locals.previousPage);
         }
+        
+        let owners = []
+
+        if (restaurant.perfil.ownersIds) {
+            owners = await User.find( {_id: {$in: restaurant.perfil.ownersIds } }).exec()
+        }
+
+        let voltar = "";
+        switch(res.locals.currentPage) {
+            case `/perfil/admin/listRestaurants/showRest/${restaurantId}`: {
+                voltar = "/perfil/admin/listRestaurants";
+                break;
+            } case `/perfil/admin/listRestaurants/aproves/showRestaurant/${restaurantId}`: {
+                voltar = "/perfil/admin/listR estaurants/aproves";
+                break;
+            } default: {
+                console.log("URL não existente");
+                return res.status(404).redirect(res.locals.previousPage);
+            }
+        }
+
+        res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners, voltar: voltar});
+
     } catch(error) {
         console.log("Error: ", error)
         res.status(404).render(res.locals.previousPage);

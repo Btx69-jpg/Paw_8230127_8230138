@@ -4,26 +4,6 @@
             "get": {
                 "summary": "Carrega a página para registo de um restaurante",
                 "tags": [ "Registo de Restaurant" ],
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "description": "Filtra restaurantes cujo nome contenha este valor",
-                        "schema": {
-                        "type": "string"
-                        }
-                    },
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "required": false,
-                        "description": "Filtra restaurantes que estejam nesta cidade",
-                        "schema": {
-                        "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -41,26 +21,6 @@
             "post": {
                 "summary": "Carrega a página para registo de um restaurante",
                 "tags": [ "Registo de Restaurant" ],
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "description": "Filtra restaurantes cujo nome contenha este valor",
-                        "schema": {
-                        "type": "string"
-                        }
-                    },
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "required": false,
-                        "description": "Filtra restaurantes que estejam nesta cidade",
-                        "schema": {
-                        "type": "string"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK"

@@ -1,0 +1,204 @@
+{
+    "paths": {
+        "/perfil/admin/listCategories": {
+            "get": {
+                "summary": "Carrega a página com a lista de restaurants do site",
+                "tags": [ "Admin/Categories" ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listCategories/search": {
+            "get": {
+                "summary": "Carrega a página com a lista de restaurants do site",
+                "tags": [ "Admin/Categories" ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra uma categoria pelo nome",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "required": false,
+                        "description": "Criterio de ordenação dos restaurantes",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["no", "nameAsc", "nameDesc"]
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listCategories/createCategory": {
+            "get": {
+                "summary": "Página para criação de uma nova Categoria",
+                "tags": ["Admin/Categories"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listCategories/saveCategory": {
+            "post": {
+                "summary": "Página que guarda uma nova Categoria",
+                "tags": ["Admin/Categories"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                   "category": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "patttern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "description": "Nome do categoria (até 50 caracteres)",
+                                        "default": ""
+                                    }
+                                },
+                                "required": [
+                                    "category"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": { "description": "Ok"},
+                        "403": { "description": "Falta de autorização para aceder há página"},
+                        "500": { "description": "Erro interno" }
+                    }
+                }
+            }
+        }, 
+        "/perfil/admin/listCategories/deletetCategory/{categoryId}": {
+            "post": {
+                "summary": "Elimina definitivamente uma categoria",
+                "tags": [ "Admin/Categories" ],
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id da Categoria a eliminar",
+                        "schema": {
+                        "type": "string"
+                        }
+                    }
+                ],
+                "security": [ { "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listCategories/editCategory/{categoryId}": {
+            "get": {
+                "summary": "Página para atualizar o nome de uma categoria",
+                "tags": ["Admin/Categories"],
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da categoria a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listCategories/updatCategory/{categoryId}": {
+            "post": {
+                "summary": "Atualiza o nome de um categoria",
+                "tags": ["Admin/Categories"],
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da categoria a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "category": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "patttern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "description": "Nome do categoria (até 50 caracteres)",
+                                        "default": ""
+                                    }
+                                },
+                                "required": [
+                                    "category"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": { "description": "Ok" },
+                        "403": { "description": "Falta de autorização para aceder há página" },
+                        "500": { "description": "Erro interno" }
+                    }
+                }
+            }
+        }
+    }
+}

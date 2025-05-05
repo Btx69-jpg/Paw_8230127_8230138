@@ -1,0 +1,91 @@
+{
+    "paths": {
+        "/perfil/admin/listRestaurants/aproves": {
+            "get": {
+                "summary": "Carrega a página com a lista de restaurants por aprovar",
+                "tags": ["Admin/Restaurants/ListAprove"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/aproves/{restaurantId}": {
+            "post": {
+                "summary": "Realiza a aprovação de um restaurante",
+                "tags": ["Admin/Restaurants/ListAprove"],
+                "parameters": [
+                    {
+                        "name": "restaurant",
+                        "in": "path",
+                        "required": true,
+                        "description": "Nome do Restaurante a aprovar",
+                        "schema": {
+                        "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/aproves/reject/{restaurantId}": {
+            "post": {
+                "summary": "Realiza a rejeição de um restaurante",
+                "tags": ["Admin/Restaurants/ListAprove"],
+                "parameters": [
+                    {
+                        "name": "restaurant",
+                        "in": "path",
+                        "required": true,
+                        "description": "Nome do Restaurante a rejeitar",
+                        "schema": {
+                        "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/aproves/showRestaurant/{restaurantId}": {
+            "get": {
+                "summary": "Página que mostra os dados de um restaurante especifico",
+                "tags": ["Admin/Restaurants/ListAprove"],
+                "parameters": [
+                    {
+                        "name": "restaurantId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do restaurante a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        }
+    }
+}

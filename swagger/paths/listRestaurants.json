@@ -1,0 +1,374 @@
+{
+    "paths": {
+        "/perfil/admin/listRestaurants": {
+            "get": {
+                "summary": "Carrega a página com a lista de restaurants do site",
+                "tags": [ "Admin/Restaurants" ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/search": {
+            "get": {
+                "summary": "Carrega a página com a lista de restaurants do site",
+                "tags": [ "Admin/Restaurants" ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra restaurantes cujo nome contenha este valor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra restaurantes que estejam nesta cidade",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "required": false,
+                        "description": "Criterio de ordenação dos restaurantes",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["no", "nameAsc", "nameDesc"]
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum restaurante  "}
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/createRestaurant": {
+            "get": {
+                "summary": "Página para criação de um novo Restaurante",
+                "tags": ["Admin/Restaurants"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/saveRestaurant": {
+            "post": {
+                "summary": "Página que guarda um novo Restaurante",
+                "tags": ["Admin/Restaurants"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "pattern": "^(?!.*[\\/]).+$",
+                                        "description": "Nome do restaurante (até 100 caracteres, sem barras)",
+                                        "default": ""
+                                    },
+                                    "sigla": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "description": "Sigla do restaurante (até 10 caracteres)",
+                                        "default": ""
+                                    },
+                                    "nif": {
+                                        "type": "string",
+                                        "pattern": "^[0-9]{9}$",
+                                        "description": "NIF do restaurante (9 dígitos)",
+                                        "default": ""
+                                    },
+                                    "phoneNumber": {
+                                        "type": "tel",
+                                        "pattern": "^\\+?[0-9]$",
+                                        "description": "Número de telefone (9 dígitos)",
+                                        "default": ""
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                                        "maxLength": 50,
+                                        "description": "Email válido (até 50 caracteres)",
+                                        "default": ""
+                                    },
+                                    "password": {
+                                        "type": "password",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "minLength": 8,
+                                        "description": "Password do restaurante (deve ter 8 ou mais caracteres)",
+                                        "default": ""
+                                    }, 
+                                    "confirmPassword": {
+                                        "type": "password",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "minLength": 8,
+                                        "description": "Confirmação da password do restaurante (deve ter 8 ou mais caracteres e ser igual há password)",
+                                        "default": ""
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "maxLength": 250,
+                                        "description": "Morada do restaurante",
+                                        "default": ""
+                                    },
+                                    "postal_code": {
+                                        "type": "string",
+                                        "pattern": "^[0-9]{4}-[0-9]{3}$",
+                                        "description": "Código Postal (formato 1234-567)",
+                                        "default": ""
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "maxLength": 100,
+                                        "description": "Cidade (até 100 caracteres, só letras e espaços)",
+                                        "default": ""
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "description": "Descrição do restaurante",
+                                        "default": ""
+                                    },
+                                    "perfilPhoto": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Foto do restaurante",
+                                        "default": ""
+                                    }
+                                },
+                                "required": [
+                                    "name", "nif", "phoneNumber",
+                                    "email", "password", "confirmPassword","street", "postal_code",
+                                    "city", "perfilPhoto"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": { "description": "Ok"},
+                        "403": { "description": "Falta de autorização para aceder há página"},
+                        "500": { "description": "Erro interno" }
+                    }
+                }
+            }
+        }, 
+        "/perfil/admin/listRestaurants/deleteRestaurant/{restaurant}": {
+            "post": {
+                "summary": "Página para eliminar definitivamente um restaurante",
+                "tags": [ "Admin/Restaurants" ],
+                "parameters": [
+                    {
+                        "name": "restaurant",
+                        "in": "path",
+                        "required": true,
+                        "description": "Nome do Restaurante a eliminar",
+                        "schema": {
+                        "type": "string"
+                        }
+                    }
+                ],
+                "security": [ { "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/editRestaurant/{restaurantId}": {
+            "get": {
+                "summary": "Página para atualizar os dados de um Restaurante",
+                "tags": ["Admin/Restaurants"],
+                "parameters": [
+                    {
+                        "name": "restaurantId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do restaurante a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/updateRestaurant/{restaurantId}": {
+            "post": {
+                "summary": "Atualiza os dados de um restuarante",
+                "tags": ["Admin/Restaurants"],
+                "parameters": [
+                    {
+                        "name": "restaurantId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do restaurante a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "patttESern": "^(?!.*[\\/]).+$",
+                                        "description": "Nome do restaurante (até 100 caracteres, sem barras)",
+                                        "default": ""
+                                    },
+                                    "sigla": {
+                                        "type": "string",
+                                        "maxLength": 10,
+                                        "description": "Sigla do restaurante (até 10 caracteres)",
+                                        "default": ""
+                                    },
+                                    "nif": {
+                                        "type": "string",
+                                        "pattern": "^[0-9]{9}$",
+                                        "description": "NIF do restaurante (9 dígitos)",
+                                        "default": ""
+                                    },
+                                    "phoneNumber": {
+                                        "type": "tel",
+                                        "pattern": "^\\+?[0-9]$",
+                                        "description": "Número de telefone (9 dígitos)",
+                                        "default": ""
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                                        "maxLength": 50,
+                                        "description": "Email válido (até 50 caracteres)",
+                                        "default": ""
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "maxLength": 250,
+                                        "description": "Morada do restaurante",
+                                        "default": ""
+                                    },
+                                    "postal_code": {
+                                        "type": "string",
+                                        "pattern": "^[0-9]{4}-[0-9]{3}$",
+                                        "description": "Código Postal (formato 1234-567)",
+                                        "default": ""
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "maxLength": 100,
+                                        "description": "Cidade (até 100 caracteres, só letras e espaços)",
+                                        "default": ""
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "description": "Descrição do restaurante",
+                                        "default": ""
+                                    },
+                                    "perfilPhoto": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Foto do restaurante",
+                                        "default": ""
+                                    }
+                                },
+                                "required": [
+                                    "name", "nif", "phoneNumber",
+                                    "email", "street", "postal_code",
+                                    "city", "perfilPhoto"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": { "description": "Ok" },
+                        "403": { "description": "Falta de autorização para aceder há página" },
+                        "500": { "description": "Erro interno" }
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listRestaurants/showRest/{restaurantId}": {
+            "get": {
+                "summary": "Página que mostra os dados de um restaurante especigico",
+                "tags": ["Admin/Restaurants"],
+                "parameters": [
+                    {
+                        "name": "restaurantId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do restaurante a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        }
+    }
+}

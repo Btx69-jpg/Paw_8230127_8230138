@@ -1,8 +1,7 @@
 var mongoose = require("mongoose");
-const multer = require('multer');
+
 //Models
 const User = require("../Models/Perfils/User");
-const Restaurant = require("../Models/Perfils/Restaurant");
 
 //Controllers
 var perfilController = {};
@@ -11,6 +10,11 @@ var perfilController = {};
 perfilController.deleteAccount = async function(req, res) {
     User.deleteOne( {_id: req.params.adminId}).exec()
         .then(user => {
+
+            if(!user) {
+                return res.status(404).render("errors/error", {numError: 404, error: "O utilizador não foi encontrado"});
+            }
+
             console.log("User eliminado com sucesso");
             res.redirect("/");
         }) 
