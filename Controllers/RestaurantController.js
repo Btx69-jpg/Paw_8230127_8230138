@@ -24,6 +24,7 @@ restaurantController.homePage = async function (req, res) {
   console.log();
   console.log();
   console.log("----------------------");
+  console.log("Home Page");
   try {
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,

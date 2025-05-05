@@ -57,8 +57,14 @@ router.use('/orders', order);
  * */
 router.use(isDonoOrAdmin);
 
+/**
+ * * Rota que carrega a página para edição dos dados do restaurante
+ */
 router.get('/editDados/:restaurantId', editRestaurant);
 
+/**
+ * * Rota que atualiza os dados de um restaurante
+ */
 router.post('/updateDados/:restaurantId', updatRestaurant);
 
 /**

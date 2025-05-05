@@ -127,6 +127,22 @@ restaurantsController.restaurantsPage = function(req, res) {
 };
 
 restaurantsController.createRestaurant = function(req, res) {
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("------------------------");
+    console.log("Criar Restaurante Page")
+    console.log("Página atual:", res.locals.currentPage);
     let action = "";
     let voltar = "";
 
@@ -146,6 +162,7 @@ restaurantsController.createRestaurant = function(req, res) {
         } default: {
             action = "";
             voltar = "";
+            res.status(404).render("erros/error404");
             break;
         }
     }
@@ -293,7 +310,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         }
     } catch (error) {
         console.log("Error", error);
-        res.redirect(res.locals.previousPage);
+        res.status(500).redirect(res.locals.previousPage);
     }
 };
 

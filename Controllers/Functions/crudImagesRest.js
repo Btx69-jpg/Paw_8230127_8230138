@@ -1,5 +1,6 @@
 const multer = require('multer');
 const fs = require('fs');
+const {updatePackage} = require("./crudPackage");
 
 function deleteImage(image) {
     console.log("Apagar Imagem");
