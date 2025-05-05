@@ -394,13 +394,16 @@
           "403": {
             "description": "Falta de autorização para aceder há página"
           }, 
+          "404": {
+            "description": "A página não existe ou a conta não doi encontrada"
+          },
           "500": {
             "description": "Algum erro na execução do codigo"
           }
         }
       }
     },
-    "/restaurants/updatRestaurant/{restaurantId}": {
+    "/restaurants/editRestaurant/changePassword/{accountId}": {
       "post": {
         "summary": "Atualiza os dados de um restuarante",
         "tags": [
@@ -408,7 +411,7 @@
         ],
         "parameters": [
           {
-            "name": "restaurantId",
+            "name": "accountId",
             "in": "path",
             "required": true,
             "description": "ID do restaurante a atualizar",
@@ -427,30 +430,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "patttESern": "^(?!.*[\\/]).+$",
-                    "description": "Nome do restaurante (até 100 caracteres, sem barras)",
+                  "atualPassword": {
+                    "type": "password",
+                    "minlength": 8,
+                    "description": "Password atual do restaurante (minimo 8 caractes)",
                     "default": ""
                   },
-                  "sigla": {
-                    "type": "string",
-                    "maxLength": 10,
-                    "description": "Sigla do restaurante (até 10 caracteres)",
+                  "newPassword": {
+                    "type": "password",
+                    "minlength": 8,
+                    "description": "Nova Password do restaurante (minimo 8 caractes)",
                     "default": ""
                   },
-                  "nif": {
-                    "type": "string",
-                    "pattern": "^[0-9]{9}$",
-                    "description": "NIF do restaurante (9 dígitos)",
+                  "confirmNewPassword": {
+                    "type": "password",
+                    "minlength": 8,
+                    "description": "Confirmação da password do restaurante (minimo 8 caractes, tem de ser igual à do campo anterior)",
                     "default": ""
                   }
                 },
                 "required": [
-                  "name", "nif", "phoneNumber",
-                  "email", "street", "postal_code",
-                  "city", "perfilPhoto"
+                  "atualPassword", "newPassword", "confirmNewPassword"
                 ]
               }
             }
@@ -458,6 +458,7 @@
           "responses": {
             "200": { "description": "Ok"},
             "403": { "description": "Falta de autorização para aceder há página" },
+            "404": { "description": "A página não existe ou a conta não doi encontrada" }, 
             "500": { "description": "Erro interno" }
           }
         }

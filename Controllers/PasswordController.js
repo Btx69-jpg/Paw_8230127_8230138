@@ -28,30 +28,37 @@ passwordController.editPassword = async function (req, res) {
       account = await User.findOne({ _id: accountId }).exec();
     }
 
-    if (priority === "Admin") {
-      
-    } else {
-      
+    if (!account) {
+      return res.status(404).render("errors/error", { numError: 404, error: "A conta não existe" });
     }
 
     let action = "";
     console.log(res.locals.currentPage);
     switch(res.locals.currentPage) {
       case `/perfil/admin/editPassword/${accountId}`: {
+        if (priority !== "Admin") {
+          return res.status(403).render("errors/error", { numError: 403 });
+        }
         action = `/perfil/admin/changePassword/${accountId}`;
         voltar = `/perfil/admin`;
         break;
       } case `/restaurants/editRestaurant/editPassword/${accountId}`: {
+        if (priority !== "Restaurant") {
+          return res.status(403).render("errors/error", { numError: 403 });
+        }
         action = `/restaurants/editRestaurant/changePassword/${accountId}`;
         voltar = `/restaurants/editRestaurant/${accountId}`;
         break;
       } case `/perfil/user/editPassword/${accountId}`: {
+        if (priority !== "User") {
+          return res.status(403).render("errors/error", { numError: 403 });
+        }
         action = `/perfil/user/changePassword/${accountId}`;
         voltar = `perfil/user/${accountId}`
         break;
       }
       default: {
-        break;
+        return res.status(404).render("errors/error404");
       }
     }
 
@@ -96,15 +103,17 @@ passwordController.updatePassword = async (req, res) => {
       account = await User.findOne({ _id: req.params.accountId }).exec();
     }
 
+    if (!account) {
+      return res.status(404).render("errors/error", { numError: 404, error: "A conta não existe" });
+    }
+
     let validation = await validateNewPassowrd(
-        req.body,
-        account.perfil.password
+      req.body,
+      account.perfil.password
     );
 
     if (validation !== "") {
-      return res
-        .status(500)
-        .render("errors/error", { numError: 500, error: validation });
+      return res.status(500).render("errors/error", { numError: 500, error: validation });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -115,10 +124,20 @@ passwordController.updatePassword = async (req, res) => {
 
     console.log("Password atualizada com sucesso");
 
-    if (priority === "Restaurant") {
-      res.redirect(`/restaurants/editRestaurant/${req.params.accountId}`);
-    } else if (priority === "Admin") {
-      res.redirect(`/perfil/admin`);
+    switch(priority) {
+      case "Restaurant": {
+        res.redirect(`/restaurants/editRestaurant/${req.params.accountId}`);
+        break;
+      } case "Admin": {
+        res.redirect(`/perfil/admin`);
+        break;
+      } case "User": {
+        res.redirect(`/perfil/user/${req.params.accountId}`);
+        break;
+      } default: {
+        return res.status(403).render("errors/error", {numError: 403, error: "Não tem permissão para aceder a esta página"})
+        break;
+      }
     }
   } catch (error) {
     console.log("Error", error);
