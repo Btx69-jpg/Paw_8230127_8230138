@@ -81,7 +81,7 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 100,
-                                        "patttESern": "^(?!.*[\\/]).+$",
+                                        "pattern": "^(?!.*[\\/]).+$",
                                         "description": "Nome do restaurante (até 100 caracteres, sem barras)",
                                         "default": ""
                                     },
@@ -159,7 +159,7 @@
                                 },
                                 "required": [
                                     "name", "nif", "phoneNumber",
-                                    "email", "street", "postal_code",
+                                    "email", "password", "confirmPassword","street", "postal_code",
                                     "city", "perfilPhoto"
                                 ]
                             }

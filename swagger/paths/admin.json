@@ -1,0 +1,16 @@
+{
+    "paths": {
+        "/perfil/admin": {
+            "get": {
+                "summary": "Carrega a página de perfil do admin",
+                "tags": [ "Admin" ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "O admin não foi encontrado"}
+                }
+            }
+        }
+    }
+}

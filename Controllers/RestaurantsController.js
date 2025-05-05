@@ -140,30 +140,49 @@ restaurantsController.createRestaurant = function(req, res) {
     console.log();
     console.log();
     console.log();
-    console.log("------------------------");
-    console.log("Criar Restaurante Page")
-    console.log("Página atual:", res.locals.currentPage);
+    console.log();
+    console.log();
+    console.log();
+    console.log("-------------------------------------------");
+    console.log("Registo de restaurante");
     let action = "";
     let voltar = "";
 
+    if (!req.cookies || !req.cookies.priority) {
+        return res.status(403).render("errors/error", { numError: 403 });
+    }
+
+    const priority = req.cookies.priority;
+
     switch (res.locals.currentPage) {
         case "/restaurants/createRestaurant": {
-            action = "/restaurants/saveRestaurant";
-            voltar = "/restaurants/"
+            if (priority === "Dono" || priority === "Admin") {
+                action = "/restaurants/saveRestaurant";
+                voltar = "/restaurants/"
+            } else {
+                return res.status(403).render("errors/error", {numError: 403});
+            }
             break;
         } case "/perfil/admin/listRestaurants/createRestaurant": {
+            if (priority !== "Admin") {
+                return res.status(403).render("errors/error", {numError: 403});
+            }
+            
             action = "/perfil/admin/listRestaurants/saveRestaurant";
             voltar = "/perfil/admin/listRestaurants";
             break;
         } case "/registRestaurant": {
-            action = "/registRestaurant/saveRestaurant";
-            voltar = "/";
+            if (priority === "Dono" || priority === "Cliente") {
+                action = "/registRestaurant/saveRestaurant";
+                voltar = "/";
+            } else {
+                return res.status(403).render("errors/error", {numError: 403});
+            }
             break;
         } default: {
             action = "";
             voltar = "";
-            res.status(404).render("erros/error404");
-            break;
+            return res.status(404).render("erros/error404");
         }
     }
 

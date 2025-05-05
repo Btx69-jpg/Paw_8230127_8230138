@@ -56,6 +56,26 @@
       "description": "Operações sobre o Admin"
     },
     {
+      "name": "Admin/Restaurants",
+      "description": "Operacoes do admin com os restuarantes"
+    },
+    {
+      "name": "Admin/Restaurants/ListAprove",
+      "description": "Operacoes do admin para a aprovação de restaurantes"
+    },
+    {
+      "name": "Admin/Users",
+      "description": "Operacoes do admin com os utilizadores"
+    },
+    {
+      "name": "Admin/Categories",
+      "description": "Operacoes do admin com as categorias"
+    },
+    {
+      "name": "Admin/Porçõs",
+      "description": "Operacoes do admin com as porções"
+    },
+    {
       "name": "Registo de Restaurant",
       "description": "Operações que permitem um utilizador criar um restuarante"
     }
