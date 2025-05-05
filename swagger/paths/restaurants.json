@@ -228,7 +228,7 @@
                                     "name": {
                                         "type": "string",
                                         "maxLength": 100,
-                                        "patttESern": "^(?!.*[\\/]).+$",
+                                        "pattern": "^(?!.*[\\/]).+$",
                                         "description": "Nome do restaurante (até 100 caracteres, sem barras)",
                                         "default": ""
                                     },
