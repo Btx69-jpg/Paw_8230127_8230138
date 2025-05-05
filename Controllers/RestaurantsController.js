@@ -95,6 +95,19 @@ async function validationEditRestaurant(name, nif, phoneNumber, email, street, p
     return problem;
 }
 
+function getAutRemoveEdit(restaurants) {
+    let autRemoveEdit = [];
+
+    const user = res.locals.user;
+    const ids = user.perfil.restaurantIds.map(_id => _id.toString());
+
+    for (let j = 0; j < restaurants.length; j++) {
+        const rId = restaurants[j]._id.toString();
+        autRemoveEdit[j] = ids.includes(rId);
+    }
+
+    return autRemoveEdit;
+}
 //Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
 //Preciso de no render mandar também os employees
 restaurantsController.restaurantsPage = function(req, res) {
@@ -103,13 +116,7 @@ restaurantsController.restaurantsPage = function(req, res) {
             let autRemoveEdit = [];
 
             if (req.cookies && req.cookies.priority && req.cookies.priority === "Dono") {
-                const user = res.locals.user;
-                const ids = user.perfil.restaurantIds.map(_id => _id.toString());
-            
-                for (let j = 0; j < restaurants.length; j++) {
-                    const rId = restaurants[j]._id.toString();
-                    autRemoveEdit[j] = ids.includes(rId);
-                }
+                autRemoveEdit = getAutRemoveEdit(restaurants)
             }
                 
             res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit});
@@ -181,10 +188,16 @@ restaurantsController.search = async function(req, res) {
             restaurants = await Restaurant.find(query).exec()
         }
         
-        const paginaAtual = res.locals.currentPage;
+        const paginaAtual = res.locals.currentPage; 
+        
         switch(paginaAtual) {
             case "/restaurants/search": {
-                res.render("restaurants/restaurants", {restaurants: restaurants, filters: {name, city, order} });
+                let autRemoveEdit = [];
+
+                if (req.cookies && req.cookies.priority && req.cookies.priority === "Dono") {
+                    autRemoveEdit = getAutRemoveEdit(restaurants)
+                }
+                res.render("restaurants/restaurants", {restaurants: restaurants, filters: {name, city, order}, autRemoveEdit: autRemoveEdit });
                 break;
             } case "/perfil/admin/listRestaurants/search": {
                 existsRestaurantsDesaprove()

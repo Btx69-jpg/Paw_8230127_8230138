@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "description": "Swagger para o trabalho pratico de paw.",
+    "description": "Swagger para o trabalho pratico de paw do grupo 26.",
     "version": "1.0.0",
     "title": "Swagger Restaurant API",
     "contact": {
@@ -13,7 +13,7 @@
   "tags": [
     {
       "name": "Restaurant",
-      "description": "Representação de um restaurante"
+      "description": "Representação de um restaurante especifico"
     },
     {
       "name": "Dish",
@@ -30,6 +30,10 @@
     {
       "name": "User",
       "description": "Operações sobre user"
+    },
+    {
+      "name": "User",
+      "description": "Operações sobre user"
     }
   ],
   "schemes": ["http"],
@@ -37,10 +41,52 @@
   "paths": {
     "/restaurants": {
       "get": {
-        "summary": "Listar restaurantes",
+        "summary": "Lista todos os restaurantes",
+        "tags": [
+          "Restaurants"
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "500": {
+            "description": "Algum erro na execução do codigo"
+          }
+        }
+      }
+    },
+    "/restaurants/search": {
+      "get": {
+        "summary": "Lista todos os restaurantes, de acordo com o filtro aplicado",
+        "tags": [
+          "Restaurants"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Filtra restaurantes cujo nome contenha este valor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "description": "Filtra restaurantes que estejam nesta cidade",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Algum erro na execução do codigo"
           }
         }
       }
