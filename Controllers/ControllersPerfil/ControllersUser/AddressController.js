@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 const multer = require('multer');
 //Models
-const User = require("../Models/Perfils/User");
+const User = require("../../../Models/Perfils/User");
 
 //Controllers
 var userController = {};

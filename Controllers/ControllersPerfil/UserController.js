@@ -26,7 +26,7 @@ userController.getUser = function(req, res) {
 /**
  * * Metodo que carrega a pagina para editar o utilizador
  */
-userController.editUser = function(req, res) {
+userController.editPage = function(req, res) {
     User.findById(req.params.userId).exec()
         .then(user => {
             if (!user) {
@@ -40,6 +40,13 @@ userController.editUser = function(req, res) {
             console.error("Error fetching user:", error);
             res.status(500).render("errors/error", { numError: 500, error: error });
         });
+}
+
+/**
+ * * Metodo para atualizar os dados de um utilizador
+ */
+userController.updateUser = function(req, res) {
+
 }
 
 module.exports = userController;

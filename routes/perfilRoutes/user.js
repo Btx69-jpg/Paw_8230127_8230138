@@ -12,6 +12,8 @@ const {isDonoOrCliente} = require("../../Middleware/TypeUserMiddleware.js");
 
 //Routes 
 const manageAddress = require("./userRoutes/address.js");
+const historicOrder = require("./userRoutes/historicOrder.js");
+
 /**
  * TODO: Terminar o codigo do controller deste utilizador
  */
@@ -52,7 +54,7 @@ router.post("/changePassword", passwordController.updatePassword);
 /**
  * * Rota que renderiza a página com a lista de pedidos do utilizador
  */
-router.get("/historicOrder", userController.historicOrders);
+router.use("/historicOrder", historicOrder);
 
 /**
  * * Rota que carrega a página com as moradas 
