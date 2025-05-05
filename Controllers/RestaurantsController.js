@@ -234,17 +234,43 @@ restaurantsController.search = async function(req, res) {
 
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log("----------------------------");
+    console.log("Save Restaurante");
     try { 
         await saveImage(req, res);
         
-        //Realização das verificações
-        const {name, sigla, nif, phoneNumber, email, password, confirmPassword, street, postal_code,
-            city, description} = req.body;
+        const name = req.body.name;
+        const sigla = req.body.sigla;
+        const nif = req.body.nif;
+        const phoneNumber = req.body.phoneNumber;
+        const email = req.body.email;
+        const password = req.body.password;
+        const confirmPassword = req.body.confirmPassword;
+        const street = req.body.street;
+        const postal_code = req.body.postal_code;
+        const city = req.body.city;
+        const description = req.body.description;
 
+        console.log("Body:", req.body);
+        console.log("Página atual:", res.locals.currentPage);
+    
         let validation = await validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
             street, postal_code, city);
         
         if (validation !== "") {
+            console.log("Validation:", validation)
             return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
 
@@ -253,7 +279,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         const caminhoCorrigido = "/" + pathImage.replace(/^public[\\/]/, "");
         //Cryptografia da password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
         
         let aproved = false;
         const cookie = req.cookies.priority

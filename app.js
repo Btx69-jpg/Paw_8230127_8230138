@@ -1,6 +1,5 @@
 var swaggerUi = require('swagger-ui-express');
 var swaggerDocument = require('./swagger/swagger.json');
-var createError = require('http-errors');
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
@@ -9,12 +8,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const flash = require('connect-flash');
 const passport = require('passport');
-const bcrypt = require('bcrypt');
 require("./Controllers/auth")(passport); // Importa o arquivo auth.js e passa o passport como argumento
-const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET;
 require('dotenv').config();
-const axios = require('axios');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
@@ -26,6 +21,10 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/Trab
   .catch((err) => console.error(err));
 
 // Configuração do Swagger
+const swaggerRouter = require('./Middleware/SwaggerMiddleware');
+app.use('/api-docs', swaggerRouter);
+/*
+!Antiga configuração do swagger
 var options = {
   swaggerOptions: {
       url: "/api-docs/swagger.json",
@@ -33,6 +32,7 @@ var options = {
 }
 app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
 app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
+*/
 /*
 São os js que criei na pasta Route
 */
