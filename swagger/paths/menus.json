@@ -159,19 +159,24 @@
                                 "properties": {
                                     "name": { "type": "string" },
                                     "type": { "type": "string" },
+                                    "required": true,
+
                                     "menuPhoto": { 
                                         "type": "string",
+                                        "required": true,
                                         "format": "binary" 
                                     },
                                     "dishes": {
                                         "type": "array",
+                                        "required": true,
                                         "items": {
                                             "type": "object",
+                                            "required": true,
                                             "properties": {
-                                                "name": { "type": "string" },
-                                                "description": { "type": "string" },
-                                                "category": { "type": "string" },
-                                                "portions": { "type": "array" }
+                                                "name": { "type": "string", "required": true },
+                                                "description": { "type": "string", "required": true },
+                                                "category": { "type": "string", "required": true },
+                                                "portions": { "type": "array", "required": true }
                                             }
                                         }
                                     }

@@ -28,6 +28,10 @@
   },
   "tags": [
     {
+      "name": "Index",
+      "description": "Operações da pagina inicial"
+    },
+    {
       "name": "Restaurant",
       "description": "Representação de um restaurante especifico"
     },
