@@ -76,9 +76,7 @@
             "post": {
                 "summary": "Página que guarda um novo Restaurante",
                 "tags": ["Admin/Restaurants"],
-                "security": [
-                { "tokenCookie": [], "priorityCookie": [] }
-                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
                 "requestBody": {
                     "required": true,
                     "content": {

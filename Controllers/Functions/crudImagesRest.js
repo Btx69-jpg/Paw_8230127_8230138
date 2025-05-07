@@ -26,15 +26,7 @@ async function saveImage(req, res) {
     console.log("");
     console.log("-------------");
     console.log("Save Image");
-    try {
-        await new Promise((resolve, reject) => {
-            multer().none()(req, res, err => {
-              if (err) return reject(err);
-              resolve();
-            });
-          });
-          
-        
+    return new Promise((resolve, reject) => {
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {
                 console.log("Body do destination: ", req.body);
@@ -53,20 +45,17 @@ async function saveImage(req, res) {
                 cb(null, file.originalname);
             }
         });
-                
-        await new Promise((resolve, reject) => {
-            const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
-            uploadLogo(req, res, err => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve();
-            });
-        });
-    } catch(error) {
+            
+        const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
+        
+        uploadLogo(req, res, function(error) {
+            if (error) {
+                return reject(error);
+            }
 
-    }
-    
+            resolve();
+        });
+    }); 
 }
 
 async function updateImage(req, res, restaurant) {
