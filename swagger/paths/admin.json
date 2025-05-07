@@ -60,12 +60,12 @@
                                 "properties": {
                                     "firstName": {
                                         "type": "string",
-                                        "patttESern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
                                         "description": "Primeiro nome do admin"
                                     },
                                     "lastName": {
                                         "type": "string",
-                                        "patttESern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
                                         "description": "Último nome do admin"
                                     },
                                     "phoneNumber": {
