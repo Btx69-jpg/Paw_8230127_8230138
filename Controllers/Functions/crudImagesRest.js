@@ -14,9 +14,30 @@ function deleteImage(image) {
 }
 
 async function saveImage(req, res) {
-    return new Promise((resolve, reject) => {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("-------------");
+    console.log("Save Image");
+    try {
+        await new Promise((resolve, reject) => {
+            multer().none()(req, res, err => {
+              if (err) return reject(err);
+              resolve();
+            });
+          });
+          
+        
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {
+                console.log("Body do destination: ", req.body);
                 const path = "public/images/Restaurants/" + req.body.name + "/";
     
                 fs.mkdir(path, { recursive: true }, error => {
@@ -32,17 +53,20 @@ async function saveImage(req, res) {
                 cb(null, file.originalname);
             }
         });
-            
-        const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
-        
-        uploadLogo(req, res, function(error) {
-            if (error) {
-                return reject(error);
-            }
-
-            resolve();
+                
+        await new Promise((resolve, reject) => {
+            const uploadLogo = multer({ storage: storageLogo }).single('perfilPhoto');
+            uploadLogo(req, res, err => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve();
+            });
         });
-    }); 
+    } catch(error) {
+
+    }
+    
 }
 
 async function updateImage(req, res, restaurant) {

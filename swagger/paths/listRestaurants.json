@@ -76,7 +76,9 @@
             "post": {
                 "summary": "Página que guarda um novo Restaurante",
                 "tags": ["Admin/Restaurants"],
-                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "security": [
+                { "tokenCookie": [], "priorityCookie": [] }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -88,97 +90,93 @@
                                         "type": "string",
                                         "maxLength": 100,
                                         "pattern": "^(?!.*[\\/]).+$",
-                                        "description": "Nome do restaurante (até 100 caracteres, sem barras)",
-                                        "default": ""
+                                        "description": "Nome do restaurante (até 100 caracteres, sem barras)"
                                     },
                                     "sigla": {
                                         "type": "string",
                                         "maxLength": 10,
-                                        "description": "Sigla do restaurante (até 10 caracteres)",
-                                        "default": ""
+                                        "description": "Sigla do restaurante (até 10 caracteres)"
                                     },
                                     "nif": {
                                         "type": "string",
                                         "pattern": "^[0-9]{9}$",
-                                        "description": "NIF do restaurante (9 dígitos)",
-                                        "default": ""
+                                        "description": "NIF do restaurante (9 dígitos)"
                                     },
                                     "phoneNumber": {
-                                        "type": "tel",
-                                        "pattern": "^\\+?[0-9]$",
-                                        "description": "Número de telefone (9 dígitos)",
-                                        "default": ""
+                                        "type": "string",
+                                        "pattern": "^\\+?[0-9]{9}$",
+                                        "description": "Número de telefone (até 9 dígitos, opcional +)"
                                     },
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
                                         "maxLength": 50,
-                                        "description": "Email válido (até 50 caracteres)",
-                                        "default": ""
+                                        "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                                        "description": "Email válido (até 50 caracteres)"
                                     },
                                     "password": {
-                                        "type": "password",
-                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "type": "string",
+                                        "format": "password",
                                         "minLength": 8,
-                                        "description": "Password do restaurante (deve ter 8 ou mais caracteres)",
-                                        "default": ""
-                                    }, 
+                                        "description": "Password do restaurante (mínimo 8 caracteres)"
+                                    },
                                     "confirmPassword": {
-                                        "type": "password",
-                                        "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                                        "type": "string",
+                                        "format": "password",
                                         "minLength": 8,
-                                        "description": "Confirmação da password do restaurante (deve ter 8 ou mais caracteres e ser igual há password)",
-                                        "default": ""
+                                        "description": "Confirmação da password (igual a password)"
                                     },
                                     "street": {
                                         "type": "string",
                                         "maxLength": 250,
-                                        "description": "Morada do restaurante",
-                                        "default": ""
+                                        "description": "Morada do restaurante"
                                     },
-                                    "postal_code": {
+                                    "postalCode": {
                                         "type": "string",
                                         "pattern": "^[0-9]{4}-[0-9]{3}$",
-                                        "description": "Código Postal (formato 1234-567)",
-                                        "default": ""
+                                        "description": "Código Postal (formato 1234-567)"
                                     },
                                     "city": {
                                         "type": "string",
                                         "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
                                         "maxLength": 100,
-                                        "description": "Cidade (até 100 caracteres, só letras e espaços)",
-                                        "default": ""
+                                        "description": "Cidade (até 100 caracteres, só letras e espaços)"
                                     },
                                     "description": {
                                         "type": "string",
                                         "maxLength": 500,
-                                        "description": "Descrição do restaurante",
-                                        "default": ""
+                                        "description": "Descrição do restaurante"
                                     },
                                     "perfilPhoto": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "Foto do restaurante",
-                                        "default": ""
+                                        "description": "Foto do restaurante"
                                     }
                                 },
-                                "required": [
-                                    "name", "nif", "phoneNumber",
-                                    "email", "password", "confirmPassword","street", "postal_code",
-                                    "city", "perfilPhoto"
-                                ]
+                                "required": [ "name", "nif", "phoneNumber", "email", "password",
+                                "confirmPassword", "street", "postalCode", "city", "perfilPhoto"]
+                            },
+                            "encoding": {
+                                "perfilPhoto": {
+                                    "contentType": "image/jpeg"
+                                }
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok"
                     },
-                    "responses": {
-                        "200": { "description": "Ok"},
-                        "403": { "description": "Falta de autorização para aceder há página"},
-                        "500": { "description": "Erro interno" }
+                    "403": {
+                        "description": "Falta de autorização para aceder a esta página"
+                    },
+                    "500": {
+                        "description": "Erro interno"
                     }
                 }
             }
-        }, 
+        },
         "/perfil/admin/listRestaurants/deleteRestaurant/{restaurant}": {
             "post": {
                 "summary": "Página para eliminar definitivamente um restaurante",
