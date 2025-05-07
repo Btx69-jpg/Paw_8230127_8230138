@@ -273,10 +273,18 @@ menuController.saveMenu = async function (req, res, restaurant) {
     const manual   = req.body.manual || {};
     
     if (!restaurant) {
-      restaurant = temp.restaurant;
+      if (!temp?.restaurant) {
+        if (typeof restaurant === 'string') {
+          restaurant = await Restaurant.findOne({ name: restaurant }).exec();
+        }
+        else {
+          restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
+        }
+      }
+      else{
+        restaurant = temp.restaurant;
+      }
     }
-    
-    restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
     const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
     const dishObjects = dishes.map((dish, idx) => {
