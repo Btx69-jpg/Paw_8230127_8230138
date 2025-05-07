@@ -97,7 +97,7 @@ router.post('/updateMenu/:menuId', menu.saveEditMenu);
  * */
 router.post('/deleteMenu/:menuId', menu.deleteMenu);
 
-// Nova rota para validação nutricional
+// Nova rota para validação nutricional do prato do menu
 router.post('/confirmNutrition', menu.validateNutrition);
 router.post('/saveMenuFinal', menu.saveMenuFinal);
 router.post('/validateIngredient', menu.validateIngredient);
