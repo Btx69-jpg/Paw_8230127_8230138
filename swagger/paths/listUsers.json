@@ -96,134 +96,99 @@
             }
         },
         "/perfil/admin/listUsers/saveUser": {
-            "post": {
-                "summary": "Página que guarda um novo utilizador",
-                "tags": ["Admin/Users"],
-                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "oneOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "firstName": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
-                                            "description": "Primeiro Nome do utilizador" 
-                                        },
-                                        "lastName": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
-                                            "description": "Último Nome do utilizador" 
-                                        },
-                                        "email": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", 
-                                            "description": "Email do utilizador" 
-                                        },
-                                        "phoneNumber": { 
-                                            "type": "string", 
-                                            "pattern": "^[0-9]{9}$",
-                                            "description": "Número de telefone do utilizador" 
-                                        },
-                                        "password": { 
-                                            "type": "string", 
-                                            "minLength": 8,
-                                            "description": "Password do utilizador" 
-                                        },
-                                        "confirmPassword": { 
-                                            "type": "string", 
-                                            "minLength": 8, 
-                                            "description": "Confirmação da password" 
-                                        },
-                                        "priority": {
-                                            "type": "string",
-                                            "enum": ["Cliente", "Admin", "Dono", "Funcionario"],
-                                            "description": "Tipo de utilizador"
-                                        },
-                                        "restaurantNames": {
-                                            "type": "array",
-                                            "items": { 
-                                                "type": "string" 
-                                            },
-                                            "description": "Nome do(s) restaurante(s) que o utilizador é dono (apenas quando priority = Dono)",
-                                            "minItems": 1
-                                        }
-                                    },
-                                    "required": [
-                                        "firstName", "lastName", "email",
-                                        "phoneNumber", "password", "confirmPassword",
-                                        "priority", "restaurantNames"
-                                    ],
-                                    "description": "Esquema quando priority = Dono"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "firstName": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
-                                            "description": "Primeiro Nome do utilizador" 
-                                        },
-                                        "lastName": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
-                                            "description": "Último Nome do utilizador" 
-                                        },
-                                        "email": { 
-                                            "type": "string", 
-                                            "maxLength": 50, 
-                                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", 
-                                            "description": "Email do utilizador" 
-                                        },
-                                        "phoneNumber": { 
-                                            "type": "string", 
-                                            "pattern": "^[0-9]{9}$",
-                                            "description": "Número de telefone do utilizador" 
-                                        },
-                                        "password": { 
-                                            "type": "string", 
-                                            "minLength": 8,
-                                            "description": "Password do utilizador" 
-                                        },
-                                        "confirmPassword": { 
-                                            "type": "string", 
-                                            "minLength": 8, 
-                                            "description": "Confirmação da password" 
-                                        },
-                                        "priority": {
-                                            "type": "string",
-                                            "enum": ["Cliente", "Admin"],
-                                            "description": "Tipo de utilizador"
-                                        }
-                                    },
-                                    "required": [
-                                        "firstName", "lastName", "email",
-                                        "phoneNumber", "password", "confirmPassword",
-                                        "priority"
-                                    ],
-                                    "description": "Esquema quando priority ≠ Dono"
-                                }
-                                ]
-                            }
+        "post": {
+            "summary": "Página que guarda um novo utilizador",
+            "tags": ["Admin/Users"],
+            "security": [
+            { "tokenCookie": [], "priorityCookie": [] }
+            ],
+            "requestBody": {
+            "required": true,
+            "content": {
+                "multipart/form-data": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "firstName": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                            "description": "Primeiro Nome do utilizador"
+                        },
+                        "lastName": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                            "description": "Último Nome do utilizador"
+                        },
+                        "email": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                            "description": "Email do utilizador"
+                        },
+                        "phoneNumber": {
+                            "type": "string",
+                            "pattern": "^[0-9]{9}$",
+                            "description": "Número de telefone do utilizador"
+                        },
+                        "password": {
+                            "type": "string",
+                            "minLength": 8,
+                            "description": "Password do utilizador"
+                        },
+                        "confirmPassword": {
+                            "type": "string",
+                            "minLength": 8,
+                            "description": "Confirmação da password"
+                        },
+                        "priority": {
+                            "type": "string",
+                            "enum": ["Cliente", "Admin", "Dono", "Funcionario"],
+                            "description": "Tipo de utilizador"
+                        },
+                        "restaurantNames": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Nome do(s) restaurante(s) que o utilizador é dono (apenas quando priority = Dono)",
+                            "minItems": 1
                         }
                     },
-                    "responses": {
-                        "200": { "description": "Ok" },
-                        "403": { "description": "Falta de autorização" },
-                        "500": { "description": "Erro interno" }
+                    "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "phoneNumber",
+                    "password",
+                    "confirmPassword",
+                    "priority"
+                    ],
+                    "allOf": [
+                    {
+                        "if": {
+                        "properties": { "priority": { "const": "Dono" } }
+                        },
+                        "then": {
+                        "required": ["restaurantNames"]
+                        },
+                        "else": {
+                        "not": {
+                            "required": ["restaurantNames"]
+                        }
+                        }
                     }
+                    ]
                 }
+                }
+            },
+            "responses": {
+                "200": { "description": "Ok" },
+                "403": { "description": "Falta de autorização" },
+                "500": { "description": "Erro interno" }
             }
-        }, 
+            }
+        }
+        },
         "/perfil/admin/listUsers/delete/{userId}": {
             "post": {
                 "summary": "Elimina definitivamente um utilizador do site",
@@ -282,7 +247,7 @@
                 }
             }
         },
-        "/perfil/admin/listUsers/updatCategory/{userId}": {
+        "/perfil/admin/listUsers/updatUser/{userId}": {
             "post": {
                 "summary": "Atualiza os dados do utilizador",
                 "tags": ["Admin/Users"],
