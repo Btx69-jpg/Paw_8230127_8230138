@@ -8,7 +8,7 @@ const Restaurant = require("../Models/Perfils/Restaurant");
 const {carregarCategoriesMenus} = require("./Functions/categories.js");
 
 indexController.indexPage = async function(req, res) {
-    res.render('index');
+    res.render('index', {restaurants: res.locals.restaurants});
 }
 
 indexController.search = function(req, res) {
@@ -23,7 +23,7 @@ indexController.search = function(req, res) {
         .then(async restaurants => {
             if (!restaurants || restaurants.length === 0) {
                 console.log("Não existem restaurantes com esse nome");
-                return res.status(404).render("index");
+                return res.status(404).render("index", {restaurants: res.locals.restaurants});
             }
 
             console.log("Restaurantes encontrados: ", restaurants.length);
@@ -81,7 +81,7 @@ indexController.search = function(req, res) {
         })
         .catch(error => {
             console.error(error);
-            res.status(500).render("index");
+            res.status(500).render("index", {restaurants: res.locals.restaurants});
         });
 }
 

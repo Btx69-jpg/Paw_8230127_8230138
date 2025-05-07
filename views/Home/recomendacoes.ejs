@@ -1,33 +1,22 @@
 <h2>Recomendados para você</h2>
 <div class="row">
 
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <img src="/images/" class="card-img-top" alt="Restaurante 1">
-      <div class="card-body">
-        <h5 class="card-title">Restaurante 1</h5>
-        <p class="card-text">Comida deliciosa e entrega rápida.</p>
-      </div>
+  <% if (restaurants.length === 0) { %>
+    <div class="col-12">
+      <p class="text-center">Nenhum restaurante encontrado.</p>
     </div>
-  </div>
+  <% } else { %>
+    <% restaurants.forEach(restaurant => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="<%= restaurant.perfil.perfilPhoto %>" class="card-img-top" alt="<%= restaurant.name %>">
+          <div class="card-body">
+            <h5 class="card-title"><%= restaurant.name %></h5>
+            <p class="card-text"><%= restaurant.description %></p>
+          </div>
+        </div>
+      </div>
+    <% })} %>
 
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <img src="/images/" class="card-img-top" alt="Restaurante 2">
-      <div class="card-body">
-        <h5 class="card-title">Restaurante 2</h5>
-        <p class="card-text">Opções variadas com preços acessíveis.</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <img src="/images/restaurant3.jpg" class="card-img-top" alt="Restaurante 3">
-      <div class="card-body">
-        <h5 class="card-title">Restaurante 3</h5>
-        <p class="card-text">Especialidades exclusivas e sabores únicos.</p>
-      </div>
-    </div>
-  </div>
 </div>
