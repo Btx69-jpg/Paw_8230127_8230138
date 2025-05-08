@@ -29,6 +29,8 @@ const options = {
     }
 };
 
-router.use('/', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
+var userRouter = require("../routes/RestApi/user.js");
 
+router.use('/', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
+router.use('/api/v1', userRouter);
 module.exports = router;

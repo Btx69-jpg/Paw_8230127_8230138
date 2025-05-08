@@ -1,6 +1,7 @@
 /**
  * TODO: Falta meter a rota para o perfil do utilizador e dono
  */
+
 var express = require('express');
 var router = express.Router();
 
@@ -23,5 +24,5 @@ router.use(authenticateToken);
  * */
 router.use('/admin', isAdmin, adminRouter);
 
-router.use('/user/:userId', isDonoOrCliente, userRouter);
+//router.use('/user/:userId', isDonoOrCliente, userRouter);
 module.exports = router;

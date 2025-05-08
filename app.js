@@ -1,5 +1,5 @@
-var swaggerUi = require('swagger-ui-express');
-var swaggerDocument = require('./swagger/swagger.json');
+//var swaggerUi = require('swagger-ui-express');
+//var swaggerDocument = require('./swagger/swagger.json');
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
@@ -21,8 +21,13 @@ mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/Trab
   .catch((err) => console.error(err));
 
 // Configuração do Swagger
-const swaggerRouter = require('./Middleware/SwaggerMiddleware');
-app.use('/api-docs', swaggerRouter);
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./swagger/swagger.json');
+
+var userRouter = require("./routes/RestApi/user.js");
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/v1', userRouter);
+
 /*
 !Antiga configuração do swagger
 var options = {
@@ -32,6 +37,12 @@ var options = {
 }
 app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
 app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
+*/
+
+/**
+ * !Swagger atual com as rotas todas
+const swaggerRouter = require('./Middleware/SwaggerMiddleware');
+app.use('/api-docs', swaggerRouter); 
 */
 /*
 São os js que criei na pasta Route
