@@ -128,6 +128,45 @@
         }
       }
     },
+    "/user/{userId}/changePassword": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "put": {
+        "tags": ["User"],
+        "summary": "Atualiza os dados de um utilizador",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Novos campos do utilizador",
+            "schema": {
+              "$ref": "#/definitions/PaswordUpdate"
+            } 
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Password do utilizador atualizada com sucesso"
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado"
+          },
+          "422": {
+            "description": "Algum campo está mal preenchido"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
     "/user/{userId}/historicOrder": {
       "parameters": [
         {
@@ -769,13 +808,31 @@
               "default": ""
             }
           },
-          "required": ["phoneNumber", "email", "perfilPhoto"]
+          "required": ["phoneNumber", "email", ""]
         },
         "birthdate": {
           "type": "string",
           "format": "date",
           "minimum": "1900-01-01",
           "maximum": "9999-12-31"
+        }
+      }
+    },
+    "PaswordUpdate": {
+      "type": "object",
+      "required": ["atualPassword", "newPassword", "confirmNewPassword"],
+      "properties": {
+        "atualPassword": {
+          "type": "string",
+          "minLength": 8
+        },
+        "newPassword": {
+          "type": "string",
+          "minLength": 8
+        },
+       "confirmNewPassword": {
+          "type": "string",
+          "minLength": 8
         }
       }
     }

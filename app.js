@@ -103,6 +103,7 @@ var swaggerUi = require('swagger-ui-express');
 var swaggerDocument = require('./swagger/swagger.json');
 
 var userRouter = require("./routes/RestApi/user.js");
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1', userRouter);
 

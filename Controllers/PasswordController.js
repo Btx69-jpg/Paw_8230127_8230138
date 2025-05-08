@@ -7,16 +7,6 @@ var User = require("../Models/Perfils/User");
 var passwordController = {};
 
 passwordController.editPassword = async function (req, res) {
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log();
-  console.log("---------------------------------");
-  console.log("Edit Password");
   try {
     const priority = req.cookies.priority;
     const accountId = req.params.accountId;

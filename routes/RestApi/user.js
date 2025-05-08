@@ -3,6 +3,7 @@ const router = express.Router();
 
 //Controllers
 const userController = require("../../Controllers/ControllersPerfil/userController.js")
+const passwordController = require("../../Controllers/ControllersPerfil/PasswordController.js")
 
 //Routes
 const historicOrderRoute = require("./userPerfil/historicOrder.js");
@@ -31,6 +32,10 @@ router.delete("/user/:userId", userController.deleteUser);
  * */
 router.put("/user/:userId", userController.editUser);
 
+/**
+ * * Rota que atualiza a password do utilizador
+ */
+router.put("/user/:userId/changePassword", passwordController.updatePassword);
 /**
  * * Importação das rotas do historico de encomendas do utilizador
  */
