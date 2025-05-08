@@ -6,7 +6,11 @@ const userController = require("../../Controllers/ControllersPerfil/userControll
 
 //Routes
 const historicOrderRoute = require("./userPerfil/historicOrder.js");
+const manageAddressesRoute = require("./userPerfil/address.js");
 
+/**
+ * !Só falta testar o Edit, mas testar apenas quando estiver o Mongo, pois é mais fácil.
+ */
 /**
  * * Rota que carrega os dados de todos os users
  */
@@ -31,4 +35,11 @@ router.put("/user/:userId", userController.editUser);
  * * Importação das rotas do historico de encomendas do utilizador
  */
 router.use("/user/:userId/historicOrder", historicOrderRoute);
+
+/**
+ * * Importação das rotas para a gestão das moradas do utilizador
+ */
+router.use("/user/:userId/addresses", manageAddressesRoute);
+
+
 module.exports = router;

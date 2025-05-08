@@ -198,6 +198,10 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
 
 //Função para validar se o restaurante existe
 async function restaurantsSemDuplciacoes(restaurants, priority) {
+    if(!restaurants) {
+        return [];
+    } 
+    
     if (priority ==="Dono" && !Array.isArray(restaurants)) {
         restaurants = [restaurants];
     }

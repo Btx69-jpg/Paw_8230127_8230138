@@ -39,37 +39,6 @@ userController.getUser = function(req, res) {
         });
 }
 
-userController.deleteUser = async function(req, res) {
-    try {
-        const user = await User.findOne({ _id: req.params.userId }).exec();
-
-        if (!user) {
-            return res.status(404).json({ error: "Utilizador não encontrado" });
-        }
-
-        let imagePath = user.perfil.perfilPhoto;
-            
-        if (user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
-            await Restaurant.updateMany(
-                { _id: { $in: user.perfil.restaurantIds } },
-                { $pull: { 'perfil.ownersIds': user._id } }
-            ).exec();
-        }
-
-        await user.deleteOne();
-        console.log("User eliminado com sucesso!");
-
-        if (imagePath !== "") {
-            deleteImg(imagePath);
-        }
-
-        res.status(200).json(user)
-    } catch (error) {
-        console.log("Erro ao eliminar o user: ", error);
-        res.status(500).json({ error: error });
-    }
-}
-
 async function validateUpdateUser(user, email, phoneNumber, priority, restaurant) {
     if (priority === "Dono" && !restaurant) {
         return "Não existe nenhum restaurante com esse nome!"
@@ -106,6 +75,44 @@ function validationUpdate(firstName, lastName, email, phoneNumber, priority, res
     }
 
     return errors;
+}
+
+async function restaurantsSemDuplciacoes(restaurants, priority) {
+    if(!restaurants) {
+        return [];
+    } 
+    
+    if (priority ==="Dono" && !Array.isArray(restaurants)) {
+        restaurants = [restaurants];
+    }
+
+    let error = false;
+    let i = 0;
+    //Remove os duplicados do array
+    while(i < restaurants.length && !error) {
+        if(restaurants[i]) {
+            for (let y = restaurants.length - 1; y > i; y--) {
+                if (restaurants[i].name === restaurants[y].name) {
+                    restaurants.splice(y, 1);
+                }
+            }
+        } else {
+            error = true;
+        }
+        i++;
+    }
+    
+    if(error) {
+        throw new Error("Existe algum campo de restaurante por preencher!");
+    }
+    //Transformamos o array restaurantes, de um array de objetos para um array só com os nomes
+    console.log("Restaurantes: ", restaurants)
+    let namesRestaurants = [];
+    for (let i = 0; i < restaurants.length; i++) {
+        namesRestaurants[i] = restaurants[i].name;
+    }
+
+    return namesRestaurants;
 }
 
 /**
@@ -239,6 +246,37 @@ userController.editUser = async function(req, res) {
         console.log(err);
         res.status(500).json({error: err});
     }    
+}
+
+userController.deleteUser = async function(req, res) {
+    try {
+        const user = await User.findOne({ _id: req.params.userId }).exec();
+
+        if (!user) {
+            return res.status(404).json({ error: "Utilizador não encontrado" });
+        }
+
+        let imagePath = user.perfil.perfilPhoto;
+            
+        if (user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
+            await Restaurant.updateMany(
+                { _id: { $in: user.perfil.restaurantIds } },
+                { $pull: { 'perfil.ownersIds': user._id } }
+            ).exec();
+        }
+
+        await user.deleteOne();
+        console.log("User eliminado com sucesso!");
+
+        if (imagePath !== "") {
+            deleteImg(imagePath);
+        }
+
+        res.status(200).json(user)
+    } catch (error) {
+        console.log("Erro ao eliminar o user: ", error);
+        res.status(500).json({ error: error });
+    }
 }
 
 module.exports = userController;
