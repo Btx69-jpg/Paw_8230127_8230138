@@ -6,22 +6,36 @@ var User = require("../../Models/Perfils/User");
 
 var passwordController = {};
 
-async function validateNewPassowrd(body, userPassword) {
-  if (body.newPassword !== body.confirmNewPassword) {
+async function validateNewPassowrd(atualPassword, newPassword, confirmNewPassword, userPassword) {
+  if (!atualPassword || !newPassword || !confirmNewPassword) {
+    return "Algum dos campos de preenchimento obrigatorio, não está preenchido"
+  }
+
+  if (atualPassword.length < 8) {
+    return "O campo password atual tem de ter no minimo 8 caracteres";
+  }
+
+  if (newPassword.length < 8) {
+    return "O campo nova password tem de ter no minimo 8 caracteres";
+  }
+
+  if (confirmNewPassword.length < 8) {
+    return "O campo confirme a nova password tem de ter no minimo 8 caracteres";
+  }
+  
+  if (newPassword !== confirmNewPassword) {
     return "As novas password não coincidem";
   }
 
-  let problem = "";
-
-  if (!(await bcrypt.compare(body.atualPassword, userPassword))) {
+  if (!(await bcrypt.compare(atualPassword, userPassword))) {
     return "A passowd atual inserida está incorreta";
   }
 
-  if (await bcrypt.compare(body.newPassword, userPassword)) {
+  if (await bcrypt.compare(newPassword, userPassword)) {
     return "A nova password é igual há antiga";
   }
 
-  return problem;
+  return "";
 }
 
 passwordController.updatePassword = async function(req, res) {
@@ -33,13 +47,19 @@ passwordController.updatePassword = async function(req, res) {
       return res.status(404).json({error: "O utilizador não foi encontrado"});
     }
 
-    let validation = await validateNewPassowrd(req.body, account.perfil.password);
+    if(!account.perfil) {
+      return res.status(404).json({error: "O utilizador não possui nenhum perfil"});
+    }
+
+    const {atualPassword, newPassword, confirmNewPassword} = req.body;
+
+    let validation = await validateNewPassowrd(atualPassword, newPassword, confirmNewPassword, account.perfil.password);
     if (validation !== "") {
       return res.status(422).render({error: validation});
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedNewPassword = await bcrypt.hash(req.body.newPassword, salt);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
     account.perfil.password = hashedNewPassword;
     await account.save();

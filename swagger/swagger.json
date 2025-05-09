@@ -95,7 +95,7 @@
           "200": {
             "description": "User eliminado",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/UserUpdate"
             }
           }, 
           "404": {
@@ -672,7 +672,6 @@
       "type": "object",
       "required": ["phoneNumber", "email", "password", "priority", "banned"],
       "properties": {
-        
         "perfilPhoto": {
           "type": "string",
           "default": ""
@@ -685,7 +684,8 @@
         "email": {
           "type": "string",
           "format": "email",
-          "maxLength": 50
+          "maxLength": 50,
+          "pattern": "^([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})*$"
         },
         "password": {
           "type": "string",
@@ -805,7 +805,7 @@
             },
             "perfilPhoto": {
               "type": "string",
-              "default": ""
+              "format": "binary"
             }
           },
           "required": ["phoneNumber", "email", ""]
