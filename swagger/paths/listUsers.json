@@ -1,0 +1,437 @@
+{
+    "paths": {
+        "/perfil/admin/listUsers": {
+            "get": {
+                "summary": "Carrega a página com a lista de utilizadores",
+                "tags": ["Admin/Users"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum utilizador  "}
+                }
+            }
+        },
+        "/perfil/admin/listUsers/search": {
+            "get": {
+                "summary": "Carrega a página com a lista de utilizadores, filtrados",
+                "tags": ["Admin/Users"],
+                "parameters": [
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra um utilizador pelo primeiro nome",
+                        "schema": {
+                          "type": "string",
+                          "pattern": "^[A-Za-zÀ-ÿ\\s]+$"
+                        }
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra um utilizador pelo primeiro nome",
+                        "schema": {
+                          "type": "string",
+                          "pattern": "^[A-Za-zÀ-ÿ\\s]+$"
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra os utilizadores pela sua prioridae",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["all", "Cliente", "Dono", "Funcionario"]
+                        }
+                    },
+                    {
+                        "name": "banned",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filtra os utilizadores pelo seu estado de banimento",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["all", "Sim", "Nao"]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "required": false,
+                        "description": "Criterio de ordenação dos utilizadores",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["no", "nameAsc", "nameDesc", "prioridadeAsc", 
+                            "prioridadeDesc", "desbannedDesc", "bannedAsc"]
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum utilizador  "}
+                }
+            }
+        },
+        "/perfil/admin/listUsers/createUser": {
+            "get": {
+                "summary": "Página para criação de um novo utilizador",
+                "tags": ["Admin/Users"],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listUsers/saveUser": {
+        "post": {
+            "summary": "Página que guarda um novo utilizador",
+            "tags": ["Admin/Users"],
+            "security": [
+            { "tokenCookie": [], "priorityCookie": [] }
+            ],
+            "requestBody": {
+            "required": true,
+            "content": {
+                "multipart/form-data": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "firstName": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                            "description": "Primeiro Nome do utilizador"
+                        },
+                        "lastName": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$",
+                            "description": "Último Nome do utilizador"
+                        },
+                        "email": {
+                            "type": "string",
+                            "maxLength": 50,
+                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                            "description": "Email do utilizador"
+                        },
+                        "phoneNumber": {
+                            "type": "string",
+                            "pattern": "^[0-9]{9}$",
+                            "description": "Número de telefone do utilizador"
+                        },
+                        "password": {
+                            "type": "string",
+                            "minLength": 8,
+                            "description": "Password do utilizador"
+                        },
+                        "confirmPassword": {
+                            "type": "string",
+                            "minLength": 8,
+                            "description": "Confirmação da password"
+                        },
+                        "priority": {
+                            "type": "string",
+                            "enum": ["Cliente", "Admin", "Dono", "Funcionario"],
+                            "description": "Tipo de utilizador"
+                        },
+                        "restaurantNames": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Nome do(s) restaurante(s) que o utilizador é dono (apenas quando priority = Dono)",
+                            "minItems": 1
+                        }
+                    },
+                    "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "phoneNumber",
+                    "password",
+                    "confirmPassword",
+                    "priority"
+                    ],
+                    "allOf": [
+                    {
+                        "if": {
+                        "properties": { "priority": { "const": "Dono" } }
+                        },
+                        "then": {
+                        "required": ["restaurantNames"]
+                        },
+                        "else": {
+                        "not": {
+                            "required": ["restaurantNames"]
+                        }
+                        }
+                    }
+                    ]
+                }
+                }
+            },
+            "responses": {
+                "200": { "description": "Ok" },
+                "403": { "description": "Falta de autorização" },
+                "500": { "description": "Erro interno" }
+            }
+            }
+        }
+        },
+        "/perfil/admin/listUsers/delete/{userId}": {
+            "post": {
+                "summary": "Elimina definitivamente um utilizador do site",
+                "tags": ["Admin/Users"],
+                "parameters": [
+                    {
+                        "_id": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id do utilizador a eliminar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [ { "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listUsers/editUser/{userId}": {
+            "get": {
+                "summary": "Página para atualizar os dados de um utilizador",
+                "tags": ["Admin/Users"],
+                "parameters": [
+                    {
+                        "_id": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do utilizador a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }], 
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Falta de autorização para aceder há página"
+                    },
+                    "500": {
+                        "description": "Algum erro na execução do codigo"
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listUsers/updatUser/{userId}": {
+            "post": {
+                "summary": "Atualiza os dados do utilizador",
+                "tags": ["Admin/Users"],
+                "parameters": [
+                    {
+                        "_id": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do utilizador a atualizar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "firstName": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
+                                            "description": "Primeiro Nome do utilizador" 
+                                        },
+                                        "lastName": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
+                                            "description": "Último Nome do utilizador" 
+                                        },
+                                        "email": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", 
+                                            "description": "Email do utilizador" 
+                                        },
+                                        "phoneNumber": { 
+                                            "type": "string", 
+                                            "pattern": "^[0-9]{9}$",
+                                            "description": "Número de telefone do utilizador" 
+                                        },
+                                        "password": { 
+                                            "type": "string", 
+                                            "minLength": 8,
+                                            "description": "Password do utilizador" 
+                                        },
+                                        "confirmPassword": { 
+                                            "type": "string", 
+                                            "minLength": 8, 
+                                            "description": "Confirmação da password" 
+                                        },
+                                        "priority": {
+                                            "type": "string",
+                                            "enum": ["Cliente", "Admin", "Dono", "Funcionario"],
+                                            "description": "Tipo de utilizador"
+                                        },
+                                        "restaurantNames": {
+                                            "type": "array",
+                                            "items": { 
+                                                "type": "string" 
+                                            },
+                                            "description": "Nome do(s) restaurante(s) que o utilizador é dono (apenas quando priority = Dono)",
+                                            "minItems": 1
+                                        }
+                                    },
+                                    "required": [
+                                        "firstName", "lastName", "email",
+                                        "phoneNumber", "password", "confirmPassword",
+                                        "priority", "restaurantNames"
+                                    ],
+                                    "description": "Esquema quando priority = Dono"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "firstName": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
+                                            "description": "Primeiro Nome do utilizador" 
+                                        },
+                                        "lastName": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-zÀ-ÿ\\s]+$", 
+                                            "description": "Último Nome do utilizador" 
+                                        },
+                                        "email": { 
+                                            "type": "string", 
+                                            "maxLength": 50, 
+                                            "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", 
+                                            "description": "Email do utilizador" 
+                                        },
+                                        "phoneNumber": { 
+                                            "type": "string", 
+                                            "pattern": "^[0-9]{9}$",
+                                            "description": "Número de telefone do utilizador" 
+                                        },
+                                        "password": { 
+                                            "type": "string", 
+                                            "minLength": 8,
+                                            "description": "Password do utilizador" 
+                                        },
+                                        "confirmPassword": { 
+                                            "type": "string", 
+                                            "minLength": 8, 
+                                            "description": "Confirmação da password" 
+                                        },
+                                        "priority": {
+                                            "type": "string",
+                                            "enum": ["Cliente", "Admin"],
+                                            "description": "Tipo de utilizador"
+                                        }
+                                    },
+                                    "required": [
+                                        "firstName", "lastName", "email",
+                                        "phoneNumber", "password", "confirmPassword",
+                                        "priority"
+                                    ],
+                                    "description": "Esquema quando priority ≠ Dono"
+                                }
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": { "description": "Ok" },
+                        "403": { "description": "Falta de autorização" },
+                        "500": { "description": "Erro interno" }
+                    }
+                }
+            }
+        },
+        "/perfil/admin/listUsers/ban/{userId}": {
+            "post": {
+                "summary": "Realiza o banimento de um utilizador",
+                "tags": [ "Admin/Users" ],
+                "parameters": [
+                    {
+                        "_id": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do utilizador a banir",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum utilizador ou ele não está desbanido  "}
+                }
+            }
+        },
+        "/perfil/admin/listUsers/desban/{userId}": {
+            "post": {
+                "summary": "Realiza o desbanimento de um utilizador",
+                "tags": [ "Admin/Users" ],
+                "parameters": [
+                    {
+                        "_id": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do utilizador a desbanir",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
+                "responses": {
+                    "200": { "description": "OK"},
+                    "403": { "description": "Não tem permissão para aceder a esta página"},
+                    "404": { "description": "Não foi encontrado nenhum utilizador ou ele não está banido"}
+                }
+            }
+        }
+    }
+}

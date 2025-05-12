@@ -29,44 +29,6 @@
                 }
             }
         },
-        "/restaurants/{restaurant}/search": {
-            "get": {
-                "summary": "Filtra e ordena menus do restaurante",
-                "tags": ["Menu"],
-                "parameters": [
-                    {
-                        "name": "restaurant",
-                        "in": "path",
-                        "required": true,
-                        "schema": { "type": "string" }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "Filtrar por nome do menu",
-                        "schema": { "type": "string" }
-                    },
-                    {
-                        "name": "type",
-                        "in": "query",
-                        "description": "Filtrar por tipo de menu",
-                        "schema": { "type": "string" }
-                    },
-                    {
-                        "name": "order",
-                        "in": "query",
-                        "description": "Ordenação (ex: nameAsc, nameDesc)",
-                        "schema": { "type": "string" }
-                    }
-                ],
-                "security": [{ "tokenCookie": [], "priorityCookie": [] }],
-                "responses": {
-                    "200": { "description": "OK" },
-                    "403": { "description": "Acesso não autorizado" },
-                    "404": { "description": "Nenhum menu encontrado" }
-                }
-            }
-        },
         "/restaurants/{restaurant}/showMenu/{menu}/search": {
             "get": {
                 "summary": "Filtra e ordena pratos dentro de um menu",

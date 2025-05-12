@@ -198,6 +198,10 @@ function validationSave(firstName, lastName, email, phoneNumber, password, confi
 
 //Função para validar se o restaurante existe
 async function restaurantsSemDuplciacoes(restaurants, priority) {
+    if(!restaurants) {
+        return [];
+    } 
+    
     if (priority ==="Dono" && !Array.isArray(restaurants)) {
         restaurants = [restaurants];
     }
@@ -304,18 +308,19 @@ userController.saveUser = async function(req, res) {
 
         await newUser.save();
         
-        if(restaurants) {
+        if (restaurants) {
             for(let i = 0; i < restaurantFound.length; i++) {
                 restaurantFound[i].perfil.ownersIds.push(newUser._id);
                 await restaurantFound[i].save();
             }
         }
+
         req.flash("success_msg", "Registo realizado com sucesso!");
         res.redirect("/perfil/admin/listUsers");
     } catch (err) {
         console.error(err);
         req.flash("error_msg", "Erro ao criar o utilizador. Tente novamente.");
-        res.redirect(res.locals.previousPage);
+        res.status(500).redirect(res.locals.previousPage);
     }
 }
 
@@ -342,7 +347,7 @@ userController.editPage = function(req, res) {
         })
         .catch(error => {
             console.log("Erro: ", error);
-            res.redirect("/perfil/admin/listUsers");
+            res.status(500).redirect("/perfil/admin/listUsers");
         });
 }
 
@@ -512,7 +517,7 @@ userController.updateUser =  async function(req, res) {
         res.redirect("/perfil/admin/listUsers");
     } catch(err) {
         console.log(err);
-        res.redirect(res.locals.previousPage);
+        res.status(500).redirect(res.locals.previousPage);
     }    
 }
 
@@ -539,64 +544,75 @@ userController.deleteUser = async function(req, res) {
     try {
         const user = await User.findOne({ _id: req.params.userId }).exec();
 
-        if (user) {
-            let imagePath = user.perfil.perfilPhoto;
-            
-            if (user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
-                await Restaurant.updateMany(
-                    { _id: { $in: user.perfil.restaurantIds } },
-                    { $pull: { 'perfil.ownersIds': user._id } }
-                ).exec();
-            }
-
-            await user.deleteOne();
-            console.log("User eliminado com sucesso!");
-
-            if (imagePath !== "") {
-                deleteImg(imagePath);
-            }
-
-            res.redirect("/perfil/admin/listUsers");
+        if (!user) {
+            console.log("O utilizador a eliminar não existe")
+            return res.status(404).redirect("/perfil/admin/listUsers");
         }
-      } catch (error) {
-        console.log("Erro ao eliminar o user: ", error);
+
+        let imagePath = user.perfil.perfilPhoto;
+            
+        if (user.perfil.priority === "Dono" && user.perfil.restaurantIds) {
+            await Restaurant.updateMany(
+                { _id: { $in: user.perfil.restaurantIds } },
+                { $pull: { 'perfil.ownersIds': user._id } }
+            ).exec();
+        }
+
+        await user.deleteOne();
+        console.log("User eliminado com sucesso!");
+
+        if (imagePath !== "") {
+            deleteImg(imagePath);
+        }
+
         res.redirect("/perfil/admin/listUsers");
-      }
+    } catch (error) {
+        console.log("Erro ao eliminar o user: ", error);
+        res.status(500).redirect("/perfil/admin/listUsers");
+    }
 }
 
 //Função para remover o banimento de um user
 userController.desban = function(req, res) {
-    User.findOneAndUpdate( { _id: req.params.userId },
+    User.findOneAndUpdate( { _id: req.params.userId, 'perfil.banned': true },
         {
             $set: {'perfil.banned': false },
         },
         { new: true })
         .exec()
         .then(updatedUser => {
+            if (!updatedUser) {
+                console.log("O utilizador não existe ou ele não está desbanido")
+                return res.status(404).render(res.locals.previousPage);
+            }
             console.log("User banido!");
             res.redirect(res.locals.previousPage);
         })
         .catch(error => {
             console.error("Erro ao banir o user:", error);
-            res.redirect(res.locals.previousPage);
+            res.status(500).redirect(res.locals.previousPage);
         });
 }
 
 //Função para banir um user
 userController.ban = function(req, res) {
-    User.findOneAndUpdate( { _id: req.params.userId },
+    User.findOneAndUpdate( { _id: req.params.userId, 'perfil.banned': false },
         {
             $set: { 'perfil.banned': true },
         },
-        { new: true })
-        .exec()
+        { new: true }).exec()
         .then(updatedUser => {
+            if (!updatedUser) {
+                console.log("O utilizador não existe ou ele não está banido")
+                return res.status(404).render(res.locals.previousPage);
+            }
+
             console.log("User desbanido!");
             res.redirect(res.locals.previousPage);
         })
         .catch(error => {
             console.error("Erro ao desbanir o user:", error);
-            res.redirect(res.locals.previousPage);
+            res.status(500).redirect(res.locals.previousPage);
         });
 }
 

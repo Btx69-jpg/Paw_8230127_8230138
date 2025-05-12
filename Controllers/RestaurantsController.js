@@ -127,24 +127,6 @@ restaurantsController.restaurantsPage = function(req, res) {
 };
 
 restaurantsController.createRestaurant = function(req, res) {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("-------------------------------------------");
-    console.log("Registo de restaurante");
     let action = "";
     let voltar = "";
 
@@ -253,20 +235,6 @@ restaurantsController.search = async function(req, res) {
 
 //Armazena um novo restaurate
 restaurantsController.saveRestaurant = async function(req, res) {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("----------------------------");
-    console.log("Save Restaurante");
     try { 
         await saveImage(req, res);
         

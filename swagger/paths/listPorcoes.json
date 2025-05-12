@@ -3,7 +3,7 @@
         "/perfil/admin/listPortions": {
             "get": {
                 "summary": "Carrega a página com a lista de porções do site",
-                "tags": [ "Admin/Porçõs" ],
+                "tags": [ "Admin/Porções" ],
                 "security": [{ "tokenCookie": [], "priorityCookie": [] }],
                 "responses": {
                     "200": { "description": "OK"},
@@ -15,7 +15,7 @@
         "/perfil/admin/listPortions/search": {
             "get": {
                 "summary": "Carrega a página com a lista de porções, filtrada ",
-                "tags": [ "Admin/Porçõs" ],
+                "tags": [ "Admin/Porções" ],
                 "parameters": [
                     {
                         "name": "portion",
@@ -48,7 +48,7 @@
         "/perfil/admin/listPortions/createPortion": {
             "get": {
                 "summary": "Página para criação de uma nova Porção",
-                "tags": ["Admin/Porçõs"],
+                "tags": ["Admin/Porções"],
                 "security": [{ "tokenCookie": [], "priorityCookie": [] }],
                 "responses": {
                     "200": {
@@ -66,7 +66,7 @@
         "/perfil/admin/listPortions/savePortion": {
             "post": {
                 "summary": "Página que guarda uma nova Porção",
-                "tags": ["Admin/Porçõs"],
+                "tags": ["Admin/Porções"],
                 "security": [{ "tokenCookie": [], "priorityCookie": [] }],
                 "requestBody": {
                     "required": true,
@@ -100,7 +100,7 @@
         "/perfil/admin/listPortions/deletetPortion/{portionId}": {
             "post": {
                 "summary": "Elimina definitivamente uma porção",
-                "tags": [ "Admin/Porçõs" ],
+                "tags": [ "Admin/Porções" ],
                 "parameters": [
                     {
                         "name": "portionId",
@@ -129,7 +129,7 @@
         "/perfil/admin/listPortions/editPortion/{portionId}": {
             "get": {
                 "summary": "Página para atualizar o nome de uma porção",
-                "tags": ["Admin/Porçõs"],
+                "tags": ["Admin/Porções"],
                 "parameters": [
                     {
                         "name": "portionId",
@@ -158,7 +158,7 @@
         "/perfil/admin/listPortions/updatPortion/{portionId}": {
             "post": {
                 "summary": "Atualiza o nome de uma porção",
-                "tags": ["Admin/Porçõs"],
+                "tags": ["Admin/Porções"],
                 "parameters": [
                     {
                         "name": "portionId",

@@ -14,9 +14,22 @@ function deleteImage(image) {
 }
 
 async function saveImage(req, res) {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("-------------");
+    console.log("Save Image");
     return new Promise((resolve, reject) => {
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {
+                console.log("Body do destination: ", req.body);
                 const path = "public/images/Restaurants/" + req.body.name + "/";
     
                 fs.mkdir(path, { recursive: true }, error => {

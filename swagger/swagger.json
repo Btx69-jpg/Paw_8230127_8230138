@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "swagger": "2.0",
   "info": {
     "description": "Swagger para o trabalho pratico de paw do grupo 26.",
     "version": "1.0.0",
@@ -9,82 +9,831 @@
     }
   },
   "host": "localhost:3000",
-  "basePath": "/api-docs/swagger.json",
-  "components": {
-    "securitySchemes": {
-      "tokenCookie": {
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "auth_token",
-        "description": "JWT de autenticação"
-      },
-      "priorityCookie": {
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "priority",
-        "description": "Nível de acesso necessário (Cliente/Restaurante/Dono/Admin)"
-      }
-    }
-  },
+  "basePath": "/api/v1/",
+  "schemes": ["http"],
   "tags": [
-    {
-      "name": "Index",
-      "description": "Operações da pagina inicial"
-    },
-    {
-      "name": "Restaurant",
-      "description": "Representação de um restaurante especifico"
-    },
-    {
-      "name": "Menu",
-      "description": "Respresenta as operações ao menu de um restaurante especifico"
-    },
-    {
-      "name": "Dish",
-      "description": "Representação de um prato"
-    },
-    {
-      "name": "Order",
-      "description": "Representação de uma encomenda"
-    },
-    {
-      "name": "Restaurants",
-      "description": "Operações sobre restaurantes"
-    },
     {
       "name": "User",
       "description": "Operações sobre user"
     },
     {
-      "name": "Admin",
-      "description": "Operações sobre o Admin"
+      "name": "User/historicOrder",
+      "description": "Operações sobre o historico de encomendas do utilizador"
     },
     {
-      "name": "Admin/Restaurants",
-      "description": "Operacoes do admin com os restuarantes"
-    },
-    {
-      "name": "Admin/Restaurants/ListAprove",
-      "description": "Operacoes do admin para a aprovação de restaurantes"
-    },
-    {
-      "name": "Admin/Users",
-      "description": "Operacoes do admin com os utilizadores"
-    },
-    {
-      "name": "Admin/Categories",
-      "description": "Operacoes do admin com as categorias"
-    },
-    {
-      "name": "Admin/Porçõs",
-      "description": "Operacoes do admin com as porções"
-    },
-    {
-      "name": "Registo de Restaurant",
-      "description": "Operações que permitem um utilizador criar um restuarante"
+      "name": "User/Addresses",
+      "description": "Operações sobre o as moradas de encomenda do utilizador"
     }
   ],
-  "schemes": ["http"],
-
-  "paths": {}
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Retorna todos os utilizadores do site",
+        "responses": {
+          "200": {
+            "description": "Utilizadores encontrados",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User"],
+        "summary": "Get de um utilizador especifico",
+        "responses": {
+          "200": {
+            "description": "User encontrado",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }, 
+      "put": {
+        "tags": ["User"],
+        "summary": "Atualiza os dados de um utilizador",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Novos campos do utilizador",
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            } 
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User eliminado",
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
+          },
+          "422": {
+            "description": "Algum campo está mal preenchido"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Elimina da base de dados um utilizador especifico",
+        "responses": {
+          "200": {
+            "description": "User eliminado",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/changePassword": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "put": {
+        "tags": ["User"],
+        "summary": "Atualiza os dados de um utilizador",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "Novos campos do utilizador",
+            "schema": {
+              "$ref": "#/definitions/PaswordUpdate"
+            } 
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Password do utilizador atualizada com sucesso"
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado"
+          },
+          "422": {
+            "description": "Algum campo está mal preenchido"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/historicOrder": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/historicOrder"],
+        "summary": "Retorna o historico de encomendas de um utilizador",
+        "responses": {
+          "200": {
+            "description": "Historico de Encomenda encontrado",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderUser"
+              }
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado ou utilizador não possui historico de encomendas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/historicOrder/search": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "nameRest",
+          "in": "query",
+          "required": false,
+          "maxLength": 100,
+          "pattern": "^(?!.*[\\/]).+$",
+          "description": "Nome do restaurante onde a encomenda foi realizada",
+          "type": "string"
+        },
+        {
+          "name": "price",
+          "in": "query",
+          "required": false,
+          "description": "Preço mínimo da encomenda",
+          "type": "number",
+          "minimum": 0.01
+        },
+        {
+          "name": "dateFrom",
+          "in": "query",
+          "required": false,
+          "description": "Data inicial do intervalo (≤ hoje e ≤ dateTo — validar no código)",
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "name": "dateTo",
+          "in": "query",
+          "required": false,
+          "description": "Data final do intervalo (≥ 2000-01-01 e ≥ dateFrom — validar no código)",
+          "type": "string",
+          "format": "date",
+          "minimum": "2000-01-01"
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "description": "Critério de ordenação",
+          "type": "string",
+          "enum": ["nameAsc","nameDesc","priceAsc","priceDesc","dateAsc","dateDesc"]
+        }
+      ],
+      "get": {
+        "tags": ["User/historicOrder"],
+        "summary": "Retorna o historico de encomendas do utilizador, de acordo com o filtro e criterio de ordenação aplicado",
+        "responses": {
+          "200": {
+            "description": "Historico de Encomenda encontrado",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderUser"
+              }
+            }
+          }, 
+          "422": {
+            "description": "Algum dos campos foi preenchido de maneira incorreta"
+          },
+          "404": {
+            "description": "Utilizador não encontrado ou encomenda não existe"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/historicOrder/{orderId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "orderId",
+          "in": "path",
+          "required": true,
+          "description": "ID da encomenda a pesquisar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/historicOrder"],
+        "summary": "Retorna uma encomenda especifica do historico de encomendas de um utilizador",
+        "responses": {
+          "200": {
+            "description": "Historico de Encomenda encontrado",
+            "schema": {
+              "$ref": "#/definitions/OrderUser" 
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado ou encomenda não encontrada"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/addresses": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/Addresses"],
+        "summary": "Retorna todas as moradas do utilizador",
+        "responses": {
+          "200": {
+            "description": "Moradas do utilizador encontradas",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddressOrder"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "post": {
+        "tags": ["User/Addresses"],
+        "summary": "Permite ao utilizador criar uma nova morada",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "address",
+            "description": "Morada a ser criada",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddressOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Morada criada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddressOrder"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
+          },
+          "409": {
+            "description": "A morada que tentou intorduzir já existe, na conta do utilizador."
+          },
+          "422": {
+            "description": "Algum dos campos obrigatorio não está preenchido ou está mal preenchido!"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/addresses/{addressId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "addressId",
+          "in": "path",
+          "required": true,
+          "description": "Id da morada",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/Addresses"],
+        "summary": "Retorna uma morada especifica, de acordo com o id da mesma",
+        "responses": {
+          "200": {
+            "description": "Moradas do utilizador encontradas",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddressOrder"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "put": {
+        "tags": ["User/Addresses"],
+        "summary": "Permite ao utilizador atualizar os dados de uma morada especifica",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "address",
+            "description": "Morada a ser criada",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddressOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moradas atualizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddressOrder"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User/Addresses"],
+        "summary": "Permite ao utilizador eliminar uma das suas moradas",
+        "responses": {
+          "204": {
+            "description": "Moradas eliminada com sucesso"
+          }, 
+          "400": {
+            "description": "Morada não encontrada ou já foi removida"
+          },
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Address": {
+      "type": "object",
+      "required": ["street", "postal_code", "city"],
+      "properties": {
+        "street": {
+          "type": "string",
+          "maxLength": 250
+        },
+        "postal_code": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{3}$"
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 100
+        }
+      }
+    },
+    "AddressOrder": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "nif": {
+          "type": "integer",
+          "minimum": 100000000,
+          "maximum": 999999999
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "required": ["item", "portion", "price", "quantity" ],
+      "properties": {
+        "item": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[\\p{L}\\s]+$"
+        },
+        "portion": {
+          "type": "string",
+          "maxLength": 25,
+          "pattern": "^[\\p{L}\\s]+$"
+        },
+        "price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      }
+    },
+    "FaturaCliente": {
+      "type": "object",
+      "required": ["firstName","lastName","phoneNumber", "email"],
+      "properties": {
+        
+        "firstName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "phoneNumber": {
+          "type": "integer",
+          "minimum": 100000000,
+          "maximum": 999999999
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 50
+        }
+      }
+    },
+    "FaturaRestaurant": {
+      "type": "object",
+      "required": ["name","phoneNumber", "email"],
+      "properties": {
+        
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "phoneNumber": {
+          "type": "integer",
+          "minimum": 100000000,
+          "maximum": 999999999
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 50
+        }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "required": ["date", "client", "restaurant", "addressOrder", "itens", "price", 
+      "status", "type"],
+      "properties": {
+        
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "client": {
+          "$ref": "#/definitions/FaturaCliente"
+        },
+        "restaurant": {
+          "$ref": "#/definitions/FaturaRestaurant"
+        },
+        "addressOrder": {
+          "$ref": "#/definitions/AddressOrder"
+        },
+        "itens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          }
+        },
+        "price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Pendente",
+            "Expedida",
+            "Entregue"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "delivery",
+            "pickup"
+          ]
+        }
+      }
+    },
+    "OrderUser": {
+      "type": "object",
+      "required": ["date", "restaurant", "addressOrder", "itens", "price", 
+      "status", "type"],
+      "properties": {
+        
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "restaurant": {
+          "$ref": "#/definitions/FaturaRestaurant"
+        },
+        "addressOrder": {
+          "$ref": "#/definitions/AddressOrder"
+        },
+        "itens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          }
+        },
+        "price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Pendente",
+            "Expedida",
+            "Entregue"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "delivery",
+            "pickup"
+          ]
+        }
+      }
+    },
+    "Perfil": {
+      "type": "object",
+      "required": ["phoneNumber", "email", "password", "priority", "banned"],
+      "properties": {
+        "perfilPhoto": {
+          "type": "string",
+          "default": ""
+        },
+        "phoneNumber": {
+          "type": "integer",
+          "minimum": 100000000,
+          "maximum": 999999999
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 50,
+          "pattern": "^([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})*$"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Order"
+          },
+          "default": []
+        },
+        "historicOrders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Order"
+          },
+          "default": []
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "Cliente",
+            "Admin",
+            "Restaurant",
+            "Dono",
+            "Funcionario"
+          ]
+        },
+        "restaurantIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "objectId"
+          }
+        },
+        "ownersIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "objectId"
+          }
+        },
+        "banned": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "required": ["firstName", "lastName", "perfil"
+      ],
+      "properties": {
+        
+        "firstName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "perfil": {
+          "$ref": "#/definitions/Perfil"
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AddressOrder"
+          },
+          "default": []
+        },
+        "cart": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderUser"
+          },
+          "default": []
+        },
+        "birthdate": {
+          "type": "string",
+          "format": "date",
+          "minimum": "1900-01-01",
+          "maximum": "9999-12-31"
+        }
+      }
+    }, 
+    "UserUpdate": {
+      "type": "object",
+      "required": ["firstName", "lastName", "perfil"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "lastName": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[a-zA-Z\\s]*$"
+        },
+        "perfil": {
+          "type": "object",
+          "properties": {
+            "phoneNumber": {
+              "type": "integer",
+              "minimum": 100000000,
+              "maximum": 999999999
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "maxLength": 50
+            },
+            "perfilPhoto": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "required": ["phoneNumber", "email", ""]
+        },
+        "birthdate": {
+          "type": "string",
+          "format": "date",
+          "minimum": "1900-01-01",
+          "maximum": "9999-12-31"
+        }
+      }
+    },
+    "PaswordUpdate": {
+      "type": "object",
+      "required": ["atualPassword", "newPassword", "confirmNewPassword"],
+      "properties": {
+        "atualPassword": {
+          "type": "string",
+          "minLength": 8
+        },
+        "newPassword": {
+          "type": "string",
+          "minLength": 8
+        },
+       "confirmNewPassword": {
+          "type": "string",
+          "minLength": 8
+        }
+      }
+    }
+  }
 }
