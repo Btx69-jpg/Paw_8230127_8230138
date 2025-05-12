@@ -168,8 +168,17 @@
                     ><%= portion.price.toFixed(2) %> €</span
                   >
                   <!-- Adicionar referencia a rota de adicionar o carrinho -->
-                  <span class="text-muted" href="/restaurants/<%= restaurant.name %>/addToCart/<%= dish._id %>/<%= portion._id %>/<%= menu._id %>" class="add-to-cart"
-                    ><i class="bi bi-cart-plus"></i></span>
+                  <form
+                  action="/restaurants/<%= restaurant.name %>/addToCart/<%= dish._id %>/<%= portion.portion._id %>/<%= menu._id %>"
+                  method="post"
+                  class="d-inline"
+                >
+                   <button type="submit" class="btn btn-outline-primary">
+                    <span class="text-muted" class="add-to-cart"
+                      ><i class="bi bi-cart-plus"></i></span>
+                   </button>
+                </form>
+
                 </div>
                 <% }); %>
               </div>

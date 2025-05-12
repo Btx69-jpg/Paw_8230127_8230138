@@ -32,7 +32,7 @@ router.get('/showMenu/:menu', menu.showMenu);
 /**
  * * Rota para adicionar um prato ao carrinho de compras
  * */
-//router.post('/addToCart/:dishId/:portionId/:menuId', user.addToCart);
+router.post('/addToCart/:dishId/:portionId/:menu', user.addToCart);
 
 /**
  * * Rota que permite filtrar por menus, de um restaurante, e também ordenar os menus

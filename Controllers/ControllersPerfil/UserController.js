@@ -4,6 +4,11 @@ const multer = require('multer');
 const User = require("../../Models/Perfils/User");
 const Dish = require("../../Models/Menus/Dish");
 const Portion = require("../../Models/Portion");
+const Restaurant = require("../../Models/Perfils/Restaurant");
+const Item = require("../../Models/Orders/Item");  
+const Cart = require("../../Models/Orders/Order");  
+const menuController = require("../ControllersRestaurant/MenuController");
+
 
 /**
  * TODO: Falta depois fazer o redirect correto.
@@ -170,45 +175,43 @@ userController.deleteUser = async function(req, res) {
     }
 }
 
-userController.addDish = async function(req, res) {
+userController.addToCart = async function(req, res) {
     try {
-        const userId = res.locals.User._id;
+        const userId = res.locals.user._id;
         const dishId = req.params.dishId;
         const portionId = req.params.portionId;
-        const menuId = req.params.menuId;
+        const menuId = req.params.menu;
         const restaurantName = req.params.restaurant;
 
         const user = await User.findById(userId).exec();
 
         if (!user) {
-            res.render("errors/error", { numError: 404, error: err });
-            return res.status(404).json({ error: "Utilizador não encontrado" });
+            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
         }
 
         let item;
 
-        const restaurant = await Restaurant.find({name: restaurantName}).exec();
+        const restaurant = await Restaurant.findOne({name: restaurantName}).exec();
         
         if (!restaurant) {
-            res.render("errors/error", { numError: 404, error: err });
-            return res.status(404).json({ error: "Restaurante não encontrado" });
+            return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
         }
-
-        const portion = Portion.findById(portionId).exec();
+        console.log("\n\n\n\n\n\n\nID DA PORÇão: ", portionId, "\n\n\n\n\n\n");
+        const portion = await Portion.findById(portionId).exec();
+        console.log("\n\n\n\n\n\n PORÇão: ", portion, "\n\n\n\n\n\n");
         if (!portion) {
-            res.render("errors/error", { numError: 404, error: err });
-            return res.status(404).json({ error: "Porção não encontrada" });
+            return res.render("errors/error", { numError: 404, error: "Porção não encontrada" });
         }
         let exist = false;
-
-        for (menu of restaurant.menus) {
+        for (let i = 0; i < restaurant.menus.length; i++) {
+            let menu = restaurant.menus[i];
             if (menu._id.toString() === menuId) {
                 for (let i = 0; i < menu.dishes.length; i++) {
                     if (menu.dishes[i]._id.toString() === dishId) {
                         item = new Item({
                             from: restaurant._id,
                             item: menu.dishes[i].name,
-                            portion: portion.name,
+                            portion: portion.portion,
                             price: menu.dishes[i].price,
                             quantity: 1,
                         });
@@ -219,29 +222,44 @@ userController.addDish = async function(req, res) {
             }
         }
         if (!exist) {
-            res.render("errors/error", { numError: 404, error: err });
-            return res.status(404).json({ error: "Prato não encontrado no menu" });
+            return res.render("errors/error", { numError: 404, error: "Prato não encontrado no menu" });
         }
 
-        let itens = itens;
+        if (!user.cart) {
+            user.cart = new Cart ({
+                    itens: item,
+                    price: item.price,
+                    status: "Pendente",
+                })
+
+        }
+        else {
+        let itens = user.cart.itens;
+        exist = false;
         for (let i = 0; i < itens.length; i++) {
             if (itens[i].from === item.from && itens[i].item === item.item && itens[i].portion === item.portion) {
+                user.cart.price += item.price;
                 itens[i].quantity += 1;
-                await user.save();
-                //verificar se é preciso
-                return res.status(200).json(user);
+
+                exist = true;
+                break;
             }
         }
-        
-        itens.push({
-            item
-        });
-        await user.save();
+        if (exist) {
+            itens.push({
+                item
+            });
+        }
 
+        user.cart.itens = itens;
+    }
+        await user.save();
+        res.locals.user = user;
+
+        menuController.showMenu(req, res);
     }
     catch (error) {
-        res.render("errors/error", { numError: 500, error: err });
-        res.status(500).json({ error: error });
+        return res.render("errors/error", { numError: 500, error: error });
     }
 }
 
