@@ -197,26 +197,32 @@ userController.addToCart = async function(req, res) {
             return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
         }
         console.log("\n\n\n\n\n\n\nID DA PORÇão: ", portionId, "\n\n\n\n\n\n");
+
         const portion = await Portion.findById(portionId).exec();
-        console.log("\n\n\n\n\n\n PORÇão: ", portion, "\n\n\n\n\n\n");
         if (!portion) {
             return res.render("errors/error", { numError: 404, error: "Porção não encontrada" });
         }
+
         let exist = false;
         for (let i = 0; i < restaurant.menus.length; i++) {
             let menu = restaurant.menus[i];
             if (menu._id.toString() === menuId) {
                 for (let i = 0; i < menu.dishes.length; i++) {
                     if (menu.dishes[i]._id.toString() === dishId) {
-                        item = new Item({
-                            from: restaurant._id,
-                            item: menu.dishes[i].name,
-                            portion: portion.portion,
-                            price: menu.dishes[i].price,
-                            quantity: 1,
-                        });
-                        exist = true;
-                        break;
+                        for (let j = 0; j < menu.dishes[i].portions.length; j++) {
+                            if (menu.dishes[i].portions[j].portion.toString() === portionId) {
+
+                                item = new Item({
+                                    from: restaurant._id,
+                                    item: menu.dishes[i].name,
+                                    portion: portion.portion,
+                                    price: menu.dishes[i].portions[j].price,
+                                    quantity: 1,
+                                });
+                                exist = true;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -227,7 +233,7 @@ userController.addToCart = async function(req, res) {
 
         if (!user.cart) {
             user.cart = new Cart ({
-                    itens: item,
+                    itens: [item],
                     price: item.price,
                     status: "Pendente",
                 })
@@ -236,19 +242,24 @@ userController.addToCart = async function(req, res) {
         else {
         let itens = user.cart.itens;
         exist = false;
+
+        console.log("\n\n\n\nItens: ", itens, "\n\n\n\n");
         for (let i = 0; i < itens.length; i++) {
-            if (itens[i].from === item.from && itens[i].item === item.item && itens[i].portion === item.portion) {
+            console.log("\n\n\n\nItens[i]: ", itens[i], "\n\n\n\n");
+            console.log("\n\n\n\nItem: ", item, "\n\n\n\n");
+            if (itens[i].from.toString() == item.from.toString() && itens[i].item == item.item && itens[i].portion == item.portion) {
                 user.cart.price += item.price;
                 itens[i].quantity += 1;
-
+                console.log("\n\n\nentrou aqui\n\n\n\n\n")
                 exist = true;
                 break;
             }
         }
-        if (exist) {
-            itens.push({
+        if (!exist) {
+            user.cart.price += item.price;
+            itens.push(
                 item
-            });
+            );
         }
 
         user.cart.itens = itens;
