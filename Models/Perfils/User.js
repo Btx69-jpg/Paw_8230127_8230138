@@ -3,19 +3,17 @@ var AddressOrder = require("../Orders/AddressOrder");
 var Perfil = require("./Perfil");
 const Order = require('../Orders/Order');
 
-// Faz com que os schemas destes documentos fique embutido no documento. 
-
 var UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         max: [50, 'O primeiro nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], 
         required: true,
     },
     lastName: {
         type: String,
         max: [50, 'O ultimo nome deve ter no máximo 50 caracteres'],
-        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], //Garante que o nome só tem letras e espaços
+        match: [/^[a-zA-Z\s]*$/, 'Formato inválido para o nome'], 
         required: true,
     },  
     perfil: {
@@ -24,11 +22,11 @@ var UserSchema = new mongoose.Schema({
     },
     addresses: {
         type: [AddressOrder.schema],
-        default: [] //Inicializa com o array vazio
+        default: [],
     },  
     cart: {
         type: [Order.schema],
-        default: [], // Inicializa com um array vazio
+        default: [], 
     },
     birthdate: {
         type: Date,

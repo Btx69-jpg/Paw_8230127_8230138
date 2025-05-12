@@ -477,7 +477,6 @@
       "type": "object",
       "required": ["street", "postal_code", "city"],
       "properties": {
-        
         "street": {
           "type": "string",
           "maxLength": 250
