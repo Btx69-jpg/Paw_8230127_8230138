@@ -3,6 +3,7 @@ var router = express.Router({ mergeParams: true });
 
 //Controller
 var restaurant = require("../Controllers/RestaurantController.js");
+var user = require("../Controllers/ControllersPerfil/UserController.js");
 var menu = require("../Controllers/ControllersRestaurant/MenuController.js");
 const { editRestaurant, updatRestaurant } = require("../Controllers/RestaurantsController.js");
 //Middlewares
@@ -27,6 +28,11 @@ router.use('/comments', comments);
  * * Rota para a pagina que mostra informação sobre o menu
  * */
 router.get('/showMenu/:menu', menu.showMenu);
+
+/**
+ * * Rota para adicionar um prato ao carrinho de compras
+ * */
+//router.post('/addToCart/:dishId/:portionId/:menuId', user.addToCart);
 
 /**
  * * Rota que permite filtrar por menus, de um restaurante, e também ordenar os menus

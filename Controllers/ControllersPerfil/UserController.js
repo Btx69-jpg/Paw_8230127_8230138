@@ -2,6 +2,8 @@ var mongoose = require("mongoose");
 const multer = require('multer');
 //Models
 const User = require("../../Models/Perfils/User");
+const Dish = require("../../Models/Menus/Dish");
+const Portion = require("../../Models/Portion");
 
 /**
  * TODO: Falta depois fazer o redirect correto.
@@ -164,6 +166,81 @@ userController.deleteUser = async function(req, res) {
         res.status(200).json(user)
     } catch (error) {
         console.log("Erro ao eliminar o user: ", error);
+        res.status(500).json({ error: error });
+    }
+}
+
+userController.addDish = async function(req, res) {
+    try {
+        const userId = res.locals.User._id;
+        const dishId = req.params.dishId;
+        const portionId = req.params.portionId;
+        const menuId = req.params.menuId;
+        const restaurantName = req.params.restaurant;
+
+        const user = await User.findById(userId).exec();
+
+        if (!user) {
+            res.render("errors/error", { numError: 404, error: err });
+            return res.status(404).json({ error: "Utilizador não encontrado" });
+        }
+
+        let item;
+
+        const restaurant = await Restaurant.find({name: restaurantName}).exec();
+        
+        if (!restaurant) {
+            res.render("errors/error", { numError: 404, error: err });
+            return res.status(404).json({ error: "Restaurante não encontrado" });
+        }
+
+        const portion = Portion.findById(portionId).exec();
+        if (!portion) {
+            res.render("errors/error", { numError: 404, error: err });
+            return res.status(404).json({ error: "Porção não encontrada" });
+        }
+        let exist = false;
+
+        for (menu of restaurant.menus) {
+            if (menu._id.toString() === menuId) {
+                for (let i = 0; i < menu.dishes.length; i++) {
+                    if (menu.dishes[i]._id.toString() === dishId) {
+                        item = new Item({
+                            from: restaurant._id,
+                            item: menu.dishes[i].name,
+                            portion: portion.name,
+                            price: menu.dishes[i].price,
+                            quantity: 1,
+                        });
+                        exist = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!exist) {
+            res.render("errors/error", { numError: 404, error: err });
+            return res.status(404).json({ error: "Prato não encontrado no menu" });
+        }
+
+        let itens = itens;
+        for (let i = 0; i < itens.length; i++) {
+            if (itens[i].from === item.from && itens[i].item === item.item && itens[i].portion === item.portion) {
+                itens[i].quantity += 1;
+                await user.save();
+                //verificar se é preciso
+                return res.status(200).json(user);
+            }
+        }
+        
+        itens.push({
+            item
+        });
+        await user.save();
+
+    }
+    catch (error) {
+        res.render("errors/error", { numError: 500, error: err });
         res.status(500).json({ error: error });
     }
 }

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //Controllers
-const userController = require("../../Controllers/ControllersPerfil/userController.js")
+const userController = require("../../Controllers/ControllersPerfil/UserController.js")
 const passwordController = require("../../Controllers/ControllersPerfil/PasswordController.js")
 
 //Routes
