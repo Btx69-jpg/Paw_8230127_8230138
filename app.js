@@ -13,6 +13,14 @@ require('dotenv').config();
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+//Permissão, para que o Angular faça pedidos REST ao servidor
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 //Conexão com o Atlas
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', {
   useNewUrlParser: true,
