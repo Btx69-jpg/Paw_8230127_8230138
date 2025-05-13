@@ -3,8 +3,7 @@
         <h2 class="section-title text-center">Menus</h2>
     </div>
 
-    <% if(user !== null && user.perfil !== null && 
-        (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+    <% if (autEdit) { %>
         <div class="col-12 text-center mb-4">
             <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
         </div>

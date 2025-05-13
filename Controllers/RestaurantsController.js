@@ -95,10 +95,9 @@ async function validationEditRestaurant(name, nif, phoneNumber, email, street, p
     return problem;
 }
 
-function getAutRemoveEdit(restaurants) {
+function getAutRemoveEdit(restaurants, user) {
     let autRemoveEdit = [];
 
-    const user = res.locals.user;
     const ids = user.perfil.restaurantIds.map(_id => _id.toString());
 
     for (let j = 0; j < restaurants.length; j++) {
@@ -111,12 +110,20 @@ function getAutRemoveEdit(restaurants) {
 //Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
 //Preciso de no render mandar também os employees
 restaurantsController.restaurantsPage = function(req, res) {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("----------------------------");
     Restaurant.find({ aprove: true}).exec()
         .then(restaurants => {
             let autRemoveEdit = [];
 
             if (req.cookies && req.cookies.priority && req.cookies.priority === "Dono") {
-                autRemoveEdit = getAutRemoveEdit(restaurants)
+                autRemoveEdit = getAutRemoveEdit(restaurants, res.locals.user);
             }
                 
             res.render("restaurants/restaurants", {restaurants: restaurants, filters: {}, autRemoveEdit: autRemoveEdit});
