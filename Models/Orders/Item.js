@@ -1,15 +1,21 @@
 var mongoose = require('mongoose');
 
 var ItemSchema = new mongoose.Schema({
+    //O id do restaurante de onde pertence o item
+    from: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurant'    
+    },
+    //O nome do prato
     item: {
         type: String,
-        maxlength: [50, 'O título deve ter no máximo 50 caracteres'],
+        maxlength: [100, 'O nome do item deve ter no máximo 50 caracteres'],
         match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], 
         required: true,
     },
     portion: {
         type: String,
-        maxlength: [25, 'O nome deve ter no máximo 50 caracteres'],
+        maxlength: [25, 'a porção deve ter no máximo 50 caracteres'],
         match: [/^[\p{L}\s]+$/u, 'Formato inválido para o nome'], 
         default: "",
         required: true,

@@ -21,12 +21,11 @@
 
     <div class="container py-4">
       <h1 class="mb-4">Carrinho de Compras</h1>
-      
       <!-- Verifica se o carrinho existe e tem itens -->
-      <% if (cart && cart.items && cart.items.length > 0) { %>
+      <% if (cart && cart.itens && cart.itens.length > 0) { %>
         <!-- Exibir total de itens -->
         <div class="mb-3">
-          <strong>TOTAL (x Items): <%= cart.items.length %></strong>
+          <strong>TOTAL (x itens): <%= cart.itens.length %></strong>
         </div>
 
         <div class="row">
@@ -47,10 +46,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <% cart.items.forEach(function(item) { %>
+                    <% cart.itens.forEach(function(item) { %>
                       <tr>
-                        <td><%= item.name %></td>
-                        <td><%= item.description %></td>
+                        <td><%= item.item %></td>
+                        <td><%= item.portion %></td>
                         <td>€ <%= item.price.toFixed(2) %></td>
                         <td>
                           <!-- Exemplo de input para alterar quantidade -->
@@ -87,13 +86,13 @@
                 <!-- Exemplo de cálculo simples de subtotal e IVA -->
                 <p class="mb-2">
                   <strong>Produtos:</strong> 
-                  <span class="float-end">€ <%= cart.subtotal.toFixed(2) %></span>
+                  <span class="float-end">€ <%= cart.price.toFixed(2) %></span>
                 </p>
 
                 <p class="mb-2">
                   <strong>IVA (23%):</strong> 
                   <span class="float-end">
-                    € <%= (cart.subtotal * 0.23).toFixed(2) %>
+                    € <%= (cart.price * 0.23).toFixed(2) %>
                   </span>
                 </p>
 
@@ -102,7 +101,7 @@
                 <p class="mb-2">
                   <strong>Total:</strong> 
                   <span class="float-end">
-                    € <%= (cart.subtotal * 1.23).toFixed(2) %>
+                    € <%= (cart.price * 1.23).toFixed(2) %>
                   </span>
                 </p>
 

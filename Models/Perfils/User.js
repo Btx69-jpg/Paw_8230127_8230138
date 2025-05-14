@@ -25,8 +25,8 @@ var UserSchema = new mongoose.Schema({
         default: [],
     },  
     cart: {
-        type: [Order.schema],
-        default: [], 
+        type: Order.schema,
+        default: {}, 
     },
     birthdate: {
         type: Date,

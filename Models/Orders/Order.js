@@ -14,15 +14,15 @@ var OrderSchema = new mongoose.Schema({
     },
     client: {
         type: FaturaUser.schema,
-        required: true,
+    //    required: true,
     },
     restaurant: {
         type: FaturaRestaurant.schema,
-        required: true,  
+    //    required: true,  
     },
     addressOrder: {
         type: AddressOrder.schema,
-        required: true,
+    //    required: true,
     },
     itens: {
         type: [Item.schema],
@@ -43,7 +43,7 @@ var OrderSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ['delivery', 'pickup'],
-        required: true,
+    //    required: true,
     },
     updated_at: { type: Date, default: Date.now },
 });

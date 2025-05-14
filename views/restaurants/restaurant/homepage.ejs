@@ -12,9 +12,10 @@
 
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/restaurantPage.css">
     <link rel="stylesheet" href="/stylesheets/Restaurants/navBar.css">
     <link rel="stylesheet" href="/stylesheets/sinoNavBar.css">
+    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/restaurantPage.css">
+
   </head>
   
   <body>
@@ -22,8 +23,8 @@
     <%- include('navBarRest') %>
 
     <div class="container">
-      <div class="mb-4" >
-        <a href="/restaurants" class="btn btn-secondary">Voltar</a>
+      <div class="mb-2" >
+        <a href="/restaurants" class="btn btn-secondary mt-3 rounded-circle btn-lg"><</a>
 
         <% if(autGest) { %>
             <a href="/restaurants/<%= restaurant.name %>/orders" class="btn btn-primary">Gestão de pedidos</a>  
@@ -34,11 +35,11 @@
       <!-- Informações do Restaurante -->
       <%- include('HomePage/InfoRestaurant') %>
 
-      <!-- Avaliações -->
-      <%- include('HomePage/avaliation') %>
-
       <!-- Menus -->
       <%- include('HomePage/menus', {menus: menus}) %>
+
+      <!-- Avaliações -->
+      <%- include('HomePage/avaliation') %>
     </div>
 
     <!-- Bootstrap JS Bundle -->

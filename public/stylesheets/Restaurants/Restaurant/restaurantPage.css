@@ -3,10 +3,6 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-.container {
-    margin-top: 20px;
-}
-
 .back-button a {
     text-decoration: none;
     color: #fff;

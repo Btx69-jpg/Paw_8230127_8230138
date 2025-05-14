@@ -53,9 +53,6 @@
               <h2 class="card-title mb-3"><%= menu.name %></h2>
               <div class="d-flex justify-content-center gap-4">
                 <span class="badge bg-primary fs-6"><%= menu.type %></span>
-                <span class="badge bg-secondary fs-6"
-                  ><%= menu.countDish %> pratos</span
-                >
               </div>
             </div>
           </div>
@@ -170,6 +167,18 @@
                   <span class="text-muted"
                     ><%= portion.price.toFixed(2) %> €</span
                   >
+                  <!-- Adicionar referencia a rota de adicionar o carrinho -->
+                  <form
+                  action="/restaurants/<%= restaurant.name %>/addToCart/<%= dish._id %>/<%= portion.portion._id %>/<%= menu._id %>"
+                  method="post"
+                  class="d-inline"
+                >
+                   <button type="submit" class="btn btn-outline-primary">
+                    <span class="text-muted" class="add-to-cart"
+                      ><i class="bi bi-cart-plus"></i></span>
+                   </button>
+                </form>
+
                 </div>
                 <% }); %>
               </div>

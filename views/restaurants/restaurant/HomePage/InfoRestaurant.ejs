@@ -1,36 +1,38 @@
-<div class="row bg-white p-4 rounded shadow mb-4">
-    <div class="col-12 text-center">
-      <h1 class="section-title mb-3"><%= restaurant.name %></h1>
-    </div>
-
-
+<div class="row bg-light p-3 rounded shadow-sm mb-3">
+  <div class="col-12 position-relative">
+    <h2 class="section-title mb-0 text-center"><%= restaurant.name %></h2>
     <% if (autEdit) { %>
-      <div class="col-12 text-start my-2">
-        <a 
-          href="/restaurants/<%= restaurant.name %>/editDados/<%= restaurant._id %>" 
-          class="btn btn-primary btn-sm shadow py-2 px-3"
-          role="button"
-        >
-          Editar Dados
-        </a>
-      </div>
+      <form 
+        action="/restaurants/<%= restaurant.name %>/editDados/<%= restaurant._id %>" 
+        method="GET" 
+        class="position-absolute top-0 end-0"
+      >
+        <button class="btn btn-warning btn-sm rounded-circle">
+          <i class="bi bi-pencil"></i>
+        </button>
+      </form>
     <% } %>
-    <div class="col-12">
-      <p><strong>Descrição:</strong> <%= restaurant.description %></p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Número de telefone:</strong> <%= restaurant.perfil.phoneNumber %></p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Email:</strong> <%= restaurant.perfil.email %></p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Morada:</strong> <%= restaurant.address.street %></p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Cidade:</strong> <%= restaurant.address.city %></p>
-    </div>
-    <div class="col-md-6">
-      <p><strong>Código Postal:</strong> <%= restaurant.address.postal_code %></p>
-    </div>
-</div>  
+  </div>
+
+  <div class="col-12 mb-3">
+    <p class="text-muted text-justify" style="font-size: 0.95rem;">
+      <strong>Descrição:</strong> <%= restaurant.description %>
+    </p>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <p><i class="bi bi-telephone"></i> <strong>Telefone:</strong> <%= restaurant.perfil.phoneNumber %></p>
+  </div>
+  <div class="col-md-4 mb-2">
+    <p><i class="bi bi-envelope"></i> <strong>Email:</strong> <%= restaurant.perfil.email %></p>
+  </div>
+  <div class="col-md-4 mb-2">
+    <p><i class="bi bi-geo-alt"></i> <strong>Morada:</strong> <%= restaurant.address.street %></p>
+  </div>
+  <div class="col-md-4 mb-2">
+    <p><i class="bi bi-building"></i> <strong>Cidade:</strong> <%= restaurant.address.city %></p>
+  </div>
+  <div class="col-md-4 mb-2">
+    <p><i class="bi bi-mailbox"></i> <strong>Código Postal:</strong> <%= restaurant.address.postal_code %></p>
+  </div>
+</div>

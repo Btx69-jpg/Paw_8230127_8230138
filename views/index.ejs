@@ -23,25 +23,18 @@
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <h1>Descubra as melhores opções de entrega</h1>
-        <p>Explore restaurantes e estabelecimentos próximos a você</p>
-
         <form class="search-bar d-flex" action="/search" method="GET">
-          <input id="restaurantName" name="restaurantName" class="form-control me-2" type="search" placeholder="Buscar restaurantes ou pratos..." aria-label="Search" name="q" required>
+          <input id="restaurantName" name="restaurantName" class="form-control ms-5 me-2" type="search" placeholder="Buscar restaurantes ou pratos..." aria-label="Search" name="q" required>
           <button class="btn btn-primary" type="submit" id="OrangeButton">Buscar</button>
         </form>
+              <!--Botão que direciona para ver todos os restaurantes-->
+          <a href="/restaurants" class="btn btn-primary" id="moreRestaurants">Ver todos os restaurantes</a>
       </div>
     </section>
 
 
     <section class="featured container">
       <%- include('Home/recomendacoes.ejs', { restaurants: restaurants })%>
-    </section>
-
-    <section>
-      <!--Botão que direciona para ver todos os restaurantes-->
-      <div class="container text-center mb-5">
-        <a href="/restaurants" class="btn btn-primary" id="moreRestaurants">Ver todos os restaurantes</a>
-      </div>
     </section>
 
     <section>
