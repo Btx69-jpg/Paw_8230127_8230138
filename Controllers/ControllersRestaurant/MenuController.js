@@ -251,6 +251,10 @@ menuController.createMenu = async function (req, res) {
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,
     }).exec();
+    if (restaurant.menus.length >= 10) {
+      cleanupUploadDir(req.uploadDir);
+      return res.status(400).render("errors/error", { numError: 400, error: "Limite de menus atingido" });
+    }
     const categories = await carregarCategories();
     const portions = await carregarPortions();
 
@@ -275,6 +279,10 @@ menuController.saveMenu = async function (req, res) {
     if (!restaurant) {
       cleanupUploadDir(req.uploadDir);
       return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
+    }
+    if (restaurant.menus.length >= 10) {
+      cleanupUploadDir(req.uploadDir);
+      return res.status(400).render("errors/error400", { error: "Limite de menus atingido" });
     }
     const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 

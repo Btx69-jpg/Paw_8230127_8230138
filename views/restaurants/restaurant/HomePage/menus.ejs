@@ -1,13 +1,18 @@
 <div class="row bg-white p-4 rounded shadow mb-4">
-    <div class="col-12 mb-0">
+    <div class="col-12 d-flex align-items-center justify-content-between">
         <h2 class="section-title text-center">Menus</h2>
-    </div>
-
-    <% if (autEdit) { %>
-        <div class="col-12 text-center mb-4">
+        <% if (autEdit) { %>
+          <% if (menus.length >= 10) { %>
+            <!-- Mensagem de limite atingido -->
+            <button class="btn btn-danger" disabled title="Limite de menus atingido">
+              Limite de Menus Atingido
+            </button>
+          <% } else { %>
+            <!-- Botão para adicionar menu -->
             <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
-        </div>
-    <% } %>
+          <% } %>
+        <% } %>
+      </div>
 
     <!-- Filtro para os menus -->
 <div class="col-12 mb-4">
