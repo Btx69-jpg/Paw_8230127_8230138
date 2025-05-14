@@ -32,28 +32,35 @@
 
       <% if (restaurants.length > 0) { %>
         <!-- Lista de restaurantes -->
-        <div class="row justify-content-center">
-          <% for(let i = 0; i < restaurants.length; i++) { %>
-            <div class="col-md-4 mb-4">
-              <div class="restaurant-card text-center p-3 border rounded shadow-sm">
-                <h5 class="mb-3"><%= restaurants[i].name %></h5>
-                <img src="<%= restaurants[i].perfil.perfilPhoto %>" alt="Logo do restaurante" class="img-fluid mb-3">
-                <% if (autRemoveEdit[i] === true || (user && user.perfil && user.perfil.priority === "Admin")) { %>
-                  <div class="btn-group d-flex justify-content-center mb-2">
-                    <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST" class="me-2">
-                      <button type="submit" class="btn btn-danger btn-sm">Remover</button>
-                    </form>
-                    <form action="/restaurants/editRestaurant/<%= restaurants[i]._id %>" method="GET">
-                      <button type="submit" class="btn btn-primary btn-sm">Editar</button>
-                    </form>
-                  </div>
-                <% } %>
-                <p class="mt-2">
-                  <a href="/restaurants/<%= restaurants[i].name %>" class="text-decoration-none">Mais Info.</a>
-                </p>
+<div class="row justify-content-center-inline ">
+  <% for(let i = 0; i < restaurants.length; i++) { %>
+    <div class="col-md-3 mb-2 d-flex">
+      <a href="/restaurants/<%= restaurants[i].name %>" class="text-decoration-none w-100">
+        <div class="restaurant-card ">
+          <% if (autRemoveEdit[i] === true || (user && user.perfil && user.perfil.priority === "Admin")) { %>
+            <div class="btn-group d-flex">
+              <form action="/restaurants/deleteRestaurant/<%= restaurants[i].name %>" method="POST" class="me-2">
+                <button  class="btn btn-danger btn-sm rounded-circle">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              <div class="btn-group d-flex-inline ms-auto">
+                <form action="/restaurants/editRestaurant/<%= restaurants[i]._id %>" method="GET">
+                  <button  class="btn btn-warning btn-sm rounded-circle">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </form>
               </div>
             </div>
+
           <% } %>
+          <img src="<%= restaurants[i].perfil.perfilPhoto %>" alt="Logo do restaurante" class="img-fluid">
+          <h5><%= restaurants[i].name %></h5>
+
+        </div>
+      </a>
+    </div>
+  <% } %>
       <% } else { %>
         <p class="text-center">Ainda sem restaurantes</p>
       <% } %>

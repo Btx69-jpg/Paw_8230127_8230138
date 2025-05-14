@@ -8,13 +8,15 @@
   <% } else { %>
     <% restaurants.forEach(restaurant => { %>
       <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="<%= restaurant.perfil.perfilPhoto %>" class="card-img-top" alt="<%= restaurant.name %>">
-          <div class="card-body">
-            <h5 class="card-title"><%= restaurant.name %></h5>
-            <p class="card-text"><%= restaurant.description %></p>
+        <a href="/restaurants/<%= restaurant.name %>" class="text-decoration-none w-100">
+          <div class="card">
+            <img src="<%= restaurant.perfil.perfilPhoto %>" class="card-img-top" alt="<%= restaurant.name %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= restaurant.name %></h5>
+              <p class="card-text"><%= restaurant.description %></p>
+            </div>
           </div>
-        </div>
+        </a>
       </div>
     <% })} %>
 

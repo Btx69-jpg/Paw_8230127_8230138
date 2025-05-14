@@ -1,4 +1,9 @@
 /* Barra superior */
+.navbar-brand {
+    font-weight: bold;
+}
+
+
 .navbar {
     background-color: #ffffff; /* Fundo claro*/
     border-bottom: 1px solid #eaeaea; /* linha subtil */
