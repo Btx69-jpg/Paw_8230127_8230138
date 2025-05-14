@@ -47,6 +47,8 @@ restaurantController.homePage = async function (req, res) {
       } else if (priority === "Restaurant" && restaurant._id.toString() === res.locals.user._id.toString()) {
         autGest = true;
       }
+      res.locals.autEdit = autEdit;
+      res.locals.autGest = autGest;
 
     }
     res.render("restaurants/restaurant/homepage", {
@@ -125,12 +127,16 @@ restaurantController.searchMenu = async function (req, res) {
     }
 
     const categories = await carregarCategoriesMenus(menus);
-    console.log("Restaurante: ");
+
+
+
     res.render("restaurants/restaurant/homepage", {
       restaurant: restaurant,
       menus: menus,
       filters: { name, type, order },
       categories: categories,
+      autEdit: res.locals.autEdit,
+      autGest: res.locals.autGest,
     });
   } catch (error) {
     res.status(500).render("errors/error", { numError: 500, error: error });

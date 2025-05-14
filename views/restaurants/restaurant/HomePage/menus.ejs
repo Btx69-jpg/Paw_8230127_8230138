@@ -10,51 +10,49 @@
     <% } %>
 
     <!-- Filtro para os menus -->
-    <div class="col-12 mb-4">
-        <form action="/restaurants/<%= restaurant.name %>/search" method="GET" class="row g-3 justify-content-center">
+<div class="col-12 mb-4">
+    <form action="/restaurants/<%= restaurant.name %>/search" method="GET" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="mameMenu" class="form-label fw-bold">Nome do Menu:</label>
+            <input type="text" 
+                   class="form-control shadow-sm" 
+                   name="mameMenu" 
+                   id="mameMenu" 
+                   placeholder="Digite o nome do menu" 
+                   maxlength="50" 
+                   pattern="[A-Za-z\s]*"
+                   value="<%= filters.name %>">
+        </div>
         
+        <% if (categories && categories.length > 0) { %>
             <div class="col-md-4">
-                <label for="mameMenu" class="form-label">Nome do Menu:</label>
-                <input type="text" 
-                        class="form-control" 
-                        name="mameMenu" 
-                        id="mameMenu" 
-                        placeholder="Nome do menu" 
-                        maxlength="50" 
-                        pattern="[A-Za-z\s]*"
-                        value="<%= filters.name %>">
-            </div>
-            
-            <% if (categories && categories.length > 0) { %>
-                <div class="col-md-4">
-                    <label for="type" class="form-label">Tipo do Menu:</label>
-                    <select name="type" id="type" class="form-select" required>
-                        <option value="all">Todas</option>
-                        <% categories.forEach(function(category) { %>
-                            <option value="<%= category %>" <%= filters.priority === category ? 'selected' : '' %>><%= category %></option>
-                        <% }); %>
-                    </select>
-                </div>
-            <% } %>
-
-            <div class="col-md-4">
-                <label for="order" class="form-label">Ordenação:</label>
-                <select name="order" id="order" class="form-select">
-                    <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
-                    <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
-                    <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
-                    <option value="typeAsc" <%= filters.order === "typeAsc" ? 'selected' : '' %>>Tipo de Menu (A-Z)</option>
-                    <option value="typeDesc" <%= filters.order === "typeDesc" ? 'selected' : '' %>>Tipo de Menu (Z-A)</option>  
+                <label for="type" class="form-label fw-bold">Tipo do Menu:</label>
+                <select name="type" id="type" class="form-select shadow-sm">
+                    <option value="all">Todas</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category %>" <%= filters.priority === category ? 'selected' : '' %>><%= category %></option>
+                    <% }); %>
                 </select>
-              </div>
-    
-            <div class="col-12 d-flex justify-content-end">
-                <a href="/restaurants/<%= restaurant.name %>" class="btn btn-secondary me-2">Clear</a>
-                <button type="submit" class="btn btn-primary">Submeter</button>
             </div>
-    
-        </form>
-    </div>
+        <% } %>
+
+        <div class="col-md-4">
+            <label for="order" class="form-label fw-bold">Ordenação:</label>
+            <select name="order" id="order" class="form-select shadow-sm">
+                <option value="no" <%= filters.order === "no" ? 'selected' : '' %>>- Selecione uma Opção -</option>
+                <option value="nameAsc" <%= filters.order === "nameAsc" ? 'selected' : '' %>>Nome (A-Z)</option>
+                <option value="nameDesc" <%= filters.order === "nameDesc" ? 'selected' : '' %>>Nome (Z-A)</option>
+                <option value="typeAsc" <%= filters.order === "typeAsc" ? 'selected' : '' %>>Tipo de Menu (A-Z)</option>
+                <option value="typeDesc" <%= filters.order === "typeDesc" ? 'selected' : '' %>>Tipo de Menu (Z-A)</option>  
+            </select>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end">
+            <a href="/restaurants/<%= restaurant.name %>" class="btn btn-outline-secondary me-2 shadow-sm">Limpar</a>
+            <button type="submit" class="btn btn-primary shadow-sm">Filtrar</button>
+        </div>
+    </form>
+</div>
 
     <% if (menus.length > 0) { %>
         <!-- Cards dos menus -->
@@ -64,7 +62,7 @@
                     <div class="card h-100">
                         <img src="<%= menus[i].photo %>" class="card-img-top" alt="Imagem do Menu" maxlength="225" height="225">
                         <div class="card-body">
-                            <h5 class="card-title">Menu <%= menus[i].name %></h5>
+                            <h5 class="card-title"><%= menus[i].name %></h5>
                             <p class="card-text"><%= menus[i].description %></p>
                             <p class="card-text">Tipo: <%= menus[i].type %></p>
                             <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
