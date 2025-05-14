@@ -1,29 +1,27 @@
 <div class="row bg-white p-4 rounded shadow mb-4">
-  <div class="col-12 mb-3 d-flex align-items-center">
-    <form action="/perfil/admin/editDados/<%= user._id %>" method="GET" class="me-3">
-      <button type="submit" class="custom-btn">Editar Dados</button>
-    </form>
-
-    <form action="/perfil/admin/editPassword/<%= user._id%>" method="GET">
-      <button type="submit" class="custom-btn">Editar Password</button>
-    </form>
-  </div>
-
-  <div class="col-12 text-center">
+  <!-- Foto de perfil -->
+  <div class="col-md-4 text-center">
     <img
       src="<%= user.perfil.perfilPhoto %>"
       alt="Foto de Perfil de <%= user.firstName %>"
-      class="profile-pic"
+      class="profile-pic mb-3"
     />
+
+    <!-- Botões abaixo da foto -->
+    <div class="d-flex justify-content-center">
+      <form action="/perfil/admin/editDados/<%= user._id %>" method="GET" class="me-2">
+        <button type="submit" class="custom-btn">Editar Dados</button>
+      </form>
+      <form action="/perfil/admin/editPassword/<%= user._id %>" method="GET">
+        <button type="submit" class="custom-btn">Editar Password</button>
+      </form>
+    </div>
   </div>
 
-  <div class="col-12">
+  <!-- Dados do utilizador -->
+  <div class="col-md-8">
     <p><strong>Nome:</strong> <%= user.firstName %> <%= user.lastName %></p>
-  </div>
-  <div class="col-md-6">
     <p><strong>Número de telefone:</strong> <%= user.perfil.phoneNumber %></p>
-  </div>
-  <div class="col-md-6">
     <p><strong>Email:</strong> <%= user.perfil.email %></p>
   </div>
 </div>
