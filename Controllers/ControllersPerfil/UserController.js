@@ -273,4 +273,27 @@ userController.addToCart = async function(req, res) {
     }
   };
 
+userController.cleanCart = async function(req, res) {
+    try {
+        const userId = res.locals.user._id;
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
+        }
+        if (!user.cart) {
+          //retornar alert
+            return res.render("errors/error", { numError: 404, error: "O carrinho está vazio" });
+        }
+        user.cart.itens = [];
+        user.cart.price = 0;
+        await user.save();
+        res.locals.user = user;
+        res.render("checkOut", { cart: user.cart });
+    } catch (error) {
+        console.log("Erro ao limpar o carrinho: ", error);
+        return res.render("errors/error", { numError: 500, error: error });
+    }
+  }
+
+
 module.exports = userController;
