@@ -14,7 +14,7 @@
         <% break; %>
 
         <% case 'Cliente': %>
-            <a class="nav-link" href="/perfil/client">
+            <a class="nav-link" href="http://localhost:4200/perfil/user/<%= user._id %>">
                 <img 
                 src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
                 alt="Profile" 
@@ -44,7 +44,7 @@
                     Meus Restaurantes
                 </a>
 
-                <a class="nav-link d-flex align-items-center gap-1" href="/perfil/dono">
+                <a class="nav-link d-flex align-items-center gap-1" href="http://localhost:4200/perfil/user/<%= user._id %>">
                     <img 
                         src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
                         alt="Profile" 

@@ -89,20 +89,6 @@ indexController.search = function(req, res) {
 
 indexController.pageRestaurantes = async function(req, res) {
   try {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");    
-    console.log("");
-    console.log("");
-    console.log("");
-
-    console.log("-------------------------");
     const userId = req.params.userId;
     let user = await User.findById(userId).exec();
     
