@@ -251,6 +251,10 @@ menuController.createMenu = async function (req, res) {
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,
     }).exec();
+    if (restaurant.menus.length >= 10) {
+      cleanupUploadDir(req.uploadDir);
+      return res.status(400).render("errors/error", { numError: 400, error: "Limite de menus atingido" });
+    }
     const categories = await carregarCategories();
     const portions = await carregarPortions();
 
@@ -265,25 +269,20 @@ menuController.createMenu = async function (req, res) {
 };
 
 // Save menu: reusa dados nutricionaiscda sessao (por a funcionar)
-menuController.saveMenu = async function (req, res, restaurant) {
+menuController.saveMenu = async function (req, res) {
   try {
     const temp = req.session.tempData || {};
     const formData = temp?.formData || req.body;
     const files = temp?.files || req.files;
     const manual   = req.body.manual || {};
-    
+    let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     if (!restaurant) {
-      if (!temp?.restaurant) {
-        if (typeof restaurant === 'string') {
-          restaurant = await Restaurant.findOne({ name: restaurant }).exec();
-        }
-        else {
-          restaurant = await Restaurant.findOne({ name: restaurant.name }).exec();
-        }
-      }
-      else{
-        restaurant = temp.restaurant;
-      }
+      cleanupUploadDir(req.uploadDir);
+      return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
+    }
+    if (restaurant.menus.length >= 10) {
+      cleanupUploadDir(req.uploadDir);
+      return res.status(400).render("errors/error400", { error: "Limite de menus atingido" });
     }
     const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
@@ -683,6 +682,6 @@ menuController.validateIngredient = async function (req, res) {
   }
 };
 
-menuController.saveMenuFinal = (req, res) => menuController.saveMenu(req, res, req.session.tempData.restaurant);
+menuController.saveMenuFinal = (req, res) => menuController.saveMenu(req, res);
 
 module.exports = menuController;

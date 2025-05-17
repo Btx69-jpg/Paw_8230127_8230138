@@ -17,24 +17,28 @@
           <h1>Editar conta</h1>
 
           <form action="/perfil/admin/updateAdmin/<%= userD._id %>" method="POST" enctype="multipart/form-data" id="signupForm" class="needs-validation" novalidate>
-            <%- include('../../../../login/editUserCampos', {userD: userD})%>
-
-            
-            <div class="mb-3">
+            <div class="mb-3 text-center d-flex flex-column align-items-center">
               <label for="description" class="form-label">Foto de perfil</label>
-              <img src="<%= userD.perfil.perfilPhoto %>"       
-              alt="Foto de Perfil de <%= user.firstName %>"
-              class="profile-pic">
+              <img 
+                src="<%= userD.perfil.perfilPhoto %>"       
+                alt="Foto de Perfil de <%= user.firstName %>"
+                class="profile-pic"
+              >
             </div>
 
             <div class="form-group">
-              <label for="perfilPhoto">Foto do admin:</label>
+              <label for="perfilPhoto">Foto do Perfil:</label>
               <input type="file" 
                 accept="image/*" 
                 name="perfilPhoto" 
                 id="perfilPhoto" 
                 class="form-control">
             </div>
+
+            <%- include('../../../../login/editUserCampos', {userD: userD})%>
+
+            
+
 
             <!-- Quando clicar em Dono, tem de aparecer o campo para associar a um restaurante, tambem nmeter isso no add-->
             <button type="submit">Alterar</button>

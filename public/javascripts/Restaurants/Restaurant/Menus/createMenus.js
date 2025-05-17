@@ -1,109 +1,6 @@
 let dishIndex = 1; // O primeiro formulário já está indexado como 0
 
       document
-        .getElementById("addDishBtn")
-        .addEventListener("click", function () {
-          if (dishIndex >= 10) {
-            alert("O máximo de pratos é 10.");
-            return;
-          }
-          const container = document.getElementById("dishesContainer");
-          const newDish = document.createElement("div");
-          newDish.classList.add("dish-form", "border", "p-3", "mb-3");
-          newDish.setAttribute("data-index", dishIndex);
-          // Para pratos adicionais, a categoria é de livre escrita (ou pode ser alterado conforme a lógica desejada)
-          newDish.innerHTML = `
-          <h5>Prato ${dishIndex + 1}</h5>
-          <div class="mb-3">
-            <label for="dishName${dishIndex}" class="form-label">Nome:</label>
-            <input type="text" name="dishes[${dishIndex}][name]" id="dishName${dishIndex}" class="form-control" placeholder="Nome do prato" required maxlength="50" pattern="^[A-Za-zÀ-ÿ\s]+$">
-          </div>
-          <div class="mb-3">
-            <label for="dishDescription${dishIndex}" class="form-label">Descrição:</label>
-            <input type="text" name="dishes[${dishIndex}][description]" id="dishDescription${dishIndex}" class="form-control" placeholder="Descrição do prato" required maxlength="250">
-          </div>
-          <% if (categories && categories.length > 0) { %>
-            <div class="mb-3">
-              <label for="dishCategory${dishIndex}" class="form-label">Categoria:</label>
-              <select name="dishes[${dishIndex}][category]" id="dishCategory${dishIndex}" class="form-select" required>
-                <% categories.forEach(function(cat) { %>
-                  <option value="<%= cat.category %>"><%= cat.category %></option>
-                <% }); %>
-              </select>
-            </div>
-          <% } else { %>
-            <div class="mb-3">
-              <label for="dishCategory${dishIndex}" class="form-label">Categoria:</label>
-              <input type="text" name="dishes[${dishIndex}][category]" id="dishCategory${dishIndex}" class="form-control" required>
-            </div>
-          <% } %>
-
-          <div class="mb-3">
-  <label class="form-label">Ingredientes:</label>
-  <div id="ingredientsContainer-${dishIndex}">
-    <div class="ingredient-item mb-2">
-      <div class="input-group">
-        <select class="form-select search-type" style="max-width: 150px;">
-          <option value="name">Por Nome</option>
-          <option value="barcode">Por Código</option>
-        </select>
-        <input
-          type="text"
-          name="dishes[${dishIndex}][ingredients][]"
-          class="form-control ingredient-input"
-          placeholder="Nome do ingrediente"
-          required
-        />
-        <button type="button" class="btn btn-outline-danger remove-ingredient">×</button>
-      </div>
-    </div>
-  </div>
-  <button type="button" class="btn btn-sm btn-secondary add-ingredient">Adicionar Ingrediente</button>
-  <small class="text-muted">Use vírgulas para múltiplos itens ou códigos de barras</small>
-</div>
-
-          <div class="mb-3">
-            <label class="form-label">Porções:</label>
-            <div id="portionsContainer-${dishIndex}" class="portions-container mb-3" data-index="${dishIndex}"></div>
-            <div class="input-group">
-              <select 
-                id="portionSelect-${dishIndex}" 
-                class="form-select portion-select"
-                data-index="${dishIndex}"
-                onchange="addPortion(this)"
-              >
-<option value="">Selecione uma porção...</option>
-                  <% portions.forEach(function(portion) { %>
-                  <option value="<%= portion._id %>">
-                    <%= portion.portion %>
-                  </option>
-                  <% }); %>
-                </select>
-              <button 
-                type="button" 
-                class="btn btn-outline-secondary" 
-                onclick="addPortion(document.getElementById('portionSelect-${dishIndex}'))"
-              >
-                Adicionar
-              </button>
-            </div>
-            <small class="text-danger portion-error" style="display: none">
-              Pelo menos uma porção é obrigatória
-            </small>
-          </div>
-          <div class="mb-3">
-            <label for="dishPhoto${dishIndex}" class="form-label">Foto do Prato:</label>
-            <input type="file" accept="image/*" name="dishes[${dishIndex}][photo]" id="dishPhoto${dishIndex}" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <button type="button" class="btn btn-danger removeDishBtn">Remover Prato</button>
-          </div>
-        `;
-          container.appendChild(newDish);
-          dishIndex++;
-        });
-
-      document
         .getElementById("dishesContainer")
         .addEventListener("click", function (e) {
           if (e.target && e.target.classList.contains("removeDishBtn")) {
@@ -258,7 +155,9 @@ let dishIndex = 1; // O primeiro formulário já está indexado como 0
           placeholder="Nome do ingrediente"
           required
         />
-        <button type="button" class="btn btn-outline-danger remove-ingredient">×</button>
+        <button  class="btn btn-danger remove-ingredient">
+          <i class="bi bi-trash"></i>
+        </button>
       </div>
     `;
           container.appendChild(newItem);

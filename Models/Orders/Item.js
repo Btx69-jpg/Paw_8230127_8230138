@@ -30,7 +30,6 @@ var ItemSchema = new mongoose.Schema({
         type: Number,
         default: 1,
         min: [1, 'Numero mínimo de pratos selecionados é 1'],
-        max: [10, 'Numero máximo de pratos'],
         required: true,
     },    
     updated_at: { type: Date, default: Date.now },

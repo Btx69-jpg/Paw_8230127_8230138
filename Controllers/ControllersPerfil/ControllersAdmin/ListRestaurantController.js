@@ -33,7 +33,7 @@ listRestaurantController.homePage = function(req, res) {
 listRestaurantController.showRestaurant = async function(req, res) {
     try {
         const restaurantId = req.params.restaurantId
-        const restaurant = await Restaurant.findOne({_id: restaurantId, aprove: false}).exec();
+        const restaurant = await Restaurant.findOne({_id: restaurantId, aprove: true}).exec();
         
         if (!restaurant) {
             console.log("O restaurant não existe não existe")

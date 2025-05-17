@@ -33,10 +33,12 @@ var DishSchema = new mongoose.Schema({
         default: "",
     },
     nutritionalInfo: [ NutrientSchema.schema ],
+    /*
     totalNutritionalInfo: {
         type: NutrientSchema.schema,
         default: {}
     },
+    */
     updated_at: { type: Date, default: Date.now },
 });
 

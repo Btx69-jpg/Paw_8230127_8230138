@@ -10,11 +10,7 @@ var aprovacaoRestController = {};
 aprovacaoRestController.aprovePage = async function(req, res) {
     Restaurant.find({ aprove: false}).exec()
         .then(function(restaurants) {
-            if(restaurants.length > 0) {
-                res.render("perfil/admin/PagesAdmin/Restaurant/aproveRestaurant", {restaurants: restaurants});
-            } else {
-                console.log("Não existem restaurantes para aprovar.")
-            }
+            res.render("perfil/admin/PagesAdmin/Restaurant/aproveRestaurant", {restaurants: restaurants});
         })
         .catch(function(err) {
             console.log("Error", err);

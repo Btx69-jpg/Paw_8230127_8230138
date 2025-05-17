@@ -25,28 +25,95 @@
             warnings } = perDish[dishIdx]; const nutr = infos[ingIdx]?.per100g
             || {}; %>
             <!-- Se houve falha naquele ingrediente -->
-            <% if (warnings[ingIdx]) { %>
-            <div class="mb-2">
-              <p>
-                Ingrediente: <%= ing %> (<%= warnings[ingIdx].searchType %> não
-                encontrado)
-              </p>
+            <% if (warnings[ingIdx] || !infos[ingIdx]) { %>
+              <div class="mb-2">
+                <p>
+                  Ingrediente: <%= ing %> (<%= warnings[ingIdx]?.searchType || "não encontrado" %>)
+                </p>
 
-              <!-- Botão para re-pesquisar só este ingrediente -->
+                <button
+                type="button"
+                class="btn btn-primary"
+                onclick="showRetry('<%= dishIdx %>','<%= ingIdx %>')"
+              >
+                Re-pesquisar
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="showManual('<%= dishIdx %>','<%= ingIdx %>')"
+              >
+                Editar Manualmente
+              </button>
+
+              <!-- Seção de re-pesquisa -->
+            <div id="retry-<%= dishIdx %>-<%= ingIdx %>" class="mb-3" style="display: none">
+              <label>Novo termo para pesquisa:</label>
               <input
                 type="text"
                 name="retryTerm[<%= dishIdx %>][<%= ingIdx %>]"
-                placeholder="Novo termo para `<%= ing %>`"
-                class="form-control mb-1"
+                class="form-control mb-2"
+                placeholder="Digite novo nome de ingrediente"
               />
               <button
                 type="submit"
                 name="action"
                 value="retry-<%= dishIdx %>-<%= ingIdx %>"
-                class="btn btn-outline-primary btn-sm"
+                class="btn btn-outline-primary"
               >
                 Re-pesquisar
               </button>
+            </div>
+
+            <!-- Seção de edição manual -->
+            <div id="manual-<%= dishIdx %>-<%= ingIdx %>" class="mb-3" style="display: none">
+              <label>Calorias:</label>
+              <input
+                type="number"
+                step="any"
+                disabled
+                name="manual[<%= dishIdx %>][calories]"
+                value="<%= infos[0]?.per100g.calories || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Proteína (g):</label>
+              <input
+                type="number"
+                step="any"
+                disabled
+                name="manual[<%= dishIdx %>][protein]"
+                value="<%= infos[0]?.per100g.protein || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Gordura (g):</label>
+              <input
+                type="number"
+                step="any"
+                disabled
+                name="manual[<%= dishIdx %>][fat]"
+                value="<%= infos[0]?.per100g.fat || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Carboidratos (g):</label>
+              <input
+                type="number"
+                step="any"
+                disabled
+                name="manual[<%= dishIdx %>][carbohydrates]"
+                value="<%= infos[0]?.per100g.carbohydrates || '' %>"
+                class="form-control mb-2"
+              />
+              <label>Açúcares (g):</label>
+              <input
+                type="number"
+                step="any"
+                disabled
+                name="manual[<%= dishIdx %>][sugars]"
+                value="<%= infos[0]?.per100g.sugars || '' %>"
+                class="form-control mb-2"
+              />
+            </div>
+              
               <p class="text-warning">
                 Nenhum dado nutricional retornado para este prato.
               </p>

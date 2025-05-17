@@ -1,13 +1,18 @@
 <div class="row bg-white p-4 rounded shadow mb-4">
-    <div class="col-12 mb-0">
+    <div class="col-12 d-flex align-items-center justify-content-between">
         <h2 class="section-title text-center">Menus</h2>
-    </div>
-
-    <% if (autEdit) { %>
-        <div class="col-12 text-center mb-4">
+        <% if (autEdit) { %>
+          <% if (menus.length >= 10) { %>
+            <!-- Mensagem de limite atingido -->
+            <button class="btn btn-danger" disabled title="Limite de menus atingido">
+              Limite de Menus Atingido
+            </button>
+          <% } else { %>
+            <!-- Botão para adicionar menu -->
             <a href="/restaurants/<%= restaurant.name %>/createMenu" class="btn btn-success">Adicionar Menu</a>
-        </div>
-    <% } %>
+          <% } %>
+        <% } %>
+      </div>
 
     <!-- Filtro para os menus -->
 <div class="col-12 mb-4">
@@ -58,24 +63,31 @@
         <!-- Cards dos menus -->
         <div class="row">
             <% for (let i = 0; i < menus.length; i++) { %>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="<%= menus[i].photo %>" class="card-img-top" alt="Imagem do Menu" maxlength="225" height="225">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= menus[i].name %></h5>
-                            <p class="card-text"><%= menus[i].description %></p>
-                            <p class="card-text">Tipo: <%= menus[i].type %></p>
-                            <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menus[i]._id %>" class="btn btn-outline-primary">Ver Menu</a>
-                        
-                            <% if(user !== null && user.perfil !== null && 
-                            (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
-                                <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= menus[i]._id %>" class="btn btn-warning">Editar Menu</a>
-                            <% } %>
-                        </div>
-                    </div>
+              <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                  <a href="/restaurants/<%= restaurant.name %>/showMenu/<%= menus[i]._id %>" class="text-decoration-none w-100">
+                  <div class="card-img-container position-relative">
+                    <img src="<%= menus[i].photo %>" class="card-img-top rounded-top" alt="Imagem do Menu" style="height: 200px; object-fit: cover;">
+
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title text-primary"><%= menus[i].name %></h5>
+                    <p class="card-text text-muted" style="font-size: 0.9rem;"><%= menus[i].description %></p>
+                    <p class="card-text"><strong>Tipo:</strong> <%= menus[i].type %></p>
+                  </div>
+                  <% if(user !== null && user.perfil !== null && 
+                    (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
+                  <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                      <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= menus[i]._id %>" class="btn btn-warning btn-sm rounded-circle">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                  </div>
+                  <% } %>
+                </a>
                 </div>
+              </div>
             <% } %>
-        </div>
+          </div>
     <% } else { %>
         <div class="col-12">
             <p class="text-center">O restaurante ainda não tem menus</p>
