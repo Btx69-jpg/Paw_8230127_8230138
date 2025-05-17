@@ -57,20 +57,31 @@ function existRestaurant(restaurant) {
 //Admin aprovar um restaurante
 aprovacaoRestController.aproveRestaurant = async function(req, res) {
     try {
-        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId}).exec();
+        const restaurantId = req.params.restaurantId;
+        let restaurant = await Restaurant.findById(restaurantId).exec();
 
         let problemRest = existRestaurant(restaurant);
         if (problemRest !== "") {
-            return res.redirect("/perfil/admin/listRestaurants");
+            return res.stauts(404).redirect("/perfil/admin/listRestaurants");
+        }
+
+        if (!restaurant.tempUserId) {
+            console.log("O restaurante não tem um dono associado");
+            return res.stauts(404).redirect("/perfil/admin/listRestaurants"); 
         }
   
         const tempUserId = restaurant.tempUserId;
-
-        let user = await User.findOne({ _id: tempUserId}).exec();
+        console.log("Id tem user: ", tempUserId);
+        let user = await User.findById(tempUserId).exec();
 
         if (!user) {
             console.log("O user associado ao restaurante não existe");
-            return res.redirect("/perfil/admin/listRestaurants");
+            return res.stauts(404).redirect("/perfil/admin/listRestaurants");
+        }
+
+        if (!user.perfil || !user.perfil.priority) {
+            console.log("Utilizado sem prioridade");
+            return res.stauts(302).redirect("/perfil/admin/listRestaurants");
         }
 
         //Se esse user existe, atualizar a prioridade para dono e adicionar o id do restaurante ao array de restaurantes
@@ -80,17 +91,19 @@ aprovacaoRestController.aproveRestaurant = async function(req, res) {
         }
 
         user.perfil.restaurantIds.push(restaurant._id);
-
         await user.save();
-        console.log("Estatutos do user atualizados com sucesso");
         
         //A seguir de atualizar o user atualizamos o restaurante
+        if (!Array.isArray(restaurant.perfil.ownersIds)) {
+            restaurant.perfil.ownersIds = [];
+        }
+
         restaurant.perfil.ownersIds.push(tempUserId);
         restaurant.tempUserId = undefined;
         restaurant.aprove = true;
 
         await restaurant.save();
-        console.log("Restaruante adicionado com sucesso");
+        console.log("Restaruante aprovado com sucesso");
         existsRestaurantsDesaprove()
             .then(exists => {
                 if (exists) {

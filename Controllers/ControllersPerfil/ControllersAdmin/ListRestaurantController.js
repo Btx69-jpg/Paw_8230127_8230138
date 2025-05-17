@@ -52,7 +52,7 @@ listRestaurantController.showRestaurant = async function(req, res) {
                 voltar = "/perfil/admin/listRestaurants";
                 break;
             } case `/perfil/admin/listRestaurants/aproves/showRestaurant/${restaurantId}`: {
-                voltar = "/perfil/admin/listR estaurants/aproves";
+                voltar = "/perfil/admin/listRestaurants/aproves";
                 break;
             } default: {
                 console.log("URL não existente");

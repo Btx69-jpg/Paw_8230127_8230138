@@ -1,9 +1,63 @@
 <li class="nav-item">
-    <% if(user.perfil.priority === "Admin") { %>
-        <a class="nav-link" href="/perfil/admin"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil/admin" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
-    <% } else if (user.perfil.priority === "Cliente") { %>
-        <a class="nav-link" href="/perfil/client"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/perfil/client" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
-    <% } else if (user.perfil.priority === "Restaurant") { %>
-        <a class="nav-link" href="/restaurants/<%= user.name %>"><img src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" href="/restaurants/<%= user.name %>" alt="Profile" class="img-fluid" style="max-width: 25px;"> Perfil</a>
-    <% } %>
+  <% switch (user.perfil.priority) { 
+    case 'Admin': %>
+        <% /* Admin profile */ %>
+            <a class="nav-link" href="/perfil/admin">
+                <img 
+                src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
+                alt="Profile" 
+                class="img-fluid rounded-circle"  
+                style="max-width: 25px;"
+                > 
+                Perfil
+            </a>
+        <% break; %>
+
+        <% case 'Cliente': %>
+            <a class="nav-link" href="/perfil/client">
+                <img 
+                src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
+                alt="Profile" 
+                class="img-fluid rounded-circle"  
+                style="max-width: 25px;"
+                > 
+                Perfil
+            </a>
+        <% break; %>
+
+        <% case 'Restaurant': %>
+            <a class="nav-link" href="/restaurants/<%= user.name %>">
+                <img 
+                src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
+                alt="Profile" 
+                class="img-fluid rounded-circle" 
+                style="max-width: 25px;"
+                > 
+                Perfil
+            </a>
+        <% break; %>
+
+        <% case 'Dono': %>
+            <div class="d-flex align-items-center gap-3">
+                <a class="nav-link d-flex align-items-center gap-1" href="/restaurantsDono/<%= user._id %>">
+                <i class="bi bi-shop" style="font-size: 1.2rem;"></i>
+                    Meus Restaurantes
+                </a>
+
+                <a class="nav-link d-flex align-items-center gap-1" href="/perfil/dono">
+                    <img 
+                        src="<%= user.perfil.perfilPhoto || '/images/Plataform/DefaultUser.png' %>" 
+                        alt="Profile" 
+                        class="img-fluid rounded-circle" 
+                        style="max-width: 25px;"
+                    > 
+                Perfil
+                </a>
+            </div>
+        <% break; %>
+
+
+        <% default: %>
+            <% break; %>
+  <% } %>
 </li>

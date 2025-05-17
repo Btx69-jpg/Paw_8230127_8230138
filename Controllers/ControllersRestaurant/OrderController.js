@@ -267,7 +267,6 @@ orderController.updateOrderStatus = async function(req, res) {
             restaurant.perfil.orders.splice(restPosOrder, 1);
             await restaurant.save();
 
-
             if (user) {
                 const userPosOrder = findOrder(user.perfil.orders, orderUpdate);
                 if (userPosOrder !== -1) {
@@ -397,19 +396,6 @@ orderController.historicOrder = async function(req, res) {
 }
 
 orderController.showOrder = function(req, res) {
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log();
-    console.log("--------------------------------")
     console.log("Dados da encomenda: ");
     Restaurant.findOne( {name: req.params.restaurant}).exec()
         .then(rest => {

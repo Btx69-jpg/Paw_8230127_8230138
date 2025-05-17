@@ -245,20 +245,8 @@ restaurantsController.saveRestaurant = async function(req, res) {
     try { 
         await saveImage(req, res);
         
-        const name = req.body.name;
-        const sigla = req.body.sigla;
-        const nif = req.body.nif;
-        const phoneNumber = req.body.phoneNumber;
-        const email = req.body.email;
-        const password = req.body.password;
-        const confirmPassword = req.body.confirmPassword;
-        const street = req.body.street;
-        const postal_code = req.body.postal_code;
-        const city = req.body.city;
-        const description = req.body.description;
-
-        console.log("Body:", req.body);
-        console.log("Página atual:", res.locals.currentPage);
+        const {name, sigla, nif, phoneNumber, email, password, confirmPassword, street, postal_code,
+                city, description} = req.body;
     
         let validation = await validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
             street, postal_code, city);
@@ -307,7 +295,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
             aprove: aproved,
         });
 
-        if(cookie === "Cliente" || cookie === "Dono") {
+        if (cookie === "Cliente" || cookie === "Dono") {
             restaurant.tempUserId = req.user.userId;
         } 
         // Guarda o restaurante a bd
@@ -323,7 +311,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
             } case "/registRestaurant/saveRestaurant": {
                 res.redirect("/");
                 break;
-            }default: {
+            } default: {
                 console.log("Parou no break, logo não sei que pagina redirecionar");
                 break;
             }

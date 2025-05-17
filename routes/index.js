@@ -22,4 +22,5 @@ router.get('/', autoLoginMiddleware, getRestaurants, indexController.indexPage);
  */
 router.get('/search', indexController.search);
 
+router.get('/restaurantsDono/:userId', indexController.pageRestaurantes);
 module.exports = router;
