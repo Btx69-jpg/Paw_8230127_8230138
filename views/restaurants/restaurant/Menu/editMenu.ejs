@@ -105,6 +105,36 @@
 
               </div>
 
+              <!-- Editar as ingredientes -->
+              <div class="mb-3">
+                <label class="form-label">Ingredientes:</label>
+                <div id="ingredientsContainer-<%= index %>">
+                  <% dish.nutritionalInfo.forEach(function (ingredient) { %>
+                    <div class="ingredient-item mb-2">
+                      <div class="input-group">
+                        <select class="form-select search-type" style="max-width: 150px;">
+                          <option value="name" <%= ingredient.name === "name" ? "selected" : "" %>>Por Nome</option>
+                          <option value="barcode" <%= ingredient.name === "barcode" ? "selected" : "" %>>Por Código</option>
+                        </select>
+                        <input
+                          type="text"
+                          name="dishes[<%= index %>][ingredients][]"
+                          class="form-control ingredient-input"
+                          placeholder="Nome do ingrediente"
+                          value="<%= ingredient.name %>"
+                          required
+                        />
+                        <button type="button" class="btn btn-danger remove-ingredient">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary add-ingredient" data-index="<%= index %>">Adicionar Ingrediente</button>
+                <small class="text-muted">Use vírgulas para múltiplos itens ou códigos de barras</small>
+              </div>
+
               <!-- Seção de Porções -->
               <div class="mb-3">
                 <label class="form-label">Porções:</label>
@@ -183,13 +213,155 @@
 
   <!-- Definindo variável global com dados das porções para uso na adição dinâmica -->
   <script>
-    var portionsData = JSON.stringify(portions);
+
+
+// Função para adicionar novos pratos (inclui área de porções dinâmica)
+let newDishIndex = 0;
+function addNewDishField() {
+  const container = document.getElementById('newDishesContainer');
+  const dishDiv = document.createElement('div');
+  dishDiv.className = 'dish-card mb-3';
+  dishDiv.innerHTML = `
+    <h6>Novo Prato ${newDishIndex + 1}</h6>
+    <div class="mb-3">
+      <label class="form-label">Nome:</label>
+      <input type="text" name="newDishes[${newDishIndex}][name]" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Imagem:</label>
+      <input type="file" name="newDishes[${newDishIndex}][photo]" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Descrição:</label>
+      <textarea name="newDishes[${newDishIndex}][description]" class="form-control" rows="2" required></textarea>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Categoria:</label>
+        <select name="newDishes[${newDishIndex}][category]" class="form-select" required>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.category %>"><%= cat.category %></option>
+          <% }); %>
+        </select>
+      </div>
+    </div>
+  <div class="mb-3">
+  <label class="form-label">Ingredientes:</label>
+  <div id="ingredientsContainer-${newDishIndex}">
+    <div class="ingredient-item mb-2">
+      <div class="input-group">
+        <select class="form-select search-type" style="max-width: 150px;">
+          <option value="name">Por Nome</option>
+          <option value="barcode">Por Código</option>
+        </select>
+        <input
+          type="text"
+          name="newDishes[${newDishIndex}][ingredients][]"
+          class="form-control ingredient-input"
+          placeholder="Nome do ingrediente"
+          required
+        />
+        <button  class="btn btn-danger remove-ingredient">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-sm btn-secondary add-ingredient">Adicionar Ingrediente</button>
+  <small class="text-muted">Use vírgulas para múltiplos itens ou códigos de barras</small>
+</div>
+    <!-- Seção de Porções para o novo prato -->
+    <div class="mb-3">
+      <label class="form-label">Porções:</label>
+      <div id="portionsContainer-new-${newDishIndex}" class="portions-container mb-3" data-index="new-${newDishIndex}"></div>
+      <div class="input-group">
+        <select id="portionSelect-new-${newDishIndex}" class="form-select portion-select" data-index="new-${newDishIndex}" onchange="addPortion(this)">
+<option value="">Selecione uma porção...</option>
+              <% portions.forEach(function(portion) { %>
+              <option value="<%= portion._id %>">
+                <%= portion.portion %>
+              </option>
+              <% }); %>
+        </select>
+        <button type="button" class="btn btn-outline-secondary" onclick="addPortion(document.getElementById('portionSelect-new-${newDishIndex}'))">
+          Adicionar
+        </button>
+      </div>
+      <small class="text-danger portion-error" style="display: none">
+        Pelo menos uma porção é obrigatória.
+      </small>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+      Remover
+    </button>
+  `;
+  container.appendChild(dishDiv);
+  newDishIndex++;
+}
+
+    // Função para adicionar porção (funciona tanto para pratos existentes quanto para novos)
+function addPortion(selectElement) {
+  const index = selectElement.dataset.index;
+  const container = document.getElementById(`portionsContainer-${index}`);
+  const portionId = selectElement.value;
+  if (!portionId) return;
+  const portionName = selectElement.options[selectElement.selectedIndex].text;
+
+  // Define o prefixo do nome conforme se é prato existente ou novo
+  const isNew = (String(index).startsWith("new-"));
+  const namePrefix = isNew ? `newDishes[${index.split('-')[1]}]` : `dishes[${index}]`;
+
+  // Verifica se a porção já foi adicionada no prato
+  if (container.querySelector(`input[name^="${namePrefix}[portions]"][value="${portionId}"]`)) {
+    alert("Esta porção já foi adicionada");
+    return;
+  }
+
+  // Cria o item de porção com o campo de preço obrigatório
+  const div = document.createElement("div");
+  div.className = "portion-item";
+  div.innerHTML = `
+    <div class="portion-content">
+      <input type="hidden" name="${namePrefix}[portions][]" value="${portionId}">
+      <span>${portionName}</span>
+      <input type="number" class="form-control" name="${namePrefix}[portionPrices][]" placeholder="Preço" min="0" step="0.01" required>
+    </div>
+    <span class="remove-portion" onclick="removePortion(this)">✕</span>
+  `;
+  container.appendChild(div);
+
+  // Oculta a opção selecionada no dropdown para evitar duplicidade
+  selectElement.options[selectElement.selectedIndex].style.display = 'none';
+  selectElement.value = "";
+
+  validatePortions(index);
+}
+
+// Função para remover porção e reexibir a opção no dropdown
+function removePortion(element) {
+  const portionItem = element.closest(".portion-item");
+  const container = portionItem.closest(".portions-container");
+  const portionId = portionItem.querySelector('input[type="hidden"]').value;
+  const index = container.dataset.index;
+  const selectElement = document.getElementById(`portionSelect-${index}`);
+  Array.from(selectElement.options).forEach(option => {
+    if (option.value === portionId) {
+      option.style.display = '';
+    }
+  });
+  portionItem.remove();
+  validatePortions(index);
+}
+
+// Validação para garantir que ao menos uma porção seja selecionada
+function validatePortions(index) {
+  const container = document.getElementById(`portionsContainer-${index}`);
+  const error = container.closest(".mb-3").querySelector(".portion-error");
+  error.style.display = container.children.length === 0 ? "block" : "none";
+}
     function confirmDelete() {
-  console.log("\n\n\n\n\n\n\n\nNO CONFIRM DELET FORA DO IF...\n\n\n\n\n\n");
   if (confirm('Tem certeza que deseja apagar este menu permanentemente?')) {
     document.getElementById('loadingOverlay').style.display = 'flex';
-    console.log("\n\n\n\n\n\n\n\nNO CONFIRM DELET...\n\n\n\n\n\n");
-
     fetch(`/restaurants/<%= restaurant.name %>/deleteMenu/<%= menu._id %>`, {
       
       method: 'POST',
@@ -208,9 +380,53 @@
     });
   }
 }
-  </script>
 
-  <script src="/javascripts/Restaurants/Restaurant/Menus/editMenus.js"></script>
+// Gerenciamento de ingredientes
+document.body.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-ingredient")) {
+    const container = e.target.previousElementSibling; // Container dos ingredientes
+    const index = e.target.dataset.index; // Índice do prato
+    const isNew = String(index).startsWith("new-"); // Verifica se é um prato novo
+    const namePrefix = isNew ? `newDishes[${index.split('-')[1]}]` : `dishes[${index}]`;
+
+    const newItem = document.createElement("div");
+    newItem.className = "ingredient-item mb-2";
+    newItem.innerHTML = `
+      <div class="input-group">
+        <select class="form-select search-type" style="max-width: 150px;">
+          <option value="name">Por Nome</option>
+          <option value="barcode">Por Código</option>
+        </select>
+        <input
+          type="text"
+          name="${namePrefix}[ingredients][]"
+          class="form-control ingredient-input"
+          placeholder="Nome do ingrediente"
+          required
+        />
+        <button type="button" class="btn btn-danger remove-ingredient">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(newItem);
+  }
+});
+
+// Remover ingrediente
+document.body.addEventListener("click", function (e) {
+  if (e.target.classList.contains("remove-ingredient")) {
+    const ingredientItem = e.target.closest(".ingredient-item");
+    const container = ingredientItem.parentElement;
+    if (container.children.length > 1) {
+      ingredientItem.remove();
+    } else {
+      alert("Pelo menos um ingrediente é obrigatório.");
+    }
+  }
+});
+
+  </script>
 
 </body>
 </html>

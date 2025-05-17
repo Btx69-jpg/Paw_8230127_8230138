@@ -1,7 +1,5 @@
 let dishIndex = 1; // O primeiro formulário já está indexado como 0
 
-      
-
       document
         .getElementById("dishesContainer")
         .addEventListener("click", function (e) {
