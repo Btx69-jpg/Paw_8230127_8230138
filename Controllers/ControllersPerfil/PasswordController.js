@@ -47,7 +47,7 @@ passwordController.updatePassword = async function(req, res) {
       return res.status(404).json({error: "O utilizador não foi encontrado"});
     }
 
-    if(!account.perfil) {
+    if (!account.perfil) {
       return res.status(404).json({error: "O utilizador não possui nenhum perfil"});
     }
 
@@ -55,7 +55,7 @@ passwordController.updatePassword = async function(req, res) {
 
     let validation = await validateNewPassowrd(atualPassword, newPassword, confirmNewPassword, account.perfil.password);
     if (validation !== "") {
-      return res.status(422).render({error: validation});
+      return res.status(422).json({error: validation});
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -68,7 +68,7 @@ passwordController.updatePassword = async function(req, res) {
     res.status(204).json();
   } catch (error) {
     console.error("Error", error);
-    res.status.json({error: error})
+    res.status(500).json({error: error})
   }
 };
 

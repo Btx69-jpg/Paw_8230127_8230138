@@ -80,8 +80,34 @@ loginController.logout = function(req, res) {
         res.clearCookie('rememberMe');
         res.clearCookie('priority');
         req.flash("success_msg", "Logout realizado com sucesso!");
-        res.redirect("/");
+        res.redirect("localhost:3000");
     });
 }
 
+loginController.logoutAngular = function(req, res) {
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("------------------------------");
+
+  req.logout((err) => {
+      if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({error: "Erro ao fazer logout."});
+      }
+
+      res.clearCookie('auth_token');
+      res.clearCookie('rememberMe');
+      res.clearCookie('priority');
+      req.flash("success_msg", "Logout realizado com sucesso!");
+      return res.status(200).json({ message: "Logout realizado com sucesso!" });
+  });
+}
 module.exports = loginController;

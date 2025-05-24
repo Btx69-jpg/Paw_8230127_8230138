@@ -13,6 +13,10 @@
   "schemes": ["http"],
   "tags": [
     {
+      "name": "Login",
+      "description": "Operações de login e Logout"
+    },
+    {
       "name": "User",
       "description": "Operações sobre user"
     },
@@ -28,6 +32,22 @@
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {
+    "/logout": {
+      "get": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Realiza o logout do utilizador",
+        "responses": {
+          "200": {
+            "description": "Logout realizado com sucesso"
+          }, 
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
     "/user": {
       "get": {
         "tags": [
@@ -81,14 +101,42 @@
       "put": {
         "tags": ["User"],
         "summary": "Atualiza os dados de um utilizador",
+        "consumes": ["multipart/form-data"],
         "parameters": [
           {
-            "name": "user",
-            "in": "body",
-            "description": "Novos campos do utilizador",
-            "schema": {
-              "$ref": "#/definitions/UserUpdate"
-            } 
+            "name": "firstName",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "birthdate",
+            "in": "formData",
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phoneNumber",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perfilPhoto",
+            "in": "formData",
+            "type": "file"
           }
         ],
         "responses": {
@@ -117,6 +165,35 @@
             "description": "User eliminado",
             "schema": {
               "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/editData": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User"],
+        "summary": "Get de um utilizador especifico",
+        "responses": {
+          "200": {
+            "description": "User encontrado",
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
             }
           }, 
           "404": {
@@ -775,37 +852,42 @@
         }
       }
     }, 
+    "PerfilUpdate": {
+      "type": "object",
+      "required": ["phoneNumber", "email", ""],
+      "properties": {
+        "phoneNumber": {
+          "type": "integer",
+          "minimum": 100000000,
+          "maximum": 999999999
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 50
+        },
+        "perfilPhoto": {
+          "type": "string",
+          "format": "binary"
+        }
+      }
+    },
     "UserUpdate": {
       "type": "object",
       "required": ["firstName", "lastName", "perfil"],
       "properties": {
-        "firstName": {
-          "type": "string",
-          "maxLength": 50,
-          "pattern": "^[a-zA-Z\\s]*$"
-        },
-        "lastName": {
-          "type": "string",
-          "maxLength": 50,
-          "pattern": "^[a-zA-Z\\s]*$"
-        },
-        "perfil": {
-          "type": "object",
-          "properties": {
-            "phoneNumber": {
-              "type": "integer",
-              "minimum": 100000000,
-              "maximum": 999999999
-            },
-            "email": {
-              "type": "string",
-              "format": "email",
-              "maxLength": 50
-            },
-            "perfilPhoto": {
-              "type": "string",
-              "format": "binary"
-            }
+          "firstName": {
+            "type": "string",
+            "maxLength": 50,
+            "pattern": "^[a-zA-Z\\s]*$"
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 50,
+            "pattern": "^[a-zA-Z\\s]*$"
+          },
+          "perfil": {
+            "$ref": "#/definitions/PerfilUpdate"
           },
           "required": ["phoneNumber", "email", ""]
         },
@@ -815,7 +897,7 @@
           "minimum": "1900-01-01",
           "maximum": "9999-12-31"
         }
-      }
+      
     },
     "PaswordUpdate": {
       "type": "object",

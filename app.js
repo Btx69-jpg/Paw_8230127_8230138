@@ -16,11 +16,22 @@ mongoose.Promise = global.Promise;
 //Permissão, para que o Angular faça pedidos REST ao servidor
 const cors = require('cors');
 
+/**
+ * O que o Angular tem permissão atualmente 
+ */
 app.use(cors({
   origin: 'http://localhost:4200',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+/** 
+ * Este trecho de codigo permite ao angular ter acesso às
+ * imagens guardadas na pasta publica
+*/
+
+app.use('/images', express.static('public/images'));
 //Conexão com o Atlas
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', {
   useNewUrlParser: true,
@@ -111,10 +122,11 @@ var swaggerUi = require('swagger-ui-express');
 var swaggerDocument = require('./swagger/swagger.json');
 
 var userRouter = require("./routes/RestApi/user.js");
+var logoutRouter = require("./routes/RestApi/logout.js");
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/api/v1', userRouter);
-
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/logout', logoutRouter);
 /*
 !Antiga configuração do swagger
 var options = {
