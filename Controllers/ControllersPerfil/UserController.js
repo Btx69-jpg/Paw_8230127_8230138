@@ -2,13 +2,16 @@ var mongoose = require("mongoose");
 const multer = require('multer');
 //Models
 const User = require("../../Models/Perfils/User");
-const Dish = require("../../Models/Menus/Dish");
 const Portion = require("../../Models/Portion");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 const Item = require("../../Models/Orders/Item");  
 const Cart = require("../../Models/Orders/Order");  
+
+//Controllers
 const menuController = require("../ControllersRestaurant/MenuController");
 
+//Funções
+const { deleteImage } = require("../Functions/crudImagesRest");
 
 /**
  * TODO: Falta depois fazer o redirect correto.
@@ -49,8 +52,8 @@ userController.getUser = function(req, res) {
 /**
  * * O campo perfil Foto está sem validações
  */
-function validateCamposUser(firstName, lastName, email, phoneNumber, perfilPhoto, birthdate) {
-    if (!firstName || !lastName || !email || !phoneNumber || !perfilPhoto || !birthdate) {
+function validateCamposUser(firstName, lastName, email, phoneNumber, birthdate) {
+    if (!firstName || !lastName || !email || !phoneNumber) {
         return "Algum dos campos obrigatorio não estão preenchidos";
     }
 
@@ -63,7 +66,7 @@ function validateCamposUser(firstName, lastName, email, phoneNumber, perfilPhoto
         return "O campo último nome do utilizador está mal preenchido";
     }
 
-    const regexEmail = /^([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})*$/;
+    const regexEmail = /^([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})*$/;
     if (email.length > 50 || !regexEmail.test(email)) {
         return "O campo email do utilizador está mal preenchido";
     }
@@ -72,32 +75,73 @@ function validateCamposUser(firstName, lastName, email, phoneNumber, perfilPhoto
         return "O numero de telefone introduzido está mal inserido";
     }
 
-    if (birthdate < "1900-01-01" ||birthdate > Date.now() ) {
+    if (birthdate && (birthdate < "1900-01-01" || birthdate > Date.now())) {
         return "A data de nascimento introduzido é inválida"
     }
     
     return "";
 }
+
+userController.getUserEdit = function(req, res) {
+    User.findById(req.params.userId).exec()
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ error: "Utilizador não encontrado" });
+            }
+
+            res.status(200).json({
+                firstName: user.firstName,
+                lastName: user.lastName,
+                perfil: {
+                    phoneNumber: user.perfil.phoneNumber,
+                    email: user.perfil.email,
+                    perfilPhoto: user.perfil.perfilPhoto
+                },
+                birthdate: user.birthdate
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching user:", error);
+            res.status(500).json({ error: error });
+        });
+}
+
+
 /**
- * !!!!Falta testar
  * !!Falta ver como passar a imagem, como parametro para alterar
  * !!Depois adapatar o codigo para funcionar para com a imagem
  */
 userController.editUser = async function(req, res) {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("--------------------------------");
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+    const userId = req.params.userId;
     try {
-        const userId = req.params.userId;
         let user = await User.findById(userId).exec();
 
         if(!user) {
             return res.status(404).json({error: "O utilizador não foi encontrado"})
-        }
+        } 
+        
+       const { firstName, lastName, email, phoneNumber, birthdate } = req.body;
 
-        console.log("Body: ", req.body);
-        const { firstName, lastName, perfil, birthdate} = req.body;
-        const {email, phoneNumber, perfilPhoto} = perfil;  
-
-        const errorCampos = validateCamposUser(firstName, lastName, email, phoneNumber, perfilPhoto, birthdate);
+        const errorCampos = validateCamposUser(firstName, lastName, email, phoneNumber, birthdate);
         if (errorCampos !== "") {
+            console.log("Campo obrigatorio mal preenchido", errorCampos)
             return res.status(422).json({error: errorCampos});
         }
 
@@ -122,13 +166,18 @@ userController.editUser = async function(req, res) {
             update = true;
         }
 
-        if (user.perfil.perfilPhoto !== perfilPhoto) {
-            user.perfil.perfilPhoto = perfilPhoto;
+        if (!user.birthdate || user.birthdate !== birthdate) {
+            user.birthdate = birthdate;
             update = true;
         }
 
-        if (!user.birthdate || user.birthdate !== birthdate) {
-            user.birthdate = birthdate;
+        let oldPhoto = user.perfil.perfilPhoto;
+        let pathNewImg = req.file?.path || '';
+
+        if (pathNewImg && oldPhoto !== pathNewImg) {
+            console.log("Nova imagem de perfil")
+            pathNewImg = "/" + pathNewImg.replace(/^public[\\/]/, "");
+            user.perfil.perfilPhoto = pathNewImg;
             update = true;
         }
 
@@ -137,6 +186,12 @@ userController.editUser = async function(req, res) {
         }
 
         await user.save();
+
+        if (pathNewImg !== '' && oldPhoto !== pathNewImg) {
+            const oldFilePath = "public" + oldPhoto;
+            deleteImage(oldFilePath);
+        }
+        
         res.status(200).json(user);
     } catch(err) {
         console.log(err);

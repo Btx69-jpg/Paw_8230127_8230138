@@ -4,13 +4,18 @@ const {updatePackage} = require("./crudPackage");
 
 function deleteImage(image) {
     console.log("Apagar Imagem");
-    fs.unlink(image, (err) => {
-        if (err) {
-            console.error('Erro ao apagar a imagem:', err);
-            return;
-        }
-        console.log('Antiga Imagem apagada com sucesso!');
-    })
+
+    if (fs.existsSync(image)) { 
+        fs.unlink(image, (err) => {
+            if (err) {
+                console.error('Erro ao apagar a imagem:', err);
+                return;
+            }
+            console.log('Antiga Imagem apagada com sucesso!');
+        })
+    } else {
+        console.log("Caminho invalido, nenhuma imagem encontrada");
+    }
 }
 
 async function saveImage(req, res) {

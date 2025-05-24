@@ -46,8 +46,8 @@ async function validateUser(user, email, phoneNumber) {
     return "";
 }
 
-//O erro ocorre aqui
-async function updateImage(req, res, admin) {
+
+async function updateImage(req, res) {
     return new Promise((resolve, reject) => {
         const storageupdatLogo = multer.diskStorage({
             destination: function (req, file, cb) {
@@ -73,9 +73,14 @@ async function updateImage(req, res, admin) {
 Meter para ele editar também a sua foto de perfil aqui
 */
 adminController.updateAdmin = async function(req, res) {
+    const userId = req.params.accountId;
     try {
-        let user = await User.findOne({_id: req.params.accountId}).exec();
-        await updateImage(req, res, user);
+        let user = await User.findById(userId).exec();
+
+        if (!user) {
+            res.status(404).redirect(`/perfil/admin/editDados/${userId}`);
+        }
+        await updateImage(req, res);
 
         const { firstName, lastName, email, phoneNumber} = req.body;  
 
@@ -95,21 +100,41 @@ adminController.updateAdmin = async function(req, res) {
             return res.redirect(res.locals.previousPage);
         }
         
+        let updated = false;
         //update
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.perfil.email = email;
-        user.perfil.phoneNumber = phoneNumber;
+        if (user.firstName !== firstName) {
+            user.firstName = firstName;
+            updated = true;
+        }
+
+        if (user.lastName !== lastName) {
+            user.lastName = lastName;
+            updated = true;
+        }
+
+        if (user.perfil.email !== email) {
+            user.perfil.email = email;
+            updated = true;
+        }
+
+        if (user.perfil.phoneNumber !== phoneNumber) {
+            user.perfil.phoneNumber = phoneNumber;
+            updated = true;
+        }
 
         let oldPhoto = user.perfil.perfilPhoto;
         let pathNewImg = req.file?.path || '';
-        console.log("Nova Imagem: ", pathNewImg);
         
-        if (pathNewImg !== '') {
+        if (pathNewImg !== '' && oldPhoto !== pathNewImg) {
             pathNewImg = "/" + pathNewImg.replace(/^public[\\/]/, "");
             user.perfil.perfilPhoto = pathNewImg;
+            updated = true;
         }
 
+        if(!updated) {
+            console.log("")
+            return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors: "Não foi alterado nenhum campo", firstName, lastName, email });
+        }
         //guardar as alterações
         user.save()
             .then(() => {
@@ -123,11 +148,11 @@ adminController.updateAdmin = async function(req, res) {
             })
             .catch(error => {
                 console.log("Erro:", error);
-                res.redirect(`/perfil/admin/editDados/${req.params.userId}`);
+                res.status(500).redirect(`/perfil/admin/editDados/${userId}`);
             })
     } catch(err) {
         console.log(err);
-        res.redirect(res.locals.previousPage);
+        res.status(500).redirect(res.locals.previousPage);
     }    
 }
 
