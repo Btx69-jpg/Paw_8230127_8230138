@@ -21,6 +21,10 @@
       "description": "Operações sobre user"
     },
     {
+      "name": "User/Orders",
+      "description": "Operações sobre as encomendas que o utilizador realiza"
+    },
+    {
       "name": "User/historicOrder",
       "description": "Operações sobre o historico de encomendas do utilizador"
     },
@@ -237,6 +241,91 @@
           },
           "422": {
             "description": "Algum campo está mal preenchido"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/orders": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/Orders"],
+        "summary": "Retorna as encomendas ainda não concluidas pelo utilizador",
+        "responses": {
+          "200": {
+            "description": "Encomendas do utilizador",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderUser"
+              }
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado ou utilizador não possui encomendas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/orders/{orderId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "orderId",
+          "in": "path",
+          "required": true,
+          "description": "Id da encomenda",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/Orders"],
+        "summary": "Retorna uma encomenda especifica",
+        "responses": {
+          "200": {
+            "description": "Encomenda do utilizador",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/OrderUser"
+              }
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado ou utilizador não possui essa encomenda"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User/Orders"],
+        "summary": "Permite ao utilizador cancelar uma encomenda",
+        "responses": {
+          "204": {
+            "description": "Encomenda cancelada com sucesso"
+          }, 
+          "404": {
+            "description": "Encomenda não econtra ou já foi cancelada"
           },
           "500": {
             "description": "Erro interno"
