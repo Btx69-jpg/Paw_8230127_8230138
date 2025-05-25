@@ -288,6 +288,59 @@
         }
       }
     },
+    "/user/{userId}/orders/search": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "nameRest",
+          "in": "query",
+          "required": false,
+          "maxLength": 100,
+          "pattern": "^(?!.*[\\/]).+$",
+          "description": "Nome do restaurante onde a encomenda foi realizada",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "description": "Filtra as encomendas pelo seu estado: todos, pendentes ou expedidas",
+          "type": "string",
+          "enum": [
+            "all",
+            "Pendente",
+            "Expedida"
+          ]
+        }
+      ],
+      "get": {
+        "tags": ["User/Orders"],
+        "summary": "Retorna as encomendas do utilizador de acordo com o filtro aplicado",
+        "responses": {
+          "200": {
+            "description": "Encomendas do utilizador",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderUser"
+              }
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado ou utilizador não possui encomendas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
     "/user/{userId}/orders/{orderId}": {
       "parameters": [
         {

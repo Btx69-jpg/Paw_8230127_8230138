@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 
 //Controllers
 const orderController = require("../../../Controllers/ControllersPerfil/ControllersUser/Order");
+const OrderController = require("../../../Controllers/ControllersPerfil/ControllersUser/Order");
 
 /**
  * * Rota que carrega todas as encomendas em andamento do utilizador
@@ -15,7 +16,13 @@ router.get("/", orderController.getOrders);
 router.get("/:orderId", orderController.getOrder);
 
 /**
- * Cancelar uma encomenda especifica 
+ * * Cancelar uma encomenda especifica 
  */
 router.delete("/:orderId", orderController.cancelOrder);
+
+/**
+ * * Filtra por encomendas
+ */
+router.get("/search", OrderController.search);
+
 module.exports = router;

@@ -189,15 +189,18 @@ orderController.orderManagment = function(req, res) {
 };
 
 async function findUserOrder(clientOrder) {
-    return await User.findOne({firstName: clientOrder.firstName, 
+    return await User.findOne({
+        firstName: clientOrder.firstName, 
         lastName: clientOrder.lastName, 
         'perfil.email': clientOrder.email, 
-        'perfil.phoneNumber': Number(clientOrder.phoneNumber)}).exec();
+        'perfil.phoneNumber': Number(clientOrder.phoneNumber)
+    }).exec();
 }
 
 function findOrder(orders, orderId) {
     let found = false;
     let i = 0;
+
     while(i < orders.length && !found) {
         if(orders[i]._id.toString() === orderId.toString()) {
             found = true;
@@ -209,6 +212,7 @@ function findOrder(orders, orderId) {
     if (!found) {
         i = -1;
     }
+
     return i;
 }
 
@@ -319,44 +323,39 @@ orderController.deleteOrder = async function(req, res) {
         }
 
         const orderDel = req.params.orderId;
-        let posOrderDelete = findOrder(restaurant.perfil.orders, orderDel);
+        const posOrderDeleteRest = findOrder(restaurant.perfil.orders, orderDel);
         
-        if (posOrderDelete === -1) {
+        if (posOrderDeleteRest === -1) {
             console.log("A encomenda a eliminar não existe!");
             return res.status(302).redirect(res.locals.previousPage);
         }
 
-        const clientOrder = restaurant.perfil.orders[posOrderDelete].client;
+        const clientOrder = restaurant.perfil.orders[posOrderDeleteRest].client;
         console.log("Encomenda a eliminar: ", clientOrder);
-
-        restaurant.perfil.orders.splice(posOrderDelete, 1);
-        await restaurant.save();
 
         //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let user = await findUserOrder(clientOrder);
         
         if(!user) {
-            if (restaurant.perfil.orders.length > 0) {
-                return res.redirect(res.locals.previousPage);
-            } else {
-                const portions = await carregarPortions();
-                return res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});
-            }
+            const portions = await carregarPortions();
+            return res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});
         }
-
         
         if(!user.perfil || !user.perfil.orders) {
             console.log("O utilizador não tem encomendas");
             return res.status(302).redirect(res.locals.previousPage);
         }
 
-        posOrderDelete = findOrder(user.perfil.orders, orderDel);
-        if (posOrderDelete === -1) {
+        const posOrderDeleteUser = findOrder(user.perfil.orders, orderDel);
+        if (posOrderDeleteUser === -1) {
             console.log("A encomenda a eliminar não existe!");
             return res.status(302).redirect(res.locals.previousPage);
         }
 
-        user.perfil.orders.splice(posOrderDelete, 1);
+        restaurant.perfil.orders.splice(posOrderDeleteRest, 1);
+        await restaurant.save();
+
+        user.perfil.orders.splice(posOrderDeleteUser, 1);
         await user.save();
 
         console.log("Order do utilizador eliminada com sucesso");
@@ -366,6 +365,7 @@ orderController.deleteOrder = async function(req, res) {
         }
 
         const portions = await carregarPortions();
+        console.log("Encomenda eliminada com sucesso")
         res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});   
     } catch(error) {
         console.log("Error: ", error);

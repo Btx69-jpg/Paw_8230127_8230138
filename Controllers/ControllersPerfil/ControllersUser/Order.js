@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 const User = require("../../../Models/Perfils/User");
 const Restaurant = require("../../../Models/Perfils/Restaurant");
 
+const { Types } = mongoose;
 //Controllers
 var OrderController = {};
 
@@ -11,16 +12,7 @@ var OrderController = {};
  * 
  * * Retorna as encomendas em tempo real do utilizador
  * */
-OrderController.getOrders = function(req, res) {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("----------------------------------------");
+OrderController.getOrders = function(req, res) {    
     const userId = req.params.userId;
     User.findById(userId).lean().exec()
         .then(user => {
@@ -159,6 +151,39 @@ OrderController.cancelOrder = async function(req, res) {
         console.log("Encomenda cancelada");
         res.status(200).json({});
     } catch(error) {
+        res.status(500).json({error: error});
+    }
+}
+
+OrderController.search = async function(req, res) {
+    try {
+        const { nameRest, status } = req.query;
+
+        if (!nameRest || !status) {
+            return OrderController.getOrders(req, res);
+        }
+
+        const elemMatch = {};
+        if (nameRest) {
+            elemMatch.nameRest = nameRest;
+        }
+
+        if (status) {
+            elemMatch.status = status;
+        }
+
+        const userId = req.params.userId;
+
+        const orders = await User.aggregate([
+            { $match: { _id: Types.ObjectId(userId) } },
+            { $unwind: '$perfil.orders' },
+            { $match: { 'perfil.orders': { $elemMatch: elemMatch } } },
+            { $replaceRoot: { newRoot: '$perfil.orders'  } },
+        ]);
+
+        return res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
         res.status(500).json({error: error});
     }
 }
