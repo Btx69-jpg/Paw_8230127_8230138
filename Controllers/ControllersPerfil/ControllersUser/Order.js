@@ -157,6 +157,7 @@ OrderController.cancelOrder = async function(req, res) {
         restaurant.perfil.orders.splice(restaurantOrder, 1);
         await restaurant.save();
         console.log("Encomenda cancelada");
+        res.status(200).json({});
     } catch(error) {
         res.status(500).json({error: error});
     }
