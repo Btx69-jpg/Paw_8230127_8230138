@@ -23,4 +23,10 @@ router.get('/', autoLoginMiddleware, getRestaurants, indexController.indexPage);
 router.get('/search', indexController.search);
 
 router.get('/restaurantsDono/:userId', indexController.pageRestaurantes);
+
+router.get('/painel', (req, res) => {
+  //Aqui depois é trocar para o id do restaurante, num request
+  const userId = 'restaurante123'; // ← virá do login num caso real
+  res.render('painel', { userId });
+});
 module.exports = router;

@@ -80,7 +80,7 @@ loginController.logout = function(req, res) {
         res.clearCookie('rememberMe');
         res.clearCookie('priority');
         req.flash("success_msg", "Logout realizado com sucesso!");
-        res.redirect("localhost:3000");
+        res.redirect("/");
     });
 }
 

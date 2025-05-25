@@ -12,6 +12,15 @@ var OrderController = {};
  * * Retorna as encomendas em tempo real do utilizador
  * */
 OrderController.getOrders = function(req, res) {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("----------------------------------------");
     const userId = req.params.userId;
     User.findById(userId).lean().exec()
         .then(user => {
@@ -28,6 +37,7 @@ OrderController.getOrders = function(req, res) {
             orders.forEach(order => {
                 delete order.client;  
             });
+            console.log(orders)
 
             res.status(200).json(orders);
         })
@@ -122,7 +132,7 @@ OrderController.cancelOrder = async function(req, res) {
 
         const orderDel = req.params.orderId;
         const orders = user.perfil.orders;
-        let posOrderDelete = findOrder(orders, orderDel);
+        const posOrderDelete = findOrder(orders, orderDel);
         
         if (posOrderDelete === -1) {
             return res.status(302).json({error: "A encomenda a eliminar não existe!"});
@@ -132,7 +142,7 @@ OrderController.cancelOrder = async function(req, res) {
 
         //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let restaurant = await findRestaurantOrder(restaurantOrder);
-        
+        console.log("Restaurante: ", restaurant);
         if(!restaurant) {
             res.status(404).json( {error: "O restaurante não foi encontrado"}); 
         }
@@ -141,16 +151,11 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(422).json({ error: "O restauranet não tem encomendas"});
         }
 
-        posOrderDelete = findOrder(user.perfil.orders, orderDel);
-        if (posOrderDelete === -1) {
-            return res.status(422).json({error: "A encomenda a eliminar não existe!"});
-        }
-
         user.perfil.orders.splice(posOrderDelete, 1);
         await user.save();
 
-        restaurant.perfil.orders.splice(posOrderDelete, 1);
-        await user.save();
+        restaurant.perfil.orders.splice(restaurantOrder, 1);
+        await restaurant.save();
         console.log("Encomenda cancelada");
     } catch(error) {
         res.status(500).json({error: error});

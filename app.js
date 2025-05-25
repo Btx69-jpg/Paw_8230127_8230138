@@ -13,12 +13,10 @@ require('dotenv').config();
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-//Permissão, para que o Angular faça pedidos REST ao servidor
-const cors = require('cors');
-
 /**
  * O que o Angular tem permissão atualmente 
  */
+const cors = require('cors');
 app.use(cors({
   origin: 'http://localhost:4200',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -32,6 +30,7 @@ app.use(cors({
 */
 
 app.use('/images', express.static('public/images'));
+
 //Conexão com o Atlas
 mongoose.connect('mongodb+srv://UserGeral:1234@cluster0.rbiey8q.mongodb.net/TrabalhoPAW', {
   useNewUrlParser: true,
@@ -123,10 +122,13 @@ var swaggerDocument = require('./swagger/swagger.json');
 
 var userRouter = require("./routes/RestApi/user.js");
 var logoutRouter = require("./routes/RestApi/logout.js");
+var checkoutRouter = require("./routes/RestApi/checkout.js");
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/logout', logoutRouter);
+app.use('/api/v1/checkout', checkoutRouter);
+
 /*
 !Antiga configuração do swagger
 var options = {
