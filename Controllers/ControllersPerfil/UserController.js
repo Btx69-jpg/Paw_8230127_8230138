@@ -350,5 +350,21 @@ userController.cleanCart = async function(req, res) {
     }
   }
 
+userController.getCart = async function(req, res) {
+    try {
+        const userId = req.params.UserId;
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
+        }
+
+        res.status(200).json(user.cart);
+      }
+    catch (error) {
+        console.log("Erro ao obter o carrinho: ", error);
+        return res.render("errors/error", { numError: 500, error: error });
+    }
+}
+
 
 module.exports = userController;

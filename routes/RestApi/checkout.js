@@ -9,7 +9,12 @@ const router = express.Router();
 
 //Controllers
 const stripeController = require("../../Controllers/CheckOutService");
+const userController = require("../../Controllers/ControllersPerfil/UserController.js");
 
 router.post("/create-checkout-session", stripeController.stripeCheckoutSession);
+
+router.get('/limparCarrinho', userController.cleanCart);
+
+router.get('/obterCarrinho/:UserId', userController.getCart);
 
 module.exports = router;
