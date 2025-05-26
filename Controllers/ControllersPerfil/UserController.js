@@ -382,5 +382,23 @@ userController.getCart = async function(req, res) {
     }
 }
 
+userController.saveCart = async function(req, res) {
+    try {
+        const userId = req.params.UserId;
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
+        }
+        user.cart = req.body.cart;
+        console.log("Carrinho atualizado:", req.body.cart);
+         await user.save()
+
+      } catch (error) {
+        console.log("Erro ao obter o carrinho: ", error);
+        return res.render("errors/error", { numError: 500, error: error });
+      }
+    }
+
+
 
 module.exports = userController;
