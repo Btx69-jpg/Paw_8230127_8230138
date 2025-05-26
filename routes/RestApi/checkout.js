@@ -13,7 +13,7 @@ const userController = require("../../Controllers/ControllersPerfil/UserControll
 
 router.post("/create-checkout-session", stripeController.stripeCheckoutSession);
 
-router.get('/limparCarrinho', userController.cleanCart);
+router.get('/limparCarrinho/:UserId', userController.cleanCart);
 
 router.get('/obterCarrinho/:UserId', userController.getCart);
 
