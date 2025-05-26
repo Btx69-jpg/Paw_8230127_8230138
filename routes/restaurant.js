@@ -15,6 +15,23 @@ const order = require("./restaurantRoutes/orders.js");
 const comments = require("./restaurantRoutes/comments.js");
 
 /**
+ * Rota que verifica se o restaurante recebeu mais pedidos
+ */
+router.get('/notification', async (req, res) => {
+  try {
+    const count = await Order.countDocuments({
+      restaurantId: req.session.restaurantId,
+      isNew: true
+    });
+    
+    res.json({ newOrders: count });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao verificar pedidos' });
+  }
+});
+
+
+/**
  * * Rota que renderiza a home page de um restaurante
  * */
 router.get('/', restaurant.homePage);

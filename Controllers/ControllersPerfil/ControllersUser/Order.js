@@ -166,7 +166,7 @@ OrderController.cancelOrder = async function(req, res) {
 
         user.perfil.orders.splice(posOrderDelete, 1);
 
-        if(!user.cancelOrder) {
+        if (!user.cancelOrder) {
             user.cancelOrder = 1;
             user.firstCancel = Date.now();
         } else {
@@ -177,11 +177,11 @@ OrderController.cancelOrder = async function(req, res) {
             user.bannedOrder = true;
             user.dateBannedOrder = Date.now();
         }
+
         await user.save();
 
         restaurant.perfil.orders.splice(restaurantOrder, 1);
         await restaurant.save();
-
 
         console.log("Encomenda cancelada");
         res.status(200).json({});
@@ -213,10 +213,9 @@ OrderController.search = async function(req, res) {
                 return false;
             }
 
-            if (status && order.status !== status) {
+            if (status && (order.status !== status && status !== "all")) {
                 return false;
             }
-            
 
             delete order.client;
             return true;

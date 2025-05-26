@@ -49,6 +49,22 @@ userController.getUser = function(req, res) {
         });
 }
 
+userController.isUserBannedOrders = function(req, res) {
+    User.findById(req.params.userId).exec()
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ error: "Utilizador não encontrado" });
+            }
+
+            const isBan = user.bannedOrder;
+            res.status(200).json(isBan);
+        })
+        .catch(error => {
+            console.error("Error fetching user:", error);
+            res.status(500).json({ error: error });
+        });
+}
+
 /**
  * * O campo perfil Foto está sem validações
  */
