@@ -39,6 +39,14 @@
     {
       "name": "Toast",
       "description": "Operações necessárias para utilizar o stripe Checkout"
+    },
+    {
+      "name": "Auth",
+      "description": "Operações relacionadas às cookies"
+    },
+    {
+      "name": "Auth/TypeUser",
+      "description": "Operações para verificação do tipo de user"
     }
   ],
   "consumes": ["application/json"],
@@ -249,6 +257,35 @@
           },
           "422": {
             "description": "Algum campo está mal preenchido"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/isBanOrder": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["User/Orders"],
+        "summary": "Devolve se o utilizador está ou não banido de realizar encomendas no site",
+        "responses": {
+          "200": {
+            "description": "User encontrado e foi descoberto se está banido ou não",
+            "schema": {
+              "type": "boolean"
+            }
+          }, 
+          "404": {
+            "description": "User não encontrado"
           },
           "500": {
             "description": "Erro interno"
@@ -762,7 +799,45 @@
           }
         }    
       }
+    },
+    "/check/auth": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Valida se o token do utilizador é válido e se a prioridade é a mesma do utilizador",
+        "responses": {
+          "200": {
+            "description": "Autentificação do utilizador válida"
+          }, 
+          "401": {
+            "description": "Sem token cálido ou sem prioridade"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    }, 
+    "/check/authIsDonoOrCliente": {
+      "get": {
+        "tags": ["Auth/TypeUser"],
+        "summary": "Valida se o token de prioridade tem uma prioridade válida",
+        "responses": {
+          "200": {
+            "description": "Prioridade válida"
+          }, 
+          "401": {
+            "description": "Prioridade Ausente"
+          },
+          "403": {
+            "description": "A prioridade da cookie não é permitida"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
     }
+
   },
   "definitions": {
     "Address": {

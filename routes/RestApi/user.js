@@ -24,8 +24,13 @@ router.get("/", userController.getUsers);
  * */
 router.get("/:userId", userController.getUser);
 
+/**
+ * * Rota que devolve se o utilizador está ou não banido de realizar ou cancelar encomendas
+ */
+router.get("/:userId/isBanOrder", userController.isUserBannedOrders);
+
 /** 
- * * Rota que cria um novo utilizador
+ * * Rota que elimina um utilizador
  * */
 router.delete("/:userId", userController.deleteUser);
 

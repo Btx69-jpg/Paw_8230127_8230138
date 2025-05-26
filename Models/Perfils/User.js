@@ -33,6 +33,22 @@ var UserSchema = new mongoose.Schema({
         min: ['1900-01-01', 'A data mínima é 1900-01-01'],
         max: [new Date(), 'A data máxima é a data atual'],
     },
+    cancelOrder: {
+        type: Number,
+        min: 0,
+        max: 5
+    },
+    firstCancel: {
+        type: Date,
+    },
+    bannedOrder: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
+    dateBannedOrder: {
+        type: Date,
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

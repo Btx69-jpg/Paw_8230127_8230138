@@ -57,7 +57,7 @@ app.use(session({
   secret: 'TrabalhoPaw',
   resave: true,
   saveUninitialized: true,
-  cookie: { secure: false } // ajuste para true se estiver usando HTTPS
+  cookie: { secure: false }
 }));
 
 app.use(passport.initialize());
@@ -123,12 +123,13 @@ var swaggerDocument = require('./swagger/swagger.json');
 var userRouter = require("./routes/RestApi/user.js");
 var logoutRouter = require("./routes/RestApi/logout.js");
 var checkoutRouter = require("./routes/RestApi/checkout.js");
+var cookiesRotuer = require("./routes/RestApi/cookies.js")
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/logout', logoutRouter);
 app.use('/api/v1/checkout', checkoutRouter);
-
+app.use('/api/v1/check', cookiesRotuer);
 /*
 !Antiga configuração do swagger
 var options = {

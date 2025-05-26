@@ -11,6 +11,11 @@ const OrderController = require("../../../Controllers/ControllersPerfil/Controll
 router.get("/", orderController.getOrders);
 
 /**
+ * * Filtra por encomendas
+ */
+router.get("/search", OrderController.search);
+
+/**
  * * Mostrar dados de uma encomenda especifica
  */
 router.get("/:orderId", orderController.getOrder);
@@ -19,10 +24,5 @@ router.get("/:orderId", orderController.getOrder);
  * * Cancelar uma encomenda especifica 
  */
 router.delete("/:orderId", orderController.cancelOrder);
-
-/**
- * * Filtra por encomendas
- */
-router.get("/search", OrderController.search);
 
 module.exports = router;
