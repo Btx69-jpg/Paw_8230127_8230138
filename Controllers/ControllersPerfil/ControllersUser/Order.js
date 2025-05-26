@@ -125,10 +125,8 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(404).json({ error: validation});
         }
 
-        if(!user.cancelOrder) {
-            user.cancelOrder = 0;
-        } else if (user.cancelOrder >= 5) {
-            return res.status(302).json({error: "O user não pode cancelar pois já fez 5 cancelamentos no ultimo mês!"});
+        if(user.bannedOrder || user.cancelOrder >= 5) {
+            return res.status(404).json({ error: "O utilizador não pode cancelar porque ele está banido de realizar ou eliminar encomendas"});
         }
         const orderDel = req.params.orderId;
         const orders = user.perfil.orders;
@@ -175,6 +173,10 @@ OrderController.cancelOrder = async function(req, res) {
             user.cancelOrder++;
         }
 
+        if (user.cancelOrder === 5) {
+            user.bannedOrder = true;
+            user.dateBannedOrder = Date.now();
+        }
         await user.save();
 
         restaurant.perfil.orders.splice(restaurantOrder, 1);
