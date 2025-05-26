@@ -107,10 +107,13 @@ async function findRestaurantOrder(restaurantOrder) {
         }).exec();
 }
 /**
- * TODO: Testar este codigo
+ * * Funciona (Posso como disse abaixo meter validações extras como aquela dos 15 minutos caso descubra)
  * 
- * !Depois meter aqui as verificações que estão no enunciado, como se a encomenda estiver na 
- * !não poder ser cancelada
+ * TODO: Verificação de 5 minutos
+ * TODO: Count Cancelamento
+ * * Não pode ser cancelado se já tiver passado 5 minutos e se o estado da encomenda estiver com expedida
+ * 
+ * * Meter para quando for a 5 encomenda cancelada ele ser banido
  */
 OrderController.cancelOrder = async function(req, res) {
     try {
@@ -122,6 +125,11 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(404).json({ error: validation});
         }
 
+        if(!user.cancelOrder) {
+            user.cancelOrder = 0;
+        } else if (user.cancelOrder >= 5) {
+            return res.status(302).json({error: "O user não pode cancelar pois já fez 5 cancelamentos no ultimo mês!"});
+        }
         const orderDel = req.params.orderId;
         const orders = user.perfil.orders;
         const posOrderDelete = findOrder(orders, orderDel);
@@ -130,7 +138,22 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(302).json({error: "A encomenda a eliminar não existe!"});
         }
 
-        const restaurantOrder = orders[posOrderDelete].restaurant;
+        const orderCancel = orders[posOrderDelete]
+
+        //Verificações de cancelamento
+        const dataAtual = Date.now();
+        const tempoOrder = dataAtual - new Date(orderCancel.date).getTime(); 
+        const cincoMinutos = 5 * 60 * 1000; 
+
+        if (tempoOrder > cincoMinutos) {
+            return res.status(302).json({error: "A encomenda não pode ser cancelarda, pois já passou mais de 5 minutos após ser realizada"})
+        }
+
+        if (orderCancel.status !== 'Pendente') {
+            return res.status(302).json({error: `A encomenda não pode ser eliminada pois está no estado de ${orderCancel.status}`})
+        }
+
+        const restaurantOrder = orderCancel.restaurant;
 
         //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let restaurant = await findRestaurantOrder(restaurantOrder);
@@ -144,44 +167,62 @@ OrderController.cancelOrder = async function(req, res) {
         }
 
         user.perfil.orders.splice(posOrderDelete, 1);
+
+        if(!user.cancelOrder) {
+            user.cancelOrder = 1;
+            user.firstCancel = Date.now();
+        } else {
+            user.cancelOrder++;
+        }
+
         await user.save();
 
         restaurant.perfil.orders.splice(restaurantOrder, 1);
         await restaurant.save();
+
+
         console.log("Encomenda cancelada");
         res.status(200).json({});
     } catch(error) {
+        console.log("Error:", error);
         res.status(500).json({error: error});
     }
 }
 
 OrderController.search = async function(req, res) {
     try {
+        //A Query não recebe nada
+        console.log("Query: ", req.query);
         const { nameRest, status } = req.query;
-
-        if (!nameRest || !status) {
-            return OrderController.getOrders(req, res);
-        }
-
-        const elemMatch = {};
-        if (nameRest) {
-            elemMatch.nameRest = nameRest;
-        }
-
-        if (status) {
-            elemMatch.status = status;
-        }
-
         const userId = req.params.userId;
 
-        const orders = await User.aggregate([
-            { $match: { _id: Types.ObjectId(userId) } },
-            { $unwind: '$perfil.orders' },
-            { $match: { 'perfil.orders': { $elemMatch: elemMatch } } },
-            { $replaceRoot: { newRoot: '$perfil.orders'  } },
-        ]);
+        if(!userId) {
+            return res.status(500).json({error: "O id do utilizador é de preenchimento obrigatório"});
+        }
+        
+        const user = await User.findById(userId).select({
+            'perfil.orders': 1,  
+        }).lean().exec();
 
-        return res.status(200).json(orders);
+        const orders = user?.perfil?.orders || [];
+
+        const ordersFiltered = orders.filter(order => {
+            if (nameRest && order.restaurant.name !== nameRest) {
+                return false;
+            }
+
+            if (status && order.status !== status) {
+                return false;
+            }
+            
+
+            delete order.client;
+            return true;
+        });
+
+        console.log("Encomendas encontradas: ", ordersFiltered);
+
+        return res.status(200).json(ordersFiltered);
     } catch (error) {
         console.error(error);
         res.status(500).json({error: error});

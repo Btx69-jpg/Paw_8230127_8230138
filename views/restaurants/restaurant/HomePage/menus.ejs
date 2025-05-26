@@ -75,13 +75,14 @@
                     <p class="card-text text-muted" style="font-size: 0.9rem;"><%= menus[i].description %></p>
                     <p class="card-text"><strong>Tipo:</strong> <%= menus[i].type %></p>
                   </div>
-                  <% if(user !== null && user.perfil !== null && 
-                    (user.perfil.priority === "Dono" || user.perfil.priority === "Admin")) { %>
-                  <div class="card-footer bg-white border-0 d-flex justify-content-between">
-                      <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= menus[i]._id %>" class="btn btn-warning btn-sm rounded-circle">
-                        <i class="bi bi-pencil"></i>
-                      </a>
-                  </div>
+                  <!-- Trocar este if para ser o correto-->
+                  <% if (autEdit) { %>
+                    <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                  
+                        <a href="/restaurants/<%= restaurant.name %>/editMenu/<%= menus[i]._id %>" class="btn btn-warning btn-sm rounded-circle">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                    </div>
                   <% } %>
                 </a>
                 </div>

@@ -14,7 +14,7 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
           'bancontact', 
           'klarna',
           'multibanco', 
-        'paypal'],
+          'paypal'],
         mode: 'payment',
         line_items: [
         {

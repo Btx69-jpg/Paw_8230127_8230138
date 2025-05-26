@@ -145,35 +145,35 @@ historicOrderController.searchOrderHistoric = async function(req, res) {
 
 /* Página que cria uma nova morada (limite de moradas é 5) */
 historicOrderController.showOrder = async function(req, res) {
-        const userId = req.params.userId;
-        const orderId = req.params.orderId;
-        User.findOne(
-            { 
-              _id: userId,
-              'perfil.historicOrders._id': orderId 
-            },
-            { 
-              'perfil.historicOrders.$': 1,
+    const userId = req.params.userId;
+    const orderId = req.params.orderId;
+    User.findOne(
+        { 
+            _id: userId,
+            'perfil.historicOrders._id': orderId 
+        },
+        { 
+            'perfil.historicOrders.$': 1,
+        }
+    ).lean().exec()
+        .then(userOrder => {
+            if (!userOrder) {
+                return res.status(404).json({ error: "Utilizador não encontrado ou não possui essa encomenda" });
             }
-        ).lean().exec()
-            .then(userOrder => {
-                if (!userOrder) {
-                    return res.status(404).json({ error: "Utilizador não encontrado ou não possui essa encomenda" });
-                }
-        
-                const orders = userOrder.perfil.historicOrders;
-                if (!orders || orders.length === 0) {
-                    return res.status(404).json({ error: "Encomenda não encontrada no histórico do utilizador" });
-                }
-        
-                const order = orders[0];
-                delete order.client;
-                res.status(200).json(order);
-            })
-            .catch(error => {
-                console.error("Error fetching user:", error);
-                res.status(500).json({error: error});
-            });
+    
+            const orders = userOrder.perfil.historicOrders;
+            if (!orders || orders.length === 0) {
+                return res.status(404).json({ error: "Encomenda não encontrada no histórico do utilizador" });
+            }
+    
+            const order = orders[0];
+            delete order.client;
+            res.status(200).json(order);
+        })
+        .catch(error => {
+            console.error("Error fetching user:", error);
+            res.status(500).json({error: error});
+        });
 }
 
 
