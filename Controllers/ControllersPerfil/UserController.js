@@ -128,28 +128,11 @@ userController.getUserEdit = function(req, res) {
  * !!Depois adapatar o codigo para funcionar para com a imagem
  */
 userController.editUser = async function(req, res) {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("--------------------------------");
-
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
     const userId = req.params.userId;
     try {
         let user = await User.findById(userId).exec();
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({error: "O utilizador não foi encontrado"})
         } 
         
@@ -236,7 +219,7 @@ userController.deleteUser = async function(req, res) {
         console.log("User eliminado com sucesso!");
 
         if (imagePath !== "") {
-            deleteImg(imagePath);
+            deleteImage(imagePath);
         }
 
         res.status(200).json(user)

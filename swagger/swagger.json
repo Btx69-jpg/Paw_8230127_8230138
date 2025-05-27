@@ -29,6 +29,10 @@
       "description": "Operações sobre o historico de encomendas do utilizador"
     },
     {
+      "name": "User/Comments",
+      "description": "Operações sobre os comentarios do utilizador (que só podem ser a pedidos realizados para consumo no restaurante)"
+    },
+    {
       "name": "User/Addresses",
       "description": "Operações sobre o as moradas de encomenda do utilizador"
     }, 
@@ -456,6 +460,64 @@
           }, 
           "404": {
             "description": "User não encontrado ou utilizador não possui historico de encomendas"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
+      }
+    },
+    "/user/{userId}/historicOrder/createComment": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": ["User/Comments"],
+        "summary": "Permite ao utilizador atualizar os dados de uma morada especifica",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "orderId",
+            "description": "Id da encomenda",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "formData",
+            "name": "nameRest",
+            "description": "nome do restaurante",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "comment",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "commentPhoto",
+            "in": "formData",
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comentario criado com sucesso"
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado ou não tem moradas"
           },
           "500": {
             "description": "Erro interno"
