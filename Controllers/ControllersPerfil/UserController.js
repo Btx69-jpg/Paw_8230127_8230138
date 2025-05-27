@@ -219,7 +219,8 @@ userController.deleteUser = async function(req, res) {
         console.log("User eliminado com sucesso!");
 
         if (imagePath !== "") {
-            deleteImage(imagePath);
+            const deletePath = "public" + imagePath;
+            deleteImage(deletePath);
         }
 
         res.status(200).json(user)
@@ -332,20 +333,21 @@ userController.cleanCart = async function(req, res) {
         const userId = req.params.UserId;
         const user = await User.findById(userId).exec();
         if (!user) {
-            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
+            return res.status(404).json({error: "Utilizador não encontrado" });
         }
         if (!user.cart) {
-          //retornar alert
-            return res.render("errors/error", { numError: 404, error: "O carrinho está vazio" });
+            return res.status(404).json({error: "Utilizador não tem carrinho" });
         }
+
         user.cart.itens = [];
         user.cart.price = 0;
         await user.save();
+        
         res.locals.user = user;
         res.status(200).json(user.cart);
     } catch (error) {
         console.log("Erro ao limpar o carrinho: ", error);
-        return res.render("errors/error", { numError: 500, error: error });
+        return res.status(500).json({error: error });
     }
   }
 
@@ -361,7 +363,7 @@ userController.getCart = async function(req, res) {
       }
     catch (error) {
         console.log("Erro ao obter o carrinho: ", error);
-        return res.render("errors/error", { numError: 500, error: error });
+        return res.status(500).json({error: error });
     }
 }
 
@@ -369,18 +371,19 @@ userController.saveCart = async function(req, res) {
     try {
         const userId = req.params.UserId;
         const user = await User.findById(userId).exec();
+        
         if (!user) {
             return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
         }
+        
         user.cart = req.body;
-         await user.save()
+        await user.save()
 
-      } catch (error) {
+        res.status(200).json({});
+    } catch (error) {
         console.log("Erro ao obter o carrinho: ", error);
         return res.render("errors/error", { numError: 500, error: error });
-      }
     }
-
-
+}
 
 module.exports = userController;

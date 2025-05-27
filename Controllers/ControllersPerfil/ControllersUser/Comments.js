@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 const User = require("../../../Models/Perfils/User.js");
 const Restaurant = require("../../../Models/Perfils/Restaurant.js");
 
+const { deleteImage } = require("../../Functions/crudImagesRest");
 //Controllers
 var commentController = {};
 
@@ -74,8 +75,9 @@ commentController.createComment = async function(req, res) {
 
 commentController.deleteComment = async function(req, res) {
     try {
+        console.log("Deletfgs<,m adflkçsAFNÇKFSNÇLe")
         const userId = req.params.userId;
-        const { orderId, comment } = req.body;
+        const orderId = req.params.orderId;
 
         let pathImg = req.file?.path || '';
 
@@ -99,9 +101,9 @@ commentController.deleteComment = async function(req, res) {
             }
         );
         
-        const deletedOrder = updatedUser.perfil.historicOrders.find(o => o._id.toString() === orderId);
+        const deletedOrder = userBeforeDelete.perfil.historicOrders.find(o => o._id.toString() === orderId);
 
-        if (!deletedOrder ) {
+        if (!deletedOrder) {
             return res.status(404).json({ error: "Utilizador ou encomenda não encontrados" });
         }
 
@@ -121,6 +123,13 @@ commentController.deleteComment = async function(req, res) {
             }
         ).exec();
 
+        const imagePath = deletedOrder.commentPhoto;
+        
+        if(imagePath !== "") {
+            const deletePath = "public" + imagePath;
+            deleteImage(deletePath);
+        }
+       
         return res.status(200).json();
     } catch (error) {
 

@@ -26,4 +26,8 @@ router.get("/search", historicOrderController.searchOrderHistoric);
  * */
 router.get("/:orderId", historicOrderController.showOrder);
 
+/**
+ * * Rota que permite apagar o comentario de uma encomenda
+ * */
+router.delete("/:orderId", commentController.deleteComment);
 module.exports = router;

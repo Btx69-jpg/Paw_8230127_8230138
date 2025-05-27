@@ -45,7 +45,7 @@ var OrderSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        default: {},
+        default: "",
     },
     commentPhoto: {
         type: String,
