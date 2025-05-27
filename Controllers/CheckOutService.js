@@ -7,30 +7,28 @@ const stripe = require('stripe')(SECRET_KEY);
 
 //Isto é um exemplo depois adaptar para o meu codigo
 checkOutController.stripeCheckoutSession = async function(req, res) {
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card', 
-          'sepa_debit', 
-          'ideal', 
-          'bancontact', 
-          'klarna',
-          'multibanco', 
-          'paypal'],
-        mode: 'payment',
-        line_items: [
-        {
-            price_data: {
-            currency: 'eur',
-            product_data: {
-                name: 'Produto Exemplo',
-            },
-            unit_amount: 5000, 
-            },
-            quantity: 1,
-        },
-        ],
-        success_url: `http://localhost:4200/perfil/user/${req.body.userId}/orders?payment=success`,
-        cancel_url: `http://localhost:4200/checkOut/${req.body.userId}`,
-    });
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card', 
+      'sepa_debit', 
+      'ideal', 
+      'bancontact', 
+      'klarna',
+      'multibanco', 
+      'paypal'],
+      mode: 'payment',
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+              name: 'Produto Exemplo',
+          },
+          unit_amount: 5000, 
+          },
+        quantity: 1,
+      },],
+      success_url: `http://localhost:4200/perfil/user/${req.body.userId}/orders?payment=success`,
+      cancel_url: `http://localhost:4200/checkOut/${req.body.userId}`,
+  });
 
   res.json({ id: session.id });
 }
@@ -39,8 +37,8 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
  * !Esta forma recebe varios produtos para mandar
  * 
  */
-/*
 
+/*
 checkOutController.stripeCheckoutSession = async function(req, res) {
   try {
     const { products } = req.body;

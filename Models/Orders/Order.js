@@ -45,7 +45,15 @@ var OrderSchema = new mongoose.Schema({
         enum: ['delivery', 'pickup'],
     //    required: true,
     },
-     notified: { type: Boolean, default: false },
+    comment: {
+        type: String,
+        default: {},
+    },
+    commentPhoto: {
+        type: String,
+        default: "",
+    },
+    notified: { type: Boolean, default: false },
     updated_at: { type: Date, default: Date.now },
 });
 

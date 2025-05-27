@@ -20,6 +20,20 @@ const orderRoute = require("./userPerfil/orders.js");
 router.get("/", userController.getUsers);
 
 /**
+ * * Importação das rotas do historico de encomendas do utilizador
+ */
+router.use("/:userId/historicOrder", historicOrderRoute);
+
+/**
+ * * Importação das rotas do historico de encomendas do utilizador
+ */
+router.use("/:userId/orders", orderRoute);
+/**
+ * * Importação das rotas para a gestão das moradas do utilizador
+ */
+router.use("/:userId/addresses", manageAddressesRoute);
+
+/**
  * * Rota que carrega a pagina inicial de um admin
  * */
 router.get("/:userId", userController.getUser);
@@ -48,20 +62,5 @@ router.put("/:userId", uploadUpdatePhoto.single('perfilPhoto'), userController.e
  * * Rota que atualiza a password do utilizador
  */
 router.put("/:userId/changePassword", passwordController.updatePassword);
-
-/**
- * * Importação das rotas do historico de encomendas do utilizador
- */
-router.use("/:userId/historicOrder", historicOrderRoute);
-
-/**
- * * Importação das rotas do historico de encomendas do utilizador
- */
-router.use("/:userId/orders", orderRoute);
-/**
- * * Importação das rotas para a gestão das moradas do utilizador
- */
-router.use("/:userId/addresses", manageAddressesRoute);
-
 
 module.exports = router;
