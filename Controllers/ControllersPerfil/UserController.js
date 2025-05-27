@@ -389,8 +389,7 @@ userController.saveCart = async function(req, res) {
         if (!user) {
             return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
         }
-        user.cart = req.body.cart;
-        console.log("Carrinho atualizado:", req.body.cart);
+        user.cart = req.body;
          await user.save()
 
       } catch (error) {

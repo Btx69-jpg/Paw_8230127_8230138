@@ -10,7 +10,6 @@ var OrderSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true,
     },
     client: {
         type: FaturaUser.schema,
@@ -38,7 +37,6 @@ var OrderSchema = new mongoose.Schema({
         type: String,
         enum: ['Pendente', 'Expedida', 'Entregue'],
         default: 'Pendente',
-        required: true,
     },
     type: {
         type: String,

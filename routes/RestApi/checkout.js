@@ -17,4 +17,6 @@ router.get('/limparCarrinho/:UserId', userController.cleanCart);
 
 router.get('/obterCarrinho/:UserId', userController.getCart);
 
+router.post('/save/:UserId', userController.saveCart);
+
 module.exports = router;
