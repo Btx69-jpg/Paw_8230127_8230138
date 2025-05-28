@@ -69,11 +69,11 @@ async function saveImage(req, res) {
 
 function isUserAut(cookies, user) {
   let isAut = false;
-  if(cookies && cookies.auth_token && user !== null) {
-    if(user !== null && user.bannedOrder !== false) {
-      isAut = true;
-    }
+  if(cookies && cookies.auth_token && user !== null && !user.bannedOrder) {
+    isAut = true;
   }
+
+  return isAut;
 }
 // Permite visualizar um menu específico de um restaurante
 menuController.showMenu = async function (req, res) {
