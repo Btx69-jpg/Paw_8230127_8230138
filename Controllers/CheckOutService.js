@@ -37,7 +37,6 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
  * !Esta forma recebe varios produtos para mandar
  * 
  */
-
 /*
 checkOutController.stripeCheckoutSession = async function(req, res) {
   try {
@@ -59,11 +58,17 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
     }));
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'google_pay', 'apple_pay'], // ✅ Define aqui os métodos permitidos
+      payment_method_types: ['card', 
+      'sepa_debit', 
+      'ideal', 
+      'bancontact', 
+      'klarna',
+      'multibanco', 
+      'paypal'], 
       mode: 'payment',
       line_items: lineItems,
-      success_url: 'http://localhost:4200/success',
-      cancel_url: 'http://localhost:4200/cancel',
+      success_url: `http://localhost:4200/perfil/user/${req.body.userId}/orders?payment=success`,
+      cancel_url: `http://localhost:4200/checkOut/${req.body.userId}`,
     });
 
     res.json({ id: session.id });

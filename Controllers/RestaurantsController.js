@@ -26,20 +26,28 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
     street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
     timeDelivery, openingSeconds, closingSeconds) {
     
-    const restaurants = await Restaurant.find({}).exec();
-   
-    if (restaurants.length >= totRestaurant) {
-        return "Não é possivel criar mais restaurantes";
+    const countRest = await Restaurant.countDocuments({});
+
+    if (countRest >= totRestaurant) {
+        return ["Não é possivel criar mais restaurantes"];
     }
 
     if (!name || !nif || !phoneNumber || !email || !password || !confirmPassword || 
         !street || !postal_code || !city || !maxOrdersPerClient || !maximumRadiusDelivery|| 
-        !timeConfection || !timeDelivery || !openingSeconds || !closingSeconds) {
-        return "Alguns dos campos obrigatórios não está preenchido";
+        !timeConfection || !timeDelivery) {
+        return ["Alguns dos campos obrigatórios não está preenchido"];
+    }
+
+    if (openingSeconds < 0 || openingSeconds > 86400) {
+        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
+    }
+
+    if (closingSeconds < 0 || closingSeconds > 86400) {
+        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
     }
 
     if (password !== confirmPassword) { 
-        return "As passwords não coincidem";
+        return ["As passwords não coincidem"];
     }
 
     let find = false;
@@ -80,50 +88,64 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
         problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
     }
 
-    if(openingSeconds <= 0 || openingSeconds > 86400) {
-        problme.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
-    }
-
-    if (closingSeconds <= 0 || closingSeconds > 86400) {
-        problme.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
-    }
-
-    /**
-     if (closingSeconds < openingSeconds) {
-        problem.push("O horário de fecho tem de ser superior ao de abertura!");
-    }
-     */
     return problem;
 }
 
-async function validationEditRestaurant(name, nif, phoneNumber, email, street, postal_code, city, restaurant) {
-    if (name === undefined || nif === undefined || phoneNumber === undefined ||
-        email === undefined || street === undefined || postal_code === undefined || 
-        city === undefined) {
-        return "Alguns dos campos obrigatórios não está preenchido";
+async function validationEditRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
+    street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+    timeDelivery, openingSeconds, closingSeconds, restaurant) {
+    
+
+    if (!name || !nif || !phoneNumber || !email || !street || !postal_code || !city || 
+        !maxOrdersPerClient || !maximumRadiusDelivery|| !timeConfection || !timeDelivery) {
+        return ["Alguns dos campos obrigatórios não está preenchido"];
+    }
+
+    if (openingSeconds < 0 || openingSeconds > 86400) {
+        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
+    }
+
+    if (closingSeconds < 0 || closingSeconds > 86400) {
+        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
     }
 
     let find = false;
     let i = 0;
-    let problem = "";
+    let problem = [];
     const restaurants = await Restaurant.find({}).exec();
 
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
     while (i < restaurants.length && !find) {
         if (restaurant.name !== name && restaurants[i].name === name) {
-            problem = "Já existe um restaurante com esse nome";
+            problem.push("Já existe um restaurante com esse nome");
             find = true;
         } else if (restaurant.nif !== nif && restaurants[i].nif === nif) {
-            problem = "Já existe um restaurante com esse NIF";
+            problem.push("Já existe um restaurante com esse NIF");
             find = true;
         } else if (restaurant.perfil.email !== email && restaurants[i].perfil.email === email) {
-            problem = "Já existe um restaurante com esse email";
+            problem.push("Já existe um restaurante com esse email");
             find = true;
         } else if (restaurant.perfil.phoneNumber !== phoneNumber && restaurants[i].perfil.phoneNumber === phoneNumber) {
-            problem = "Já existe um restaurante com esse numero telefonico";
+            problem.push("Já existe um restaurante com esse numero telefonico");
             find = true;
         }
         i++;
+    }
+
+    if (maxOrdersPerClient < 1) {
+        problem.push("O maximo de encomendas por cliente não pode ser inferior a 1");
+    }
+
+    if (maximumRadiusDelivery < 0.1) {
+        problem.push("O maximo de raio de entrega não pode ser inferior a 100m (0,1)");
+    }
+
+    if (timeConfection < 0) {
+        problem.push("O tempo de confessão não pode ser inferior ou igual a 0");
+    }
+
+    if (timeDelivery < 0) {
+        problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
     }
 
     return problem;
@@ -404,24 +426,62 @@ restaurantsController.editRestaurant = (req, res) => {
 
 /**
  * Metodo para atualizar os dados de um restaurante
+ * 
+ * Atalho
  */
 restaurantsController.updatRestaurant = async (req, res) => {
     try {
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");console.log("");
+        console.log("--------------------------------------------");
+        console.log("Update Restaurante");
         //Upload da nova imagem se necessário
-        let restaurant = await Restaurant.findOne({ _id: req.params.restaurantId }).exec();
+        const restId = req.params.restaurantId;
+        if(!restId) {
+            console.log("O id do restaurante é obrigatório");
+            return res.status(404).render('errors/error', { numError: 404});
+        }
+
+        let restaurant = await Restaurant.findById(restId).exec();
 
         if (!restaurant) {
+            console.log("O restaurante não foi encontrado")
             return res.status(404).render('errors/error', { numError: 404});
         }
 
         await updateImage(req, res, restaurant);
 
-        const {name, sigla, nif, phoneNumber, email, street, postal_code, city, description} = req.body;
-        //Validações
-        let validation = await validationEditRestaurant(name, nif, phoneNumber, email, street, postal_code, 
-            city, restaurant);
+        const {name, sigla, nif, phoneNumber, email, street, postal_code,
+                city, description, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+                timeDelivery, openingTime, closingTime} = req.body;
 
-        if (validation !== "") {
+        const openingSeconds = covertTimeToSeconds(openingTime);
+        const closingSeconds = covertTimeToSeconds(closingTime); 
+        //Validações
+        let validation = await validationEditRestaurant(name, sigla, nif, phoneNumber, email, street, postal_code,
+            city, description, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+            timeDelivery, openingSeconds, closingSeconds, restaurant);
+
+        if (validation.length > 0) {
+            console.error(validation);
             return res.status(500).render("errors/error", {numError: 500, error: validation});
         } 
 
@@ -474,6 +534,12 @@ restaurantsController.updatRestaurant = async (req, res) => {
         restaurant.address.postal_code = postal_code,
         restaurant.address.city = city;
         restaurant.description = description; 
+        restaurant.maxOrdersPerClient = maxOrdersPerClient;
+        restaurant.maximumRadiusDelivery = maximumRadiusDelivery;
+        restaurant.timeConfection = timeConfection;
+        restaurant.timeDelivery = timeDelivery;
+        restaurant.openingTime = openingSeconds;
+        restaurant.closingTime = closingSeconds;
 
         await restaurant.save();
         console.log("Restaurante atualizado com sucesso");
