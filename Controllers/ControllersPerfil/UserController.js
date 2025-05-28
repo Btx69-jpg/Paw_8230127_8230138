@@ -231,101 +231,142 @@ userController.deleteUser = async function(req, res) {
 
 userController.addToCart = async function(req, res) {
     try {
-      const userId = res.locals.user._id;
-      const dishId = req.params.dishId;
-      const portionId = req.params.portionId;
-      const menuId = req.params.menu;
-      const restaurantName = req.params.restaurant;
-  
-      const quantity = parseInt(req.body.quantity, 10); // Obter a quantidade do formulário
-      if (isNaN(quantity) || quantity <= 0) {
-        return res.render("errors/error", { numError: 400, error: "Quantidade inválida" });
-      }
-  
-      const user = await User.findById(userId).exec();
-      if (!user) {
-        return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
-      }
-  
-      const restaurant = await Restaurant.findOne({ name: restaurantName }).exec();
-      if (!restaurant) {
-        return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
-      }
-  
-      const portion = await Portion.findById(portionId).exec();
-      if (!portion) {
-        return res.render("errors/error", { numError: 404, error: "Porção não encontrada" });
-      }
-  
-      let item;
-      let exist = false;
-  
-      for (let i = 0; i < restaurant.menus.length; i++) {
-        let menu = restaurant.menus[i];
-        if (menu._id.toString() === menuId) {
-          for (let j = 0; j < menu.dishes.length; j++) {
-            if (menu.dishes[j]._id.toString() === dishId) {
-              for (let k = 0; k < menu.dishes[j].portions.length; k++) {
-                if (menu.dishes[j].portions[k].portion.toString() === portionId) {
-                  item = new Item({
-                    from: restaurant._id,
-                    menuId: menu._id,
-                    photo: menu.dishes[j].photo,
-                    item: menu.dishes[j].name,
-                    portion: portion.portion,
-                    price: menu.dishes[j].portions[k].price,
-                    quantity: quantity, // Usar a quantidade fornecida
-                  });
-                  exist = true;
-                  break;
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("");
+        console.log("---------------------------------------------");
+        console.log("Adicionar cart");
+        const userId = res.locals.user._id;
+        const dishId = req.params.dishId;
+        const portionId = req.params.portionId;
+        const menuId = req.params.menu;
+        const restaurantName = req.params.restaurant;
+
+        const quantity = parseInt(req.body.quantity, 10); // Obter a quantidade do formulário
+        if (isNaN(quantity) || quantity <= 0) {
+            return res.render("errors/error", { numError: 400, error: "Quantidade inválida" });
+        }
+
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
+        }
+
+        const restaurant = await Restaurant.findOne({ name: restaurantName }).exec();
+        if (!restaurant) {
+            return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
+        }
+
+        const cart = user.cart;
+        
+        if (cart.itens && cart.itens.length > 0 && cart.itens[0].from.toString() !== restaurant._id.toString()) {
+            console.log("Restuarante diferente");
+            return res.status(422).redirect(`/restaurants/${restaurantName}`);
+        }
+
+        const itens = cart.itens;
+        let totItens = 0;
+        let i = 0;
+        const limiteRest = restaurant.maxOrdersPerClient;
+        while (i < itens.length && totItens < limiteRest) {
+            const item = itens[i];
+            totItens += item.quantity;
+            i++;
+        }
+
+        if (totItens + quantity > limiteRest) {
+            console.log("Limites de pedidos atingido pelo utilizador");
+            return res.status(422).redirect(`/restaurants/${restaurantName}`);
+        }
+
+        const portion = await Portion.findById(portionId).exec();
+        if (!portion) {
+            return res.render("errors/error", { numError: 404, error: "Porção não encontrada" });
+        }
+
+        let item;
+        let exist = false;
+
+        for (let i = 0; i < restaurant.menus.length; i++) {
+            let menu = restaurant.menus[i];
+            if (menu._id.toString() === menuId) {
+                for (let j = 0; j < menu.dishes.length; j++) {
+                    if (menu.dishes[j]._id.toString() === dishId) {
+                        for (let k = 0; k < menu.dishes[j].portions.length; k++) {
+                            if (menu.dishes[j].portions[k].portion.toString() === portionId) {
+                                item = new Item({
+                                    from: restaurant._id,
+                                    menuId: menu._id,
+                                    photo: menu.dishes[j].photo,
+                                    item: menu.dishes[j].name,
+                                    portion: portion.portion,
+                                    price: menu.dishes[j].portions[k].price,
+                                    quantity: quantity, // Usar a quantidade fornecida
+                                });
+                                
+                                exist = true;
+                                break;
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
-  
-      if (!exist) {
-        return res.render("errors/error", { numError: 404, error: "Prato não encontrado no menu" });
-      }
-  
-      if (!user.cart) {
-        user.cart = new Cart({
-          itens: [item],
-          price: item.price * quantity, // Multiplicar pelo número de itens
-          status: "Pendente",
-        });
-      } else {
-        let itens = user.cart.itens;
-        exist = false;
-  
-        for (let i = 0; i < itens.length; i++) {
-          if (
-            itens[i].from.toString() === item.from.toString() &&
-            itens[i].item === item.item &&
-            itens[i].portion === item.portion
-          ) {
-            itens[i].quantity += quantity; // Adicionar a quantidade
-            user.cart.price += item.price * quantity; // Atualizar o preço total
-            exist = true;
-            break;
-          }
-        }
-  
+
         if (!exist) {
-          user.cart.price += item.price * quantity; // Atualizar o preço total
-          itens.push(item);
+            return res.render("errors/error", { numError: 404, error: "Prato não encontrado no menu" });
         }
-  
-        user.cart.itens = itens;
-      }
-  
-      await user.save();
-      res.locals.user = user;
-  
-      menuController.showMenu(req, res);
+
+        if (!user.cart) {
+            user.cart = new Cart({
+                itens: [item],
+                price: item.price * quantity,
+                status: "Pendente",
+            });
+        } else {
+            let itens = user.cart.itens;
+            exist = false;
+
+            for (let i = 0; i < itens.length; i++) {
+                if (itens[i].from.toString() === item.from.toString() && itens[i].item === item.item &&
+                    itens[i].portion === item.portion) {
+                    itens[i].quantity += quantity; // Adicionar a quantidade
+                    user.cart.price += item.price * quantity; // Atualizar o preço total
+                    exist = true;
+                    break;
+                }
+            }
+
+            if (!exist) {
+                user.cart.price += item.price * quantity; // Atualizar o preço total
+                itens.push(item);
+            }
+
+            user.cart.itens = itens;
+        }
+
+        await user.save();
+        res.locals.user = user;
+        menuController.showMenu(req, res);
     } catch (error) {
-      return res.render("errors/error", { numError: 500, error: error });
+        console.error("Error: ", error);
+        return res.render("errors/error", { numError: 500, error: error });
     }
   };
 

@@ -1,141 +1,196 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Visualizar Restaurante</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Visualizar Restaurante</title>
 
-        <!-- Icon do site -->
-        <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
-        
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Icon do site -->
+    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png" />
+    
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-        <!-- CSS -->
-        <link rel="stylesheet" href="/stylesheets/Perfils/Admin/PagesAdmin/showMoreInfo.css"/>
-    </head>
-    <body>
-        <main>
-            <div class="view-container">
-                <h1>Visualizar Restaurante</h1>
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="/stylesheets/Perfils/Admin/PagesAdmin/showMoreInfo.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+        <div class="view-restaurant-container py-4">
+            <h1>Visualizar Restaurante</h1>
 
-                <div class="form-group">
-                    <label for="name">Nome</label>
-                    <input
+            <!-- Nome -->
+            <div class="mb-3">
+                <label class="form-label">Nome:</label>
+                <input
                     type="text"
-                    id="name"
                     class="form-control"
                     value="<%= restaurant.name %>"
                     readonly
-                    required
-                    />
-                </div>
+                />
+            </div>
 
-                <% if (restaurant.sigla) { %>
-                    <div class="form-group">
-                    <label for="sigla">Sigla</label>
+            <!-- Sigla -->
+            <% if (restaurant.sigla) { %>
+                <div class="mb-3">
+                    <label class="form-label">Sigla:</label>
                     <input
                         type="text"
                         class="form-control"
-                        id="sigla"
-                        name="sigla"
                         value="<%= restaurant.sigla %>"
                         readonly
-                        required
-                    />
-                    </div>
-                <% } %>
-
-                <div class="form-group">
-                    <label for="emailRest">Email</label>
-                    <input
-                    type="email"
-                    class="form-control"
-                    id="emailRest"
-                    name="emailRest"
-                    value="<%= restaurant.perfil.email %>"
-                    readonly
-                    required
                     />
                 </div>
+            <% } %>
 
-                <div class="form-group">
-                    <label for="phoneRest">Telefone</label>
-                    <input
-                    type="tel"
-                    class="form-control"
-                    id="phoneRest"
-                    name="phoneRest"
-                    value="<%= restaurant.perfil.phoneNumber %>"
-                    readonly
-                    required
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="moradaRest">Morada</label>
+            <!-- NIF e Telefone -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">NIF:</label>
                     <input
                     type="text"
                     class="form-control"
-                    id="moradaRest"
-                    name="moradaRest"
-                    value="<%= restaurant.address.street %>, <%= restaurant.address.postal_code %>, <%= restaurant.address.city %>"
+                    value="<%= restaurant.nif %>"
                     readonly
-                    required
                     />
                 </div>
 
-                <% if (restaurant.description) { %>
-                    <div class="form-group">
-                    <label for="description">Descrição</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        class="form-control"
-                        readonly
-                        required
-                    ><%= restaurant.description %></textarea>
-                    </div>
-                <% } %>
-
-                <% if (owners.length > 0) { %>
-                    <h2>Donos do Restaurante</h2>
-                    <p>Total de donos: <%= owners.length %></p>
-                    <% owners.forEach(owner => { %>
-                        <h3 class="mt-4"><%= owner.firstName %> <%= owner.lastName %></h3>
-
-                        <div class="form-group">
-                            <label for="owner-email">Email</label>
-                            <input
-                            type="email"
-                            id="owner-email"
-                            class="form-control"
-                            value="<%= owner.perfil.email %>"
-                            readonly
-                            required
-                            />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="owner-phone">Telefone</label>
-                            <input
-                            type="tel"
-                            id="owner-phone"
-                            class="form-control"
-                            value="<%= owner.perfil.phoneNumber %>"
-                            readonly
-                            required
-                            />
-                        </div>
-                    <% }) %>
-                <% } %>
-
-                <div class="d-grid gap-2">
-                    <a href="<%= voltar %>" class="btn btn-secondary">Voltar</a>
+                <div class="col-md-6">
+                    <label class="form-label">Telefone:</label>
+                    <input
+                    type="tel"
+                    class="form-control"
+                    value="<%= restaurant.perfil.phoneNumber %>"
+                    readonly
+                    />
                 </div>
             </div>
-        </main>
 
-        <!-- Bootstrap JS Bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+            <!-- Email e Morada -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Email:</label>
+                    <input
+                    type="email"
+                    class="form-control"
+                    value="<%= restaurant.perfil.email %>"
+                    readonly
+                    />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Morada:</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    value="<%= restaurant.address.street %>, <%= restaurant.address.postal_code %>, <%= restaurant.address.city %>"
+                    readonly
+                    />
+                </div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="mb-3">
+                <label class="form-label">Descrição:</label>
+                <textarea class="form-control" rows="3" readonly><%= restaurant.description || '-' %></textarea>
+            </div>
+
+            <!-- Máx. encomendas, Raio, Tempo confeção -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Máx. encomendas/cliente:</label>
+                    <input
+                    type="number"
+                    class="form-control"
+                    value="<%= restaurant.maxOrdersPerClient %>"
+                    readonly
+                    />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Raio máximo entrega (km):</label>
+                    <input
+                    type="number"
+                    class="form-control"
+                    value="<%= restaurant.maximumRadiusDelivery %>"
+                    readonly
+                    />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Tempo confeção (min):</label>
+                    <input
+                    type="number"
+                    class="form-control"
+                    value="<%= restaurant.timeConfection %>"
+                    readonly
+                    />
+                </div>
+            </div>
+
+            <!-- Tempo entrega, Abertura, Fecho -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tempo entrega (min):</label>
+                    <input
+                    type="number"
+                    class="form-control"
+                    value="<%= restaurant.timeDelivery %>"
+                    readonly
+                    />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Abertura:</label>
+                    <input
+                    type="time"
+                    class="form-control"
+                    value="<%= new Date(restaurant.openingTime * 1000)
+                        .toISOString()
+                        .substr(11, 8) %>"
+                    readonly
+                    />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Fecho:</label>
+                    <input
+                    type="time"
+                    class="form-control"
+                    value="<%= new Date(restaurant.closingTime * 1000)
+                        .toISOString()
+                        .substr(11, 8) %>"
+                    readonly
+                    />
+                </div>
+            </div>
+
+            <!-- Donos -->
+            <% if (owners && owners.length) { %>
+                <h2>Donos do Restaurante</h2>
+                
+                <% owners.forEach((owner) => { %>
+                    <div class="border p-3 mb-3">
+                        <h5><%= owner.firstName %> <%= owner.lastName %></h5>
+                        <p>Email: <%= owner.perfil.email %></p>
+                        <p>Telefone: <%= owner.perfil.phoneNumber %></p>
+                    </div>
+                <% }); %>
+            <% } %>
+
+            <!-- Botão Voltar -->
+            <div class="d-grid gap-2">
+                <a href="<%= voltar %>" class="btn btn-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
