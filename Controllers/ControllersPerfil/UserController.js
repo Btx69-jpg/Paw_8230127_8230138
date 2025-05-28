@@ -454,7 +454,7 @@ userController.saveNewOrder = async function(req, res) {
             date: order.date,
             client: order.client,
             restaurant: order.restaurant,
-            address: order.address,
+            addressOrder: order.addressOrder,
             itens: order.itens,
             price: order.price,
             status: "Pendente",
@@ -475,24 +475,5 @@ userController.saveNewOrder = async function(req, res) {
         return res.render("errors/error", { numError: 500, error: error });
     }
 }
-
-
-userController.getRestNameAndAddress = async function(req, res) {
-    try {
-        const restId = req.params.restId;
-        const restaurant = await Restaurant.findById(restId).exec();
-        if (!restaurant) {
-            return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
-        }
-        const restName = restaurant.name;
-        const restAddress = restaurant.address.street + ", " + restaurant.address.postal_code + " " + restaurant.address.city;
-        res.status(200).json({ restaurantName: restName, restaurantAddress: restAddress });
-    }
-    catch (error) {
-        console.log("Erro ao obter o nome e endereço do restaurante: ", error);
-        return res.render("errors/error", { numError: 500, error: error });
-    }
-}
-
 
 module.exports = userController;
