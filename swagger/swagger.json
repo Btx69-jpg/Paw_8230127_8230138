@@ -82,6 +82,7 @@
           "200": {
             "description": "Utilizadores encontrados",
             "schema": {
+              "type": "array",
               "$ref": "#/definitions/User"
             }
           }, 
@@ -894,6 +895,37 @@
               }
             }
           }, 
+          "500": {
+            "description": "Erro ao criar sessão"
+          }
+        }    
+      }
+    },
+    "/checkout/getRestaurante/{restId}": {
+      "parameters": [
+        {
+          "name": "restId",
+          "in": "path",
+          "required": true,
+          "description": "Id do restaurante",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Retorna o restaurante de uma encomenda",
+        "description": "Retorna o restaurante de uma encomenda.",
+        "tags": ["Checkout"],
+        "responses": {
+          "200": {
+            "description": "Retaurante encontrado",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "Restaurante não encontrado"
+          },
           "500": {
             "description": "Erro ao criar sessão"
           }

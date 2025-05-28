@@ -10,6 +10,7 @@ const router = express.Router();
 //Controllers
 const stripeController = require("../../Controllers/CheckOutService");
 const userController = require("../../Controllers/ControllersPerfil/UserController.js");
+const restauranteApiController = require("../../Controllers/ControllersRestaurant/RestApiRestaurantController.js")
 
 router.post("/create-checkout-session", stripeController.stripeCheckoutSession);
 
@@ -19,6 +20,6 @@ router.get('/obterCarrinho/:UserId', userController.getCart);
 
 router.post('/save/:UserId', userController.saveCart);
 
-router.get('/getRestName&Address/:restId', userController.getRestNameAndAddress);
+router.get('/getRestaurante/:restId', restauranteApiController.getRestaurante);
 
 module.exports = router;
