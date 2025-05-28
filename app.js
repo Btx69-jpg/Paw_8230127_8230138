@@ -183,12 +183,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-//ta mal mas é por ai
-/*
-app.use(express.static(path.join(__dirname, 'client/dist/client')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/dist/client/index.html'));
-});
-*/
-
 module.exports = app;

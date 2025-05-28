@@ -6,6 +6,16 @@ var ItemSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Restaurant'    
     },
+    //O id do menu que possui o prato
+    menuId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Menu',
+    },
+    //o caminho para a foto do prato
+    photo: {
+        type: String,
+        default: "",
+    },
     //O nome do prato
     item: {
         type: String,
