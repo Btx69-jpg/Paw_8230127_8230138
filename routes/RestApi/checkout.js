@@ -19,4 +19,6 @@ router.get('/obterCarrinho/:UserId', userController.getCart);
 
 router.post('/save/:UserId', userController.saveCart);
 
+router.get('/getRestName&Address/:restId', userController.getRestNameAndAddress);
+
 module.exports = router;
