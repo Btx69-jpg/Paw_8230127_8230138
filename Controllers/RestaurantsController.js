@@ -26,9 +26,9 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
     street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
     timeDelivery, openingSeconds, closingSeconds) {
     
-    const countRest = await Restaurant.countDocuments({});
-
-    if (countRest >= totRestaurant) {
+    const restaurants = await Restaurant.find({}).exec();
+   
+    if (restaurants.length >= totRestaurant) {
         return ["Não é possivel criar mais restaurantes"];
     }
 
