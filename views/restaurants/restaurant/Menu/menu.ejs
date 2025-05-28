@@ -180,6 +180,7 @@
                     method="post"
                     class="d-inline d-flex align-items-center"
                   >
+                    <% if(isAut) { %>
                     <!-- Input para quantidade -->
                     <input
                       type="number"
@@ -195,6 +196,7 @@
                     <button type="submit" class="btn btn-outline-primary">
                       <i class="bi bi-cart-plus"></i>
                     </button>
+                    <% } %>
                   </form>
                   </div>
                 <% }); %>

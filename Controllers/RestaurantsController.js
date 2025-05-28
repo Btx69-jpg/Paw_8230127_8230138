@@ -16,20 +16,25 @@ const { existsRestaurantsDesaprove } = require("./ControllersPerfil/ControllersA
 
 //Constantes
 const totRestaurant = 15; 
+function covertTimeToSeconds(time) {
+    const parts = time.split(':').map(Number);
+    const [hh, mm, ss = 0] = parts;
+    return hh * 3600 + mm * 60 + ss;
+}
 
 async function validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
-    street, postal_code, city) {
+    street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+    timeDelivery, openingSeconds, closingSeconds) {
     
     const restaurants = await Restaurant.find({}).exec();
-    // Verifica se o limite de restaurantes foi atingido
+   
     if (restaurants.length >= totRestaurant) {
         return "Não é possivel criar mais restaurantes";
     }
 
-    if (name === undefined || nif === undefined || phoneNumber === undefined ||
-        email === undefined || password === undefined || 
-        confirmPassword === undefined || street === undefined ||
-        postal_code === undefined || city === undefined) {
+    if (!name || !nif || !phoneNumber || !email || !password || !confirmPassword || 
+        !street || !postal_code || !city || !maxOrdersPerClient || !maximumRadiusDelivery|| 
+        !timeConfection || !timeDelivery || !openingSeconds || !closingSeconds) {
         return "Alguns dos campos obrigatórios não está preenchido";
     }
 
@@ -39,26 +44,55 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
 
     let find = false;
     let i = 0;
-    let problem = "";
+    let problem = [];
 
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
     while (i < restaurants.length && !find) {
         if (restaurants[i].name === name) {
-            problem = "Já existe um restaurante com esse nome";
+            problem.push("Já existe um restaurante com esse nome");
             find = true;
         } else if (restaurants[i].nif === nif) {
-            problem = "Já existe um restaurante com esse NIF";
+            problem.push("Já existe um restaurante com esse NIF");
             find = true;
         } else if (restaurants[i].perfil.email === email) {
-            problem = "Já existe um restaurante com esse email";
+            problem.push("Já existe um restaurante com esse email");
             find = true;
         } else if (restaurants[i].perfil.phoneNumber === phoneNumber) {
-            problem = "Já existe um restaurante com esse numero telefonico";
+            problem.push("Já existe um restaurante com esse numero telefonico");
             find = true;
         }
         i++;
     }
 
+    if (maxOrdersPerClient < 1) {
+        problem.push("O maximo de encomendas por cliente não pode ser inferior a 1");
+    }
+
+    if (maximumRadiusDelivery < 0.1) {
+        problem.push("O maximo de raio de entrega não pode ser inferior a 100m (0,1)");
+    }
+
+    if (timeConfection < 0) {
+        problem.push("O tempo de confessão não pode ser inferior ou igual a 0");
+    }
+
+    if (timeDelivery < 0) {
+        problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
+    }
+
+    if(openingSeconds <= 0 || openingSeconds > 86400) {
+        problme.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
+    }
+
+    if (closingSeconds <= 0 || closingSeconds > 86400) {
+        problme.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
+    }
+
+    /**
+     if (closingSeconds < openingSeconds) {
+        problem.push("O horário de fecho tem de ser superior ao de abertura!");
+    }
+     */
     return problem;
 }
 
@@ -246,12 +280,16 @@ restaurantsController.saveRestaurant = async function(req, res) {
         await saveImage(req, res);
         
         const {name, sigla, nif, phoneNumber, email, password, confirmPassword, street, postal_code,
-                city, description} = req.body;
+                city, description, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+                timeDelivery, openingTime, closingTime} = req.body;
     
-        let validation = await validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
-            street, postal_code, city);
+        const openingSeconds = covertTimeToSeconds(openingTime);
+        const closingSeconds = covertTimeToSeconds(closingTime); 
+        const validation = await validationRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
+            street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+            timeDelivery, openingSeconds, closingSeconds);
         
-        if (validation !== "") {
+        if (validation.length > 0) {
             console.log("Validation:", validation)
             return res.status(500).render("errors/error", {numError: 500, error: validation});
         }
@@ -293,6 +331,12 @@ restaurantsController.saveRestaurant = async function(req, res) {
             address: address,
             description: description,
             aprove: aproved,
+            maxOrdersPerClient: maxOrdersPerClient,
+            maximumRadiusDelivery: maximumRadiusDelivery,
+            timeConfection: timeConfection,
+            timeDelivery: timeDelivery,
+            openingTime: openingSeconds,
+            closingTime: closingSeconds,
         });
 
         if (cookie === "Cliente" || cookie === "Dono") {

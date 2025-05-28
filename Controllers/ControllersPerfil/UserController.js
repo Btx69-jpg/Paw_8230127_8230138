@@ -124,8 +124,7 @@ userController.getUserEdit = function(req, res) {
 
 
 /**
- * !!Falta ver como passar a imagem, como parametro para alterar
- * !!Depois adapatar o codigo para funcionar para com a imagem
+ * * Permite atualizar os dados do utilizador
  */
 userController.editUser = async function(req, res) {
     const userId = req.params.userId;

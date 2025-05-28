@@ -67,8 +67,14 @@ async function saveImage(req, res) {
   }); 
 }
 
-
-
+function isUserAut(cookies, user) {
+  let isAut = false;
+  if(cookies && cookies.auth_token && user !== null) {
+    if(user !== null && user.bannedOrder !== false) {
+      isAut = true;
+    }
+  }
+}
 // Permite visualizar um menu específico de um restaurante
 menuController.showMenu = async function (req, res) {
     try {
@@ -89,7 +95,9 @@ menuController.showMenu = async function (req, res) {
     
         const categories = await carregarCategoriesMenu(menu);
         const portions = await carregarPortions();
-        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {}, menu: menu, categories: categories, portions: portions });
+
+        const isAut = isUserAut(req.cookies, res.locals.user);
+        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {}, menu: menu, categories: categories, portions: portions, isAut: isAut });
     } catch (err) {
       console.error(err);
       res.status(500).render("errors/error", { numError: 500, error: "Erro ao recuperar o menu" });
@@ -120,8 +128,8 @@ menuController.searchMenu = async function (req, res) {
         }
 
         menu.dishes = menu.dishes.filter(dish => {
-            if (dishName && dish.name !== dishName) {
-                return false;
+            if (dishName && !dish.name.toLowerCase().includes(dishName.toLowerCase())) {
+              return false;
             }
           
             if (category && category !== 'all' && dish.category !== category) {
@@ -215,7 +223,8 @@ menuController.searchMenu = async function (req, res) {
         console.log("Dishes: ", menu.dishes);
         const categories = await carregarCategoriesMenu(menu);
         const portions = await carregarPortions();
-        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion, order }, menu: menu, categories: categories, portions: portions });
+        const isAut = isUserAut(req.cookies, res.locals.user);
+        res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion, order }, menu: menu, categories: categories, portions: portions, isAut: isAut });
     } catch (err) {
         res.status(500).render("errors/error", {numError: 500, error: err});
     }

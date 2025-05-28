@@ -92,6 +92,11 @@ orderController.saveOrder = async function(req, res) {
 
         //Procurar se o utilizador existe.
         let user = await User.findOne({ firstName: firstName, lastName: lastName, 'perfil.email': email, 'perfil.phoneNumber': phoneNumber}).exec();
+        if(user && user.bannedOrder === true) {
+            console.log("O utilizador está banido");
+            return res.status(302).redirect(`/restaurants/${nameRest}/orders`);
+        }
+
         let faturaCliente;
 
         if (user) {
