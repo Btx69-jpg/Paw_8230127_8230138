@@ -28,15 +28,19 @@
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-telephone"></i> <strong>Telefone:</strong> <%= restaurant.perfil.phoneNumber %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-envelope"></i> <strong>Email:</strong> <%= restaurant.perfil.email %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-geo-alt"></i> <strong>Morada:</strong> <%= restaurant.address.street %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-building"></i> <strong>Cidade:</strong> <%= restaurant.address.city %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-mailbox"></i> <strong>Código Postal:</strong> <%= restaurant.address.postal_code %></p>
   </div>
@@ -45,9 +49,11 @@
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-basket"></i> <strong>Máx. encomendas/cliente:</strong> <%= restaurant.maxOrdersPerClient %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-geo-alt-fill"></i> <strong>Raio máx. entrega (km):</strong> <%= restaurant.maximumRadiusDelivery.toFixed(2) %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-clock-history"></i> <strong>Tempo confeção (min):</strong> <%= restaurant.timeConfection %></p>
   </div>
@@ -56,15 +62,16 @@
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-truck"></i> <strong>Tempo entrega (min):</strong> <%= restaurant.timeDelivery %></p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-door-open"></i> <strong>Abertura:</strong>
       <%= new Date(restaurant.openingTime * 1000).toISOString().substr(11, 5) %>
     </p>
   </div>
+  
   <div class="col-md-4 mb-2">
     <p><i class="bi bi-door-closed"></i> <strong>Fecho:</strong>
       <%= new Date(restaurant.closingTime * 1000).toISOString().substr(11, 5) %>
     </p>
   </div>
-
 </div>
