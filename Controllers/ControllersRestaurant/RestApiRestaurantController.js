@@ -15,7 +15,6 @@ restaurantApiController.getRestaurante = function(req, res) {
             const copyRest = restaurant.toObject();
 
             // elimina os campos indesejados
-            delete copyRest.nif;
             if (copyRest.perfil) {
                 delete copyRest.perfil.perfilPhoto;
             }
@@ -25,7 +24,8 @@ restaurantApiController.getRestaurante = function(req, res) {
             delete copyRest.description;
             delete copyRest.menus;
             delete copyRest.comments;
-            res.status(200).json(restaurant);
+            console.log("Restaurante encontrado:", copyRest);
+            res.status(200).json(copyRest);
         })
         .catch(error => {
             res.status(500).json({ error: error });
