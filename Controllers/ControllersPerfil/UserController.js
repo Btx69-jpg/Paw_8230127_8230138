@@ -408,7 +408,17 @@ userController.saveNewOrder = async function(req, res) {
 
 
 
-        let newOrder = req.body;
+        let order = req.body;
+        let newOrder = new Cart({
+            date: order.date,
+            client: order.client,
+            restaurant: order.restaurant,
+            address: order.address,
+            itens: order.itens,
+            price: order.price,
+            status: "Pendente",
+            type: 'delivery',
+        });
         console.log("\n\n\n\n\n\nNova encomenda: ", newOrder, "\n\n\n\n\n");
         
         user.perfil.orders.push(newOrder);
