@@ -9,11 +9,30 @@ loginController.login = function(req, res) {
   res.render("login/login");
 };
 
+async function validateBanUser(user) {
+  let userBan = true;
+  const dataAtual = Date.now();
+  const tempoOrder = dataAtual - new Date(user.dateBannedOrder).getTime(); 
+  const sessentaDias = 60 * 24 * 60 * 60 * 1000; ; 
 
+  if (tempoOrder > sessentaDias) {
+    user.bannedOrder = false;
+    user.dateBannedOrder = null;
+    user.cancelOrder = 0;
+    if(user.firstCancel) {
+      user.firstCancel = null
+    }
+
+    await user.save();
+    userBan = false;
+  }
+
+  return userBan;
+}
 //Cria o token e adiciona uma cokkie com o tipo de prioridade do user
-loginController.loginToken = (req, res, next) => {
+loginController.loginToken = async (req, res, next) => {
   // 1) Chama o passport e recebe (err, user, info)
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', async (err, user, info) => {
     
     if (err) {
       console.error("Erro ao autenticar:", err);
@@ -25,6 +44,20 @@ loginController.loginToken = (req, res, next) => {
       // Mensagem de erro vinda do Strategy
       req.flash('error', info.message);
       return res.redirect('/login');
+    }
+
+    if(user.bannedOrder) {
+      try {
+        const continueBan = await validateBanUser(user);
+        if (continueBan) {
+          req.flash('error', 'A tua conta está temporariamente suspensa.');
+          return res.status(422).redirect('/');
+        }
+      } catch (error) {
+        console.error("Erro ao validar banimento:", error);
+        req.flash('error', 'Erro interno. Tenta novamente.');
+        return res.redirect('/login');
+      }
     }
 
     // 2) Faz o login na sessão
@@ -62,7 +95,6 @@ loginController.loginToken = (req, res, next) => {
           httpOnly: true,
         });
       }
-
 
       return res.redirect('/');
     });

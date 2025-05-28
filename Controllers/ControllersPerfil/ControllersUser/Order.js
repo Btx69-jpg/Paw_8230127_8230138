@@ -125,9 +125,21 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(404).json({ error: validation});
         }
 
-        if(user.bannedOrder || user.cancelOrder >= 5) {
+        if (user.bannedOrder) {
             return res.status(404).json({ error: "O utilizador não pode cancelar porque ele está banido de realizar ou eliminar encomendas"});
         }
+
+        if (this.cancelOrder > 0) {
+            const dataAtual = Date.now();
+            const tempoCancel = dataAtual - new Date(orderCancel.date).getTime();
+            const trintaDias = 30 * 24 * 60 * 60 * 1000;
+
+            if (tempoCancel > trintaDias && this.cancelOrder < 5) {
+                this.cancelOrder = 0;
+                this.firstCancel = null;
+            }
+        }
+       
         const orderDel = req.params.orderId;
         const orders = user.perfil.orders;
         const posOrderDelete = findOrder(orders, orderDel);
@@ -139,7 +151,6 @@ OrderController.cancelOrder = async function(req, res) {
         const orderCancel = orders[posOrderDelete]
 
         //Verificações de cancelamento
-        const dataAtual = Date.now();
         const tempoOrder = dataAtual - new Date(orderCancel.date).getTime(); 
         const cincoMinutos = 5 * 60 * 1000; 
 
@@ -156,11 +167,11 @@ OrderController.cancelOrder = async function(req, res) {
         //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let restaurant = await findRestaurantOrder(restaurantOrder);
         console.log("Restaurante: ", restaurant);
-        if(!restaurant) {
+        if (!restaurant) {
             res.status(404).json( {error: "O restaurante não foi encontrado"}); 
         }
 
-        if(!restaurant.perfil || !restaurant.perfil.orders) {
+        if (!restaurant.perfil || !restaurant.perfil.orders) {
             return res.status(422).json({ error: "O restauranet não tem encomendas"});
         }
 

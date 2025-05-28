@@ -8,7 +8,7 @@ var menu = require("../Controllers/ControllersRestaurant/MenuController.js");
 const { editRestaurant, updatRestaurant } = require("../Controllers/RestaurantsController.js");
 //Middlewares
 const { authenticateToken } = require("../Middleware/AuthTokenMiddleware.js");
-const { isDonoOrAdmin } = require("../Middleware/TypeUserMiddleware.js");
+const { isDonoOrAdmin, isDonoOrCliente } = require("../Middleware/TypeUserMiddleware.js");
 
 //Rotas
 const order = require("./restaurantRoutes/orders.js");
@@ -47,11 +47,6 @@ router.use('/comments', comments);
 router.get('/showMenu/:menu', menu.showMenu);
 
 /**
- * * Rota para adicionar um prato ao carrinho de compras
- * */
-router.post('/addToCart/:dishId/:portionId/:menu', user.addToCart);
-
-/**
  * * Rota que permite filtrar por menus, de um restaurante, e também ordenar os menus
  * */
 router.get('/search', restaurant.searchMenu);
@@ -69,6 +64,10 @@ router.get('/showMenu/:menu/search', menu.searchMenu);
 router.use(authenticateToken);
 
 /**
+ * * Rota para adicionar um prato ao carrinho de compras
+ * */
+router.post('/addToCart/:dishId/:portionId/:menu', isDonoOrCliente, user.addToCart);
+/**
  * * Importação das rotas das encomendas
  * */
 router.use('/orders', order);
@@ -79,6 +78,7 @@ router.use('/orders', order);
  * * isDonoOrAdmin --> verfica se o utilizador é um dono ou Admin.
  * */
 router.use(isDonoOrAdmin);
+
 
 /**
  * * Rota que carrega a página para edição dos dados do restaurante
@@ -122,7 +122,9 @@ router.post('/deleteMenu/:menuId', menu.deleteMenu);
 
 // Nova rota para validação nutricional do prato do menu
 router.post('/confirmNutrition', menu.validateNutrition);
+
 router.post('/saveMenuFinal', menu.saveMenuFinal);
+
 router.post('/validateIngredient', menu.validateIngredient);
 
 module.exports = router;
