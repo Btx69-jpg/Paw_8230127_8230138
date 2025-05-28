@@ -5,7 +5,7 @@ const router = express.Router({ mergeParams: true });
 const historicOrderController = require("../../../Controllers/ControllersPerfil/ControllersUser/HistoricOrderController")
 const commentController = require("../../../Controllers/ControllersPerfil/ControllersUser/Comments.js");
 
-const { createPhoto } = require('../../../Middleware/PhotosComentMiddleware.js')
+const { uploadCreatePhoto } = require('../../../Middleware/PhotosComentMiddleware.js')
 /**
  * * Rota que carrega todo o historico de encomendas de um utilizador
  * */
@@ -14,7 +14,12 @@ router.get("/", historicOrderController.gethistoricOrder);
 /**
  * * Rota que carrega uma encomenda especifica no historico de encomendas
  * */
-router.post("/createComment", createPhoto.single('commentPhoto'), commentController.createComment);
+router.post("/createComment", uploadCreatePhoto.single('commentPhoto'), commentController.createComment);
+
+/**
+ * * Rota para atualizar um comentário
+ */
+router.put("/updateComment", uploadCreatePhoto.single('commentPhoto'), commentController.updateComment);
 
 /**
  * * Rota que carrega todo o historico de encomendas de um utilizador

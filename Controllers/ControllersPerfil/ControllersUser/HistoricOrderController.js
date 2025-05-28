@@ -40,108 +40,94 @@ historicOrderController.gethistoricOrder = function(req, res) {
 
 /** 
  * * Metodo que filta no hisotrico de encomendas
- * TODO: Quando as encomendas estiverem a dar a 100%, testar com um utilizador com várias.
  * */
 historicOrderController.searchOrderHistoric = async function(req, res) {
     try {
-        let query = {};
         const userId = req.params.userId;
-        
-        if(!userId) {
-            return res.status(500).json({error: "O id do utilizador é de preenchimento obrigatório"});
+        if (!userId) {
+            return res.status(400).json({ error: "O id do utilizador é de preenchimento obrigatório" });
         }
-        query._id = userId;
 
-        const {nameRest, price, dateFrom, dateTo, order} = req.query;
+        const { nameRest, price, dateFrom, dateTo, order } = req.query;
+
+        const user = await User.findById(userId).lean().exec();
+        if (!user || !user.perfil || !user.perfil.historicOrders) {
+            return res.status(404).json({ error: "Utilizador não encontrado ou sem histórico de encomendas" });
+        }
+
+        let filteredOrders = user.perfil.historicOrders;
 
         if (nameRest) {
-            query['perfil.historicOrders.restaurant.name'] = { "$regex": nameRest, "$options": "i" };
-        } 
-    
-        if (price) {
-            if(price <= 0) {
-                res.status(422).json({error: "O preço deve ser superior a 0.00 €"})
-            }
-            query['perfil.historicOrders.price'] = {$gte: Number(price)};
+            filteredOrders = filteredOrders.filter(order =>
+                order.restaurant?.name?.toLowerCase().includes(nameRest.toLowerCase())
+            );
         }
 
+        if (price) {
+            const priceNumber = Number(price);
+            
+            if (priceNumber <= 0) {
+                return res.status(422).json({ error: "O preço deve ser superior a 0.00 €" });
+            }
+
+            filteredOrders = filteredOrders.filter(order => order.price >= priceNumber);
+        }
 
         if (dateFrom || dateTo) {
-            if(dateFrom && dateTo && (dateTo > dateFrom)) {
-                return res.status(422).json({error: "A data de fim deve ser superior há de inicio!"})
+            const fromDate = dateFrom ? new Date(dateFrom) : null;
+            const toDate = dateTo ? new Date(dateTo) : null;
+
+            if (fromDate && fromDate > new Date()) {
+                return res.status(422).json({ error: "A data inicial deve ser inferior ou igual à data atual" });
             }
-            
-            query['perfil.historicOrders.date'] = {};
-            if (dateFrom) {
-                const date = new Date(dateFrom);
-                if(date > Date.Now) {
-                    return res.status(422).json({error: "A data final deve ser inferior ou igual há data atual"})
-                }
-                query['perfil.historicOrders.date'].$gte = new Date(date);
+
+            if (toDate && toDate < new Date("2000-01-01")) {
+                return res.status(422).json({ error: "A data final não pode ser anterior a 2000-01-01" });
             }
-            
-            if (dateTo) {
-                const date = new Date(dateFrom);
-                const minDate = new Date('2000-01-01');
-                if(date < minDate) {
-                    return res.status(422).json({error: "A data inicial não pode ser anterior a 2000-01-01"})
-                }
-                query['perfil.historicOrders.date'].$lte = new Date(dateTo);
+
+            if (fromDate && toDate && toDate < fromDate) {
+                return res.status(422).json({ error: "A data de fim deve ser posterior à data de início" });
             }
+
+            filteredOrders = filteredOrders.filter(order => {
+                const orderDate = new Date(order.date);
+                return (!fromDate || orderDate >= fromDate) && (!toDate || orderDate <= toDate);
+            });
         }
 
-        let sortObj = null;
+        // Ordenação
         switch (order) {
-            case 'nameAsc': {
-                sortObj = { 'perfil.historicOrders.restaurant.name': 1 };
+            case 'nameAsc':
+                filteredOrders.sort((a, b) => a.restaurant.name.localeCompare(b.restaurant.name));
                 break;
-            } case 'nameDesc': {
-                sortObj = { 'perfil.historicOrders.restaurant.name': -1 };
+            case 'nameDesc':
+                filteredOrders.sort((a, b) => b.restaurant.name.localeCompare(a.restaurant.name));
                 break;
-            } case 'priceAsc': {
-                sortObj = { 'perfil.historicOrders.price': 1 };
+            case 'priceAsc':
+                filteredOrders.sort((a, b) => a.price - b.price);
                 break;
-            } case 'priceDesc': {
-                sortObj = { 'perfil.historicOrders.price': -1 };
+            case 'priceDesc':
+                filteredOrders.sort((a, b) => b.price - a.price);
                 break;
-            } case 'dateAsc': {
-                sortObj = { 'perfil.historicOrders.date': 1 };
+            case 'dateAsc':
+                filteredOrders.sort((a, b) => new Date(a.date) - new Date(b.date));
                 break;
-            } case 'dateDesc': {
-                sortObj = { 'perfil.historicOrders.date': -1 };
+            case 'dateDesc':
+                filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
                 break;
-            } default: {
-                break;
-            }
-        }
-        let user = null;
-
-        if(sortObj) {
-            user = await User.findOne(query).sort(sortObj).lean().exec();
-        } else {
-            user = await User.findOne(query).lean().exec();
-        }
-            
-        if(!user) {
-            return res.status(404).json({ error: "Utilizador não encontrado ou encomenda não existe" });
         }
 
-        console.log("Utilizador encontrado: ", user);
-        const historicOrders = user.perfil.historicOrders;
-        if (!historicOrders) {
-            return res.status(404).json({ error: "Utilizador sem historico de encomendas" });
-        }
-
-        historicOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             delete order.client;
         });
-    
-        res.status(200).json(historicOrders);   
-    } catch(error) {
-        console.error("Erro: ", error)
-        res.status(500).json({error: error});
+
+        return res.status(200).json(filteredOrders);
+    } catch (error) {
+        console.error("Erro: ", error);
+        return res.status(500).json({ error: "Erro interno no servidor" });
     }
-}
+};
+
 
 /* Página que cria uma nova morada (limite de moradas é 5) */
 historicOrderController.showOrder = async function(req, res) {
