@@ -57,74 +57,56 @@ router.get('/search', restaurant.searchMenu);
 router.get('/showMenu/:menu/search', menu.searchMenu);
 
 /**
- * * Rota que aplicar as rotas abaixo o seguinte middleware
- * 
- * * authenticateToken --> valida se o token do utilizador é valido.
+ * * Importação das rotas das encomendas
  * */
-router.use(authenticateToken);
+router.use('/orders', authenticateToken, order);
 
 /**
  * * Rota para adicionar um prato ao carrinho de compras
  * */
-router.post('/addToCart/:dishId/:portionId/:menu', isDonoOrCliente, user.addToCart);
-/**
- * * Importação das rotas das encomendas
- * */
-router.use('/orders', order);
-
-/**
- * * Rota que aplicar as rotas abaixo o seguinte middleware
- * 
- * * isDonoOrAdmin --> verfica se o utilizador é um dono ou Admin.
- * */
-router.use(isDonoOrAdmin);
-
+router.post('/addToCart/:dishId/:portionId/:menu', authenticateToken, isDonoOrCliente, user.addToCart);
 
 /**
  * * Rota que carrega a página para edição dos dados do restaurante
  */
-router.get('/editDados/:restaurantId', editRestaurant);
+router.get('/editDados/:restaurantId', authenticateToken, isDonoOrAdmin, editRestaurant);
 
 /**
  * * Rota que atualiza os dados de um restaurante
  */
-router.post('/updateDados/:restaurantId', updatRestaurant);
+router.post('/updateDados/:restaurantId', authenticateToken, isDonoOrAdmin, updatRestaurant);
 
 /**
  * * Rota que carrega a pagina para criar um menu
  * */
-router.get('/createMenu', menu.createMenu);
-
-
-/* Rota para dar save de menu */
-//router.post('/saveMenu', menu.saveMenu);
+router.get('/createMenu', authenticateToken, isDonoOrAdmin, menu.createMenu);
 
 /**
  * * Rota que carrega a pagina para editar um menu
  * 
  * * menuId --> id do menu a ser editado
  * */
-router.get('/editMenu/:menuId', menu.editMenu);
+router.get('/editMenu/:menuId', authenticateToken, isDonoOrAdmin, menu.editMenu);
 
 /**
  * * Rota guardar as alterações realizadas num menu
  * 
  * * menuId --> id do menu a ser atualizado
  * */
-router.post('/updateMenu/:menuId', menu.saveEditMenu);
+router.post('/updateMenu/:menuId', authenticateToken, isDonoOrAdmin, menu.saveEditMenu);
 
 /**
  * * Rota que elimina um menu
  * 
  * * menuId --> id do menu a ser eliminado
  * */
-router.post('/deleteMenu/:menuId', menu.deleteMenu);
+router.post('/deleteMenu/:menuId', authenticateToken, isDonoOrAdmin, menu.deleteMenu);
 
 // Nova rota para validação nutricional do prato do menu
-router.post('/confirmNutrition', menu.validateNutrition);
+router.post('/confirmNutrition', authenticateToken, isDonoOrAdmin, menu.validateNutrition);
 
-router.post('/saveMenuFinal', menu.saveMenuFinal);
+router.post('/saveMenuFinal', authenticateToken, isDonoOrAdmin, menu.saveMenuFinal);
 
-router.post('/validateIngredient', menu.validateIngredient);
+router.post('/validateIngredient', authenticateToken, isDonoOrAdmin, menu.validateIngredient);
 
 module.exports = router;
