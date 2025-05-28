@@ -50,59 +50,58 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
     if (!userId || !userId.userId) {
       return res.status(400).json({ error: 'ID do utilizador é obrigatório' });
     }
-    let user = User.findById(userId).exec()
-        .then(user => {
-            if (!user) {
-                return res.status(404).json({ error: "Utilizador não encontrado" });
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching user:", error);
-            res.status(500).json({ error: error });
-        });
+    let user;
+    try {
+      user = await User.findById(userId.userId).exec();
+      if (!user) {
+        return res.status(404).json({ error: "Utilizador não encontrado" });
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return res.status(500).json({ error: error });
+    }
+
+      console.log("\n\n\n\n\nUtilizador encontrado:", user, "\n\n\n\n\n");
 
         const products = user.cart.itens; // Supondo que o carrinho é um array de produtos no modelo User
         console.log("\n\n\n\n\nProdutos do carrinho:", products, "\n\n\n\n\n");
 
 
 
-    const restaurant = Restaurant.findById(products[0].from).exec()
-        .then(restaurant => {
-            if (!restaurant) {
-                return res.status(404).json({ error: "Restaurante não encontrado" });
-            }
-            // Aqui você pode usar os dados do restaurante se necessário
-        })
-        .catch(error => {
-            console.error("Error fetching restaurant:", error);
-            res.status(500).json({ error: error });
-        });
+    // Buscar restaurante corretamente usando await
+    let restaurant;
+    try {
+      restaurant = await Restaurant.findById(products[0].from).exec();
+      if (!restaurant) {
+        return res.status(404).json({ error: "Restaurante não encontrado" });
+      }
+    } catch (error) {
+      console.error("Error fetching restaurant:", error);
+      return res.status(500).json({ error: error });
+    }
 
     
 
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: 'Lista de produtos é obrigatória' });
     }
-
-    const lineItems = products.map(product => ({
-      price_data: {
-        currency: 'eur',
-        product_data: {
-          name: product.name,
-          images: 'http://localhost:3000' + product.image, // URL da imagem do produto
-          shippable: true, // Se o produto é enviável
-          metadata: {
-            itemId: product._id.toString(), // ID do item para referência
-            portion: product.portion || '', // Porção do produto, se aplicável
-          },
-          unit_label: product.portion || '', // Rótulo da unidade, se aplicável
-          url: `http://localhost:3000/restaurants/${restaurant.name}/showMenu/${product.menuId}`, // URL do produto
-        },
-        unit_amount: Math.round(product.price * 100), // € -> centavos
+  console.log("\n\n\n\n\nProduto:", products, "\n\n\n\n\n")
+const lineItems = products.map(product => ({
+  price_data: {
+    currency: 'eur',
+    product_data: {
+      name: product.item,
+      images: [product.image],
+      metadata: {
+        itemId: product._id.toString(),
+        portion: product.portion || '',
       },
-      quantity: product.quantity,
-    }));
+    },
+    unit_amount: Math.round(product.price * 100),
 
+  },
+  quantity: product.quantity,
+}));
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 
       'sepa_debit', 
