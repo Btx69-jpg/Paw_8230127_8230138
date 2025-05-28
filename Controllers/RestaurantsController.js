@@ -88,6 +88,10 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
         problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
     }
 
+    if (openingSeconds > closingSeconds ) {
+        return ["A hora de fecho tem de ser supeior há de abertura"];
+    }
+
     return problem;
 }
 
@@ -146,6 +150,10 @@ async function validationEditRestaurant(name, nif, phoneNumber, email, password,
 
     if (timeDelivery < 0) {
         problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
+    }
+
+    if (openingSeconds > closingSeconds ) {
+        return ["A hora de fecho tem de ser supeior há de abertura"];
     }
 
     return problem;
@@ -391,12 +399,19 @@ restaurantsController.saveRestaurant = async function(req, res) {
 //Carrega a pagina para editar um restaurante (finalizado) 
 restaurantsController.editRestaurant = (req, res) => {
     const restaurantId = req.params.restaurantId;
-    Restaurant.findOne({ _id: restaurantId }).exec()
+    Restaurant.findById(restaurantId).exec()
         .then(restaurant => {
+            if (!restaurant) {
+                console.log("Restaurante não encontrado")
+                return res.status(404).render(res.locals.previousPage);
+            }
+            
             let action = "";
             let voltar = "";
         
-            switch (res.locals.currentPage) {
+            //Tirar os %20 por espaços na url
+            const current = decodeURIComponent(res.locals.currentPage);
+            switch (current) {
                 case `/restaurants/editRestaurant/${restaurantId}`: {
                     action = `/restaurants/updatRestaurant/${restaurantId}`;
                     voltar = "/restaurants/"
@@ -415,7 +430,7 @@ restaurantsController.editRestaurant = (req, res) => {
                     break;
                 }
             }
-
+            
             res.render('restaurants/crudRestaurantes/editRestaurant', { restaurant: restaurant, priority: req.cookies.priority, action: action, voltar: voltar });
         })
         .catch(error => {
@@ -446,11 +461,10 @@ restaurantsController.updatRestaurant = async (req, res) => {
         console.log("");
         console.log("");
         console.log("");
-
         console.log("");
         console.log("");
         console.log("");
-        console.log("");console.log("");
+        console.log("");
         console.log("--------------------------------------------");
         console.log("Update Restaurante");
         //Upload da nova imagem se necessário
@@ -565,13 +579,13 @@ restaurantsController.updatRestaurant = async (req, res) => {
 
         switch(res.locals.currentPage) {
             case `/restaurants/updatRestaurant/${req.params.restaurantId}`: {
-                res.redirect(`/restaurants/updatRestaurant/${req.params.restaurantId}`);
+                res.stauts(500).redirect(`/restaurants/updatRestaurant/${req.params.restaurantId}`);
                 break;
             } case `/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`: {
-                res.redirect(`/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`);
+                res.stauts(500).redirect(`/perfil/admin/listRestaurants/updatRestaurant/${req.params.restaurantId}`);
                 break;
             } default: {
-                res.redirect(res.locals.previousPage);
+                res.stauts(500).redirect(res.locals.previousPage);
                 console.log("URL Inválida");
                 break;
             }
