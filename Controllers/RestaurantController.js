@@ -51,8 +51,16 @@ restaurantController.homePage = async function (req, res) {
       res.locals.autGest = autGest;
 
     }
+
+    //Codigo para o google maps
+    const fullAddress = `${restaurant.address.street}, ${restaurant.address.postal_code} ${restaurant.address.city}`;
+    const encodedAddress = encodeURIComponent(fullAddress);
+    const googleMapsUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+
+
     res.render("restaurants/restaurant/homepage", {
       restaurant: restaurant,
+      googleMapsUrl: googleMapsUrl,
       menus: menus,
       filters: {},
       categories: categories,
