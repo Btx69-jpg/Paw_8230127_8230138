@@ -61,11 +61,7 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
       return res.status(500).json({ error: error });
     }
 
-      console.log("\n\n\n\n\nUtilizador encontrado:", user, "\n\n\n\n\n");
-
-        const products = user.cart.itens; // Supondo que o carrinho é um array de produtos no modelo User
-        console.log("\n\n\n\n\nProdutos do carrinho:", products, "\n\n\n\n\n");
-
+        const products = user.cart.itens; 
 
 
     // Buscar restaurante corretamente usando await
@@ -85,7 +81,6 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
     if (!products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: 'Lista de produtos é obrigatória' });
     }
-  console.log("\n\n\n\n\nProduto:", products, "\n\n\n\n\n")
 const lineItems = products.map(product => ({
   price_data: {
     currency: 'eur',
@@ -112,7 +107,7 @@ const lineItems = products.map(product => ({
       'paypal'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:4200/perfil/user/${req.body.userId}/orders?payment=success`,
+      success_url: `http://localhost:4200/checkOut/${req.body.userId}/delivery?payment=success`,
       cancel_url: `http://localhost:4200/checkOut/${req.body.userId}`,
     });
 

@@ -387,6 +387,45 @@ userController.saveCart = async function(req, res) {
     }
 }
 
+//Função para adicionar o pedido realizado nas encomendas do utilizador e do rest
+userController.saveNewOrder = async function(req, res) {
+    try {
+        console.log("\n\n\n\n\n\nENTROU NO SAVE ORDER\n\n\n\n\n");
+        const userId = req.params.UserId;
+        const restaurantId = req.params.restId;
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render("errors/error", { numError: 404, error: error });
+        }
+        if (!user.cart || user.cart.itens.length === 0) {
+            return res.render("errors/error", { numError: 404, error: error });
+        }
+
+        const restaurant = await Restaurant.findById(restaurantId).exec();
+        if (!restaurant) {
+            return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
+        }
+
+
+
+        let newOrder = req.body;
+        console.log("\n\n\n\n\n\nNova encomenda: ", newOrder, "\n\n\n\n\n");
+        
+        user.perfil.orders.push(newOrder);
+        user.cart.itens = [];
+        user.cart.price = 0;
+        await user.save();
+        restaurant.perfil.orders.push(newOrder);
+        await restaurant.save();
+        console.log("\n\n\n\n\n\nEncomenda salva com sucesso!\n\n\n\n\n\n");
+        res.status(200).json({ message: "Encomenda salva com sucesso!" });
+    } catch (error) {
+        console.log("Erro ao salvar a nova encomenda: ", error);
+        return res.render("errors/error", { numError: 500, error: error });
+    }
+}
+
+
 userController.getRestNameAndAddress = async function(req, res) {
     try {
         const restId = req.params.restId;

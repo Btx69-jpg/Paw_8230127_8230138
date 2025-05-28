@@ -21,4 +21,6 @@ router.post('/save/:UserId', userController.saveCart);
 
 router.get('/getRestName&Address/:restId', userController.getRestNameAndAddress);
 
+router.post('/saveNewOrder/:UserId/:restId', userController.saveNewOrder);
+
 module.exports = router;
