@@ -129,15 +129,16 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(404).json({ error: "O utilizador não pode cancelar porque ele está banido de realizar ou eliminar encomendas"});
         }
 
-        if (this.cancelOrder > 0) {
-            const dataAtual = Date.now();
+        const dataAtual = Date.now();
+        if (user.cancelOrder > 0) {
             const tempoCancel = dataAtual - new Date(orderCancel.date).getTime();
             const trintaDias = 30 * 24 * 60 * 60 * 1000;
 
-            if (tempoCancel > trintaDias && this.cancelOrder < 5) {
-                this.cancelOrder = 0;
-                this.firstCancel = null;
+            if (tempoCancel > trintaDias && user.cancelOrder < 5) {
+                user.cancelOrder = 0;
+                user.firstCancel = null;
             }
+            await user.save();
         }
        
         const orderDel = req.params.orderId;
