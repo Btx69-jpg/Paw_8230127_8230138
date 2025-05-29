@@ -95,7 +95,7 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
     return problem;
 }
 
-async function validationEditRestaurant(name, nif, phoneNumber, email, password, confirmPassword, 
+async function validationEditRestaurant(name, nif, phoneNumber, email, 
     street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
     timeDelivery, openingSeconds, closingSeconds, restaurant) {
     
@@ -487,11 +487,12 @@ restaurantsController.updatRestaurant = async (req, res) => {
                 city, description, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
                 timeDelivery, openingTime, closingTime} = req.body;
 
+        console.log("Req.body: ", req.body);
         const openingSeconds = covertTimeToSeconds(openingTime);
         const closingSeconds = covertTimeToSeconds(closingTime); 
         //Validações
-        let validation = await validationEditRestaurant(name, sigla, nif, phoneNumber, email, street, postal_code,
-            city, description, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+        let validation = await validationEditRestaurant(name, nif, phoneNumber, email, street, 
+            postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
             timeDelivery, openingSeconds, closingSeconds, restaurant);
 
         if (validation.length > 0) {

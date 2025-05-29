@@ -380,12 +380,7 @@ orderController.deleteOrder = async function(req, res) {
 
 orderController.historicOrder = async function(req, res) {
     try {
-        let account;
-        const priority = req.cookies.priority;
-
-        if(priority === "Restaurant") {
-            account = await Restaurant.findOne( {name: req.params.restaurant}).exec();
-        }
+        const account = await Restaurant.findOne( {name: req.params.restaurant}).exec();
 
         if(!account) {
             return res.status(500).render("errors/error", {numError: 500, error: "Conta não encontrada"});

@@ -7,8 +7,8 @@ var router = express.Router();
 
 //Middlewares
 const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
-const {isAdmin, isDonoOrCliente} = require("../Middleware/TypeUserMiddleware.js");
-
+const {isAdmin } = require("../Middleware/TypeUserMiddleware.js");
+const { validateAdmin } = require("../Middleware/ValidateAdminMiddleware.js");
 //Routers 
 const adminRouter = require("./perfilRoutes/admin.js") 
 const userRouter = require("./perfilRoutes/user.js")

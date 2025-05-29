@@ -28,7 +28,6 @@ app.use(cors({
  * Este trecho de codigo permite ao angular ter acesso às
  * imagens guardadas na pasta publica
 */
-
 app.use('/images', express.static('public/images'));
 
 //Conexão com o Atlas
@@ -49,8 +48,8 @@ var restaurants = require('./routes/restaurants');
 var registRestaurant = require('./routes/registRestaurant');
 var checkOut = require('./routes/checkOut');
 var perfil = require('./routes/perfil');
-// Configuração da sessão (ajuste conforme necessário)
 
+// Configuração da sessão (ajuste conforme necessário)
 app.use(cookieParser());
 
 app.use(session({
@@ -130,22 +129,6 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/logout', logoutRouter);
 app.use('/api/v1/checkout', checkoutRouter);
 app.use('/api/v1/check', cookiesRotuer);
-/*
-!Antiga configuração do swagger
-var options = {
-  swaggerOptions: {
-      url: "/api-docs/swagger.json",
-  },
-}
-app.get("/api-docs/swagger.json", (req, res) => res.json(swaggerDocument));
-app.use('/api-docs', swaggerUi.serveFiles(null, options), swaggerUi.setup(null, options));
-*/
-
-/**
- * !Swagger atual com as rotas todas
-const swaggerRouter = require('./Middleware/SwaggerMiddleware');
-app.use('/api-docs', swaggerRouter); 
-*/
 
 //Importante ter em consideração a autentificação e a autorização
 //Caminho até ao browser

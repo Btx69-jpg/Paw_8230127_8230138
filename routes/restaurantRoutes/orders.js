@@ -10,14 +10,14 @@ const order = require("../../Controllers/ControllersRestaurant/OrderController.j
 const orderManagment = require("./orderManagment.js");
 
 //Middlewares
-const {isDonoOrRestaurant} = require("../../Middleware/TypeUserMiddleware.js");
-
+const { isDonoOrRestaurant } = require("../../Middleware/TypeUserMiddleware.js");
+const { validateRestauranteDonoOrRest } = require("../../Middleware/ValidateRestauranteMiddleware");
 /**
  * * Rota que aplicar a todas as rotas deste js os suguintes middlewares
  * 
  * * isDonoOrRestaurant --> verifica se o utilizador é um dono ou restaurante
  * */
-router.use(isDonoOrRestaurant);
+router.use(isDonoOrRestaurant, validateRestauranteDonoOrRest);
 
 /**
  * * Rota que carrega a pagina para gestão das encomendas do restaurante

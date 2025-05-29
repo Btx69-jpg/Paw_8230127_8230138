@@ -8,7 +8,7 @@ const passwordController = require("../Controllers/PasswordController.js");
 //Middlewares
 const {authenticateToken} = require("../Middleware/AuthTokenMiddleware.js");
 const {isDonoClienteOrAdmin, isDonoOrAdmin, isRestaurant, isAdmin} = require("../Middleware/TypeUserMiddleware.js");
-
+const { validateRestaurante, validateRestauranteDonoAndAdmin } = require("../Middleware/ValidateRestauranteMiddleware");
 //Router
 const routeRestaurant = require("./restaurant.js");
 
@@ -47,7 +47,7 @@ router.post('/saveRestaurant', authenticateToken, isDonoClienteOrAdmin, restaura
  * * isDonoOrAdmin --> verifica se o user é um dono ou admin
  * * authenticateToken --> valida se o token do utilizador é valido
  * */
-router.get('/editRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, restaurants.editRestaurant);
+router.get('/editRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, validateRestauranteDonoAndAdmin, restaurants.editRestaurant);
 
 /**
  * * Rota que permite guardar os dados, alterados de um restaurante, pelo dono ou admin
@@ -55,7 +55,7 @@ router.get('/editRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, re
  * * isDonoOrAdmin --> verifica se o user é um dono ou admin
  * * authenticateToken --> valida se o token do utilizador é valido
  * */
-router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, restaurants.updatRestaurant);
+router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, validateRestauranteDonoAndAdmin, restaurants.updatRestaurant);
 
 /**
  * * Rota que permite ao restaurante alterar a password da sua conta
@@ -63,7 +63,7 @@ router.post('/updatRestaurant/:restaurantId', authenticateToken, isDonoOrAdmin, 
  * * isRestaurant --> verifica se o user é um restaurante
  * * authenticateToken --> valida se o token do utilizador é valido
  * */
-router.get('/editRestaurant/editPassword/:accountId', authenticateToken, isRestaurant, passwordController.editPassword);
+router.get('/editRestaurant/editPassword/:accountId', authenticateToken, isRestaurant, validateRestaurante, passwordController.editPassword);
 
 /**
  * * Rota que permite ao restaurante guaradar a sua nova password
@@ -71,7 +71,7 @@ router.get('/editRestaurant/editPassword/:accountId', authenticateToken, isResta
  * * isRestaurant --> verifica se o user é um restaurante
  * * authenticateToken --> valida se o token do utilizador é valido
  * */
-router.post('/editRestaurant/changePassword/:accountId', authenticateToken, isRestaurant, passwordController.updatePassword);
+router.post('/editRestaurant/changePassword/:accountId', authenticateToken, isRestaurant, validateRestaurante, passwordController.updatePassword);
 
 /**
  * * Rota que dá delete de um restaurante no site, por parte do dono ou de um admin
@@ -79,7 +79,7 @@ router.post('/editRestaurant/changePassword/:accountId', authenticateToken, isRe
  * * isDonoOrAdmin --> verifica se o user é um dono ou admin
  * * authenticateToken --> valida se o token do utilizador é valido
  * */
-router.post('/deleteRestaurant/:restaurant', authenticateToken, isDonoOrAdmin, restaurants.removeRestaurant);
+router.post('/deleteRestaurant/:restaurant', authenticateToken, isDonoOrAdmin, validateRestauranteDonoAndAdmin, restaurants.removeRestaurant);
 
 /**
  * * Rota que carrega o router com as rotas padrão para a pagina de cada restaurante
