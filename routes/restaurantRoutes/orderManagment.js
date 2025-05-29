@@ -23,6 +23,6 @@ router.post('/updateStatus/:orderId', order.updateOrderStatus);
 /**
  * * Rota que filtra as encomendas
  * */
-//router.get('/searchOrder', order.searchOrder);
+router.get('/search', order.searchOrder);
 
 module.exports = router;

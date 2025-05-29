@@ -429,4 +429,55 @@ orderController.showOrder = function(req, res) {
         })
 }
 
+orderController.searchOrder = function(req, res) {
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+    console.log("");
+
+    console.log("");
+    console.log("---------------------");
+    Restaurant.findOne( {name: req.params.restaurant}).exec()
+        .then(rest => {
+            if(!rest) {
+                console.log("Não foi encontrado nenhum restaurante");
+                return res.stauts(404).redirect(res.locals.previousPage);
+            }
+
+            const status = req.query.status;
+            console.log("Estado", status);
+            console.log("Query: ", req.query);
+            const orders = rest?.perfil?.orders || [];
+
+            const ordersFiltered = orders.filter(order => {
+                if (status && (order.status !== status && status !== "all")) {
+                    return false;
+                }
+
+                delete order.restaurant;
+                return true;
+            });
+
+            console.log("Encomendas encontradas: ", ordersFiltered);
+            
+
+           res.render("restaurants/restaurant/Order/orderManagement", { restaurant: rest, orders: ordersFiltered, filters: { status: status }});
+        })
+        .catch(error => {
+            console.log("Erro: ", error);
+            res.status(500).redirect(res.locals.previousPage);
+        })
+}
 module.exports = orderController;
