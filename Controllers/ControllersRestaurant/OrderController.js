@@ -348,7 +348,7 @@ orderController.deleteOrder = async function(req, res) {
         
         if(!user.perfil || !user.perfil.orders) {
             console.log("O utilizador não tem encomendas");
-            return res.status(302).redirect(res.locals.previousPage);
+            return res.status(404).redirect(res.locals.previousPage);
         }
 
         const posOrderDeleteUser = findOrder(user.perfil.orders, orderDel);
