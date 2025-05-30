@@ -1,18 +1,18 @@
 const axios = require('axios');
 
 async function validarMorada(street, postal_code, city) {
-  const fullAddress = `${street}, ${postal_code} ${city}, Portugal`;
-
   try {
     const response = await axios.get('https://nominatim.openstreetmap.org/search', {
       params: {
-        q: fullAddress,
+        street: street,
+        city: city,
+        postalcode: postal_code,
+        country: 'Portugal',
         format: 'json',
-        addressdetails: 0,
         limit: 1
       },
       headers: {
-        'User-Agent': 'MinhaAppValidador/1.0 (teu-email@exemplo.com)'
+        'User-Agent': 'Restaurantes/1.0 (willkie79@gmail.com)'
       }
     });
 
