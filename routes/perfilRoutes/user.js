@@ -15,6 +15,10 @@ const {isDonoOrCliente} = require("../../Middleware/TypeUserMiddleware.js");
 const manageAddress = require("./userRoutes/address.js");
 const historicOrder = require("./userRoutes/historicOrder.js");
 
+// Rota pública para reset de senha por token (NÃO requer autenticação)
+router.post('/:userId/reset-password', passwordController.resetPasswordByToken);
+
+// Rotas protegidas
 router.use(authenticateToken, isDonoOrCliente);
 
 
@@ -40,6 +44,7 @@ router.use("/manageAddress", manageAddress);
 
 
 router.post("/deleteAccount", perfilController.deleteAccount);
+
 
 module.exports = router;
  * 

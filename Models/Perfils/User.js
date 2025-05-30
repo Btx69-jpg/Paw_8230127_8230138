@@ -49,6 +49,14 @@ var UserSchema = new mongoose.Schema({
     dateBannedOrder: {
         type: Date,
     },
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
+    },
     updated_at: { type: Date, default: Date.now },
 });
 

@@ -142,4 +142,28 @@ passwordController.updatePassword = async (req, res) => {
   }
 };
 
+// Nova rota para reset de senha via token
+passwordController.resetPasswordByToken = async function (req, res) {
+  const { userId } = req.params;
+  const { token, newPassword } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) {
+      return res.status(400).json({ error: 'Token inválido ou expirado.' });
+    }
+    if (user.resetPasswordToken !== token || user.resetPasswordExpires < Date.now()) {
+      return res.status(400).json({ error: 'Token inválido ou expirado.' });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+    user.perfil.password = hashedNewPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+    return res.json({ message: 'Senha alterada com sucesso.' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Erro ao alterar senha.' });
+  }
+};
+
 module.exports = passwordController;

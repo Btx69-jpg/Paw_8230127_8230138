@@ -11,7 +11,6 @@ const {isAdmin } = require("../Middleware/TypeUserMiddleware.js");
 const { validateAdmin } = require("../Middleware/ValidateAdminMiddleware.js");
 //Routers 
 const adminRouter = require("./perfilRoutes/admin.js") 
-const userRouter = require("./perfilRoutes/user.js")
 /**
  * * Rota que aplicar a todas as rotas deste js os suguintes middlewares
  * 

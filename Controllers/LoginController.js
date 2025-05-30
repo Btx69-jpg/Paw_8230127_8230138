@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const sgMail = require('@sendgrid/mail');
+const { Console } = require("console");
+const User = require("../Models/Perfils/User");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const SECRET_KEY = process.env.JWT_SECRET;
 const loginController = {};
 
@@ -141,5 +145,40 @@ loginController.logoutAngular = function(req, res) {
       req.flash("success_msg", "Logout realizado com sucesso!");
       return res.status(200).json({ message: "Logout realizado com sucesso!" });
   });
+}
+
+loginController.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  console.log('Forgot password request for email:', email);	
+  console.log('SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY);
+  try {
+    const user = await User.findOne({ 'perfil.email': email }).exec();
+
+    console.log('\n\n\n\n\n\nUser found:', user,"\n\n\n\n\n");
+    if (!user) {
+      return res.status(404).json({ error: 'Email não encontrado.' });
+    }
+    // Gerar token de reset (simples, pode ser JWT ou UUID)
+    const crypto = require('crypto');
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+    await user.save();
+    // Link para o EJS de alteração de senha no backend
+    const resetLink = `http://localhost:3000/login/changePassword?userId=${user._id}&token=${resetToken}`;
+    // Enviar email via SendGrid
+    const msg = {
+      to: user.perfil.email,
+      from: 'clickandeatpaw@gmail.com',
+      subject: 'Recuperação de senha - Click&Eat',
+      html: `<p>Olá,</p><p>Você solicitou a recuperação de senha. Clique no link abaixo para redefinir sua senha:</p><p><a href="${resetLink}">${resetLink}</a></p><p>Se não foi você, ignore este email.</p>`
+    };
+    await sgMail.send(msg);
+    // Alteração: retornar userId para o frontend
+    return res.json({ userId: user._id });
+  } catch (err) {
+    console.error('Erro no forgot-password:', err);
+    return res.status(500).json({ error: 'Erro ao processar recuperação de senha.' });
+  }
 }
 module.exports = loginController;
