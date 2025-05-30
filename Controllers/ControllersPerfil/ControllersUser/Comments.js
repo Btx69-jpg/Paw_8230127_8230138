@@ -26,6 +26,7 @@ commentController.createComment = async function(req, res) {
 
         const user = await User.findById(userId);
         if (!user) {
+            console.log("User não encontrado")
             return res.status(404).json({ error: "Utilizador não encontrado" });
         }
         
@@ -34,18 +35,22 @@ commentController.createComment = async function(req, res) {
         );
 
         if (orderIndex === -1) {
+            console.log("Encomenda não encontrada no utilizador")
             return res.status(404).json({ error: "Encomenda não encontrada no utilizador" });
         }
 
         const updatedOrder = user.perfil.historicOrders[orderIndex];
 
+        console.log(updatedOrder.restaurant.name, updatedOrder.restaurant.email, updatedOrder.restaurant.phoneNumber);
+
         const restaurant = await Restaurant.findOne({
             name: updatedOrder.restaurant.name,
-            'perfil.email': updatedOrder.restaurant.email,
+            'perfil.email': new RegExp(`^${updatedOrder.restaurant.email}$`, 'i'),
             'perfil.phoneNumber': updatedOrder.restaurant.phoneNumber,
         });
 
         if (!restaurant) {
+            console.log("Restaurante não encontrado")
             return res.status(404).json({ error: "Restaurante não encontrado" });
         }
 
@@ -54,6 +59,7 @@ commentController.createComment = async function(req, res) {
         );
 
         if (orderIndexRest === -1) {
+            console.log("Encomenda não encontrada no restaurante")
             return res.status(404).json({ error: "Encomenda não encontrada no restaurante" });
         }
 

@@ -23,7 +23,7 @@ commentController.homePage = function(req, res) {
         const historicOrder = rest.perfil.historicOrders;
         let comments = [];
 
-        for (let i = 0; i < historicOrder.length; i++) {
+        for (let i = historicOrder.length - 1; i >= 0; i--) {
             const order = historicOrder[i];
             if (order.comment) {
                 comments.push(order);
@@ -35,11 +35,12 @@ commentController.homePage = function(req, res) {
             return res.status(404).redirect(res.locals.previousPage);
         }
 
-        return res.status(200).render("restaurants/restaurant/HomePage/avaliationPage", { orders: order });
+        return res.status(200).render("restaurants/restaurant/HomePage/avaliationPage", { orders: comments, restName: restName });
     })
     .catch(error => {
         res.status(500).render("errors/error", {numError: 500, error: error});
     })
 };
+
 
 module.exports = commentController;

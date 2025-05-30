@@ -670,10 +670,7 @@ menuController.validateNutrition = async function (req, res) {
   catch (error) {
     cleanupUploadDir(req.uploadDir);
     console.error("Erro ao validar ingredientes:", error);
-    res.status(500).render("errors/error", {
-      numError: 500,
-      error: "Erro ao validar ingredientes",
-    });
+    res.status(500).render("errors/error", {numError: 500, error: "Erro ao validar ingredientes"});
   }
 };
 

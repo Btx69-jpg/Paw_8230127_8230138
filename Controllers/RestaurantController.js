@@ -57,6 +57,21 @@ restaurantController.homePage = async function (req, res) {
     const encodedAddress = encodeURIComponent(fullAddress);
     const googleMapsUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
 
+    const historicOrder = restaurant.perfil.historicOrders;
+
+    let i = historicOrder.length - 1;
+    const maxComments = 3;
+    let countComment = 0;
+    let comments = [];
+    while (i >= 0 && countComment < maxComments) {
+      const order = historicOrder[i];
+      if (order.comment) {
+        comments.push(order);
+        countComment++;
+      }
+
+      i--;
+    }
 
     res.render("restaurants/restaurant/homepage", {
       restaurant: restaurant,
@@ -66,6 +81,7 @@ restaurantController.homePage = async function (req, res) {
       categories: categories,
       autEdit: autEdit,
       autGest: autGest,
+      comments: comments
     });
   } catch (err) {
     res.status(500).render("errors/error", { numError: 500, error: err });

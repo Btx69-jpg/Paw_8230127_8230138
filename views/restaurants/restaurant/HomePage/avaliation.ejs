@@ -1,31 +1,45 @@
 <div class="row bg-white p-4 rounded shadow mb-4">
-    <div class="col-12 mb-3">
-        <h2 class="section-title text-center">Avaliações</h2>
+    <div class="col-12 mb-3 text-center">
+        <h2 class="section-title">Comentarios</h2>
     </div>
 
-    <a href="/restaurants/<%= restaurant.name %>/comments/"></a>
-    <% if (restaurant.comments.length > 0) { %>
-        <div class="row">
-       
-        <%for (let i = 0; i < restaurant.comments.length; i++) {%>
-            <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="/images/restaurant1.jpg" class="card-img-top" alt="Avaliação">
-                <div class="card-body">
-                <h5 class="card-title">Avaliação Crítica</h5>
-                <p class="card-text"></p>
-                <p class="card-text">Stars:</p>
-                </div>
-            </div>
-            </div>
-        <% } %>
+    <% if (comments && comments.length > 0) { %>
+        <div class="text-center mt-4">
+            <a href="/restaurants/<%= restaurant.name %>/comments/" class="btn btn-primary btn-sm">
+                <i class="bi bi-eye me-1"></i> Ver todos os comentários
+            </a>
         </div>
-        <div class="text-center">
-            <a href="/restaurants/<%= restaurant.name %>/comments/" class="btn btn-primary">Ver todas as avaliações</a>
+        <div class="row g-3">
+            <% comments.forEach(function(comment) { %>
+                <% if (comment.comment) { %>
+                <div class="col-12 col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <% if (comment.commentPhoto) { %>
+                            <img src="<%= comment.commentPhoto %>" class="card-img-top" alt="Foto do comentário">
+                        <% } else { %>
+                            <img src="/images/placeholder-comment.jpg" class="card-img-top" alt="Sem foto">
+                        <% } %>
+
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <%= comment.client.firstName %> <%= comment.client.lastName %>
+                            </h5>
+                            <p class="card-text">
+                                <i class="bi bi-chat-left-text me-1"></i>
+                                <%= comment.comment %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            <% }); %>
         </div>
     <% } else { %>
         <div class="col-12">
-        <p class="text-center">O restaurante ainda não tem avaliações</p>
+            <p class="text-center text-muted">
+                <i class="bi bi-info-circle me-1"></i> O restaurante ainda não tem avaliações.
+            </p>
         </div>
     <% } %>
 </div>

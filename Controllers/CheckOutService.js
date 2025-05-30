@@ -14,6 +14,7 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
     if (!userId || !userId.userId) {
       return res.status(400).json({ error: 'ID do utilizador é obrigatório' });
     }
+    
     let user;
     try {
       user = await User.findById(userId.userId).exec();
