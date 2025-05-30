@@ -13,9 +13,11 @@ var restaurantsController = {};
 const { updatePackage, deletePackage } = require('./Functions/crudPackage');
 const { deleteImage, saveImage, updateImage } = require("./Functions/crudImagesRest");
 const { existsRestaurantsDesaprove } = require("./ControllersPerfil/ControllersAdmin/AprovacaoRestController");
+const { validarMorada } = require("./Functions/APImoradas");
 
 //Constantes
 const totRestaurant = 15; 
+
 function covertTimeToSeconds(time) {
     const parts = time.split(':').map(Number);
     const [hh, mm, ss = 0] = parts;
@@ -32,28 +34,54 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
         return ["Não é possivel criar mais restaurantes"];
     }
 
+    let problem = [];
+
     if (!name || !nif || !phoneNumber || !email || !password || !confirmPassword || 
         !street || !postal_code || !city || !maxOrdersPerClient || !maximumRadiusDelivery|| 
         !timeConfection || !timeDelivery) {
-        return ["Alguns dos campos obrigatórios não está preenchido"];
+        problem.push("Alguns dos campos obrigatórios não está preenchido");
+    }
+
+    const validateMorada = await validarMorada(street, postal_code, city);
+    if (!validateMorada.valido) {
+        problem.push("A morada introduzida não exite");
     }
 
     if (openingSeconds < 0 || openingSeconds > 86400) {
-        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
+        problem.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
     }
 
     if (closingSeconds < 0 || closingSeconds > 86400) {
-        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
+        problem.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
     }
 
     if (password !== confirmPassword) { 
-        return ["As passwords não coincidem"];
+        problem.push("As passwords não coincidem");
+    }
+
+    if (maxOrdersPerClient < 1) {
+        problem.push("O maximo de encomendas por cliente não pode ser inferior a 1");
+    }
+
+    if (maximumRadiusDelivery < 0.1) {
+        problem.push("O maximo de raio de entrega não pode ser inferior a 100m (0,1)");
+    }
+
+    if (timeConfection < 0) {
+        problem.push("O tempo de confessão não pode ser inferior ou igual a 0");
+    }
+
+    if (timeDelivery < 0) {
+        problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
+    }
+
+    if (openingSeconds > closingSeconds ) {
+        problem.push("A hora de fecho tem de ser supeior há de abertura");
     }
 
     let find = false;
     let i = 0;
-    let problem = [];
-
+    
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
     while (i < restaurants.length && !find) {
         if (restaurants[i].name === name) {
@@ -72,6 +100,28 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
         i++;
     }
 
+    return problem;
+}
+
+async function validationEditRestaurant(name, nif, phoneNumber, email, 
+    street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
+    timeDelivery, openingSeconds, closingSeconds, restaurant) {
+    
+    let problem = [];
+    
+    if (!name || !nif || !phoneNumber || !email || !street || !postal_code || !city || 
+        !maxOrdersPerClient || !maximumRadiusDelivery|| !timeConfection || !timeDelivery) {
+        problem.push("Alguns dos campos obrigatórios não está preenchido");
+    }
+
+    if (openingSeconds < 0 || openingSeconds > 86400) {
+        problem.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
+    }
+
+    if (closingSeconds < 0 || closingSeconds > 86400) {
+        problem.push("O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59");
+    }
+
     if (maxOrdersPerClient < 1) {
         problem.push("O maximo de encomendas por cliente não pode ser inferior a 1");
     }
@@ -89,33 +139,16 @@ async function validationRestaurant(name, nif, phoneNumber, email, password, con
     }
 
     if (openingSeconds > closingSeconds ) {
-        return ["A hora de fecho tem de ser supeior há de abertura"];
+        problem.push("A hora de fecho tem de ser supeior há de abertura");
     }
 
-    return problem;
-}
-
-async function validationEditRestaurant(name, nif, phoneNumber, email, 
-    street, postal_code, city, maxOrdersPerClient, maximumRadiusDelivery, timeConfection,
-    timeDelivery, openingSeconds, closingSeconds, restaurant) {
-    
-
-    if (!name || !nif || !phoneNumber || !email || !street || !postal_code || !city || 
-        !maxOrdersPerClient || !maximumRadiusDelivery|| !timeConfection || !timeDelivery) {
-        return ["Alguns dos campos obrigatórios não está preenchido"];
-    }
-
-    if (openingSeconds < 0 || openingSeconds > 86400) {
-        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
-    }
-
-    if (closingSeconds < 0 || closingSeconds > 86400) {
-        return ["O tempo de abertura tem de ser entre a 00:00:00 e as 23:59:59"];
+    const validateMorada = await validarMorada(street, postal_code, city);
+    if (!validateMorada.valido) {
+        problem.push("A morada introduzida não exite");
     }
 
     let find = false;
     let i = 0;
-    let problem = [];
     const restaurants = await Restaurant.find({}).exec();
 
     // Verifica se já existe um restaurante com o mesmo nome, NIF, email ou número de telefone
@@ -134,26 +167,6 @@ async function validationEditRestaurant(name, nif, phoneNumber, email,
             find = true;
         }
         i++;
-    }
-
-    if (maxOrdersPerClient < 1) {
-        problem.push("O maximo de encomendas por cliente não pode ser inferior a 1");
-    }
-
-    if (maximumRadiusDelivery < 0.1) {
-        problem.push("O maximo de raio de entrega não pode ser inferior a 100m (0,1)");
-    }
-
-    if (timeConfection < 0) {
-        problem.push("O tempo de confessão não pode ser inferior ou igual a 0");
-    }
-
-    if (timeDelivery < 0) {
-        problem.push("O tempo de entrega não pode ser inferior ou igual a 0");
-    }
-
-    if (openingSeconds > closingSeconds ) {
-        return ["A hora de fecho tem de ser supeior há de abertura"];
     }
 
     return problem;
@@ -440,9 +453,7 @@ restaurantsController.editRestaurant = (req, res) => {
 };
 
 /**
- * Metodo para atualizar os dados de um restaurante
- * 
- * Atalho
+ * * Metodo para atualizar os dados de um restaurante
  */
 restaurantsController.updatRestaurant = async (req, res) => {
     try {

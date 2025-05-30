@@ -12,7 +12,7 @@ const menuController = require("../ControllersRestaurant/MenuController");
 
 //Funções
 const { deleteImage } = require("../Functions/crudImagesRest");
-
+const { validarMorada } = require("../Functions/APImoradas");
 /**
  * TODO: Falta depois fazer o redirect correto.
  */
@@ -231,34 +231,13 @@ userController.deleteUser = async function(req, res) {
 
 userController.addToCart = async function(req, res) {
     try {
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("---------------------------------------------");
-        console.log("Adicionar cart");
         const userId = res.locals.user._id;
         const dishId = req.params.dishId;
         const portionId = req.params.portionId;
         const menuId = req.params.menu;
         const restaurantName = req.params.restaurant;
 
-        const quantity = parseInt(req.body.quantity, 10); // Obter a quantidade do formulário
+        const quantity = parseInt(req.body.quantity, 10); 
         if (isNaN(quantity) || quantity <= 0) {
             return res.render("errors/error", { numError: 400, error: "Quantidade inválida" });
         }
@@ -431,24 +410,38 @@ userController.saveCart = async function(req, res) {
 //Função para adicionar o pedido realizado nas encomendas do utilizador e do rest
 userController.saveNewOrder = async function(req, res) {
     try {
-        console.log("\n\n\n\n\n\nENTROU NO SAVE ORDER\n\n\n\n\n");
         const userId = req.params.userId;
         const restaurantId = req.params.restId;
         const user = await User.findById(userId).exec();
+
         if (!user) {
-            return res.render("errors/error", { numError: 404, error: error });
+            console.log("Utilizador não encontrado");
+            return res.status(404).json({error: "Utilizador não encontrado" });
         }
+
         if (!user.cart || user.cart.itens.length === 0) {
-            return res.render("errors/error", { numError: 404, error: error });
+            console.log("O carrinho está vazio");
+            return res.status(404).json({ error: "O carrinho está vazio" });
         }
 
         const restaurant = await Restaurant.findById(restaurantId).exec();
         if (!restaurant) {
-            return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
+            console.log("Restaurante não encontrado");
+            return res.status(404).json({error: "Restaurante não encontrado" });
         }
-        console.log(req.body);
-
+        
         let order = req.body;
+
+        const street = order.addressOrder.street;
+        const postal_code = order.addressOrder.postal_code;
+        const city = order.addressOrder.city;
+
+        const validateMorada = await validarMorada(street, postal_code, city);
+        if (!validateMorada.valido) {
+            console.log("A morada introduzida não é válida");
+            return res.status(422).json({error: "A morada introduzida não é válida" });
+        }
+        
         let newOrder = new Cart({
             date: order.date,
             client: order.client,
@@ -459,7 +452,6 @@ userController.saveNewOrder = async function(req, res) {
             status: "Pendente",
             type: 'delivery',
         });
-        console.log("\n\n\n\n\n\nNova encomenda: ", newOrder, "\n\n\n\n\n");
         
         user.perfil.orders.push(newOrder);
         user.cart.itens = [];
