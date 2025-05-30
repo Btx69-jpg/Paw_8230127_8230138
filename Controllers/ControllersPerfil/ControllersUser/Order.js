@@ -8,8 +8,6 @@ const { Types } = mongoose;
 var OrderController = {};
 
 /**
- * TODO: Testar este codigo
- * 
  * * Retorna as encomendas em tempo real do utilizador
  * */
 OrderController.getOrders = function(req, res) {    
@@ -71,7 +69,6 @@ OrderController.getOrder = function(req, res) {
         });
 }
 
-//Reutilizar o codigo de cancelar que vai existir para o restaurante também cnacelar
 function validateUser(user) {
     let error = "";
    
@@ -100,21 +97,13 @@ function findOrder(orders, orderId) {
 }
 
 async function findRestaurantOrder(restaurantOrder) {
-    return await Restaurant.findOne({
-        name: restaurantOrder.name, 
-        'perfil.email': restaurantOrder.email, 
-        'perfil.phoneNumber': Number(restaurantOrder.phoneNumber)
-        }).exec();
+  return await Restaurant.findOne({
+    name: restaurantOrder.name,
+    'perfil.email': { $regex: new RegExp(`^${restaurantOrder.email}$`, 'i') },
+    'perfil.phoneNumber': { $eq: Number(restaurantOrder.phoneNumber) }
+  }).exec();
 }
-/**
- * * Funciona (Posso como disse abaixo meter validações extras como aquela dos 15 minutos caso descubra)
- * 
- * TODO: Verificação de 5 minutos
- * TODO: Count Cancelamento
- * * Não pode ser cancelado se já tiver passado 5 minutos e se o estado da encomenda estiver com expedida
- * 
- * * Meter para quando for a 5 encomenda cancelada ele ser banido
- */
+
 OrderController.cancelOrder = async function(req, res) {
     try {
         const userId = req.params.userId;
@@ -168,11 +157,11 @@ OrderController.cancelOrder = async function(req, res) {
 
         const restaurantOrder = orderCancel.restaurant;
 
-        //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let restaurant = await findRestaurantOrder(restaurantOrder);
         console.log("Restaurante: ", restaurant);
-        if (!restaurant) {
-            res.status(404).json( {error: "O restaurante não foi encontrado"}); 
+        
+        if (!restaurant || restaurant === null) {
+            return res.status(404).json( {error: "O restaurante não foi encontrado"}); 
         }
 
         if (!restaurant.perfil || !restaurant.perfil.orders) {

@@ -41,6 +41,10 @@
       "description": "Operações necessárias para utilizar o stripe Checkout"
     },
     {
+      "name": "Checkout",
+      "description": "Operações necessárias para realizar o checkout"
+    },
+    {
       "name": "Cart",
       "description": "Operações para o carrinho do clientee"
     },
@@ -877,6 +881,130 @@
         }
       }
     },
+    "/cart/getRestaurante/{restId}": {
+      "parameters": [
+        {
+          "name": "restId",
+          "in": "path",
+          "required": true,
+          "description": "Id do restaurante",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Retorna o restaurante de uma encomenda",
+        "description": "Retorna o restaurante de uma encomenda.",
+        "tags": ["Cart"],
+        "responses": {
+          "200": {
+            "description": "Retaurante encontrado",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/User"
+            }
+          }, 
+          "404": {
+            "description": "Restaurante não encontrado"
+          },
+          "500": {
+            "description": "Erro ao criar sessão"
+          }
+        }    
+      }
+    },
+    "/cart/limparCarrinho/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Limpa o carrinho do utilizador",
+        "description": "Limpa o carrinho do utilizador.",
+        "tags": ["Cart"],
+        "responses": {
+          "200": {
+            "description": "Carrinho Limpo"
+          }, 
+          "404": {
+            "description": "Restaurante não encontrado"
+          },
+          "500": {
+            "description": "Erro ao criar sessão"
+          }
+        }    
+      }
+    },
+    "/cart/obterCarrinho/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Retorna o carrinho do utilizador",
+        "description": "Retorna o carrinho do utilizador.",
+        "tags": ["Cart"],
+        "responses": {
+          "200": {
+            "description": "Carrinho do utilizador",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Order"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Restaurante não encontrado"
+          },
+          "500": {
+            "description": "Erro ao criar sessão"
+          }
+        }    
+      }
+    },
+    "/cart/save/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "summary": "Retorna o carrinho do utilizador",
+        "description": "Retorna o carrinho do utilizador.",
+        "tags": ["Cart"],
+        "responses": {
+          "200": {
+            "description": "Carrinho do utilizador",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Order"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Restaurante não encontrado"
+          },
+          "500": {
+            "description": "Erro ao criar sessão"
+          }
+        }    
+      }
+    },
     "/checkout/create-checkout-session": {
       "post": {
         "summary": "Criar uma sessão de pagamento com Stripe Checkout",
@@ -895,37 +1023,6 @@
               }
             }
           }, 
-          "500": {
-            "description": "Erro ao criar sessão"
-          }
-        }    
-      }
-    },
-    "/checkout/getRestaurante/{restId}": {
-      "parameters": [
-        {
-          "name": "restId",
-          "in": "path",
-          "required": true,
-          "description": "Id do restaurante",
-          "type": "string"
-        }
-      ],
-      "get": {
-        "summary": "Retorna o restaurante de uma encomenda",
-        "description": "Retorna o restaurante de uma encomenda.",
-        "tags": ["Checkout"],
-        "responses": {
-          "200": {
-            "description": "Retaurante encontrado",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/User"
-            }
-          }, 
-          "404": {
-            "description": "Restaurante não encontrado"
-          },
           "500": {
             "description": "Erro ao criar sessão"
           }
@@ -971,6 +1068,56 @@
             "description": "Erro ao criar sessão"
           }
         }    
+      }
+    },
+    "/checkout/saveNewOrder/{userId}/{restId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        },
+        {
+          "name": "restId",
+          "in": "path",
+          "required": true,
+          "description": "Id do restaurante",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": ["Checkout"],
+        "summary": "Permite a conclusão de uma encomenda",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "order",
+            "description": "Encomenda do utilizador",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encomenda finalizada",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Order"
+              }
+            }
+          }, 
+          "404": {
+            "description": "Utilizador não encontrado"
+          },
+          "500": {
+            "description": "Erro interno"
+          }
+        }
       }
     },
     "/check/auth": {

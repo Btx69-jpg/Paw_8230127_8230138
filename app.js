@@ -123,12 +123,15 @@ var userRouter = require("./routes/RestApi/user.js");
 var logoutRouter = require("./routes/RestApi/logout.js");
 var checkoutRouter = require("./routes/RestApi/checkout.js");
 var cookiesRotuer = require("./routes/RestApi/cookies.js")
+var cartRouter = require("./routes/RestApi/cart.js");
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/logout', logoutRouter);
 app.use('/api/v1/checkout', checkoutRouter);
 app.use('/api/v1/check', cookiesRotuer);
+app.use('/api/v1/cart', cartRouter);
+
 
 //Importante ter em consideração a autentificação e a autorização
 //Caminho até ao browser

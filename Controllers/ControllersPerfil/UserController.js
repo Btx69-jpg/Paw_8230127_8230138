@@ -372,7 +372,7 @@ userController.addToCart = async function(req, res) {
 
 userController.cleanCart = async function(req, res) {
     try {
-        const userId = req.params.UserId;
+        const userId = req.params.userId;
         const user = await User.findById(userId).exec();
         if (!user) {
             return res.status(404).json({error: "Utilizador não encontrado" });
@@ -395,7 +395,7 @@ userController.cleanCart = async function(req, res) {
 
 userController.getCart = async function(req, res) {
     try {
-        const userId = req.params.UserId;
+        const userId = req.params.userId;
         const user = await User.findById(userId).exec();
         if (!user) {
             return res.render("errors/error", { numError: 404, error: "Utilizador não encontrado" });
@@ -411,7 +411,7 @@ userController.getCart = async function(req, res) {
 
 userController.saveCart = async function(req, res) {
     try {
-        const userId = req.params.UserId;
+        const userId = req.params.userId;
         const user = await User.findById(userId).exec();
         
         if (!user) {
@@ -432,7 +432,7 @@ userController.saveCart = async function(req, res) {
 userController.saveNewOrder = async function(req, res) {
     try {
         console.log("\n\n\n\n\n\nENTROU NO SAVE ORDER\n\n\n\n\n");
-        const userId = req.params.UserId;
+        const userId = req.params.userId;
         const restaurantId = req.params.restId;
         const user = await User.findById(userId).exec();
         if (!user) {
@@ -446,8 +446,7 @@ userController.saveNewOrder = async function(req, res) {
         if (!restaurant) {
             return res.render("errors/error", { numError: 404, error: "Restaurante não encontrado" });
         }
-
-
+        console.log(req.body);
 
         let order = req.body;
         let newOrder = new Cart({
@@ -466,15 +465,17 @@ userController.saveNewOrder = async function(req, res) {
         user.cart.itens = [];
         user.cart.price = 0;
         await user.save();
+        
         restaurant.perfil.orders.push(newOrder);
         await restaurant.save();
+
         const io = req.app.get('io');
         io.to(`restaurant_${restaurant._id}`).emit('newOrder', {
-        orderId: order._id,
-        client: order.client,
-        type: order.type,
-        // Adicione mais dados se quiser mostrar no toast
+            orderId: order._id,
+            client: order.client,
+            type: order.type,
         });
+        
         console.log("\n\n\n\n\n\nEncomenda salva com sucesso!\n\n\n\n\n\n");
         res.status(200).json({ message: "Encomenda salva com sucesso!" });
     } catch (error) {
