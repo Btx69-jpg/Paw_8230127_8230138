@@ -1,6 +1,8 @@
 const axios = require('axios');
 
 async function validarMorada(street, postal_code, city) {
+  const fullAddress = `${street}, ${postal_code} ${city}, Portugal`;
+
   try {
     const response = await axios.get('https://nominatim.openstreetmap.org/search', {
       params: {
