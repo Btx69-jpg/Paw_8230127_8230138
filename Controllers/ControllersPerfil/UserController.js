@@ -450,7 +450,7 @@ userController.saveNewOrder = async function(req, res) {
             itens: order.itens,
             price: order.price,
             status: "Pendente",
-            type: 'delivery',
+            type: order.type,
         });
         
         user.perfil.orders.push(newOrder);
