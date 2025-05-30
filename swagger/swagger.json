@@ -41,8 +41,8 @@
       "description": "Operações necessárias para utilizar o stripe Checkout"
     },
     {
-      "name": "Toast",
-      "description": "Operações necessárias para utilizar o stripe Checkout"
+      "name": "Cart",
+      "description": "Operações para o carrinho do clientee"
     },
     {
       "name": "Auth",
