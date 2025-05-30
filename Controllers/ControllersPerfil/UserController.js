@@ -468,6 +468,13 @@ userController.saveNewOrder = async function(req, res) {
         await user.save();
         restaurant.perfil.orders.push(newOrder);
         await restaurant.save();
+        const io = req.app.get('io');
+        io.to(`restaurant_${restaurant._id}`).emit('newOrder', {
+        orderId: order._id,
+        client: order.client,
+        type: order.type,
+        // Adicione mais dados se quiser mostrar no toast
+        });
         console.log("\n\n\n\n\n\nEncomenda salva com sucesso!\n\n\n\n\n\n");
         res.status(200).json({ message: "Encomenda salva com sucesso!" });
     } catch (error) {

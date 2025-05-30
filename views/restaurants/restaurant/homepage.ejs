@@ -1,36 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Home Page <%= restaurant.name %></title>
-    <link rel="icon" type="image/png" href="/images/Plataform/LogoSite/logo.png"/>
-    
+    <link
+      rel="icon"
+      type="image/png"
+      href="/images/Plataform/LogoSite/logo.png"
+    />
+
     <!-- Bootstrap CSS (versão 5) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/stylesheets/Restaurants/navBar.css">
-    <link rel="stylesheet" href="/stylesheets/sinoNavBar.css">
-    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/restaurantPage.css">
-    <link rel="stylesheet" href="/stylesheets/Restaurants/Restaurant/menusPage.css">
-
+    <link rel="stylesheet" href="/stylesheets/Restaurants/navBar.css" />
+    <link rel="stylesheet" href="/stylesheets/sinoNavBar.css" />
+    <link
+      rel="stylesheet"
+      href="/stylesheets/Restaurants/Restaurant/restaurantPage.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/stylesheets/Restaurants/Restaurant/menusPage.css"
+    />
   </head>
-  
+
   <body>
     <!-- NavBar específica para restaurante -->
     <%- include('navBarRest') %>
 
     <div class="container">
-      <div class="mb-2" >
-
+      <div class="mb-2">
         <% if(autGest) { %>
-            <a href="/restaurants/<%= restaurant.name %>/orders" class="btn btn-primary">Gestão de pedidos</a>  
-        <% } %>    
+        <a
+          href="/restaurants/<%= restaurant.name %>/orders"
+          class="btn btn-primary"
+          >Gestão de pedidos</a
+        >
+        <% } %>
       </div>
-
 
       <!-- Informações do Restaurante -->
       <%- include('HomePage/InfoRestaurant') %>
@@ -41,6 +56,36 @@
       <!-- Avaliações -->
       <%- include('HomePage/avaliation') %>
     </div>
+    
+    <div id="user-data" data-user="<%= JSON.stringify(user) %>"></div>
+    <!-- Toast de Nova Ordem -->
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 9999"
+    >
+      <div
+        id="newOrderToast"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Nova ordem recebida!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Socket.IO -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/RestaurantToast.js"></script>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

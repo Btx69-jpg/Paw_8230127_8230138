@@ -21,6 +21,17 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+const { Server } = require('socket.io');
+const io = new Server(server);
+
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  socket.on('joinRestaurantRoom', (restaurantId) => {
+    socket.join(`restaurant_${restaurantId}`);
+  });
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */
