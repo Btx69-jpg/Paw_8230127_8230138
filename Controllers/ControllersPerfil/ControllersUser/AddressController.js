@@ -5,6 +5,9 @@ const User = require("../../../Models/Perfils/User.js");
 const AddressOrder = require("../../../Models/Orders/AddressOrder.js");
 const Address = require("../../../Models/Address.js");
 
+//Funcoes
+const { validarMorada } = require("../../Functions/APImoradas.js")
+
 //Controllers
 var addressController = {};
 
@@ -13,7 +16,6 @@ const maxAddress = 5;
 
 /**
  * * Metodo que carrega todas as moradas de um utilizador
- * TODO: Testar 
  * */
 addressController.getAddresses = function(req, res) {
     const userId = req.params.userId;
@@ -41,7 +43,6 @@ addressController.getAddresses = function(req, res) {
 
 /**
  * * Metodo que vai buscar todas as moradas de um utilizador
- * TODO: Testar
  * */
 addressController.getAddress = function(req, res) {
     const userId = req.params.userId;
@@ -86,7 +87,7 @@ function validateUserFind(user) {
     return "";
 }
 
-function validateCamposAddress(nif, street, postal_code, city) {
+async function validateCamposAddress(nif, street, postal_code, city) {
     if (!street || !postal_code || !city) {
         return "Algum dos campos de preenchimento obrigatorio está por preencher"
     }
@@ -103,6 +104,12 @@ function validateCamposAddress(nif, street, postal_code, city) {
     if (!(regex.test(postal_code))) {
         return "O formato do código postal é inválido";
     }
+
+    const validateMorada = await validarMorada(street, postal_code, city);
+    if (!validateMorada.valido) {
+        return "A morada introduzida não é válida";
+    }
+    
 
     if (nif && (nif < 100000000 || nif > 999999999)) {
         return "O nif introduzido é invalido";
@@ -160,7 +167,7 @@ addressController.createAddress = async function(req, res) {
         const street = address.street;
         const postal_code = address.postal_code;
         const city = address.city;
-        const errosCampos = validateCamposAddress(nif, street, postal_code, city);
+        const errosCampos = await validateCamposAddress(nif, street, postal_code, city);
         
         if (errosCampos !== "") {
             return res.status(422).json({error: errosCampos});
@@ -233,9 +240,10 @@ addressController.editAddress = async function(req, res) {
         const postal_code = address.postal_code;
         const city = address.city;
         console.log("Body: ", req.body);
-        const errosCampos = validateCamposAddress(nif, street, postal_code, city);
+        const errosCampos = await validateCamposAddress(nif, street, postal_code, city);
         
         if (errosCampos !== "") {
+            console.log("Error: ", errosCampos)
             return res.status(422).json({error: errosCampos});
         }
 

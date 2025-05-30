@@ -12,9 +12,6 @@ const manageAddressesRoute = require("./userPerfil/address.js");
 const orderRoute = require("./userPerfil/orders.js");
 
 /**
- * !Só falta testar o Edit, mas testar apenas quando estiver o Mongo, pois é mais fácil.
- */
-/**
  * * Rota que carrega os dados de todos os users
  */
 router.get("/", userController.getUsers);

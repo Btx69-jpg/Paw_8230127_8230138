@@ -430,25 +430,6 @@ orderController.showOrder = function(req, res) {
 }
 
 orderController.searchOrder = function(req, res) {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-
-    console.log("");
-    console.log("---------------------");
     Restaurant.findOne( {name: req.params.restaurant}).exec()
         .then(rest => {
             if(!rest) {

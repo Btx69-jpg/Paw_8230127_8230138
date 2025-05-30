@@ -8,8 +8,6 @@ const { Types } = mongoose;
 var OrderController = {};
 
 /**
- * TODO: Testar este codigo
- * 
  * * Retorna as encomendas em tempo real do utilizador
  * */
 OrderController.getOrders = function(req, res) {    
@@ -71,7 +69,6 @@ OrderController.getOrder = function(req, res) {
         });
 }
 
-//Reutilizar o codigo de cancelar que vai existir para o restaurante também cnacelar
 function validateUser(user) {
     let error = "";
    
@@ -100,21 +97,13 @@ function findOrder(orders, orderId) {
 }
 
 async function findRestaurantOrder(restaurantOrder) {
-    return await Restaurant.findOne({
-        name: restaurantOrder.name, 
-        'perfil.email': restaurantOrder.email, 
-        'perfil.phoneNumber': Number(restaurantOrder.phoneNumber)
-        }).exec();
+  return await Restaurant.findOne({
+    name: restaurantOrder.name,
+    'perfil.email': { $regex: new RegExp(`^${restaurantOrder.email}$`, 'i') },
+    'perfil.phoneNumber': { $eq: Number(restaurantOrder.phoneNumber) }
+  }).exec();
 }
-/**
- * * Funciona (Posso como disse abaixo meter validações extras como aquela dos 15 minutos caso descubra)
- * 
- * TODO: Verificação de 5 minutos
- * TODO: Count Cancelamento
- * * Não pode ser cancelado se já tiver passado 5 minutos e se o estado da encomenda estiver com expedida
- * 
- * * Meter para quando for a 5 encomenda cancelada ele ser banido
- */
+
 OrderController.cancelOrder = async function(req, res) {
     try {
         const userId = req.params.userId;
@@ -130,15 +119,15 @@ OrderController.cancelOrder = async function(req, res) {
         }
 
         const dataAtual = Date.now();
-        if (user.cancelOrder > 0) {
-            const tempoCancel = dataAtual - new Date(orderCancel.date).getTime();
+        if (user.cancelOrder > 0 && user.firstCancel) {
+            const tempoCancel = dataAtual - new Date(user.firstCancel).getTime();
             const trintaDias = 30 * 24 * 60 * 60 * 1000;
 
             if (tempoCancel > trintaDias && user.cancelOrder < 5) {
                 user.cancelOrder = 0;
                 user.firstCancel = null;
             }
-            await user.save();
+
         }
        
         const orderDel = req.params.orderId;
@@ -146,6 +135,7 @@ OrderController.cancelOrder = async function(req, res) {
         const posOrderDelete = findOrder(orders, orderDel);
         
         if (posOrderDelete === -1) {
+            console.log("A encomenda a eliminar não existe!");
             return res.status(302).json({error: "A encomenda a eliminar não existe!"});
         }
 
@@ -156,27 +146,27 @@ OrderController.cancelOrder = async function(req, res) {
         const cincoMinutos = 5 * 60 * 1000; 
 
         if (tempoOrder > cincoMinutos) {
+            console.log("A encomenda não pode ser cancelarda, pois já passou mais de 5 minutos após ser realizada");
             return res.status(302).json({error: "A encomenda não pode ser cancelarda, pois já passou mais de 5 minutos após ser realizada"})
         }
 
         if (orderCancel.status !== 'Pendente') {
+            console.log( `A encomenda não pode ser eliminada pois está no estado de ${orderCancel.status}`);
             return res.status(302).json({error: `A encomenda não pode ser eliminada pois está no estado de ${orderCancel.status}`})
         }
 
         const restaurantOrder = orderCancel.restaurant;
 
-        //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
         let restaurant = await findRestaurantOrder(restaurantOrder);
         console.log("Restaurante: ", restaurant);
-        if (!restaurant) {
-            res.status(404).json( {error: "O restaurante não foi encontrado"}); 
+        
+        if (!restaurant || restaurant === null) {
+            return res.status(404).json( {error: "O restaurante não foi encontrado"}); 
         }
 
         if (!restaurant.perfil || !restaurant.perfil.orders) {
             return res.status(422).json({ error: "O restauranet não tem encomendas"});
         }
-
-        user.perfil.orders.splice(posOrderDelete, 1);
 
         if (!user.cancelOrder) {
             user.cancelOrder = 1;
@@ -190,6 +180,7 @@ OrderController.cancelOrder = async function(req, res) {
             user.dateBannedOrder = Date.now();
         }
 
+        user.perfil.orders.splice(posOrderDelete, 1);
         await user.save();
 
         restaurant.perfil.orders.splice(restaurantOrder, 1);
