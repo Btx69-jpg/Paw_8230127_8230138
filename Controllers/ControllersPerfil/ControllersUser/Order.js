@@ -96,12 +96,8 @@ function findOrder(orders, orderId) {
     return i;
 }
 
-async function findRestaurantOrder(restaurantOrder) {
-  return await Restaurant.findOne({
-    name: restaurantOrder.name,
-    'perfil.email': { $regex: new RegExp(`^${restaurantOrder.email}$`, 'i') },
-    'perfil.phoneNumber': { $eq: Number(restaurantOrder.phoneNumber) }
-  }).exec();
+async function findRestaurantOrder(orderId) {
+  return await Restaurant.findOne({ 'perfil.orders._id': orderId}).exec();
 }
 
 OrderController.cancelOrder = async function(req, res) {
@@ -155,9 +151,7 @@ OrderController.cancelOrder = async function(req, res) {
             return res.status(302).json({error: `A encomenda não pode ser eliminada pois está no estado de ${orderCancel.status}`})
         }
 
-        const restaurantOrder = orderCancel.restaurant;
-
-        let restaurant = await findRestaurantOrder(restaurantOrder);
+        let restaurant = await findRestaurantOrder(orderCancel._id);
         console.log("Restaurante: ", restaurant);
         
         if (!restaurant || restaurant === null) {
@@ -166,6 +160,13 @@ OrderController.cancelOrder = async function(req, res) {
 
         if (!restaurant.perfil || !restaurant.perfil.orders) {
             return res.status(422).json({ error: "O restauranet não tem encomendas"});
+        }
+
+        const posOrderDeleteRest = findOrder(restaurant.perfil.orders, orderDel);
+
+        if (posOrderDelete === -1) {
+            console.log("A encomenda a eliminar não existe no restaurante!");
+            return res.status(302).json({error: "A encomenda a eliminar não existe no restaurante!"});
         }
 
         if (!user.cancelOrder) {
@@ -183,7 +184,7 @@ OrderController.cancelOrder = async function(req, res) {
         user.perfil.orders.splice(posOrderDelete, 1);
         await user.save();
 
-        restaurant.perfil.orders.splice(restaurantOrder, 1);
+        restaurant.perfil.orders.splice(posOrderDeleteRest, 1);
         await restaurant.save();
 
         console.log("Encomenda cancelada");

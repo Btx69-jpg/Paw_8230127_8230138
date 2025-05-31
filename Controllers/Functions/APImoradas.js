@@ -38,7 +38,7 @@ async function validarMorada(street, postal_code, city) {
 }
 
 /**
- * * Calcular a distancia enter duas coordeanads atrav+és da formula de Haversine
+ * * Calcular a distancia enter duas coordeanads através da formula de Haversine
  */
 function calcularDistancia(lat1, lon1, lat2, lon2) {
   const R = 6371; // Raio da Terra em km

@@ -193,13 +193,8 @@ orderController.orderManagment = function(req, res) {
         })
 };
 
-async function findUserOrder(clientOrder) {
-    return await User.findOne({
-        firstName: clientOrder.firstName, 
-        lastName: clientOrder.lastName, 
-        'perfil.email': clientOrder.email, 
-        'perfil.phoneNumber': Number(clientOrder.phoneNumber)
-    }).exec();
+async function findUserOrder(orderId) {
+    return await User.findOne({ 'perfil.orders._id': orderId}).exec();
 }
 
 function findOrder(orders, orderId) {
@@ -234,14 +229,16 @@ function validateRestaruante(restaurant) {
 //Preciso Testar
 orderController.updateOrderStatus = async function(req, res) {
     try {
-        let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec(); 
+        const nameRest = req.params.restaurant;
+        let restaurant = await Restaurant.findOne({ name: nameRest }).exec(); 
         const validation = validateRestaruante(restaurant);
         if (validation !== "") {
             console.log(validation);
             return res.status(404).redirect(res.locals.previousPage);
         }
 
-        const restPosOrder = findOrder(restaurant.perfil.orders, req.params.orderId);
+        const orderId = req.params.orderId;
+        const restPosOrder = findOrder(restaurant.perfil.orders, orderId);
         if (restPosOrder === -1) {
             console.log("A encomenda não existe");
             return res.status(404).redirect(res.locals.previousPage);
@@ -258,6 +255,7 @@ orderController.updateOrderStatus = async function(req, res) {
             console.log("O status não foi definido");
             return res.status(400).redirect(res.locals.previousPage);
         }
+
         if(restaurant.perfil.orders[restPosOrder].status === status) {
             console.log("A encomenda já tem o status que está a tentar atribuir");
             return res.status(400).redirect(res.locals.previousPage);
@@ -265,7 +263,7 @@ orderController.updateOrderStatus = async function(req, res) {
 
         console.log("Status: ", status);
         const orderUpdate = req.params.orderId;
-        let user = await findUserOrder(restaurant.perfil.orders[restPosOrder].client);
+        let user = await findUserOrder(orderId);
         
         if (status === "Entregue") {
             if (!restaurant.perfil.historicOrders) {
@@ -335,11 +333,8 @@ orderController.deleteOrder = async function(req, res) {
             return res.status(302).redirect(res.locals.previousPage);
         }
 
-        const clientOrder = restaurant.perfil.orders[posOrderDeleteRest].client;
-        console.log("Encomenda a eliminar: ", clientOrder);
-
         //* Procurar se o user existe, para se sim eliminar-lhe a encomenda.
-        let user = await findUserOrder(clientOrder);
+        let user = await findUserOrder(orderDel);
         
         if(!user) {
             const portions = await carregarPortions();
