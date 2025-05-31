@@ -1070,6 +1070,55 @@
         }    
       }
     },
+    "/checkout/validateDeliveryRadius": {
+      "post": {
+        "tags": ["Checkout"],
+        "summary": "Valida se a morada do cliente está dentro do raio de entrega permitido.",
+        "description": "Verifica se a morada do cliente está dentro da distância máxima permitida em relação ao restaurante.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "moradaRest": {
+                  "$ref": "#/definitions/Address"
+                },
+                "moradaCliente": {
+                  "$ref": "#/definitions/Address"
+                },
+                "distance": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 5.0
+                }
+              },
+              "required": ["moradaRest", "moradaCliente", "distance"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado da verificação da distância",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dentroDoLimite": { "type": "boolean" },
+                "distanciaKm": { "type": "number" }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação de dados"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      }
+    },
     "/checkout/saveNewOrder/{userId}/{restId}": {
       "parameters": [
         {

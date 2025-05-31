@@ -10,6 +10,14 @@ const userController = require("../../Controllers/ControllersPerfil/UserControll
  */
 router.post("/create-checkout-session", stripeController.stripeCheckoutSession);
 
+/**
+ * * Rota para criar a nova encomenda
+ */
 router.post('/saveNewOrder/:userId/:restId', userController.saveNewOrder);
+
+/**
+ * * Rota para verificar a distancia 
+ * */
+router.post("/validateDeliveryRadius", stripeController.validateDistance);
 
 module.exports = router;

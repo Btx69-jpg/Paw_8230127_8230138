@@ -3,9 +3,37 @@ var checkOutController = {};
 
 const Restaurant = require("../Models/Perfils/Restaurant");
 const User = require("../Models/Perfils/User");
+
 //Stripe
 const SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(SECRET_KEY);
+
+//Funções
+const { verificarDistancia } = require("./Functions/APImoradas");
+
+checkOutController.validateDistance = async function(req, res) {
+  try {
+    console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    console.log("Calculo da distancia")
+    const { addressRet, addressClient, distanceKm} = req.body;
+
+    const resultado = await verificarDistancia(addressRet, addressClient, distanceKm);
+
+    if (!resultado.dentroDoLimite) {
+      return res.status(400).json({ dentroDoLimite: false, distanciaKm: -1, error: resultado.error });
+    }
+
+    console.log("Distancia Calculada calculada: ", resultado.distanciaKm);
+
+    return res.status(200).json({
+      dentroDoLimite: resultado.dentroDoLimite,
+      distanciaKm: resultado.distanciaKm
+    });
+  } catch(error) {
+    console.error("Erro no validateDistance:", error);
+    return res.status(500).json({ sucesso: false, error: 'Erro interno no servidor.' });
+  }  
+}
 
 checkOutController.stripeCheckoutSession = async function(req, res) {
   try {
