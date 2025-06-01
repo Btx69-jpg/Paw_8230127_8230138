@@ -4,6 +4,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 const cokkiesController = {};
 
 const User = require("../Models/Perfils/User");
+
 // Renderiza página de login
 cokkiesController.authCheck = async function(req, res) {
   try{
@@ -14,7 +15,6 @@ cokkiesController.authCheck = async function(req, res) {
       return res.status(401).json({ isAuth: false });
     }
 
-    console.log("Token: ", token);
     let decoded;
     try {
       decoded = jwt.verify(token, SECRET_KEY);
@@ -37,11 +37,11 @@ cokkiesController.authCheck = async function(req, res) {
       console.error("A prioridade da cookie está errada")
       return res.status(401).json({ isAuth: false }); 
     }
+
     res.status(200).json({ 
       isAuth: true,
       userId: decoded.userId,
       priority: priority });
-
   } catch (error) {
     console.error("Erro na validação do token: ", error);
     res.status(500).json({error: error});
@@ -51,7 +51,6 @@ cokkiesController.authCheck = async function(req, res) {
 async function authPriority(priority) {
   try {
     const prioridadesPermitidas = ['Cliente', 'Admin', 'Restaurant', 'Dono', 'Funcionario'];
-    console.log("Prioridade",priority);
     if (!priority) {
       return "Prioridade ausente";
     }

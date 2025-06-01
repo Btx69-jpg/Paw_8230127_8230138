@@ -5,9 +5,11 @@ const User = require("../../Models/Perfils/User");
 const Restaurant = require("../../Models/Perfils/Restaurant");
 
 //Controllers
-
-const { deleteImage} = require("../Functions/crudImagesRest");
 const signUpController = require("../SignUpController");
+
+//Funções
+const { deleteImage} = require("../Functions/crudImagesRest");
+
 var adminController = {};
 
 adminController.homePage = function(req, res) {
@@ -69,9 +71,7 @@ async function updateImage(req, res) {
         });
     })
 }
-/*
-Meter para ele editar também a sua foto de perfil aqui
-*/
+
 adminController.updateAdmin = async function(req, res) {
     const userId = req.params.accountId;
     try {
@@ -91,7 +91,6 @@ adminController.updateAdmin = async function(req, res) {
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors, firstName, lastName, email });
         }
        
-        //Está aqui um problema
         const errorValidate = await validateUser(user, email, phoneNumber);
     
         if (errorValidate !== "") {
@@ -101,7 +100,7 @@ adminController.updateAdmin = async function(req, res) {
         }
         
         let updated = false;
-        //update
+
         if (user.firstName !== firstName) {
             user.firstName = firstName;
             updated = true;
@@ -135,7 +134,7 @@ adminController.updateAdmin = async function(req, res) {
             console.log("")
             return res.render("perfil/admin/pagesAdmin/Users/listUsers", { errors: "Não foi alterado nenhum campo", firstName, lastName, email });
         }
-        //guardar as alterações
+
         user.save()
             .then(() => {
                 console.log("User atualizado com sucesso!");

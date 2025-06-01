@@ -15,12 +15,11 @@ const Portion = require("../../Models/Portion");
 axiosRetry(axios, { retries: 3 });
 axiosRetry(axios, { retryDelay: axiosRetry.linearDelay() });
 
-//Controllers
-var menuController = {};
-
 //Metodos
 const { carregarCategories, carregarCategoriesMenu } = require("../Functions/categories.js");
 const { carregarPortions } = require("../Functions/portions.js");
+
+var menuController = {};
 
 // Função para remover um diretorio recursivamente
 function cleanupUploadDir(dir) {
@@ -69,12 +68,14 @@ async function saveImage(req, res) {
 
 function isUserAut(cookies, user) {
   let isAut = false;
+  
   if(cookies && cookies.auth_token && user !== null && !user.bannedOrder) {
     isAut = true;
   }
 
   return isAut;
 }
+
 // Permite visualizar um menu específico de um restaurante
 menuController.showMenu = async function (req, res) {
     try {
@@ -220,13 +221,12 @@ menuController.searchMenu = async function (req, res) {
             }
         }
     
-        console.log("Dishes: ", menu.dishes);
         const categories = await carregarCategoriesMenu(menu);
         const portions = await carregarPortions();
         const isAut = isUserAut(req.cookies, res.locals.user);
         res.render("restaurants/restaurant/Menu/menu", { restaurant: restaurant, filters: {dishName, category, price, portion, order }, menu: menu, categories: categories, portions: portions, isAut: isAut });
     } catch (err) {
-        res.status(500).render("errors/error", {numError: 500, error: err});
+      res.status(500).render("errors/error", {numError: 500, error: err});
     }
 };
 
@@ -260,10 +260,12 @@ menuController.createMenu = async function (req, res) {
     const restaurant = await Restaurant.findOne({
       name: req.params.restaurant,
     }).exec();
+    
     if (restaurant.menus.length >= 10) {
       cleanupUploadDir(req.uploadDir);
       return res.status(400).render("errors/error", { numError: 400, error: "Limite de menus atingido" });
     }
+
     const categories = await carregarCategories();
     const portions = await carregarPortions();
 
@@ -285,14 +287,17 @@ menuController.saveMenu = async function (req, res) {
     const files = temp?.files || req.files;
     const manual   = req.body.manual || {};
     let restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
+    
     if (!restaurant) {
       cleanupUploadDir(req.uploadDir);
       return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
     }
+    
     if (restaurant.menus.length >= 10) {
       cleanupUploadDir(req.uploadDir);
       return res.status(400).render("errors/error400", { error: "Limite de menus atingido" });
     }
+
     const dishes = [].concat(formData?.dishes || []).filter(Boolean);
 
     const dishObjects = dishes.map((dish, idx) => {
@@ -341,12 +346,10 @@ menuController.saveMenu = async function (req, res) {
       photo: menuPhoto
     });
 
-    console.log("\n\n\n\n\n\n\n\nrestaur: ", restaurant, "\n\n\n\n\n\n");
     restaurant.menus.push(menu);
     await restaurant.save();
 
     delete req.session.tempData;
-    //testar com o render
     res.redirect('/restaurants/' + restaurant.name);
   } catch (err) {
     console.error("Erro ao salvar o menu:", err);
@@ -358,17 +361,13 @@ menuController.saveMenu = async function (req, res) {
 // Renderiza a página de edição do menu
 menuController.editMenu = async function (req, res) {
   try {
-    const restaurant = await Restaurant.findOne({
-      name: req.params.restaurant,
-    }).exec();
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant}).exec();
     const menu = restaurant.menus.id(req.params.menuId);
     const categories = await carregarCategories();
     let portions = await carregarPortions();
 
     if (!menu) {
-      return res
-        .status(404)
-        .render("errors/error404", { error: "Menu não encontrado" });
+      return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
     }
 
     res.render("restaurants/restaurant/Menu/editMenu", {
@@ -526,21 +525,16 @@ menuController.saveEditMenu = async function (req, res) {
 
 menuController.deleteMenu = async function (req, res) {
   try {
-    console.log("\n\n\n\n\n\n\n\nDeleting menu...\n\n\n\n\n\n");
-    const restaurant = await Restaurant.findOne({
-      name: req.params.restaurant,
-    }).exec();
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
     const menu = restaurant.menus.id(req.params.menuId);
 
     if (!menu) {
-      return res
-        .status(404)
-        .render("errors/error404", { error: "Menu não encontrado" });
+      return res.status(404).render("errors/error404", { error: "Menu não encontrado" });
     }
+
     const menuName = menu.name.replace(/[^a-zA-Z0-9]/g, '_');
     const pathFolder = `public/images/Restaurants/${restaurant.name}/Menus/${menuName}/`;
     cleanupUploadDir(pathFolder)
-    
 
     // Remover menu do array
     restaurant.menus.pull(menu);
@@ -600,7 +594,10 @@ async function processIngredients(ingredients, searchTypes) {
     fetchNutritionalData(ing.trim(), searchTypes[idx] || 'name')
   );
   const results = (await Promise.all(pedidosAPI)).filter(Boolean);
-  if (results.length === 0) return { infos: [], warnings: [] };
+  
+  if (results.length === 0) {
+    return { infos: [], warnings: [] };
+  }
 
   const aggregated = results.reduce(
     (acc, curr) => ({
@@ -622,50 +619,51 @@ async function processIngredients(ingredients, searchTypes) {
 
 menuController.validateNutrition = async function (req, res) {
   try {
-  await saveImage(req, res);
+    await saveImage(req, res);
 
-  const dishes = [].concat(req.body.dishes || []).filter(Boolean);
-  const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
-  if (!restaurant) {
-    cleanupUploadDir(req.uploadDir);
-    return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
-  }
+    const dishes = [].concat(req.body.dishes || []).filter(Boolean);
+    const restaurant = await Restaurant.findOne({ name: req.params.restaurant }).exec();
 
-  let hasIngredient = dishes.some(d =>
-    [].concat(d.ingredients || []).some(i => (i || "").trim())
-  );
-  if (!hasIngredient) {
-    console.log("\n\n\n\n\n\n REQ");
-    console.log(req.body);
-    console.log("\n\n\n\n\n\n");
-    return menuController.saveMenu(req, res, restaurant);
-  }
-  const retryTerms = req.body.retryTerm || {};
+    if (!restaurant) {
+      cleanupUploadDir(req.uploadDir);
+      return res.status(404).render("errors/error404", { error: "Restaurante não encontrado" });
+    }
 
-  const perDish = await Promise.all(
-    dishes.map(async (dish, idx) => {
-      if (retryTerms !={} && retryTerms[idx] && retryTerms[idx].length > 0) {
-        dish.ingredients = retryTerms[idx].map((term, i) => term || dish.ingredients[i]);
-      }
-      const ingredients = [].concat(dish.ingredients || []).filter(Boolean);
-      const types = [].concat(req.body.searchTypes?.[idx] || []);
-      return processIngredients(ingredients, types);
-    })
-  );
+    let hasIngredient = dishes.some(d =>
+      [].concat(d.ingredients || []).some(i => (i || "").trim())
+    );
 
-  req.session.tempData = {
-    formData: req.body,
-    files: req.files.map(f => ({ fieldname: f.fieldname, path: f.path })),
-    perDish,
-    restaurant: restaurant
-  };
+    if (!hasIngredient) {
+      return menuController.saveMenu(req, res, restaurant);
+    }
 
-  // renderza a página de confirmação com os dados nutricionais
-  res.render("restaurants/restaurant/Menu/confirmNutriData", {
-    dishes,
-    perDish,
-    sessionData: req.session.tempData
-  });
+    const retryTerms = req.body.retryTerm || {};
+
+    const perDish = await Promise.all(
+      dishes.map(async (dish, idx) => {
+        if (retryTerms !={} && retryTerms[idx] && retryTerms[idx].length > 0) {
+          dish.ingredients = retryTerms[idx].map((term, i) => term || dish.ingredients[i]);
+        }
+        
+        const ingredients = [].concat(dish.ingredients || []).filter(Boolean);
+        const types = [].concat(req.body.searchTypes?.[idx] || []);
+        return processIngredients(ingredients, types);
+      })
+    );
+
+    req.session.tempData = {
+      formData: req.body,
+      files: req.files.map(f => ({ fieldname: f.fieldname, path: f.path })),
+      perDish,
+      restaurant: restaurant
+    };
+
+    // renderza a página de confirmação com os dados nutricionais
+    res.render("restaurants/restaurant/Menu/confirmNutriData", {
+      dishes,
+      perDish,
+      sessionData: req.session.tempData
+    });
   }
   catch (error) {
     cleanupUploadDir(req.uploadDir);

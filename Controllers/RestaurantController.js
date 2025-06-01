@@ -88,9 +88,6 @@ restaurantController.homePage = async function (req, res) {
   }
 };
 
-/*
-Terminar, só falta mandar o menu no render
-*/
 restaurantController.searchMenu = async function (req, res) {
   try {
     let query = {};
@@ -151,8 +148,6 @@ restaurantController.searchMenu = async function (req, res) {
     }
 
     const categories = await carregarCategoriesMenus(menus);
-
-
 
     res.render("restaurants/restaurant/homepage", {
       restaurant: restaurant,

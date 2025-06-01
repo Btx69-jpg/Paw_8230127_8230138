@@ -35,7 +35,7 @@ listRestaurantController.showRestaurant = async function(req, res) {
         const restaurantId = req.params.restaurantId
 
         let restaurant;
-         let voltar = "";
+        let voltar = "";
         switch(res.locals.currentPage) {
             case `/perfil/admin/listRestaurants/showRest/${restaurantId}`: {
                 restaurant = await Restaurant.findOne({_id: restaurantId, aprove: true}).exec();
@@ -63,7 +63,6 @@ listRestaurantController.showRestaurant = async function(req, res) {
         }
 
         res.render("perfil/admin/PagesAdmin/Restaurant/showRestaurant", { restaurant: restaurant, owners: owners, voltar: voltar});
-
     } catch(error) {
         console.log("Error: ", error)
         res.status(404).render(res.locals.previousPage);
@@ -84,7 +83,7 @@ async function getRecommendedRestaurants() {
     ]);
   
     return restaurants;
-  }
+}
   
 module.exports = { getRecommendedRestaurants };
 

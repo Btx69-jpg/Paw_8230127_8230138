@@ -8,7 +8,6 @@ const User = require("../Models/Perfils/User.js");
 //Metodos
 const {carregarCategoriesMenus} = require("./Functions/categories.js");
 
-
 indexController.indexPage = async function(req, res) {
     res.render('index', {restaurants: res.locals.restaurants});
 }
@@ -118,8 +117,6 @@ indexController.pageRestaurantes = async function(req, res) {
         console.log("Não foi encontrado nenhum restaurante, nenhum foi encontrado");
         return res.status(404).redirect("/");
     }
-
-    console.log("Restaurantes: ", restaurantes);
 
     if (restaurantes.length === 1) {
         const restaurant = restaurantes[0]

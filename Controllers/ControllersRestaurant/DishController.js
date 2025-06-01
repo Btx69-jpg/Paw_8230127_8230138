@@ -20,7 +20,6 @@ async function renderCreateDish(res) {
     }
 }
 
-//Testar
 async function renderEditDish(res, dish) {
     let categories = await carregarCategories();
 
@@ -48,9 +47,6 @@ dishController.createDish = function(req, res) {
     renderCreateDish(res);
 };
 
-/*
-Falta guaradar a imagem no public e guardar o caminho no mongo
-*/
 dishController.saveDish = function(req, res) {
     let dish = new Dish({
         name: req.body.name,

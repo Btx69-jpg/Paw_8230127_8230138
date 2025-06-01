@@ -184,17 +184,8 @@ function getAutRemoveEdit(restaurants, user) {
 
     return autRemoveEdit;
 }
-//Meter aqui verificações para caso o user esteja logado não seja possivel reencaminha-lo
-//Preciso de no render mandar também os employees
+
 restaurantsController.restaurantsPage = function(req, res) {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("----------------------------");
     Restaurant.find({ aprove: true}).exec()
         .then(restaurants => {
             let autRemoveEdit = [];
@@ -255,7 +246,6 @@ restaurantsController.createRestaurant = function(req, res) {
     res.render('restaurants/crudRestaurantes/addRestaurant', {action: action, voltar: voltar});
 };
 
-//Filtra por restaurantes (Reutilizar codigo também no admin)
 restaurantsController.search = async function(req, res) {
     try {
         let query = {};
@@ -340,6 +330,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         //Ir buscar e guardar o caminho da imagem
         let pathImage = req.file?.path || '';
         const caminhoCorrigido = "/" + pathImage.replace(/^public[\\/]/, "");
+
         //Cryptografia da password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -385,6 +376,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
         if (cookie === "Cliente" || cookie === "Dono") {
             restaurant.tempUserId = req.user.userId;
         } 
+
         // Guarda o restaurante a bd
         await restaurant.save();
 
@@ -409,7 +401,7 @@ restaurantsController.saveRestaurant = async function(req, res) {
     }
 };
 
-//Carrega a pagina para editar um restaurante (finalizado) 
+//Carrega a pagina para editar um restaurante
 restaurantsController.editRestaurant = (req, res) => {
     const restaurantId = req.params.restaurantId;
     Restaurant.findById(restaurantId).exec()
@@ -437,7 +429,7 @@ restaurantsController.editRestaurant = (req, res) => {
                     action = `/restaurants/${req.params.restaurant}/updateDados/${restaurantId}`;
                     voltar = `/restaurants/${req.params.restaurant}`;
                     break;
-                }default: {
+                } default: {
                     action = "";
                     voltar = "";
                     break;
@@ -457,27 +449,6 @@ restaurantsController.editRestaurant = (req, res) => {
  */
 restaurantsController.updatRestaurant = async (req, res) => {
     try {
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("");
-        console.log("--------------------------------------------");
-        console.log("Update Restaurante");
         //Upload da nova imagem se necessário
         const restId = req.params.restaurantId;
         if(!restId) {
@@ -605,7 +576,9 @@ restaurantsController.updatRestaurant = async (req, res) => {
     }
 };
 
-/* Metodo para remover um restaurant */
+/**
+ * * Metodo para remover um restaurant
+ */
 restaurantsController.removeRestaurant = async (req, res) => {
     try {
         let restaurant = await Restaurant.findOne({ name: req.params.restaurant });
@@ -637,7 +610,6 @@ restaurantsController.removeRestaurant = async (req, res) => {
 
         deletePackage(`public/images/Restaurants/${req.params.restaurant}/`);
         await restaurant.deleteOne();
-        console.log("Restaurante eliminado!");
         res.redirect(res.locals.previousPage);
     } catch (error) {
         res.status(500).render("errors/error", {numError: 500, error: error});

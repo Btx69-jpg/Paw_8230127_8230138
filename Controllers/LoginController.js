@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
-const { Console } = require("console");
 const User = require("../Models/Perfils/User");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -33,9 +32,10 @@ async function validateBanUser(user) {
 
   return userBan;
 }
+
 //Cria o token e adiciona uma cokkie com o tipo de prioridade do user
 loginController.loginToken = async (req, res, next) => {
-  // 1) Chama o passport e recebe (err, user, info)
+  //Chama o passport e recebe (err, user, info)
   passport.authenticate('local', async (err, user, info) => {
     
     if (err) {
@@ -64,7 +64,7 @@ loginController.loginToken = async (req, res, next) => {
       }
     }
 
-    // 2) Faz o login na sessão
+    //Faz o login na sessão
     req.login(user, loginErr => {
       if (loginErr) {
         console.error("Erro no req.login:", loginErr);
@@ -72,12 +72,12 @@ loginController.loginToken = async (req, res, next) => {
         return res.redirect('/login');
       }
 
-      // 3) Só após login bem‑sucedido é que geramos o token
+      // Só após login bem‑sucedido é que geramos o token
       const payload = { userId: user._id };
       const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
       const remember = req.body.rememberMe;
 
-      // 4) Define cookies
+      // Define cookies
       if (remember) {
         res.cookie('auth_token', token, {
           httpOnly: true,
@@ -121,18 +121,6 @@ loginController.logout = function(req, res) {
 }
 
 loginController.logoutAngular = function(req, res) {
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("------------------------------");
-
   req.logout((err) => {
       if (err) {
           console.error("Logout error:", err);
@@ -148,16 +136,14 @@ loginController.logoutAngular = function(req, res) {
 }
 
 loginController.forgotPassword = async (req, res) => {
-  const { email } = req.body;
-  console.log('Forgot password request for email:', email);	
-  console.log('SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY);
   try {
+    const { email } = req.body;
     const user = await User.findOne({ 'perfil.email': email }).exec();
 
-    console.log('\n\n\n\n\n\nUser found:', user,"\n\n\n\n\n");
     if (!user) {
       return res.status(404).json({ error: 'Email não encontrado.' });
     }
+
     // Gerar token de reset (simples, pode ser JWT ou UUID)
     const crypto = require('crypto');
     const resetToken = crypto.randomBytes(32).toString('hex');

@@ -13,9 +13,6 @@ const menuController = require("../ControllersRestaurant/MenuController");
 //Funções
 const { deleteImage } = require("../Functions/crudImagesRest");
 const { validarMorada } = require("../Functions/APImoradas");
-/**
- * TODO: Falta depois fazer o redirect correto.
- */
 
 var userController = {};
 
@@ -65,9 +62,6 @@ userController.isUserBannedOrders = function(req, res) {
         });
 }
 
-/**
- * * O campo perfil Foto está sem validações
- */
 function validateCamposUser(firstName, lastName, email, phoneNumber, birthdate) {
     if (!firstName || !lastName || !email || !phoneNumber) {
         return "Algum dos campos obrigatorio não estão preenchidos";
@@ -122,10 +116,6 @@ userController.getUserEdit = function(req, res) {
         });
 }
 
-
-/**
- * * Permite atualizar os dados do utilizador
- */
 userController.editUser = async function(req, res) {
     const userId = req.params.userId;
     try {
@@ -407,7 +397,9 @@ userController.saveCart = async function(req, res) {
     }
 }
 
-//Função para adicionar o pedido realizado nas encomendas do utilizador e do rest
+/**
+ * * Função para adicionar o pedido realizado nas encomendas do utilizador e do rest
+ * */
 userController.saveNewOrder = async function(req, res) {
     try {
         const userId = req.params.userId;

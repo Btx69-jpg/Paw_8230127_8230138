@@ -118,7 +118,7 @@ async function validateCamposAddress(nif, street, postal_code, city) {
     return "";
 }
 
-function isDuplicateAddress(addresses, addressId, nif, street, postal_code, city) {
+function isDuplicateAddress(addresses, nif, street, postal_code, city) {
     let error = "";
     let i = 0;
     let duplicate = false;
@@ -222,7 +222,6 @@ addressController.editAddress = async function(req, res) {
         const addressId = req.params.addressId;
         let user = await User.findById(userId).select({addresses: 1}).exec();
         
-        console.log("Utilizador encontado: ", user);
         const errorsUser = validateUserFind(user);
         if (errorsUser !== "") {
             return res.status(404).json({error: errorsUser});
@@ -239,7 +238,6 @@ addressController.editAddress = async function(req, res) {
         const street = address.street;
         const postal_code = address.postal_code;
         const city = address.city;
-        console.log("Body: ", req.body);
         const errosCampos = await validateCamposAddress(nif, street, postal_code, city);
         
         if (errosCampos !== "") {

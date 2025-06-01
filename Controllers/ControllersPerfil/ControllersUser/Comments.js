@@ -242,5 +242,4 @@ commentController.deleteComment = async function(req, res) {
     }
 }
 
-
 module.exports = commentController;

@@ -79,7 +79,6 @@ async function verificarDistancia(morada1, morada2, limiteKm) {
   };
 }
 
-
 module.exports = { 
   validarMorada,
   verificarDistancia
