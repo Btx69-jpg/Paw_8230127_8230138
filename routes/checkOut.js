@@ -5,7 +5,6 @@ const router = express.Router();
 
 const userController = require("../Controllers/ControllersPerfil/UserController.js");
 
-
 /**
  * * Rota que Limpa o carrinho do utilizador
  * */

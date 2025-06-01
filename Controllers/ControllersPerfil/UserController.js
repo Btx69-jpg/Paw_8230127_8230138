@@ -460,7 +460,6 @@ userController.saveNewOrder = async function(req, res) {
             type: order.type,
         });
         
-        console.log("\n\n\n\n\n\nEncomenda salva com sucesso!\n\n\n\n\n\n");
         res.status(200).json({ message: "Encomenda salva com sucesso!" });
     } catch (error) {
         console.log("Erro ao salvar a nova encomenda: ", error);

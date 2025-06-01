@@ -8,7 +8,7 @@ const cokkiesController = require("../../Controllers/CookiesAngular");
 /**
  * * Rota que permite ao utilizador fazer logout da sua sessão
  * */
-router.get("/auth", cokkiesController.authCheck);
+router.get("/auth/:userId", cokkiesController.authCheck);
 
 /**
  * * Verifca se o tipo do utilizador é dono ou cliente

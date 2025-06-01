@@ -8,11 +8,16 @@ const User = require("../Models/Perfils/User");
 // Renderiza página de login
 cokkiesController.authCheck = async function(req, res) {
   try{
+    const userId = req.params.userId;
+    if (!userId) {
+      return res.status(403).json({ isAuth: false });
+    }
+
     const token = req.cookies.auth_token || req.headers['authorization'];
     const priority = req.cookies.priority;
     
     if (!token || !priority) {
-      return res.status(401).json({ isAuth: false });
+      return res.status(403).json({ isAuth: false });
     }
 
     let decoded;
@@ -24,18 +29,24 @@ cokkiesController.authCheck = async function(req, res) {
       return res.status(403).json({ isAuth: false });
     }
 
+    //Ivita que vá há rota do angular e troque o id da rota para de outro utilizador diferente (sem ser o que está autenticado)
+    if (userId !== req.user.userId) {
+      console.log("Utilizador não é o mesmo que o da cookie")
+      return res.status(403).json({ isAuth: false });
+    }
+
     const user = await User.findById(req.user.userId).exec();
-    console.log("Utilizador: ", user);
+
     if (!user) {
       console.error("O utilizador do token não existe")
-      return res.status(401).json({ isAuth: false }); 
+      return res.status(403).json({ isAuth: false }); 
     }
 
     console.log("Prioridade",priority);
     console.log("Prioridade do user ",user.perfil.priority);
     if(priority !== user.perfil.priority) {
       console.error("A prioridade da cookie está errada")
-      return res.status(401).json({ isAuth: false }); 
+      return res.status(403).json({ isAuth: false }); 
     }
 
     res.status(200).json({ 
@@ -87,6 +98,5 @@ cokkiesController.authIsDonoOrCliente = async function(req, res) {
     return res.status(500).json({ error: "Erro interno no servidor" });
   }
 };
-
 
 module.exports = cokkiesController;
