@@ -65,7 +65,7 @@
         "tags": [
           "Login"
         ],
-        "summary": "Realiza o logout do utilizador",
+        "summary": "Realiza o logout de um utilizador",
         "responses": {
           "200": {
             "description": "Logout realizado com sucesso"
@@ -111,7 +111,7 @@
       ],
       "get": {
         "tags": ["User"],
-        "summary": "Get de um utilizador especifico",
+        "summary": "Retorna os dados de um utilizador especifico",
         "responses": {
           "200": {
             "description": "User encontrado",
@@ -188,7 +188,7 @@
       },
       "delete": {
         "tags": ["User"],
-        "summary": "Elimina da base de dados um utilizador especifico",
+        "summary": "Elimina a conta de um utilizador no site",
         "responses": {
           "200": {
             "description": "User eliminado",
@@ -217,7 +217,7 @@
       ],
       "get": {
         "tags": ["User"],
-        "summary": "Get de um utilizador especifico",
+        "summary": "Retorna os campos editaveis de um utilizador",
         "responses": {
           "200": {
             "description": "User encontrado",
@@ -314,7 +314,7 @@
       ],
       "get": {
         "tags": ["User/Orders"],
-        "summary": "Retorna as encomendas ainda não concluidas pelo utilizador",
+        "summary": "Retorna as encomendas ainda não concluidas do utilizador",
         "responses": {
           "200": {
             "description": "Encomendas do utilizador",
@@ -484,7 +484,7 @@
       ],
       "post": {
         "tags": ["User/Comments"],
-        "summary": "Permite ao utilizador comentario uma encomenda do seu histórico",
+        "summary": "Permite ao utilizador comentar uma encomenda do seu histórico",
         "consumes": ["multipart/form-data"],
         "parameters": [
           {
@@ -924,7 +924,7 @@
       ],
       "get": {
         "summary": "Limpa o carrinho do utilizador",
-        "description": "Limpa o carrinho do utilizador.",
+        "description": "Permite ao utilizador limpar o carrinho.",
         "tags": ["Cart"],
         "responses": {
           "200": {
@@ -983,8 +983,8 @@
         }
       ],
       "post": {
-        "summary": "Retorna o carrinho do utilizador",
-        "description": "Retorna o carrinho do utilizador.",
+        "summary": "Guarda/Atualiza o carrinho do utilizador",
+        "description": "Guarda/Atualiza o carrinho do utilizador.",
         "tags": ["Cart"],
         "responses": {
           "200": {
