@@ -480,21 +480,26 @@ menuController.saveEditMenu = async function (req, res) {
       Object.keys(req.body.newDishes).forEach((index) => {
         const newDish = req.body.newDishes[index];
         const file = newDishesFiles[index];
-
         if (!file) {
           return res.status(400).render("errors/error400", {
-            error: `Imagem obrigatória para o novo prato ${
-              parseInt(index) + 1
-            }`,
+            error: `Imagem obrigatória para o novo prato ${parseInt(index) + 1}`,
           });
         }
-
+        // Salva porções e preços do novo prato
+        let portions = [];
+        if (newDish.portions && newDish.portionPrices) {
+          // Garante que ambos são arrays
+          const portionsArr = Array.isArray(newDish.portions) ? newDish.portions : [newDish.portions];
+          const pricesArr = Array.isArray(newDish.portionPrices) ? newDish.portionPrices : [newDish.portionPrices];
+          portions = portionsArr.map((p, i) => ({ portion: p, price: parseFloat(pricesArr[i]) }));
+        }
         menu.dishes.push(
           new Dish({
             name: newDish.name,
             description: newDish.description,
             category: newDish.category,
             photo: "/" + file.path.replace(/^public[\\/]/, ""),
+            portions: portions
           })
         );
       });
