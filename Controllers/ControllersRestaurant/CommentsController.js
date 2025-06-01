@@ -42,5 +42,4 @@ commentController.homePage = function(req, res) {
     })
 };
 
-
 module.exports = commentController;

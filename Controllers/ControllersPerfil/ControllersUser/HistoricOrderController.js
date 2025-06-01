@@ -10,13 +10,12 @@ var historicOrderController = {};
  * * Retorna o historico de encomendas de um cliente
  * * NOTA: o .lean, ele faz com que a pesquisa retorne objetos JavaScript puros, em vez de documentos 
  * * Mongo o que permite fazer mainuplações delete como a de baixo, e outro tipo de manipulações
- * * sem afetar claro o mongo.
+ * * sem afetar depois os documentos.
  * */
 historicOrderController.gethistoricOrder = function(req, res) {
     const userId = req.params.userId;
     User.findById(userId).lean().exec()
         .then(user => {
-            console.log("Utilizador Encontrado:", user);
             if (!user) {
                 return res.status(404).json({ error: "Utilizador não encontrado" });
             }
@@ -128,8 +127,6 @@ historicOrderController.searchOrderHistoric = async function(req, res) {
     }
 };
 
-
-/* Página que cria uma nova morada (limite de moradas é 5) */
 historicOrderController.showOrder = async function(req, res) {
     const userId = req.params.userId;
     const orderId = req.params.orderId;
@@ -161,6 +158,5 @@ historicOrderController.showOrder = async function(req, res) {
             res.status(500).json({error: error});
         });
 }
-
 
 module.exports = historicOrderController;

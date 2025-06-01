@@ -1,10 +1,9 @@
 var mongoose = require("mongoose");
 
+//Models
 const User = require("../../../Models/Perfils/User");
 const Restaurant = require("../../../Models/Perfils/Restaurant");
 
-const { Types } = mongoose;
-//Controllers
 var OrderController = {};
 
 /**
@@ -152,7 +151,6 @@ OrderController.cancelOrder = async function(req, res) {
         }
 
         let restaurant = await findRestaurantOrder(orderCancel._id);
-        console.log("Restaurante: ", restaurant);
         
         if (!restaurant || restaurant === null) {
             return res.status(404).json( {error: "O restaurante não foi encontrado"}); 
@@ -187,7 +185,6 @@ OrderController.cancelOrder = async function(req, res) {
         restaurant.perfil.orders.splice(posOrderDeleteRest, 1);
         await restaurant.save();
 
-        console.log("Encomenda cancelada");
         res.status(200).json({});
     } catch(error) {
         console.log("Error:", error);
@@ -197,8 +194,6 @@ OrderController.cancelOrder = async function(req, res) {
 
 OrderController.search = async function(req, res) {
     try {
-        //A Query não recebe nada
-        console.log("Query: ", req.query);
         const { nameRest, status } = req.query;
         const userId = req.params.userId;
 
@@ -224,9 +219,7 @@ OrderController.search = async function(req, res) {
             delete order.client;
             return true;
         });
-
-        console.log("Encomendas encontradas: ", ordersFiltered);
-
+        
         return res.status(200).json(ordersFiltered);
     } catch (error) {
         console.error(error);

@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 //Models
 var Restaurant = require("../Models/Perfils/Restaurant");
 var User = require("../Models/Perfils/User");
+
 var passwordController = {};
 
 passwordController.editPassword = async function (req, res) {
@@ -77,14 +78,9 @@ async function validateNewPassowrd(body, userPassword) {
   return problem;
 }
 
-/*
-TODO: Alterar rotas
-*/
 passwordController.updatePassword = async (req, res) => {
-  console.log("Update Password");
-  const priority = req.cookies.priority;
-
   try {
+    const priority = req.cookies.priority;
     let account = null;
 
     if (priority === "Restaurant") {
@@ -112,8 +108,6 @@ passwordController.updatePassword = async (req, res) => {
     account.perfil.password = hashedNewPassword;
     await account.save();
 
-    console.log("Password atualizada com sucesso");
-
     switch(priority) {
       case "Restaurant": {
         res.redirect(`/restaurants/editRestaurant/${req.params.accountId}`);
@@ -126,7 +120,6 @@ passwordController.updatePassword = async (req, res) => {
         break;
       } default: {
         return res.status(403).render("errors/error", {numError: 403, error: "Não tem permissão para aceder a esta página"})
-        break;
       }
     }
   } catch (error) {
@@ -144,21 +137,26 @@ passwordController.updatePassword = async (req, res) => {
 
 // Nova rota para reset de senha via token
 passwordController.resetPasswordByToken = async function (req, res) {
-  const { userId } = req.params;
-  const { token, newPassword } = req.body;
   try {
+    const { userId } = req.params;
+    const { token, newPassword } = req.body;
     const user = await User.findById(userId);
+    
     if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) {
       return res.status(400).json({ error: 'Token inválido ou expirado.' });
     }
+
     if (user.resetPasswordToken !== token || user.resetPasswordExpires < Date.now()) {
       return res.status(400).json({ error: 'Token inválido ou expirado.' });
     }
+
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+    
     user.perfil.password = hashedNewPassword;
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
+
     await user.save();
     return res.json({ message: 'Senha alterada com sucesso.' });
   } catch (err) {

@@ -3,8 +3,6 @@ const fs = require('fs');
 const {updatePackage} = require("./crudPackage");
 
 function deleteImage(image) {
-    console.log("Apagar Imagem");
-
     if (fs.existsSync(image)) { 
         fs.unlink(image, (err) => {
             if (err) {
@@ -19,18 +17,6 @@ function deleteImage(image) {
 }
 
 async function saveImage(req, res) {
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("");
-    console.log("-------------");
-    console.log("Save Image");
     return new Promise((resolve, reject) => {
         const storageLogo = multer.diskStorage({
             destination: function (req, file, cb) {

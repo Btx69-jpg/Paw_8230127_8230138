@@ -971,7 +971,7 @@
           }
         }    
       }
-    },
+    },   
     "/cart/save/{userId}": {
       "parameters": [
         {
@@ -988,21 +988,54 @@
         "tags": ["Cart"],
         "responses": {
           "200": {
-            "description": "Carrinho do utilizador",
+            "description": "Encomenda criada com sucesso",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Order"
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Encomenda salva com sucesso!"
+                }
               }
             }
-          }, 
+          },
           "404": {
-            "description": "Restaurante não encontrado"
+            "description": "Recurso não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Utilizador não encontrado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro de validação de morada",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "A morada introduzida não é válida"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Erro ao criar sessão"
+            "description": "Erro interno ao salvar encomenda",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Erro ao salvar a nova encomenda"
+                }
+              }
+            }
           }
-        }    
+        }  
       }
     },
     "/checkout/create-checkout-session": {
@@ -1031,35 +1064,33 @@
     },
     "/checkout/concluir-encomenda": {
       "post": {
-        "summary": "Criar uma sessão de pagamento com Stripe Checkout",
-        "description": "Criar uma sessão com Stripe Checkout e retorna o sessionId para redirecionamento.",
+        "summary": "Permite a conclusão da encomenda",
+        "description": "Rota que dá fim há encomenda.",
         "tags": ["Stripe"],
-       "parameters": [
-      {
-        "in": "body",
-        "name": "body",
-        "description": "Dados para criar a sessão de pagamento",
-        "required": true,
-        "schema": {
-          "type": "object",
-          "properties": {
-            "idEncomenda": {
-              "type": "string",
-              "description": "Id da encomenda"
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "description": "Dados para criar a sessão de pagamento",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "idEncomenda": {
+                "type": "string",
+                "description": "Id da encomenda"
+              },
+              "userId": {
+                "type": "string",
+                "description": "Id do utilizador"
+              },
+              "idRestaurante": {
+                "type": "string",
+                "description": "Id do restaurante"
+              }
             },
-            "userId": {
-              "type": "string",
-              "description": "Id do utilizador"
-            },
-            "idRestaurante": {
-              "type": "string",
-              "description": "Id do restaurante"
-            }
-          },
-          "required": ["idEncomenda", "userId", "idRestaurante"]
-        }
-      }
-    ],
+            "required": ["idEncomenda", "userId", "idRestaurante"]
+          }
+        }],
         "responses": {
           "200": {
             "description": "Mandar toast"
@@ -1099,19 +1130,47 @@
             }
           }
         ],
-        "responses": {
+       "responses": {
           "200": {
             "description": "Resultado da verificação da distância",
             "schema": {
               "type": "object",
               "properties": {
-                "dentroDoLimite": { "type": "boolean" },
-                "distanciaKm": { "type": "number" }
-              }
+                "dentroDoLimite": {
+                  "type": "boolean",
+                  "enum": [true],
+                  "description": "Indica que a distância está dentro do limite"
+                },
+                "distanciaKm": {
+                  "type": "number",
+                  "description": "Distância calculada em quilômetros"
+                }
+              },
+              "required": ["dentroDoLimite", "distanciaKm"]
             }
           },
           "400": {
-            "description": "Erro de validação de dados"
+            "description": "Erro de validação de dados",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dentroDoLimite": {
+                  "type": "boolean",
+                  "enum": [false],
+                  "description": "Indica que a distância está fora do limite"
+                },
+                "distanciaKm": {
+                  "type": "number",
+                  "enum": [-1],
+                  "description": "Valor fixo -1 em caso de erro de validação"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Mensagem de erro detalhada"
+                }
+              },
+              "required": ["dentroDoLimite", "distanciaKm", "error"]
+            }
           },
           "500": {
             "description": "Erro interno no servidor"
@@ -1152,33 +1211,97 @@
         ],
         "responses": {
           "200": {
-            "description": "Encomenda finalizada",
+            "description": "Encomenda finalizada com sucesso",
             "schema": {
               "type": "object",
-              "items": {
-                "$ref": "#/definitions/Order"
-              }
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Encomenda salva com sucesso!"
+                }
+              },
+              "required": ["message"]
             }
-          }, 
+          },
           "404": {
-            "description": "Utilizador não encontrado"
+            "description": "Utilizador, restaurante ou carrinho não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Utilizador não encontrado"
+                }
+              },
+              "required": ["error"]
+            }
+          },
+          "422": {
+            "description": "Morada inválida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "A morada introduzida não é válida"
+                }
+              },
+              "required": ["error"]
+            }
           },
           "500": {
-            "description": "Erro interno"
+            "description": "Erro interno",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Erro interno no servidor"
+                }
+              },
+              "required": ["error"]
+            }
           }
         }
       }
     },
-    "/check/auth": {
+    "/check/auth/{userId}": {
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "Id do utilizador",
+          "type": "string"
+        }
+      ],
       "get": {
         "tags": ["Auth"],
         "summary": "Valida se o token do utilizador é válido e se a prioridade é a mesma do utilizador",
         "responses": {
           "200": {
-            "description": "Autentificação do utilizador válida"
+            "description": "Autentificação do utilizador válida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isAuth": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "userId": {
+                  "type": "string",
+                  "example": "abc123"
+                },
+                "priority": {
+                  "type": "string",
+                  "example": "cliente"
+                }
+              },
+              "required": ["isAuth", "userId", "priority"]
+            }
           }, 
-          "401": {
-            "description": "Sem token cálido ou sem prioridade"
+          "403": {
+            "description": "Não tem permissão para aceder a esta página"
           },
           "500": {
             "description": "Erro interno"
@@ -1192,13 +1315,30 @@
         "summary": "Valida se o token de prioridade tem uma prioridade válida",
         "responses": {
           "200": {
-            "description": "Prioridade válida"
+            "description": "Prioridade válida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "string",
+                  "example": "Dono",
+                  "enum": ["Dono", "Cliente"]
+                }
+              },
+              "required": ["priority"]
+            }
           }, 
-          "401": {
-            "description": "Prioridade Ausente"
-          },
           "403": {
-            "description": "A prioridade da cookie não é permitida"
+            "description": "Não tem permissão para aceder a esta página",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
           },
           "500": {
             "description": "Erro interno"

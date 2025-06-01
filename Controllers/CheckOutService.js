@@ -13,8 +13,6 @@ const { verificarDistancia } = require("./Functions/APImoradas");
 
 checkOutController.validateDistance = async function(req, res) {
   try {
-    console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    console.log("Calculo da distancia")
     const { addressRet, addressClient, distanceKm} = req.body;
 
     const resultado = await verificarDistancia(addressRet, addressClient, distanceKm);
@@ -56,7 +54,6 @@ checkOutController.stripeCheckoutSession = async function(req, res) {
 
     const products = user.cart.itens; 
 
-    // Buscar restaurante corretamente usando await
     let restaurant;
     try {
       restaurant = await Restaurant.findById(products[0].from).exec();

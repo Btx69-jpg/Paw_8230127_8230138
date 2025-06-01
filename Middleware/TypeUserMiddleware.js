@@ -1,3 +1,7 @@
+/**
+ * *Metodo para validar o tipo de utilizador que queremos que acessem as rotas
+ */
+
 //Verifica se o user autenticado é um admin
 function isAdmin(req, res, next) {
     if (req.cookies && req.cookies.priority) {

@@ -43,5 +43,5 @@ async function fetchNutritionalData(ingredient, type) {
 }
 
 module.exports = {
-    fetchNutritionalData
+  fetchNutritionalData
 };

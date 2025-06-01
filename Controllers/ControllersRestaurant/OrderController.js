@@ -14,18 +14,16 @@ const {carregarPortions} = require("../Functions/portions");
 const {duplicateOrder} = require("./functions/DuplicateOrder");
 var orderController = {};
 
-// GET /restaurants/:restaurant/orderManagement
 orderController.addOrder = function(req, res) {
     Restaurant.findOne({ name: req.params.restaurant }).exec()
         .then(async restaurant => {
-            if(restaurant) {
-
-                const portions = await carregarPortions();
-                res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});
-            } else {
+            if(!restaurant) {
                 console.log("O restaurante não existe");
                 res.render(res.locals.previousPage);
             }
+
+            const portions = await carregarPortions();
+            res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});
         })
         .catch(error => {
             res.status(500).render("errors/error", {numError: 500, error: error});
@@ -36,7 +34,7 @@ async function validateCampo(firstName, lastName, phoneNumber, email, street, po
     console.log(firstName, lastName, phoneNumber, email, street, postal_code, city, itens, totEncomenda);
     if (!firstName || !lastName || !phoneNumber || !email || !street || !postal_code || !city 
         || !itens || !totEncomenda) {
-            return "Falta preencher algum campo obrigatório";
+        return "Falta preencher algum campo obrigatório";
     }
 
     if (totEncomenda <= 0) {
@@ -184,7 +182,6 @@ orderController.orderManagment = function(req, res) {
                 return res.status(400).redirect(res.locals.previousPage);
             } 
             
-
             const orders = restaurant.perfil.orders;
             res.render("restaurants/restaurant/Order/orderManagement", { restaurant: restaurant, orders: orders, filters: {}});
         })
@@ -226,7 +223,6 @@ function validateRestaruante(restaurant) {
     return error;
 }
 
-//Preciso Testar
 orderController.updateOrderStatus = async function(req, res) {
     try {
         const nameRest = req.params.restaurant;
@@ -312,8 +308,6 @@ orderController.updateOrderStatus = async function(req, res) {
     }
 }
 
-
-//Eliminar encomenda do restaurante e do utilizador
 orderController.deleteOrder = async function(req, res) {
     try {
         const nameRest = req.params.restaurant;
@@ -358,14 +352,11 @@ orderController.deleteOrder = async function(req, res) {
         user.perfil.orders.splice(posOrderDeleteUser, 1);
         await user.save();
 
-        console.log("Order do utilizador eliminada com sucesso");
-
         if (restaurant.perfil.orders.length > 0) {
             return res.redirect(res.locals.previousPage);
         }
 
         const portions = await carregarPortions();
-        console.log("Encomenda eliminada com sucesso")
         res.render("restaurants/restaurant/Order/addOrder", { restaurant: restaurant, portions: portions});   
     } catch(error) {
         console.log("Error: ", error);
@@ -382,7 +373,6 @@ orderController.historicOrder = async function(req, res) {
         }
 
         const maxData = new Date().toISOString().split("T")[0];
-
         res.render("perfil/orders/historicOrder", {account: account, historic: account.perfil.historicOrders, maxData: maxData, filters: {}});
     } catch (error) {
         console.log("Erro: ", error);
@@ -391,7 +381,6 @@ orderController.historicOrder = async function(req, res) {
 }
 
 orderController.showOrder = function(req, res) {
-    console.log("Dados da encomenda: ");
     Restaurant.findOne( {name: req.params.restaurant}).exec()
         .then(rest => {
             if(!rest) {
@@ -433,8 +422,6 @@ orderController.searchOrder = function(req, res) {
             }
 
             const status = req.query.status;
-            console.log("Estado", status);
-            console.log("Query: ", req.query);
             const orders = rest?.perfil?.orders || [];
 
             const ordersFiltered = orders.filter(order => {
@@ -446,9 +433,6 @@ orderController.searchOrder = function(req, res) {
                 return true;
             });
 
-            console.log("Encomendas encontradas: ", ordersFiltered);
-            
-
            res.render("restaurants/restaurant/Order/orderManagement", { restaurant: rest, orders: ordersFiltered, filters: { status: status }});
         })
         .catch(error => {
@@ -456,4 +440,5 @@ orderController.searchOrder = function(req, res) {
             res.status(500).redirect(res.locals.previousPage);
         })
 }
+
 module.exports = orderController;

@@ -6,7 +6,9 @@ var navBarMiddleware = {};
 //Models
 const Restaurant = require("../Models/Perfils/Restaurant");
 
-//Metodo utilizado nas rotas onde os users têm de estar obrigatoriamente autenticados
+/**
+ * * Middleware para aviar os admins quando surgue um novo restaurante para aprovar;
+ */
 navBarMiddleware.notificationAproveRestaurante = async function(req, res, next) {
     if (req.cookies && req.cookies.priority && req.cookies.priority === "Admin") {
         try {

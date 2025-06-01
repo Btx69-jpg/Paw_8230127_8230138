@@ -152,7 +152,6 @@ categoriesController.updatCategory = async function(req, res) {
         category.category = req.body.category;
         await category.save();
 
-        console.log("Categoria alterada com sucesso");
         res.redirect("/perfil/admin/listCategories")
     } catch(err) {
         console.log("Erro: ", err);

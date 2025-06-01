@@ -18,8 +18,10 @@ aprovacaoRestController.aprovePage = async function(req, res) {
         });   
 };
 
-//Função que verifica se existem restaurantes para aprovar
-//Se existir devolve true, se não existir devolve false
+/** 
+ * * Função que verifica se existem restaurantes para aprovar
+ * * Se existir devolve true, se não existir devolve false
+ * */
 function existsRestaurantsDesaprove() {
     return Restaurant.findOne({ aprove: false }).exec()
         .then(rest => {
@@ -67,7 +69,6 @@ aprovacaoRestController.aproveRestaurant = async function(req, res) {
         }
   
         const tempUserId = restaurant.tempUserId;
-        console.log("Id tem user: ", tempUserId);
         let user = await User.findById(tempUserId).exec();
 
         if (!user) {
