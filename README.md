@@ -38,8 +38,8 @@ This repository contains the backend for our website, responsible for organizing
 
 ---
 ### 🔗 Links
-- Overview: https://github.com/Arturito2005/projetoPAW_overview  
-- Frontend: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone 
+- **Overview**: https://github.com/Arturito2005/projetoPAW_overview  
+- **Frontend**: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone 
 
 ## Português
 
@@ -70,11 +70,14 @@ Este repositorio possui backend do nosso webSite, responsável por organizar tod
 - **HTML**: linguagem de marcação padrão usada para criar e estruturar conteúdo na web.  
 
 #### 🧰 Ferramentas
+- **MongoDB**: base de dados NoSQL orientado a documentos, que armazena registros em formato BSON
+- **ExpressJs**: framework web minimalista e flexível para Node.js. Ele fornece um conjunto robusto de recursos para construir APIs e aplicações web, incluindo roteamento, middleware personalizáveis, tratamento de requisições e respostas HTTP, além de integração fácil com bases de dados e outras bibliotecas do ecossistema Node.
 - **Node.js**: ambiente de execução de ficheiros JavaScript no servidor, permite criar aplicações escaláveis e de alto desempenho.
 - **EJS**: template engine que permite misturar código JavaScript em arquivos HTML para gerar páginas dinâmicas de forma simples e intuitiva.
-- **ExpressJs**: framework web minimalista e flexível para Node.js. Ele fornece um conjunto robusto de recursos para construir APIs e aplicações web, incluindo roteamento, middleware personalizáveis, tratamento de requisições e respostas HTTP, além de integração fácil com bases de dados e outras bibliotecas do ecossistema Node.
-- **Bootstrap**: framework front‑end baseado em CSS, que fornece um conjunto de estilos prontos, grid responsivo e componentes interativos para acelerar o desenvolvimento de interfaces web consistentes e adaptáveis.
+- **Node-Cache**: biblioteca de cache simples para aplicações Node.js, usada para armazenar dados temporários em memória. Utilizado para armazenar temporariamente, em cache, os dados nutricionais de ingredientes da API OpenFoodFacts, com o objetivo de reduzir o nuumero de chamadas à API.
+- **Axios**: Biblioteca baseada em Promises para fazer requisições HTTP. Utilizamos para buscar dados nutricionais de ingredientes na API OpenFoodFacts e validar moradas introduzidas pelos utilizadores através da API Nominatim.
 - **Swagger**: conjunto de ferramentas para design, construção, documentação e teste de APIs REST de forma interativa. 
+- **Bootstrap**: framework front‑end baseado em CSS, que fornece um conjunto de estilos prontos, grid responsivo e componentes interativos para acelerar o desenvolvimento de interfaces web consistentes e adaptáveis.
 - **Visual Studio Code**: editor de código leve e extensível, com integração nativa a debuggers, sistemas de versionamento e inúmeros plugins.
 
 #### 💡 Tecnologias
@@ -82,5 +85,5 @@ Este repositorio possui backend do nosso webSite, responsável por organizar tod
 ---
 
 ### 🔗 Links
-- overview: https://github.com/Arturito2005/projetoPAW_overview
-- frontend: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone
+- **Overview**: https://github.com/Arturito2005/projetoPAW_overview
+- **Frontend**: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone
