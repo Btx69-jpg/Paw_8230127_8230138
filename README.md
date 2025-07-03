@@ -17,7 +17,6 @@ This repository contains the backend for our website, responsible for organizing
 - **swagger**: stores the Swagger file with full documentation of our REST API endpoints.
 - **views**: contains all view templates, including admin pages, the main page, the restaurant page, and the restaurant order management page.
 - **app.js**: main application file, responsible for configuring the server, defining routes and middleware, and starting the HTTP request listener.
-- **RelatorioPrimeiraEntrega.pdf**: report prepared for the first milestone of the project.
 
 ---
 ### 🛠️ Languages, Tools & Technologies
@@ -62,7 +61,6 @@ Este repositorio possui backend do nosso webSite, responsável por organizar tod
 - **swagger**: pasta que armazena o ficheiro swagger com toda a documentação dos pedidos da nossa REST API
 - **views**: ficheiro que armazena todas as vistas do software, incluindo as paginas do admin, a página principal, a página do restaurante e a pagina de gestão de pedidos do restuarante
 - **app.js**: ficheiro principal da aplicação, responsável por configurar o servidor, definir rotas e middleware, e iniciar a escuta de requisições HTTP.
-- **RelatorioPrimeiraEntrega.pdf**: relatório realizado para a primeira milestone do trabalho
 
 ---
 ### 🛠️ Linguagens, Ferramentas e Tecnologias
