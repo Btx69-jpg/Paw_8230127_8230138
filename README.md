@@ -82,5 +82,5 @@ Este repositorio possui backend do nosso webSite, responsável por organizar tod
 ---
 
 ### 🔗 Links
-overview: https://github.com/Arturito2005/projetoPAW_overview
-frontend: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone
+- overview: https://github.com/Arturito2005/projetoPAW_overview
+- frontend: https://github.com/Btx69-jpg/PAW_8230128_8230138_2Millestone
