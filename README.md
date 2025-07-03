@@ -26,14 +26,18 @@ This repository contains the backend for our website, responsible for organizing
 - **HTML**: standard markup language used to create and structure content on the web.  
 
 #### 🧰 Tools
-- **Node.js**: JavaScript runtime environment for server‑side execution, enabling the creation of scalable, high‑performance applications.  
-- **EJS**: template engine that allows embedding JavaScript in HTML files to generate dynamic pages in a simple and intuitive way.  
-- **Express.js**: minimalistic and flexible web framework for Node.js that provides robust features for building APIs and web applications, including routing, customizable middleware, HTTP request/response handling, and easy integration with databases and other Node ecosystem libraries.  
-- **Bootstrap**: front‑end framework based on CSS (with JavaScript components) offering ready‑to‑use styles, a responsive grid, and interactive components to speed up the development of consistent, adaptable web interfaces.  
-- **Swagger**: suite of tools for designing, building, documenting, and testing REST APIs interactively.  
-- **Visual Studio Code**: lightweight, extensible code editor with built‑in debugger integration, version control, and a vast ecosystem of plugins.
+- **MongoDB**: a document‑oriented NoSQL database (BSON format)
+- **Express.js**: minimalist web framework for Node.js, providing routing, middleware, HTTP handling, and easy DB integration
+- **Node.js**: server‑side JavaScript runtime for building scalable, high‑performance apps
+- **EJS**: templating engine for embedding JavaScript into HTML to generate dynamic pages
+- **Node‑cache**: simple in‑memory cache used to store OpenFoodFacts nutrition data and reduce API calls
+- **Axios**: Promise‑based HTTP client for fetching nutrition data and validating addresses via external APIs
+- **Swagger**: interactive API design, documentation, and testing toolkit
+- **Bootstrap**: CSS‑based front‑end framework with responsive grid and ready‑made components
+- **Visual Studio Code**: lightweight, extensible code editor with built‑in debugging and version control
 
-#### 💡 Technologies
+
+#### 🌐 Technologies
 - **Rest API**: architectural style for communication between systems over HTTP, based on resources and standard operations (GET, POST, PUT, DELETE).
 
 ---
@@ -76,11 +80,11 @@ Este repositorio possui backend do nosso webSite, responsável por organizar tod
 - **EJS**: template engine que permite misturar código JavaScript em arquivos HTML para gerar páginas dinâmicas de forma simples e intuitiva.
 - **Node-Cache**: biblioteca de cache simples para aplicações Node.js, usada para armazenar dados temporários em memória. Utilizado para armazenar temporariamente, em cache, os dados nutricionais de ingredientes da API OpenFoodFacts, com o objetivo de reduzir o nuumero de chamadas à API.
 - **Axios**: Biblioteca baseada em Promises para fazer requisições HTTP. Utilizamos para buscar dados nutricionais de ingredientes na API OpenFoodFacts e validar moradas introduzidas pelos utilizadores através da API Nominatim.
-- **Swagger**: conjunto de ferramentas para design, construção, documentação e teste de APIs REST de forma interativa. 
+- **Swagger**: conjunto de ferramentas para design, construção, documentação e teste de APIs REST de forma interativa.
 - **Bootstrap**: framework front‑end baseado em CSS, que fornece um conjunto de estilos prontos, grid responsivo e componentes interativos para acelerar o desenvolvimento de interfaces web consistentes e adaptáveis.
 - **Visual Studio Code**: editor de código leve e extensível, com integração nativa a debuggers, sistemas de versionamento e inúmeros plugins.
 
-#### 💡 Tecnologias
+#### 🌐 Tecnologias
 - **Rest API**: estilo arquitetural para comunicação entre sistemas via HTTP, baseado em recursos e operações padronizadas (GET, POST, PUT, DELETE).  
 ---
 
